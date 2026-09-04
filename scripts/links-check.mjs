@@ -1,0 +1,3 @@
+import fs from "node:fs";import path from "node:path";
+const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
+const files=walk("app").concat(walk("src")).filter(x=>/\.(tsx?|md)$/.test(x));const bad=[];for(const file of files){const text=fs.readFileSync(file,"utf8");for(const m of text.matchAll(/href=["']([^"']+)["']/g)){const h=m[1];if(h==="#"||h.startsWith("javascript:"))bad.push(`${file}: ${h}`)}}if(bad.length){console.error(bad.join("\n"));process.exit(1)}console.log(`links valid: ${files.length} source files checked`);

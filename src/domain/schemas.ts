@@ -1,0 +1,76 @@
+import { z } from "zod";
+
+export const localeSchema = z.enum(["ru", "en"]);
+export type Locale = z.infer<typeof localeSchema>;
+export const statusSchema = z.enum(["planned", "active", "on-hold", "completed", "cancelled"]);
+export const workStatusSchema = z.enum(["backlog", "ready", "in-progress", "review", "done"]);
+export const healthSchema = z.enum(["green", "amber", "red", "unknown"]);
+
+export const workItemSchema = z.object({
+  id:z.string().min(1), projectId:z.string(), title:z.string().min(2), description:z.string().default(""),
+  type:z.enum(["initiative","epic","feature","story","task","subtask","bug","spike","deliverable"]),
+  parentId:z.string().optional(), status:workStatusSchema, priority:z.enum(["critical","high","medium","low"]),
+  owner:z.string().default(""), contributors:z.array(z.string()).default([]), labels:z.array(z.string()).default([]),
+  startDate:z.string().optional(), dueDate:z.string().optional(), estimate:z.number().nonnegative().optional(),
+  actualEffort:z.number().nonnegative().optional(), milestoneId:z.string().optional(), iterationId:z.string().optional(),
+  dependencies:z.array(z.string()).default([]), acceptanceCriteria:z.array(z.string()).default([]), done:z.boolean().default(false),
+  blocked:z.boolean().default(false), blockerReason:z.string().optional(), riskIds:z.array(z.string()).default([]), objectiveIds:z.array(z.string()).default([]),
+  order:z.number().default(0), createdAt:z.string(), updatedAt:z.string(), completedAt:z.string().optional(), archived:z.boolean().default(false),
+});
+
+export const riskSchema = z.object({
+  id:z.string(), projectId:z.string(), title:z.string().min(2), category:z.string(), description:z.string(),
+  probability:z.number().min(1).max(5), impact:z.number().min(1).max(5), owner:z.string(),
+  strategy:z.enum(["avoid","mitigate","transfer","accept","escalate","exploit","enhance","share"]),
+  actions:z.string(), trigger:z.string(), reviewDate:z.string(), residualProbability:z.number().min(1).max(5).optional(),
+  residualImpact:z.number().min(1).max(5).optional(), status:z.enum(["open","watching","responding","closed"]),
+});
+
+export const projectSchema = z.object({
+  id:z.string(), name:z.string().min(2), status:statusSchema, owner:z.string(), sponsor:z.string(),
+  approach:z.enum(["predictive","adaptive","hybrid","flow"]), governance:z.enum(["lightweight","standard","controlled"]),
+  type:z.enum(["software","marketing","operations","education","agency","transformation","infrastructure","research","general"]),
+  startDate:z.string(), targetDate:z.string(), purpose:z.string(), objective:z.string(), successMeasures:z.array(z.string()),
+  health:z.record(z.string(),healthSchema), demo:z.boolean().default(false), currency:z.string().default("USD"),
+  scopeIn:z.string().default(""), scopeOut:z.string().default(""), constraints:z.string().default(""), definitionOfDone:z.string().default(""),
+});
+
+export const decisionSchema = z.object({ id:z.string(), projectId:z.string(), question:z.string(), context:z.string(), alternatives:z.array(z.string()), criteria:z.array(z.string()), decision:z.string(), rationale:z.string(), owner:z.string(), date:z.string(), participants:z.array(z.string()), consequences:z.string(), revisitTrigger:z.string(), status:z.enum(["pending","decided","superseded"]) });
+export const stakeholderSchema = z.object({ id:z.string(), projectId:z.string(), name:z.string(), role:z.string(), influence:z.number().min(1).max(5), interest:z.number().min(1).max(5), attitude:z.enum(["resistant","neutral","supportive"]), expectations:z.string(), communicationNeeds:z.string(), owner:z.string(), strategy:z.string() });
+export const budgetEntrySchema = z.object({ id:z.string(), projectId:z.string(), category:z.string(), planned:z.number().nonnegative(), actual:z.number().nonnegative(), committed:z.number().nonnegative(), forecast:z.number().nonnegative().optional() });
+export const documentSchema = z.object({ id:z.string(), projectId:z.string(), title:z.string(), type:z.string(), body:z.string(), relatedIds:z.array(z.string()), updatedAt:z.string() });
+export const milestoneSchema = z.object({ id:z.string(), projectId:z.string(), title:z.string(), date:z.string(), status:z.enum(["planned","at-risk","done"]), progress:z.number().min(0).max(100) });
+export const issueSchema = z.object({ id:z.string(), projectId:z.string(), title:z.string(), description:z.string(), impact:z.number().min(1).max(5), urgency:z.number().min(1).max(5), owner:z.string(), plan:z.string(), dueDate:z.string(), escalation:z.string(), relatedRiskId:z.string().optional(), relatedWorkIds:z.array(z.string()), status:z.enum(["open","resolving","closed"]) });
+export const objectiveSchema = z.object({ id:z.string(), projectId:z.string(), description:z.string(), type:z.enum(["objective","output","outcome","benefit","kpi"]), baseline:z.string(), target:z.string(), measure:z.string(), dueDate:z.string(), owner:z.string(), deliverableIds:z.array(z.string()), status:z.enum(["planned","tracking","achieved","missed"]) });
+export const iterationSchema = z.object({ id:z.string(), projectId:z.string(), title:z.string(), goal:z.string(), startDate:z.string(), endDate:z.string(), capacity:z.number().nonnegative(), workItemIds:z.array(z.string()), status:z.enum(["planned","active","closed"]).default("planned") });
+export const dependencySchema = z.object({ id:z.string(), projectId:z.string(), predecessorId:z.string(), successorId:z.string(), type:z.enum(["FS","SS","FF","SF"]), lag:z.number(), owner:z.string().default(""), dueDate:z.string().default(""), status:z.enum(["open","met","breached"]).default("open") });
+export const assumptionSchema = z.object({ id:z.string(), projectId:z.string(), text:z.string(), rationale:z.string(), owner:z.string(), validationMethod:z.string(), validationDate:z.string(), status:z.enum(["untested","validating","validated","invalidated"]), effectIfFalse:z.string() });
+export const changeRequestSchema = z.object({ id:z.string(), projectId:z.string(), change:z.string(), requester:z.string(), reason:z.string(), scopeImpact:z.string(), scheduleImpact:z.string(), costImpact:z.string(), riskImpact:z.string(), qualityImpact:z.string(), alternatives:z.string(), recommendation:z.string(), decision:z.string(), approver:z.string(), status:z.enum(["draft","assessing","approved","rejected","implemented"]) });
+export const teamMemberSchema = z.object({ id:z.string(), projectId:z.string(), name:z.string(), role:z.string(), responsibility:z.string(), weeklyCapacity:z.number().nonnegative(), timezone:z.string(), skills:z.array(z.string()) });
+export const capacityAllocationSchema = z.object({ id:z.string(), projectId:z.string(), memberId:z.string(), week:z.string(), planned:z.number().nonnegative() });
+export const vendorSchema = z.object({ id:z.string(), projectId:z.string(), name:z.string(), scope:z.string(), owner:z.string(), deliverables:z.array(z.string()), milestones:z.array(z.string()), cost:z.number().nonnegative(), status:z.enum(["prospect","active","at-risk","closed"]), riskIds:z.array(z.string()), dependencyIds:z.array(z.string()), reviewNotes:z.string() });
+export const meetingSchema = z.object({ id:z.string(), projectId:z.string(), title:z.string(), date:z.string(), attendees:z.array(z.string()), agenda:z.array(z.string()), notes:z.string(), outputs:z.array(z.string()) });
+export const statusReportSchema = z.object({ id:z.string(), projectId:z.string(), period:z.string(), overall:healthSchema, accomplishments:z.array(z.string()), currentWork:z.array(z.string()), nextPeriod:z.array(z.string()), risks:z.array(z.string()), decisionsNeeded:z.array(z.string()), helpNeeded:z.array(z.string()) });
+export const lessonSchema = z.object({ id:z.string(), projectId:z.string(), situation:z.string(), insight:z.string(), recommendation:z.string(), owner:z.string() });
+export const communicationSchema = z.object({ id:z.string(), projectId:z.string(), audience:z.string(), purpose:z.string(), channel:z.string(), cadence:z.string(), owner:z.string(), successSignal:z.string() });
+export const qualityGateSchema = z.object({ id:z.string(), projectId:z.string(), title:z.string(), criteria:z.array(z.string()), owner:z.string(), dueDate:z.string(), status:z.enum(["planned","ready","passed","failed"]), evidence:z.string() });
+export const activitySchema = z.object({ id:z.string(), projectId:z.string(), at:z.string(), type:z.string(), message:z.string() });
+export const projectSettingsSchema = z.object({ projectId:z.string(), enabledTypes:z.array(workItemSchema.shape.type), wipLimits:z.record(z.string(),z.number().positive()), governance:z.enum(["lightweight","standard","controlled"]), probabilityScale:z.number().min(3).max(5), impactScale:z.number().min(3).max(5) });
+
+export const workspaceSchema = z.object({
+  schemaVersion:z.literal(2), id:z.string(), name:z.string(), locale:localeSchema, experience:z.enum(["foundation","practitioner","advanced"]),
+  projects:z.array(projectSchema), workItems:z.array(workItemSchema), risks:z.array(riskSchema), decisions:z.array(decisionSchema),
+  stakeholders:z.array(stakeholderSchema), budgets:z.array(budgetEntrySchema), documents:z.array(documentSchema), milestones:z.array(milestoneSchema), issues:z.array(issueSchema),
+  objectives:z.array(objectiveSchema).default([]), assumptions:z.array(assumptionSchema).default([]), dependencies:z.array(dependencySchema).default([]),
+  iterations:z.array(iterationSchema).default([]), teamMembers:z.array(teamMemberSchema).default([]), capacityAllocations:z.array(capacityAllocationSchema).default([]),
+  changes:z.array(changeRequestSchema).default([]), vendors:z.array(vendorSchema).default([]), meetings:z.array(meetingSchema).default([]),
+  statusReports:z.array(statusReportSchema).default([]), lessons:z.array(lessonSchema).default([]), communications:z.array(communicationSchema).default([]),
+  qualityGates:z.array(qualityGateSchema).default([]), activities:z.array(activitySchema).default([]), projectSettings:z.array(projectSettingsSchema).default([]),
+});
+
+export type Workspace = z.infer<typeof workspaceSchema>;
+export type Project = z.infer<typeof projectSchema>;
+export type WorkItem = z.infer<typeof workItemSchema>;
+export type Risk = z.infer<typeof riskSchema>;
+export type Issue = z.infer<typeof issueSchema>;
+export type Decision = z.infer<typeof decisionSchema>;
