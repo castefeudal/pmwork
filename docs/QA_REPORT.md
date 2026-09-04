@@ -12,6 +12,7 @@ Run date: 2026-09-05. Runtime: Node 24.19.0.
 | RU/EN parity | PASS |
 | Internal dead-link patterns | PASS — 41 source files checked |
 | Unit + integration + component tests | PASS — 19/19 across 4 files |
+| GitHub Chromium E2E + axe | PASS — 6/6 desktop/mobile RU/EN checks |
 | Production static build | PASS — 27 generated pages |
 | GitHub Pages base-path smoke | PASS — nested RU/EN route files and `/pmwork` assets verified |
 | Dependency audit | PASS — 0 known vulnerabilities |
@@ -23,7 +24,7 @@ Covered calculations: CPM, cycle detection, PERT and invalid ordering, EVM zero 
 
 The managed Chrome preview loaded the RU landing and workspace at desktop width. Visual inspection confirmed readable typography, stable hero/control-tower layout, visible focus-oriented controls, no overlap or horizontal page overflow, coherent portfolio density, and semantic DOM landmarks/headings. The workspace preview also exposed the new project switcher, ranked action queue, portfolio signals and primary creation flows.
 
-Standalone Playwright could not launch because this execution environment does not contain the required Chromium binary. The six desktop/mobile RU/EN journey and axe jobs therefore have no local PASS. The suite remains committed and GitHub CI installs Chromium before executing it. The managed preview rendered pages but did not execute local-app click handlers reliably, so it was not used to claim an E2E pass. This is recorded as an external test-runtime limitation, not a product PASS.
+Standalone Playwright could not launch because this execution environment does not contain the required Chromium binary. The managed preview rendered pages but did not execute local-app click handlers reliably, so neither surface was used to claim a local E2E pass. GitHub CI installed Chromium and executed the authoritative six-job suite: desktop/mobile RU/EN journeys and axe accessibility checks passed 6/6 on run `33930637446`.
 
 ## Adversarial audit corrections
 
@@ -37,6 +38,6 @@ Standalone Playwright could not launch because this execution environment does n
 - Replaced the fixed CPM demonstration with an editable dependency network and explicit cycle/unknown-predecessor errors.
 - Removed the mobile rule that hid workspace modules and supplied a horizontally scrollable project dock.
 
-## Deployment smoke required after push
+## Deployment result
 
-CI and Pages status, live asset responses, and live client interaction must be verified after GitHub accepts the push. A remote failure is not treated as a local PASS.
+The Pages workflow produced and uploaded a verified 27-route artifact. GitHub rejected only the final deployment call with HTTP 404 because Pages is not yet enabled for the repository. Enable **Settings → Pages → Source: GitHub Actions**, then rerun the failed Pages workflow. The application is also published through its owner-private production Site while that repository setting remains outstanding.
