@@ -40,7 +40,7 @@ a { color:inherit; text-decoration:none; }
 .hero h1 { font-size:clamp(3.2rem,6.5vw,6.7rem); line-height:.91; letter-spacing:-.065em; margin:.6rem 0 1.25rem; max-width:11ch; }
 .hero .lead { font-size:clamp(1.05rem,2vw,1.3rem); color:var(--muted); max-width:62ch; }
 .trust-line { display:flex; gap:1.3rem; flex-wrap:wrap; color:var(--muted); font-size:.88rem; margin-top:1.3rem; }
-.cockpit-preview { background:#0d1820; color:#eef6f7; border:1px solid #29404a; box-shadow:var(--shadow); border-radius:var(--radius-lg); overflow:hidden; transform:rotate(1deg); }
+.cockpit-preview { --good:#67d39a; --warn:#ffc267; --bad:#ff8093; --info:#8cb9ff; background:#0d1820; color:#eef6f7; border:1px solid #29404a; box-shadow:var(--shadow); border-radius:var(--radius-lg); overflow:hidden; transform:rotate(1deg); }
 .cockpit-head { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.2rem; border-bottom:1px solid #29404a; }
 .cockpit-body { display:grid; grid-template-columns:90px 1fr; min-height:390px; }
 .mini-side { border-right:1px solid #29404a; padding:1rem .65rem; display:grid; align-content:start; gap:.55rem; }
