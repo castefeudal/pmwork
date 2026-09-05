@@ -363,7 +363,7 @@ export function CatalogPage({ kind, locale }: { kind: Kind; locale: Locale }) {
         {kind === "glossary" &&
           (data as typeof glossary).map((x) => (
             <article className="catalog-card" key={x.term}>
-              <span className="pill">{ru ? x.term : x.ru}</span>
+              <span className="pill">{ru ? "Термин" : "Term"}</span>
               <h2>{ru ? x.ru : x.term}</h2>
               <p>{pick(x.definition, locale)}</p>
               <p>
