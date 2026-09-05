@@ -12,7 +12,8 @@
     "content:validate": "node scripts/content-check.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "links:check": "node scripts/links-check.mjs",
-    "verify": "npm run lint && npm run typecheck && npm run content:validate && npm run i18n:check && npm run links:check && npm run test && npm run build"
+    "export:validate": "node scripts/export-check.mjs",
+    "verify": "npm run lint && npm run typecheck && npm run content:validate && npm run i18n:check && npm run links:check && npm run test && npm run build && npm run export:validate"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",

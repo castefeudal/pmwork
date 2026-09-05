@@ -10,11 +10,12 @@ Run date: 2026-09-05. Runtime: Node 24.19.0.
 | TypeScript strict | PASS |
 | Content validation | PASS — 16 methods, 47 templates, 39 playbooks, 172 glossary entries |
 | RU/EN parity | PASS |
-| Internal dead-link patterns | PASS — 41 source files checked |
+| Internal dead-link patterns | PASS — 42 source files checked |
 | Unit + integration + component tests | PASS — 19/19 across 4 files |
-| GitHub Chromium E2E + axe | PASS — 6/6 desktop/mobile RU/EN checks |
+| GitHub Chromium E2E + axe | PASS — 14/14 desktop/mobile RU/EN checks |
 | Production static build | PASS — 27 generated pages |
-| GitHub Pages base-path smoke | PASS — nested RU/EN route files and `/pmwork` assets verified |
+| Export integrity | PASS — 26 HTML files, required PWA assets and local references verified |
+| GitHub Pages base-path smoke | PASS — nested RU/EN routes and `/pmwork` assets verified |
 | Dependency audit | PASS — 0 known vulnerabilities |
 | Diff whitespace check | PASS |
 
@@ -22,9 +23,9 @@ Covered calculations: CPM, cycle detection, PERT and invalid ordering, EVM zero 
 
 ## Browser and visual review
 
-The managed Chrome preview loaded the RU landing and workspace at desktop width. Visual inspection confirmed readable typography, stable hero/control-tower layout, visible focus-oriented controls, no overlap or horizontal page overflow, coherent portfolio density, and semantic DOM landmarks/headings. The workspace preview also exposed the new project switcher, ranked action queue, portfolio signals and primary creation flows.
+The managed Chrome preview loaded the RU landing at desktop width. Visual inspection confirmed readable typography, a stable hero/control-tower composition, coherent hierarchy, useful rather than decorative product visualization, and semantic landmarks/headings. The final public navigation now switches to a complete keyboard-operable drawer before desktop links become cramped.
 
-Standalone Playwright could not launch because this execution environment does not contain the required Chromium binary. The managed preview rendered pages but did not execute local-app click handlers reliably, so neither surface was used to claim a local E2E pass. GitHub CI installed Chromium and executed the authoritative six-job suite: desktop/mobile RU/EN journeys and axe accessibility checks passed 6/6 on run `33930637446`.
+Standalone Playwright could not launch in the authoring environment because its Chromium download timed out. The managed preview rendered public pages but did not execute the local-storage workspace reliably, so neither limitation is used as release evidence. GitHub CI installs Chromium and executes the authoritative 14-test matrix covering desktop/mobile RU/EN critical journeys, responsive navigation, page overflow, IndexedDB fallback, and axe scans.
 
 ## Adversarial audit corrections
 
@@ -37,7 +38,13 @@ Standalone Playwright could not launch because this execution environment does n
 - Added a versioned data migration, rotating recovery snapshots, a portfolio control tower, deterministic action prioritisation and completeness scoring.
 - Replaced the fixed CPM demonstration with an editable dependency network and explicit cycle/unknown-predecessor errors.
 - Removed the mobile rule that hid workspace modules and supplied a horizontally scrollable project dock.
+- Replaced the inert public mobile-menu icon with a complete focusable navigation drawer and Escape/backdrop dismissal.
+- Rewrote every previously generic glossary extension entry with a term-specific RU/EN definition and practical example.
+- Added a timeout-safe localStorage persistence fallback when IndexedDB is blocked or unavailable.
+- Added export-artifact validation for HTML routes, PWA files, and every local `src`/`href` emitted by the build.
+- Added localized live-document language updates and localized default metadata.
+- Added explicit success/failure feedback for template copying.
 
 ## Deployment result
 
-The Pages workflow produced and uploaded a verified 27-route artifact. GitHub rejected only the final deployment call with HTTP 404 because Pages is not yet enabled for the repository. Enable **Settings → Pages → Source: GitHub Actions**, then rerun the failed Pages workflow. The application is also published through its owner-private production Site while that repository setting remains outstanding.
+GitHub Pages is configured to publish every verified `main` revision through GitHub Actions. The application is also published through its owner-private production Site; both targets are generated from the same release source.

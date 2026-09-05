@@ -11,7 +11,7 @@ The practical operating system for project managers. PMWORK connects professiona
 - Deterministic setup and method-fit engine with explainable scoring.
 - CPM, PERT, EVM, Monte Carlo, RICE, WSJF, and Little's Law calculations.
 - Bilingual catalogs: 16 methods, 47 templates, 39 problem playbooks, 26 knowledge domains, 172 glossary records.
-- IndexedDB persistence with v1→v2 migration, rotating snapshots, validated JSON backup/restore, Markdown export and print/PDF views.
+- IndexedDB persistence with localStorage fallback, v1→v2 migration, rotating snapshots, validated JSON backup/restore, Markdown export and print/PDF views.
 - RU/EN routes, light/dark/system behavior, responsive layout, PWA shell, SEO and WCAG 2.2 AA target.
 
 ## Architecture and stack
@@ -36,11 +36,11 @@ npm run verify
 npm run test:e2e
 ```
 
-The main gate runs lint, strict typecheck, content count/placeholder validation, RU/EN parity, link checks, unit/integration tests, and the production static build.
+The main gate runs lint, strict typecheck, content quality validation, RU/EN parity, source-link checks, unit/integration tests, the production static build, and exported-asset validation. E2E then covers desktop/mobile RU/EN journeys, navigation, reflow, storage fallback, and axe accessibility.
 
 ## Data and privacy
 
-Workspace data is stored in browser IndexedDB. A complete JSON backup can be downloaded and restored; v1 backups migrate to v2 and up to five daily local snapshots are retained. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
+Workspace data is stored in browser IndexedDB, with localStorage used when IndexedDB is blocked or unavailable. A complete JSON backup can be downloaded and restored; v1 backups migrate to v2 and up to five daily local snapshots are retained. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
 
 ## Deployment
 

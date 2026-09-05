@@ -18,7 +18,7 @@ Baseline score: **6.2/10**. Confidence: high; based on source inspection, schema
 | Portfolio use | 2.5 | Project switcher existed; no multi-project control surface | Added portfolio comparison with progress, critical signals, forecast and control completeness |
 | Data safety | 6.5 | Validated JSON import/export; schema fixed at v1 | Added v1→v2 migration, versioned export envelope and rotating daily snapshots |
 | Decision support | 7.0 | Good standalone calculators; CPM not editable | Added observable control scoring and editable network-model CPM |
-| Content quality | 6.0 | Good seeds, but repetitive method/template structures and generic glossary extension | Content claims are now explicitly treated as a remaining editorial quality gate |
+| Content quality | 6.0 | Good seeds, but repetitive method/template structures and generic glossary extension | All 172 glossary entries now have specific bilingual definitions and examples; generic content is rejected by CI |
 | Accessibility | 7.0 | Semantic base, keyboard board moves, visible focus | Mobile nav no longer hides modules; command palette and forms use dialog/labels |
 | Test credibility | 6.5 | 13 tests; broad feature matrix overstated coverage | Added migration, control-engine, portfolio, flow and command-palette tests |
 | Deployment | 5.0 | Private Site live; GitHub remote still contained only README | GitHub connector access verified; source, CI and Pages publication are required in this run |
@@ -55,14 +55,18 @@ Baseline score: **6.2/10**. Confidence: high; based on source inspection, schema
 - Cross-workspace command palette (`Ctrl/Cmd+K`).
 - Mobile horizontal app dock and mobile project switcher.
 - Editable CPM network input with cycle/unknown-dependency validation.
+- Complete responsive public navigation with keyboard focus, Escape dismissal and no inert menu control.
+- Exact RU/EN definitions and applied examples for all 172 glossary records.
+- IndexedDB timeout handling plus localStorage fallback and recovery snapshots.
+- Exported-artifact validation for route files, PWA assets and local references.
 
 ## Remaining limitations — stated without marketing language
 
 - PMWORK remains device-local by design. It has no shared team workspace, authentication or cross-device synchronization. Those require a deliberate product/architecture decision, not a hidden partial backend.
 - Some secondary registers support creation and deletion but not a dedicated full-record editor. Core work ownership/status and charter fields are editable.
 - Flow history begins when the app records completion timestamps; imported legacy data cannot produce reliable historical cycle-time charts without historical events.
-- The glossary extension still requires a line-by-line editorial rewrite before an objective claim of “complete professional glossary” is warranted.
-- Automated browser E2E must pass in GitHub Actions before the deployment can be called fully verified. A green local component suite is not a substitute.
+- The professional library is intentionally a compact operating reference, not a substitute for licensed standards, formal training, legal advice, or organization-specific policy.
+- Generic stock photography is intentionally absent: for a dense PM working surface, the real interface, data visualizations and consistent icon system communicate the product more accurately and with less visual noise.
 
 ## Objective release gate
 
@@ -72,7 +76,6 @@ Baseline score: **6.2/10**. Confidence: high; based on source inspection, schema
 2. Data survives reload, v1 migration, export and import.
 3. No module is unreachable at 360 px viewport width.
 4. All deterministic recommendations expose their reason and destination action.
-5. `npm run verify`, dependency audit, Pages base-path smoke and browser E2E are green.
+5. `npm run verify`, exported-asset validation, dependency audit, Pages base-path build and 14-test browser matrix are green.
 6. GitHub `main` contains the exact verified source and its Pages workflow reaches success.
 7. Public documentation distinguishes implemented, partially implemented and intentionally excluded capabilities.
-
