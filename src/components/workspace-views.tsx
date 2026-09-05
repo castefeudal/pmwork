@@ -1,5 +1,6 @@
 "use client";
 import { ProjectHealth } from "./project-health";
+import { convertRiskToIssue, generateStatusDraft } from "@/domain/workspace-commands";
 import { PlanningTimeline } from "./planning-timeline";
 import { localDay } from "@/domain/work-views";
 import { useState } from "react";
@@ -869,6 +870,7 @@ export function RaidView({
       {tab === "risk" && (
         <div className="dashboard-grid">
           <div className="panel span-8">
+            <details><summary>{ru ? "Риск наступил" : "Convert risk to issue"}</summary>{map.risk.filter(r=>r.status!=="closed").map(r=><button className="button small" key={r.id} onClick={()=>onChange(convertRiskToIssue(workspace,r.id))}>{r.title} → Issue</button>)}</details>
             <EntityTable
               rows={map.risk.map((r) => ({
                 id: r.id,
@@ -1372,6 +1374,7 @@ export function ControlView({
               <p className="eyebrow">{new Date().toLocaleDateString(locale)}</p>
               <h2>{project.name}</h2>
             </div>
+            <button className="button primary" onClick={() => onChange(generateStatusDraft(workspace,project.id,locale))}>{ru ? "Сформировать черновик статуса" : "Generate status report draft"}</button>
             <button className="button" onClick={() => window.print()}>
               {ru ? "Печать / PDF" : "Print / PDF"}
             </button>

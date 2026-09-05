@@ -1,9 +1,14 @@
+import { demoWorkspace } from "../../src/data/demo";
+import { navigateWorkspace } from "./support";
 import {test,expect} from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+test.beforeEach(async ({page}) => {
+ await page.addInitScript(workspace => { if(!localStorage.getItem("pmwork:workspace:v3")) localStorage.setItem("pmwork:workspace:v3",JSON.stringify(workspace)); },demoWorkspace("en"));
+});
 import {route} from "./support";
 test("saved views survive navigation and reload",async({page})=>{
   await page.goto(route("/en/workspace/"));
-  await page.getByRole("button",{name:"Work",exact:true}).click();
+  await navigateWorkspace(page,"Work");
   await page.getByRole("button",{name:"Blocked",exact:true}).click();
   await page.getByText("Display and sorting",{exact:true}).click();
   await page.getByLabel("Sort",{exact:true}).selectOption("due");
@@ -14,15 +19,15 @@ test("saved views survive navigation and reload",async({page})=>{
   await page.getByRole("button",{name:"Reset filters",exact:true}).click();
   await page.getByRole("button",{name:"Release blockers",exact:true}).click();
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
-  await page.getByRole("button",{name:"Overview",exact:true}).click();
-  await page.getByRole("button",{name:"Work",exact:true}).click();
+  await navigateWorkspace(page,"Overview");
+  await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
   await page.waitForTimeout(650);await page.reload();
-  await page.getByRole("button",{name:"Work",exact:true}).click();
+  await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
 });
 test("side editor preserves context and keyboard focus",async({page},testInfo)=>{
-  await page.goto(route("/en/workspace/"));await page.getByRole("button",{name:"Board",exact:true}).click();
+  await page.goto(route("/en/workspace/"));await navigateWorkspace(page,"Board");
   const title=page.getByRole("button",{name:"Align first-release scope",exact:true});await title.click();
   const dialog=page.getByRole("dialog");await expect(dialog).toBeVisible();
   await page.screenshot({path:`test-results/drawer-${testInfo.project.name}.png`,fullPage:true});
@@ -57,10 +62,11 @@ test("corrupt browser data is preserved while autosave is paused",async({page})=
 test("offline workspace includes its scripts and fonts",async({page,context},testInfo)=>{
   await page.goto(route("/en/workspace/"));await expect(page.getByText("Priority management actions")).toBeVisible();
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
-  await page.reload();await expect(page.getByRole("button",{name:"Work",exact:true})).toBeVisible();
-  await context.setOffline(true);await page.reload();await page.getByRole("button",{name:"Work",exact:true}).click();await expect(page.getByRole("button",{name:"Add",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();
+  await page.reload();await expect(page.getByRole("button",{name:"Work",exact:true}).filter({visible:true})).toBeVisible();
+  await context.setOffline(true);await page.reload();await navigateWorkspace(page,"Work");await expect(page.getByRole("button",{name:"Add",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();
   await page.getByRole("link",{name:"Tools",exact:true}).click();await expect(page.getByRole("slider").first()).toBeVisible();
   await page.goto(route("/en/"));if(testInfo.project.name.includes("mobile")) await page.getByRole("button",{name:"Open menu"}).click();
+  if(!testInfo.project.name.includes("mobile")) await page.locator(".public-nav-group summary").first().click();
   await page.getByRole("link",{name:"Methods",exact:true}).filter({visible:true}).click();await expect(page.getByRole("heading",{name:"Methods library"})).toBeVisible();
   await context.setOffline(false);
 });
@@ -100,7 +106,7 @@ test("project switching and validated backup replacement",async({page})=>{
  await page.goto(route("/en/workspace/"));
  const project=page.getByRole("combobox",{name:"Select project",exact:true}).filter({visible:true});
  await project.selectOption({index:1});await page.reload();await expect(project).toHaveValue("campaign");
- await page.getByRole("button",{name:"Setup",exact:true}).click();
+ await navigateWorkspace(page,"Setup");
  const downloadPromise=page.waitForEvent("download");await page.getByRole("button",{name:"Download backup",exact:true}).click();
  const download=await downloadPromise;const stream=await download.createReadStream();const chunks:Buffer[]=[];
  for await(const chunk of stream!) chunks.push(Buffer.from(chunk));const raw=Buffer.concat(chunks);const backup=JSON.parse(raw.toString());

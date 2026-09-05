@@ -34,6 +34,7 @@ import {
   restoreSnapshot,
   saveWorkspace,
 } from "@/data/storage";
+import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkspaceDialog } from "./workspace-dialog";
@@ -520,6 +521,11 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
               </div>
             </div>
           )}
+          {workspace.experience === "foundation" && (() => {
+            const domain = ({overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];
+            const help = knowledgeGuides[domain] ?? knowledgeGuides.Fundamentals;
+            return <details className="panel foundation-help" open><summary>{ru ? "Что сделать сейчас" : "What to do now"}</summary><h3>{ru ? "Зачем это нужно" : "Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru ? "Действие" : "Action"}</h3><p>{help.steps[locale]}</p><h3>{ru ? "Что получится" : "Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru ? "Типичная ошибка" : "Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru ? "Объяснения терминов" : "Term explanations"}</Link></details>;
+          })()}
           {render()}
         </div>
       </main>
@@ -631,6 +637,7 @@ function SetupView({
       });
   return (
     <div className="dashboard-grid">
+      <section className="panel span-6"><h3>{ru ? "Это я в этом проекте" : "This is me in this project"}</h3><select className="input" aria-label={ru ? "Это я в этом проекте" : "This is me in this project"} value={workspace.projectSettings.find(s=>s.projectId===project.id)?.localMemberId ?? ""} onChange={e=>{const existing=workspace.projectSettings.find(s=>s.projectId===project.id);onChange({...workspace,projectSettings:[...workspace.projectSettings.filter(s=>s.projectId!==project.id),{projectId:project.id,enabledTypes:["task"],wipLimits:{},governance:project.governance,probabilityScale:5,impactScale:5,...existing,localMemberId:e.target.value||undefined}]});}}><option value="">{ru ? "Не выбрано" : "Not selected"}</option>{workspace.teamMembers.filter(m=>m.projectId===project.id).map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select><p className="muted">{ru ? "Локальная настройка для представления «Моя работа»." : "A local preference for the My work view."}</p></section>
       <section className="panel span-6">
         <h3>{ru ? "Уровень подсказок" : "Guidance level"}</h3>
         <p className="muted">

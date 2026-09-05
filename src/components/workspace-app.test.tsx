@@ -31,7 +31,7 @@ describe("workspace interactions", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Создать" }));
     await waitFor(() =>
-      expect(screen.getByText("Component QA item")).toBeTruthy(),
+      expect(screen.getAllByText("Component QA item").length).toBeGreaterThan(0),
     );
   });
   it("moves a board card with accessible controls", async () => {
@@ -48,7 +48,7 @@ describe("workspace interactions", () => {
   it("opens the command palette with a keyboard shortcut", async () => {
     render(<WorkspaceApp locale="en" />);
     fireEvent.click(await screen.findByRole("button", { name: "Explore demo" }));
-    (await screen.findAllByRole("button", { name: "Work" }))[0];
+    await screen.findAllByRole("button", { name: "Work" });
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
     expect(
       screen.getByRole("dialog", { name: "Command palette" }),
