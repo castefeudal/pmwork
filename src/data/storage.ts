@@ -146,31 +146,28 @@ export async function saveWorkspace(workspace: Workspace, forceSnapshot = false)
   } catch { if (!mirrored) throw new Error("Could not save workspace"); }
 }
 export async function listSnapshots() {
+  const snapshots: {key: string; at: string}[] = [];
+  try {
+    const parsed = JSON.parse(local()?.getItem(LOCAL_SNAPSHOTS) ?? "[]");
+    if (Array.isArray(parsed)) for (const item of parsed) {
+      if (item && typeof item.at === "string" && workspaceSchema.safeParse(item.workspace).success)
+        snapshots.push({key:`local:${item.at}`, at:item.at});
+    }
+  } catch { /* The other store may contain healthy recovery points. */ }
   try {
     const db = await open();
-    return await new Promise<
-      {
-        key: string;
-        at: string;
-      }[]
-    >((resolve, reject) => {
-      const store = db.transaction(STORE, "readonly").objectStore(STORE),
-        req = store.get(SNAPSHOT_INDEX);
-      req.onsuccess = () =>
-        resolve(
-          (Array.isArray(req.result) ? req.result : []).map((key: string) => ({
-            key,
-            at: key.slice("snapshot:".length),
-          })),
-        );
-      req.onerror = () => reject(new Error("Storage unavailable"));
+    const keys = await new Promise<string[]>((resolve, reject) => {
+      const tx = db.transaction(STORE,"readonly");
+      const timer = setTimeout(() => { tx.abort(); reject(new Error("Storage timed out")); },1800);
+      const req = tx.objectStore(STORE).get(SNAPSHOT_INDEX);
+      req.onsuccess = () => { clearTimeout(timer); resolve(Array.isArray(req.result) ? req.result.filter((key:unknown) => typeof key === "string" && key.startsWith("snapshot:")) : []); };
+      req.onerror = () => { clearTimeout(timer); reject(new Error("Storage unavailable")); };
+      tx.oncomplete = () => db.close();
+      tx.onabort = () => { clearTimeout(timer); db.close(); reject(new Error("Storage unavailable")); };
     });
-  } catch {
-    const snapshots = JSON.parse(local()?.getItem(LOCAL_SNAPSHOTS) ?? "[]") as {
-      at: string;
-    }[];
-    return snapshots.map((x) => ({ key: `local:${x.at}`, at: x.at }));
-  }
+    for (const key of keys) if (!snapshots.some(x => x.at === key.slice(9))) snapshots.push({key,at:key.slice(9)});
+  } catch { /* Local mirror remains available. */ }
+  return snapshots.sort((a,b) => b.at.localeCompare(a.at)).slice(0,5);
 }
 export async function restoreSnapshot(key: string) {
   if (key.startsWith("local:")) {
@@ -186,7 +183,10 @@ export async function restoreSnapshot(key: string) {
   if (!key.startsWith("snapshot:")) throw new Error("Invalid snapshot");
   const db = await open();
   return new Promise<Workspace>((resolve, reject) => {
-    const req = db.transaction(STORE, "readonly").objectStore(STORE).get(key);
+    const tx = db.transaction(STORE, "readonly");
+    tx.oncomplete = () => db.close();
+    tx.onabort = () => { db.close(); reject(new Error("Storage unavailable")); };
+    const req = tx.objectStore(STORE).get(key);
     req.onsuccess = () => {
       try {
         resolve(migrateWorkspace(req.result));

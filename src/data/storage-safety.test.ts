@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import {afterEach,describe,it,expect,vi} from "vitest";
 import {demoWorkspace} from "./demo";
-import {loadWorkspace,saveWorkspace} from "./storage";
+import {loadWorkspace,saveWorkspace,listSnapshots,restoreSnapshot} from "./storage";
 afterEach(()=>{localStorage.clear();vi.unstubAllGlobals();});
 describe("storage recovery",()=>{
   it("rejects corrupt data and leaves its raw bytes untouched",async()=>{
@@ -23,4 +23,11 @@ describe("storage recovery",()=>{
     vi.stubGlobal("indexedDB",undefined);const w=demoWorkspace("en");await saveWorkspace(w);w.name="Before replacement";await saveWorkspace(w,true);
     const snapshots=JSON.parse(localStorage.getItem("pmwork:snapshots:v3")!);expect(snapshots[0].workspace.name).toBe("Before replacement");
   });
+});
+
+it("lists and restores healthy local snapshots when the other store is unavailable",async()=>{
+ vi.stubGlobal("indexedDB",undefined);const w=demoWorkspace("en");await saveWorkspace(w);
+ const snapshots=await listSnapshots();expect(snapshots).toHaveLength(1);
+ expect(await restoreSnapshot(snapshots[0].key)).toEqual(w);
+ localStorage.setItem("pmwork:snapshots:v3","{bad");expect(await listSnapshots()).toEqual([]);
 });

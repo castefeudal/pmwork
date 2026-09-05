@@ -738,7 +738,7 @@ input[type="range"] { min-height:44px; accent-color:var(--accent); }
 .work-table td:nth-child(3) { white-space:nowrap; }
 .work-table select { min-width:150px; }
 .work-table .cell-input { min-width:150px; }
-@media (min-width:721px) and (max-width:1200px) {
+@media (min-width:721px) and (max-width:1380px) {
  .workspace-top { flex-wrap:wrap; }
  .workspace-top h1 { white-space:normal; flex:1 1 60%; }
  .workspace-top .spacer { display:none; }

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.2.0 — 2026-09-05
+
+- Added project-scoped working presets and saved list/board views over existing records.
+- Added side editing with focus restoration and keyboard record/action search.
+- Replaced static health indicators with seven explained operational checks; surfaced dated dependency conflicts in attention and planning.
+- Added timeline scales, milestone markers, a dependency RAID tab and honest ownership workload counts.
+- Hardened local mirroring, corrupt-data recovery, snapshot selection and replacement checkpoints.
+- Validated calculator boundaries and added explicit Monte Carlo probability interpretations.
+- Repaired mobile/tablet sizing, navigation labels, Cyrillic wrapping and editor label associations.
+- Versioned PWA caches by exported content and precached route scripts, styles and local fonts.
+- Added root/Pages browser gates, seven viewport checks, RU/EN theme accessibility and offline regression coverage.
+
 ## 2.1.0 — 2026-09-05
 
 - Completed RU/EN workspace localization with centralized enum labels and a practical language-purity gate.

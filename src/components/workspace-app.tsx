@@ -176,6 +176,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     return () => { removeEventListener("pagehide", flush); document.removeEventListener("visibilitychange", hidden); };
   }, [workspace, ready, recovery]);
   useEffect(() => {
+    if (ready && view === "setup") listSnapshots().then(setSnapshots).catch(() => undefined);
+  }, [ready, view]);
+  useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToast(""), 2200);
     return () => clearTimeout(id);

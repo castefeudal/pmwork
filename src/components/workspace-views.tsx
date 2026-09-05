@@ -892,6 +892,7 @@ export function RaidView({
                   score = p * impact;
                 return (
                   <div
+                    role="img"
                     className={`risk-cell ${score >= 15 ? "risk-high" : score >= 8 ? "risk-mid" : "risk-low"}`}
                     key={i}
                     aria-label={`${ru ? "Вероятность" : "Probability"} ${p}, ${ru ? "влияние" : "impact"} ${impact}: ${map.risk.filter(r => r.status !== "closed" && r.probability === p && r.impact === impact).length}`}

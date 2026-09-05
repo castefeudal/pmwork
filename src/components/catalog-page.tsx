@@ -78,8 +78,10 @@ export function CatalogPage({ kind, locale }: { kind: Kind; locale: Locale }) {
       const stored = await loadWorkspace(),
         workspace = stored
           ? localizeBundledDemo(stored, locale)
-          : demoWorkspace(locale),
-        project = workspace.projects.find(p => p.id === sessionStorage.getItem("pmwork-project")) ?? workspace.projects[0];
+          : demoWorkspace(locale);
+      let remembered: string | null = null;
+      try { remembered = sessionStorage.getItem("pmwork-project"); } catch {}
+      const project = workspace.projects.find(p => p.id === remembered) ?? workspace.projects[0];
       if (!project) throw new Error();
       const at = new Date().toISOString(),
         body = `# ${pick(template.title, locale)}\n\n${template.fields.map((field) => `## ${pick(field, locale)}\n\n_${pick(template.guidance, locale)}_`).join("\n\n")}`;
