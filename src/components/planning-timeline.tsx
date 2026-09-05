@@ -1,0 +1,25 @@
+"use client";
+import { useState } from "react";
+import { dependencyConflicts } from "@/domain/planning";
+import { localDay } from "@/domain/work-views";
+import type { ViewProps } from "./workspace-views";
+export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pick<ViewProps,"workspace"|"project"|"locale"|"onEdit"|"onCreate">) {
+  const ru=locale==="ru", [zoom,setZoom]=useState("project");
+  const items=workspace.workItems.filter(x=>x.projectId===project.id&&!x.archived);
+  const scheduled=items.filter(x=>x.startDate||x.dueDate);
+  const milestones=workspace.milestones.filter(x=>x.projectId===project.id);
+  const conflicts=dependencyConflicts(workspace,project.id);
+  const dates=[project.startDate,project.targetDate,...scheduled.flatMap(x=>[x.startDate,x.dueDate]),...milestones.map(x=>x.date)].filter((x):x is string=>!!x).map(Date.parse).filter(Number.isFinite);
+  const start=Math.min(...dates), end=Math.max(start+86400000,...dates), days=Math.ceil((end-start)/86400000)+1;
+  const position=(value:string)=>Math.max(0,Math.min(100,(Date.parse(value)-start)/86400000/days*100));
+  const today=localDay(), marker=position(today), width=zoom==="day"?Math.min(12000,days*44):zoom==="week"?Math.min(6000,days*14):920;
+  return <section className="panel planning-panel">
+    <div className="section-line"><label className="view-control">{ru?"Масштаб":"Scale"}<select className="input" value={zoom} onChange={e=>setZoom(e.target.value)}><option value="project">{ru?"Весь проект":"Project"}</option><option value="week">{ru?"Недели":"Weeks"}</option><option value="day">{ru?"Дни":"Days"}</option></select></label><button className="button" onClick={()=>onCreate("milestone")}>{ru?"Добавить контрольную точку":"Add milestone"}</button></div>
+    {conflicts.length>0&&<div className="notice" role="status"><strong>{ru?"Конфликты зависимостей":"Dependency conflicts"} · {conflicts.length}</strong>{conflicts.map(c=><p key={c.id}><button className="work-title-button" onClick={()=>onEdit("dependency",c.id)}>{c.from} → {c.to} · {c.type}: {c.missing?(ru?"связанная работа недоступна":"linked work unavailable"):`${c.days} ${ru?"дн. нарушения связи":"days of timing conflict"}`}</button></p>)}</div>}
+    {scheduled.length?<div className="timeline-scroll"><div className="date-timeline" style={{minWidth:width}}><div className="timeline-dates"><span>{new Date(start).toISOString().slice(0,10)}</span><span>{new Date(end).toISOString().slice(0,10)}</span></div>
+      {scheduled.map(x=><div className="date-timeline-row" key={x.id}><button className="work-title-button" onClick={()=>onEdit("work",x.id)}><small>{x.id}</small> {x.title}<span className="timeline-date-label">{x.startDate||"—"} → {x.dueDate||"—"}</span></button><div className="date-track">{Date.parse(today)>=start&&Date.parse(today)<=end&&<span className="today-marker" style={{left:`${marker}%`}} title={ru?"Сегодня":"Today"}/>}<button className={`date-bar ${x.blocked||conflicts.some(c=>c.to===x.id)?"conflict":""}`} style={{left:`${position(x.startDate||x.dueDate!)}%`,width:`${Math.max(.6,position(x.dueDate||x.startDate!)-position(x.startDate||x.dueDate!)+100/days)}%`}} onClick={()=>onEdit("work",x.id)} aria-label={`${x.title}: ${x.startDate||"—"} → ${x.dueDate||"—"}`}>{x.blocked?(ru?"Блокер":"Blocked"):x.id}</button></div></div>)}
+      {milestones.map(m=><div className="date-timeline-row" key={m.id}><button className="work-title-button" onClick={()=>onEdit("milestone",m.id)}>{m.title}<span className="timeline-date-label">{m.date} · {m.progress}%</span></button><div className="date-track"><button className="milestone-marker" style={{left:`${position(m.date)}%`}} aria-label={`${m.title} ${m.date}`} onClick={()=>onEdit("milestone",m.id)}>◆</button></div></div>)}
+    </div></div>:<div className="empty-state"><h3>{ru?"Нет запланированной работы":"No scheduled work"}</h3><p>{ru?"Задайте начало и срок работы, чтобы увидеть её на шкале.":"Set work start and due dates to see it on the timeline."}</p><button className="button" onClick={()=>onCreate("work")}>{ru?"Добавить работу":"Add work"}</button></div>}
+    <p className="muted compact">{ru?"Календарные дни. Связь FS допускает начало в день окончания предшественника; лаг добавляет дни. Вертикальная линия — сегодня. Работа без дат: ":"Calendar days. FS permits a same-day finish/start; lag adds days. Vertical line: today. Unscheduled work: "}{items.length-scheduled.length}.</p>
+  </section>;
+}

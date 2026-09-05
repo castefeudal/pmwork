@@ -1,4 +1,5 @@
 "use client";
+import { useDialogFocus } from "./use-dialog-focus";
 
 import { useId, useState } from "react";
 import { Trash2, X } from "lucide-react";
@@ -607,6 +608,7 @@ export function RecordEditor({
   onClose: () => void;
   onChange: (workspace: Workspace) => void;
 }) {
+  const dialogRef = useDialogFocus();
   const prefix = useId();
   const [error, setError] = useState("");
   const collection = collectionByKind[kind];
@@ -680,6 +682,8 @@ export function RecordEditor({
             : "The list contains an unknown work item ID.",
         );
     }
+    const start = String(nextRecord.startDate || ""), end = String(nextRecord.dueDate || nextRecord.endDate || nextRecord.targetDate || "");
+    if (start && end && end < start) return setError(ru ? "Дата окончания не может быть раньше начала." : "End date cannot precede start date.");
     if (kind === "work") {
       const done = nextRecord.status === "done";
       nextRecord.done = done;
@@ -689,13 +693,17 @@ export function RecordEditor({
       nextRecord.updatedAt = new Date().toISOString();
     }
     if (kind === "document") nextRecord.updatedAt = new Date().toISOString();
-    const next = workspaceSchema.parse({
+    const validation = workspaceSchema.safeParse({
       ...workspace,
       [collection]: records.map((item) =>
         item === record ? nextRecord : item,
       ),
     });
-    onChange(next);
+    if (!validation.success) {
+      setError(ru ? "Проверьте обязательные поля и допустимые значения." : "Check required fields and allowed values.");
+      return;
+    }
+    onChange(validation.data);
     onClose();
   };
   const remove = () => {
@@ -737,22 +745,24 @@ export function RecordEditor({
   };
   return (
     <div
-      className="dialog-backdrop"
+      className="dialog-backdrop drawer-backdrop"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <section
-        className="dialog record-editor"
+        className="dialog record-editor record-drawer"
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={`${prefix}-title`}
+        aria-labelledby={`${prefix}-heading`}
       >
         <div className="page-title">
           <div>
             <p className="eyebrow">{id}</p>
-            <h2 id={`${prefix}-title`}>
+            <h2 id={`${prefix}-heading`}>
               {ru
                 ? `Изменить: ${titleByKind.ru[kind]}`
                 : `Edit ${titleByKind.en[kind]}`}

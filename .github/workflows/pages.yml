@@ -23,11 +23,19 @@ jobs:
       - run: npm run verify
         env:
           PMWORK_BASE_PATH: github
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          PMWORK_BASE_PATH: github
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify live release and assets
+        run: node scripts/live-check.mjs
+        env:
+          PMWORK_LIVE_URL: https://castefeudal.github.io/pmwork/
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

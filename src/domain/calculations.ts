@@ -11,6 +11,7 @@ export type CPMResult = CPMTask & {
 export function calculateCPM(tasks: CPMTask[]): CPMResult[] {
   if (!tasks.length) return [];
   const map = new Map(tasks.map((t) => [t.id, t]));
+  if (map.size !== tasks.length) throw new Error("Duplicate task ID");
   for (const t of tasks) {
     if (!t.id || !Number.isFinite(t.duration) || t.duration < 0)
       throw new Error("Invalid CPM task");
@@ -95,7 +96,7 @@ export function calculateEVM(pv: number, ev: number, ac: number, bac: number) {
 }
 
 export function littleLaw(wip: number, throughput: number) {
-  if (wip < 0 || throughput <= 0)
+  if (![wip, throughput].every(Number.isFinite) || wip < 0 || throughput <= 0)
     throw new Error("Throughput must be positive");
   return { cycleTime: wip / throughput };
 }
@@ -105,7 +106,7 @@ export function rice(
   confidence: number,
   effort: number,
 ) {
-  if (effort <= 0 || [reach, impact, confidence].some((v) => v < 0))
+  if (![reach, impact, confidence, effort].every(Number.isFinite) || effort <= 0 || confidence > 100 || [reach, impact, confidence].some((v) => v < 0))
     throw new Error("Invalid RICE input");
   return (reach * impact * (confidence / 100)) / effort;
 }
@@ -115,7 +116,7 @@ export function wsjf(
   riskReduction: number,
   jobSize: number,
 ) {
-  if (jobSize <= 0) throw new Error("Job size must be positive");
+  if (![value, timeCriticality, riskReduction, jobSize].every(Number.isFinite) || [value, timeCriticality, riskReduction].some(v => v < 0) || jobSize <= 0) throw new Error("Job size must be positive");
   return (value + timeCriticality + riskReduction) / jobSize;
 }
 
@@ -130,8 +131,9 @@ export function monteCarlo(
   if (
     samples.length < 3 ||
     samples.some((v) => !Number.isFinite(v) || v < 0) ||
-    horizonOrItems <= 0 ||
-    iterations < 100
+    !Number.isInteger(horizonOrItems) || horizonOrItems <= 0 || horizonOrItems > 10000 ||
+    !Number.isInteger(iterations) || iterations < 100 || iterations > 100000 ||
+    horizonOrItems * iterations > 5000000 || !samples.some(v => v > 0)
   )
     throw new Error("Insufficient forecasting data");
   const results: number[] = [];
@@ -148,6 +150,7 @@ export function monteCarlo(
         total += samples[Math.floor(random() * samples.length)]!;
         days++;
       }
+      if (total < horizonOrItems) throw new Error("Simulation horizon exhausted; reduce target or provide representative positive throughput");
       results.push(days);
     }
   }
@@ -158,6 +161,8 @@ export function monteCarlo(
     ]!;
   return {
     p50: pick(mode === "itemsByDate" ? 50 : 50),
+    p80: pick(mode === "itemsByDate" ? 20 : 80),
+    p90: pick(mode === "itemsByDate" ? 10 : 90),
     p70: pick(mode === "itemsByDate" ? 30 : 70),
     p85: pick(mode === "itemsByDate" ? 15 : 85),
     p95: pick(mode === "itemsByDate" ? 5 : 95),

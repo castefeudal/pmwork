@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -104,12 +105,14 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [projectId, setProjectId] = useState("atlas"),
     [view, setView] = useState<WorkspaceView>("overview"),
     [ready, setReady] = useState(false),
+    [recovery, setRecovery] = useState(false),
     [dialog, setDialog] = useState<CreateType | null>(null),
     [editor, setEditor] = useState<{ kind: EditableKind; id: string } | null>(
       null,
     ),
     [palette, setPalette] = useState(false),
     [toast, setToast] = useState(""),
+    [lastSaved, setLastSaved] = useState(""),
     [snapshots, setSnapshots] = useState<
       {
         key: string;
@@ -133,13 +136,17 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
               : (normalized.projects[0]?.id ?? ""),
           );
         }
+        const requestedView = new URLSearchParams(window.location.search).get("view");
+        if (views.includes(requestedView as WorkspaceView)) setView(requestedView as WorkspaceView);
         setReady(true);
         listSnapshots()
           .then(setSnapshots)
           .catch(() => undefined);
       })
       .catch(() => {
+        setRecovery(true);
         setReady(true);
+        listSnapshots().then(setSnapshots).catch(() => undefined);
         setToast(
           ru
             ? "Локальные данные повреждены — открыт безопасный пример"
@@ -148,12 +155,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       });
   }, [locale, ru]);
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || recovery) return;
     const id = setTimeout(
       () =>
         saveWorkspace(workspace)
           .then(() =>
-            setToast(ru ? "Сохранено на устройстве" : "Saved on this device"),
+            setLastSaved(new Date().toLocaleTimeString(locale)),
           )
           .catch(() =>
             setToast(ru ? "Не удалось сохранить" : "Could not save"),
@@ -161,7 +168,18 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       350,
     );
     return () => clearTimeout(id);
-  }, [workspace, ready, ru]);
+  }, [workspace, ready, ru, locale, recovery]);
+  useEffect(() => {
+    if (!ready || recovery) return;
+    const flush = () => { void saveWorkspace(workspace).catch(() => undefined); };
+    const hidden = () => { if (document.visibilityState === "hidden") flush(); };
+    addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", hidden);
+    return () => { removeEventListener("pagehide", flush); document.removeEventListener("visibilitychange", hidden); };
+  }, [workspace, ready, recovery]);
+  useEffect(() => {
+    if (ready && view === "setup") listSnapshots().then(setSnapshots).catch(() => undefined);
+  }, [ready, view]);
   useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToast(""), 2200);
@@ -276,7 +294,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
                 return;
               try {
                 const restored = await restoreSnapshot(key);
+                if (!recovery) await saveWorkspace(workspace, true);
                 commit({ ...restored, locale });
+                setRecovery(false);
                 selectProject(restored.projects[0]?.id ?? "");
                 setToast(
                   ru ? "Снимок данных восстановлен" : "Snapshot restored",
@@ -305,7 +325,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         )
       )
         return;
+      if (!recovery) await saveWorkspace(workspace, true);
       commit({ ...imported, locale });
+      setRecovery(false);
       selectProject(imported.projects[0]?.id ?? "");
       setToast(ru ? "Резервная копия восстановлена" : "Backup restored");
     } catch {
@@ -315,12 +337,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   return (
     <div className="workspace-shell">
       <aside className="sidebar">
-        <a
+        <Link
           href={`/${locale}`}
           aria-label={ru ? "PMWORK — главная" : "PMWORK home"}
         >
           <Brand />
-        </a>
+        </Link>
         <select
           className="project-switch"
           value={project.id}
@@ -357,10 +379,10 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           })}
         </nav>
         <div className="side-foot">
-          <a className="button small" href={`/${locale}/methods`}>
+          <Link className="button small" href={`/${locale}/methods`}>
             <BookOpen size={16} />
             <span>{ru ? "База знаний" : "Knowledge"}</span>
-          </a>
+          </Link>
           <button className="button small" onClick={() => setDialog("project")}>
             <Plus size={16} />
             <span>{ru ? "Проект" : "Project"}</span>
@@ -388,6 +410,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             {displayLabel(locale, "projectStatus", project.status)}
           </span>
           <div className="spacer" />
+          <small className="muted desktop-only" title={lastSaved}>{recovery ? (ru ? "Сохранение приостановлено" : "Autosave paused") : lastSaved ? (ru ? "Сохранено" : "Saved") : (ru ? "Локально" : "Local")}</small>
           <button
             className="button small command-trigger"
             aria-label={ru ? "Открыть поиск" : "Open search"}
@@ -397,7 +420,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             <span>{ru ? "Поиск" : "Search"}</span>
             <kbd>Ctrl K</kbd>
           </button>
-          <ThemeToggle />
+          <ThemeToggle locale={locale} />
           <button
             className="button small"
             aria-label={ru ? "Добавить работу" : "Add work"}
@@ -431,6 +454,13 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           />
         </header>
         <div className="workspace-content">
+          {recovery && <section className="recovery-banner" role="alert">
+            <strong>{ru ? "Автосохранение приостановлено" : "Autosave paused"}</strong>
+            <p>{ru ? "Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках." : "Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Setup."}</p>
+            <button className="button" onClick={() => fileRef.current?.click()}>{ru ? "Импортировать копию" : "Import backup"}</button>
+            <button className="button" onClick={() => setView("setup")}>{ru ? "Снимки данных" : "Recovery snapshots"}</button>
+          </section>}
+
           {view !== "portfolio" && (
             <div className="page-title page-context">
               <div>
@@ -478,6 +508,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           locale={locale}
           onClose={() => setPalette(false)}
           onView={setView}
+          onCreate={setDialog}
+          onProject={selectProject}
+          onEdit={(kind, id) => setEditor({kind, id})}
         />
       )}{" "}
       {toast && (
@@ -569,6 +602,7 @@ function SetupView({
         </p>
         <select
           className="input"
+          aria-label={ru ? "Уровень подсказок" : "Guidance level"}
           value={workspace.experience}
           onChange={(e) =>
             onChange({

@@ -1,5 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
+import Link from "next/link";
+import { knowledgeGuides } from "@/content/knowledge";
 import {
   BookOpen,
   Copy,
@@ -78,8 +80,10 @@ export function CatalogPage({ kind, locale }: { kind: Kind; locale: Locale }) {
       const stored = await loadWorkspace(),
         workspace = stored
           ? localizeBundledDemo(stored, locale)
-          : demoWorkspace(locale),
-        project = workspace.projects[0];
+          : demoWorkspace(locale);
+      let remembered: string | null = null;
+      try { remembered = sessionStorage.getItem("pmwork-project"); } catch {}
+      const project = workspace.projects.find(p => p.id === remembered) ?? workspace.projects[0];
       if (!project) throw new Error();
       const at = new Date().toISOString(),
         body = `# ${pick(template.title, locale)}\n\n${template.fields.map((field) => `## ${pick(field, locale)}\n\n_${pick(template.guidance, locale)}_`).join("\n\n")}`;
@@ -343,23 +347,28 @@ export function CatalogPage({ kind, locale }: { kind: Kind; locale: Locale }) {
             </article>
           ))}
         {kind === "knowledge" &&
-          (data as typeof knowledgeDomains).map((x, i) => (
-            <article className="catalog-card" key={pick(x, locale)}>
+          (data as typeof knowledgeDomains).map((x) => {
+            const guide = knowledgeGuides[x.en];
+            return <article className="catalog-card" key={x.en}>
               <BookOpen size={22} />
-              <p className="eyebrow">{String(i + 1).padStart(2, "0")}</p>
               <h2>{pick(x, locale)}</h2>
-              <p>
-                {ru
-                  ? "Раздел связывает понятия, практические решения, применимость, ограничения и связанные инструменты PMWORK."
-                  : "This domain connects concepts, practical decisions, applicability, limitations, and related PMWORK tools."}
-              </p>
-              <div className="card-foot">
-                <span className="pill">
-                  {ru ? "От основ к углублению" : "Foundation → Advanced"}
-                </span>
+              <p>{pick(guide.summary, locale)}</p>
+              <details>
+                <summary>{ru ? "Применить на практике" : "Put into practice"}</summary>
+                <h3>{ru ? "Порядок действий" : "Steps"}</h3>
+                <p>{pick(guide.steps, locale)}</p>
+                <h3>{ru ? "Результат" : "Output"}</h3>
+                <p>{pick(guide.output, locale)}</p>
+                <h3>{ru ? "Типичная ошибка" : "Failure mode"}</h3>
+                <p>{pick(guide.mistake, locale)}</p>
+                <p className="muted compact">{ru ? "Практическая рекомендация PMWORK. Адаптируйте к масштабу проекта и обязательным правилам вашей организации." : "PMWORK practical guidance. Adapt to project scale and your organization’s mandatory rules."}</p>
+              </details>
+              <div className="button-row">
+                <Link className="button small" href={`/${locale}/workspace/?view=${guide.view}`}>{ru ? "Открыть рабочий модуль" : "Open working module"}</Link>
+                <Link className="button small" href={`/${locale}/templates/`}>{ru ? "Шаблоны" : "Templates"}</Link>
               </div>
-            </article>
-          ))}
+            </article>;
+          })}
         {kind === "glossary" &&
           (data as typeof glossary).map((x) => (
             <article className="catalog-card" key={x.term}>

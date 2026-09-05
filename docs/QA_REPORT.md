@@ -1,55 +1,50 @@
-# QA report
+# PMWORK 2.2 release QA
 
-Run date: 2026-09-05. Runtime: Node 24.19.0.
+Run date: 2026-09-05. Node 24, Chromium desktop and Pixel 7 emulation.
 
-## Automated results
+## Evidence
 
-| Check | Result |
+The pre-existing premium pass at `1340b8b` failed ESLint in both Quality gate and Pages. This release removes the failing navigation effect and keeps the existing architecture and visual system.
+
+The release branch is tested as a two-entry matrix: root and GitHub Pages `/pmwork`. Each entry runs `npm ci`, `npm run verify`, Chromium installation and the browser suite. Deployment repeats the Pages gate before publication and validates the live commit and assets afterwards.
+
+| Check | Release coverage / observed result |
 | --- | --- |
-| ESLint | PASS — 0 errors, 0 warnings |
-| TypeScript strict | PASS |
-| Content validation | PASS — 16 methods, 47 templates, 39 playbooks, 172 glossary entries |
-| RU/EN parity and language purity | PASS — 15 high-risk user-facing files plus catalog parity |
-| Internal dead-link patterns | PASS — 45 source files checked |
-| Unit + integration + component tests | PASS — 24/24 across 5 files |
-| GitHub Chromium E2E + axe | PASS — 14/14 desktop/mobile RU/EN checks |
-| Production static build | PASS — 27 generated pages |
-| Export integrity | PASS — 26 HTML files, required PWA assets and local references verified |
-| GitHub Pages base-path smoke | PASS — nested RU/EN routes and `/pmwork` assets verified |
-| Dependency audit | PASS — 0 known vulnerabilities |
-| Diff whitespace check | PASS |
+| ESLint and strict TypeScript | PASS |
+| Unit/component/integration | 33 tests across 7 files PASS |
+| Content | 16 methods, 47 templates, 39 playbooks, 172 glossary entries; 26 distinct practical knowledge guides |
+| Content integrity | Bilingual values, placeholders, duplicate primary descriptions, method-source relationships |
+| i18n and source links | PASS; runtime approach labels normalized for RU |
+| Static export | 26 HTML files; local references and required PWA files validated |
+| E2E | 56 cases per base-path configuration; desktop + mobile |
+| Reflow | 360×800, 390×844, 768×1024, 1024×768, 1280×800, 1440×900, 1920×1080; 11 workspace sections |
+| axe | Overview, Work, Board, Planning, RAID in RU/EN × light/dark; public and tool smoke checks |
+| Persistence | Saved views after reload, corrupt-byte preservation, IDB fallback, snapshots, backup export/replacement and rejected invalid JSON |
+| PWA | Offline workspace and navigation; versioned HTML, Next navigation payloads, JS, CSS and local fonts |
+| Typography | Inter and Manrope observed loaded in browser FontFaceSet |
 
-Covered calculations: CPM, cycle detection, PERT and invalid ordering, EVM zero divisions, RICE, WSJF, Little's Law, Monte Carlo percentiles, method fit, and governance selection. Data tests validate localized demo workspaces, v1/v2-to-v3 migration, preservation of user-authored text, closure persistence, JSON round-trip and locale-aware PWA assets. Insight tests validate prioritised management actions, completeness and portfolio roll-ups. Component tests validate view switching, work-item creation, dependency create/edit validation, persisted closure state, accessible board movement, and the Ctrl/Cmd+K command palette.
+Browser artifacts and traces are retained in GitHub Actions for seven days. See [Quality gate runs](https://github.com/castefeudal/pmwork/actions/workflows/ci.yml) and [Pages runs](https://github.com/castefeudal/pmwork/actions/workflows/pages.yml).
 
-## Browser and visual review
+## Corrections driven by browser evidence
 
-The managed Chrome preview loaded the RU landing at desktop width. Visual inspection confirmed readable typography, a stable hero/control-tower composition, coherent hierarchy, useful rather than decorative product visualization, and semantic landmarks/headings. The final public navigation now switches to a complete keyboard-operable drawer before desktop links become cramped.
+- Fixed a duplicate editor heading/input ID that prevented exact label resolution.
+- Gave view sorting and grouping explicit accessible names.
+- Corrected fixed-width sidebar interference with tablet and mobile layouts.
+- Wrapped portfolio footer actions and the constrained workspace header.
+- Added visible labels to mobile section navigation and reserved bottom space.
+- Applied meaningful semantics to labelled risk-matrix cells.
+- Removed repetitive autosave toasts; preservation failures still produce feedback.
+- Made snapshot selection resilient to a missing or corrupt index in either storage layer.
+- Added static navigation payloads to the PWA cache for cross-page offline navigation.
 
-Standalone Playwright could not launch in the authoring environment because its Chromium CDN download timed out. That infrastructure limitation is not used as release evidence: GitHub CI installs Chromium and executes the authoritative 14-test matrix covering desktop/mobile RU/EN critical journeys, responsive navigation, page overflow, IndexedDB fallback, and axe scans.
+## Visual inspection
 
-## Adversarial audit corrections
+Inspected actual Chromium captures of landing, overview, portfolio, list, board, planning, RAID, people, finance, control, documents, setup, knowledge, catalogs, every calculator, side editor and command palette. Reviewed desktop/mobile and RU/EN theme captures. These captures exposed the generic knowledge cards and untranslated fit results; both were corrected.
 
-- Replaced vulnerable dependency versions after audit found high/critical advisories; re-audit is zero.
-- Fixed non-associated dialog labels found by component tests.
-- Replaced collision-prone random work-item IDs with UUID-based stable IDs.
-- Added a preview-compatible Next development wrapper.
-- Corrected GitHub Pages base-path handling, manifest path, favicon path, canonical, and hreflang.
-- Added button alternatives to board dragging and textual alternatives to matrices/timeline.
-- Added a versioned data migration, rotating recovery snapshots, a portfolio control tower, deterministic action prioritisation and completeness scoring.
-- Replaced the fixed CPM demonstration with an editable dependency network and explicit cycle/unknown-predecessor errors.
-- Removed the mobile rule that hid workspace modules and supplied a horizontally scrollable project dock.
-- Replaced the inert public mobile-menu icon with a complete focusable navigation drawer and Escape/backdrop dismissal.
-- Rewrote every previously generic glossary extension entry with a term-specific RU/EN definition and practical example.
-- Added a timeout-safe localStorage persistence fallback when IndexedDB is blocked or unavailable.
-- Added export-artifact validation for HTML routes, PWA files, and every local `src`/`href` emitted by the build.
-- Added localized live-document language updates and localized default metadata.
-- Added explicit success/failure feedback for template copying.
-- Added schema v3 with a persisted project-closure record and safe v1/v2 migration.
-- Added a reusable localized record editor across planning, RAID, people, finance, control and documents.
-- Added dependency creation/editing with self-reference, unknown-ID and cycle protection.
-- Added localized bundled-demo switching that preserves every user-authored value.
-- Added locale-specific install manifests and offline fallbacks plus complete app/social icon packaging.
+The managed development preview could show landing but did not hydrate Workspace reliably. It is not used as evidence that production works. The authoritative browser suite runs against the real static export in GitHub CI, where Chromium installs successfully. The authoring container’s Chromium CDN download was unavailable.
 
-## Deployment result
+## Scope of claims
 
-GitHub Pages is configured to publish every verified `main` revision through GitHub Actions. The application is also published through its owner-private production Site; both targets are generated from the same release source.
+Automated axe checks and keyboard journeys are representative WCAG 2.2 AA evidence, not a formal certification. Seven viewport checks are not a real-device usability study. No human time-to-first-action measurement or comparative performance claim is made. Work editing opens in one click, common creation is directly available in the header/palette, and saved views reuse the same source records.
+
+Workload counts assignments and blockers; it does not infer utilization from incomparable points and hours. The product remains device-local without account sync or concurrent shared editing. Forecasts describe simulations under explicit assumptions, not guaranteed outcomes.

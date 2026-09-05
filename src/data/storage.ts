@@ -53,7 +53,7 @@ function open() {
       if (!req.result.objectStoreNames.contains(STORE))
         req.result.createObjectStore(STORE);
     };
-    req.onsuccess = () => finish(() => resolve(req.result));
+    req.onsuccess = () => { if (settled) req.result.close(); else finish(() => resolve(req.result)); };
     req.onerror = () => finish(() => reject(new Error("Storage unavailable")));
     req.onblocked = () => finish(() => reject(new Error("Storage blocked")));
   });
@@ -65,114 +65,109 @@ export function migrateWorkspace(value: unknown): Workspace {
     return workspaceSchema.parse({ ...emptyV3, ...record, schemaVersion: 3 });
   return workspaceSchema.parse(value);
 }
+type Stored = { value: unknown; at: number };
+function unpack(value: unknown): Stored {
+  if (value && typeof value === "object" && "savedAt" in value && "workspace" in value) {
+    const envelope = value as { savedAt: number; workspace: unknown };
+    return { value: envelope.workspace, at: envelope.savedAt };
+  }
+  return { value, at: 0 };
+}
 export async function loadWorkspace() {
+  const candidates: Stored[] = [];
+  let corrupt = false;
+  let readable = false;
+  try {
+    const storage = local();
+    if (storage) {
+      readable = true;
+      const raw = storage.getItem(LOCAL_KEY) ?? LEGACY_LOCAL_KEYS.map(key => storage.getItem(key)).find(Boolean);
+      if (raw) { try { candidates.push(unpack(JSON.parse(raw))); } catch { corrupt = true; } }
+    }
+  } catch { /* IndexedDB may still be usable. */ }
   try {
     const db = await open();
-    return await new Promise<Workspace | null>((resolve, reject) => {
-      const req = db.transaction(STORE, "readonly").objectStore(STORE).get(KEY);
-      req.onsuccess = () => {
-        if (!req.result) {
-          resolve(null);
-          return;
-        }
-        try {
-          resolve(migrateWorkspace(req.result));
-        } catch {
-          reject(new Error("Stored data is corrupted"));
+    const value = await new Promise<unknown>((resolve, reject) => {
+      const tx = db.transaction(STORE, "readonly");
+      const timeout = setTimeout(() => { tx.abort(); reject(new Error("Storage read timed out")); }, 1800);
+      const req = tx.objectStore(STORE).get(KEY);
+      req.onsuccess = () => { clearTimeout(timeout); resolve(req.result); };
+      req.onerror = () => { clearTimeout(timeout); reject(new Error("Storage unavailable")); };
+      tx.oncomplete = () => db.close();
+      tx.onabort = () => { db.close(); reject(new Error("Storage unavailable")); };
+    });
+    readable = true;
+    if (value) candidates.push(unpack(value));
+  } catch { /* Preserve and use a valid local mirror. */ }
+  for (const candidate of candidates.sort((a, b) => b.at - a.at)) {
+    try { return migrateWorkspace(candidate.value); } catch { corrupt = true; }
+  }
+  if (corrupt || !readable) throw new Error("Stored data requires recovery");
+  return null;
+}
+export async function saveWorkspace(workspace: Workspace, forceSnapshot = false) {
+  const valid = workspaceSchema.parse(workspace);
+  const envelope = { savedAt: Date.now(), workspace: valid };
+  let mirrored = false;
+  try {
+    const fallback = local();
+    if (fallback) {
+      fallback.setItem(LOCAL_KEY, JSON.stringify(envelope));
+      mirrored = true;
+      let snapshots: { at: string; workspace: Workspace }[] = [];
+      try {
+        const parsed = JSON.parse(fallback.getItem(LOCAL_SNAPSHOTS) ?? "[]");
+        if (Array.isArray(parsed)) snapshots = parsed;
+      } catch { /* A corrupt snapshot index must not prevent primary saving. */ }
+      const now = new Date().toISOString();
+      if (forceSnapshot || snapshots[0]?.at?.slice(0, 10) !== now.slice(0, 10))
+        fallback.setItem(LOCAL_SNAPSHOTS, JSON.stringify([{ at: now, workspace: valid }, ...snapshots].slice(0, 5)));
+    }
+  } catch { /* Quota may allow IndexedDB even when localStorage is full. */ }
+  try {
+    const db = await open();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE, "readwrite"), store = tx.objectStore(STORE);
+      store.put(envelope, KEY);
+      const indexReq = store.get(SNAPSHOT_INDEX);
+      indexReq.onsuccess = () => {
+        const previous: string[] = Array.isArray(indexReq.result) ? indexReq.result : [];
+        const now = new Date().toISOString();
+        if (forceSnapshot || previous[0]?.slice(9, 19) !== now.slice(0, 10)) {
+          const key = `snapshot:${now}`;
+          store.put(valid, key);
+          store.put([key, ...previous].slice(0, 5), SNAPSHOT_INDEX);
+          previous.slice(4).forEach(key => store.delete(key));
         }
       };
-      req.onerror = () => reject(new Error("Storage unavailable"));
+      tx.oncomplete = () => { db.close(); resolve(); };
+      tx.onerror = tx.onabort = () => { db.close(); reject(new Error("Could not save workspace")); };
     });
-  } catch {
-    const storage = local();
-    const raw =
-      storage?.getItem(LOCAL_KEY) ??
-      LEGACY_LOCAL_KEYS.map((key) => storage?.getItem(key)).find(Boolean) ??
-      null;
-    if (!raw) return null;
-    try {
-      return migrateWorkspace(JSON.parse(raw));
-    } catch {
-      throw new Error("Stored data is corrupted");
-    }
-  }
-}
-export async function saveWorkspace(workspace: Workspace) {
-  const valid = workspaceSchema.parse(workspace);
-  let db: IDBDatabase;
-  try {
-    db = await open();
-  } catch {
-    const fallback = local();
-    if (!fallback) throw new Error("Could not save workspace");
-    fallback.setItem(LOCAL_KEY, JSON.stringify(valid));
-    const snapshots = JSON.parse(fallback.getItem(LOCAL_SNAPSHOTS) ?? "[]") as {
-        at: string;
-        workspace: Workspace;
-      }[],
-      today = new Date().toISOString().slice(0, 10);
-    if (snapshots[0]?.at.slice(0, 10) !== today)
-      fallback.setItem(
-        LOCAL_SNAPSHOTS,
-        JSON.stringify(
-          [
-            { at: new Date().toISOString(), workspace: valid },
-            ...snapshots,
-          ].slice(0, 5),
-        ),
-      );
-    return;
-  }
-  return new Promise<void>((resolve, reject) => {
-    const tx = db.transaction(STORE, "readwrite"),
-      store = tx.objectStore(STORE);
-    store.put(valid, KEY);
-    const indexReq = store.get(SNAPSHOT_INDEX);
-    indexReq.onsuccess = () => {
-      const previous = Array.isArray(indexReq.result)
-        ? (indexReq.result as string[])
-        : [];
-      const last = previous[0];
-      const lastDay = last?.split(":")[1]?.slice(0, 10);
-      const today = new Date().toISOString().slice(0, 10);
-      if (lastDay !== today) {
-        const snapshotKey = `snapshot:${new Date().toISOString()}`;
-        store.put(valid, snapshotKey);
-        const next = [snapshotKey, ...previous].slice(0, 5);
-        store.put(next, SNAPSHOT_INDEX);
-        previous.slice(5).forEach((key) => store.delete(key));
-      }
-    };
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(new Error("Could not save workspace"));
-  });
+  } catch { if (!mirrored) throw new Error("Could not save workspace"); }
 }
 export async function listSnapshots() {
+  const snapshots: {key: string; at: string}[] = [];
+  try {
+    const parsed = JSON.parse(local()?.getItem(LOCAL_SNAPSHOTS) ?? "[]");
+    if (Array.isArray(parsed)) for (const item of parsed) {
+      if (item && typeof item.at === "string" && workspaceSchema.safeParse(item.workspace).success)
+        snapshots.push({key:`local:${item.at}`, at:item.at});
+    }
+  } catch { /* The other store may contain healthy recovery points. */ }
   try {
     const db = await open();
-    return await new Promise<
-      {
-        key: string;
-        at: string;
-      }[]
-    >((resolve, reject) => {
-      const store = db.transaction(STORE, "readonly").objectStore(STORE),
-        req = store.get(SNAPSHOT_INDEX);
-      req.onsuccess = () =>
-        resolve(
-          (Array.isArray(req.result) ? req.result : []).map((key: string) => ({
-            key,
-            at: key.slice("snapshot:".length),
-          })),
-        );
-      req.onerror = () => reject(new Error("Storage unavailable"));
+    const keys = await new Promise<string[]>((resolve, reject) => {
+      const tx = db.transaction(STORE,"readonly");
+      const timer = setTimeout(() => { tx.abort(); reject(new Error("Storage timed out")); },1800);
+      const req = tx.objectStore(STORE).get(SNAPSHOT_INDEX);
+      req.onsuccess = () => { clearTimeout(timer); resolve(Array.isArray(req.result) ? req.result.filter((key:unknown) => typeof key === "string" && key.startsWith("snapshot:")) : []); };
+      req.onerror = () => { clearTimeout(timer); reject(new Error("Storage unavailable")); };
+      tx.oncomplete = () => db.close();
+      tx.onabort = () => { clearTimeout(timer); db.close(); reject(new Error("Storage unavailable")); };
     });
-  } catch {
-    const snapshots = JSON.parse(local()?.getItem(LOCAL_SNAPSHOTS) ?? "[]") as {
-      at: string;
-    }[];
-    return snapshots.map((x) => ({ key: `local:${x.at}`, at: x.at }));
-  }
+    for (const key of keys) if (!snapshots.some(x => x.at === key.slice(9))) snapshots.push({key,at:key.slice(9)});
+  } catch { /* Local mirror remains available. */ }
+  return snapshots.sort((a,b) => b.at.localeCompare(a.at)).slice(0,5);
 }
 export async function restoreSnapshot(key: string) {
   if (key.startsWith("local:")) {
@@ -188,7 +183,10 @@ export async function restoreSnapshot(key: string) {
   if (!key.startsWith("snapshot:")) throw new Error("Invalid snapshot");
   const db = await open();
   return new Promise<Workspace>((resolve, reject) => {
-    const req = db.transaction(STORE, "readonly").objectStore(STORE).get(key);
+    const tx = db.transaction(STORE, "readonly");
+    tx.oncomplete = () => db.close();
+    tx.onabort = () => { db.close(); reject(new Error("Storage unavailable")); };
+    const req = tx.objectStore(STORE).get(key);
     req.onsuccess = () => {
       try {
         resolve(migrateWorkspace(req.result));

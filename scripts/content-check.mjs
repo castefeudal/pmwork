@@ -36,3 +36,28 @@ if (failures.length) {
 console.log(
   `content valid: ${counts.methods} methods, ${counts.templates} templates, ${counts.playbooks} playbooks, ${counts.glossary} glossary entries`,
 );
+
+// Inspect actual bilingual records, not only source-code counts.
+const {methods,templates,playbooks,glossary,knowledgeDomains,sources}=await import('../src/content/catalog.ts');
+const {knowledgeGuides}=await import('../src/content/knowledge.ts');
+const defects=[];
+const sourceIds=new Set(sources.map(x=>x.id));
+function bilingual(value,path) {
+ if (!value || typeof value!=='object') return;
+ if ('ru' in value && 'en' in value) for(const locale of ['ru','en']) {
+   if(typeof value[locale]!=='string'||!value[locale].trim()) defects.push(`${path}.${locale}: empty translation`);
+   else if(/\b(TODO|FIXME|TBD|lorem ipsum|Coming Soon)\b/i.test(value[locale])) defects.push(`${path}: placeholder`);
+ }
+ else for(const [key,child] of Object.entries(value)) bilingual(child,`${path}.${key}`);
+}
+for(const [kind,rows,field] of [['methods',methods,'summary'],['templates',templates,'purpose'],['playbooks',playbooks,'title'],['glossary',glossary,'definition'],['knowledge',Object.values(knowledgeGuides),'summary']]) {
+ bilingual(rows,kind);
+ for(const locale of ['ru','en']) {
+  const texts=rows.map(x=>x[field][locale].trim());
+  if(new Set(texts).size!==texts.length)defects.push(`${kind}: duplicate primary ${locale} descriptions`);
+ }
+}
+for(const method of methods) for(const id of method.sourceIds) if(!sourceIds.has(id)) defects.push(`${method.slug}: broken source ${id}`);
+for(const domain of knowledgeDomains) if(!knowledgeGuides[domain.en]) defects.push(`Missing practical guide: ${domain.en}`);
+if(defects.length){console.error(defects.join('\n'));process.exit(1);}
+console.log('Deep content audit: bilingual values, placeholders, duplicate primary descriptions, 26 practical guides and methodology source relations PASS');

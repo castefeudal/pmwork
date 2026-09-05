@@ -1,5 +1,6 @@
 "use client";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
+import { displayLabel } from "@/content/workspace-i18n";
 import type { Locale } from "@/domain/schemas";
 import {
   calculateCPM,
@@ -45,17 +46,17 @@ export function ToolsLab({ locale }: { locale: Locale }) {
   const titles: Record<Tool, string> = {
     fit: ru ? "Подбор подхода" : "Approach fit",
     composer: ru ? "Конструктор метода" : "Method composer",
-    cpm: "Critical Path",
+    cpm: ru ? "Критический путь · CPM" : "Critical Path",
     pert: "PERT",
-    evm: "Earned Value",
+    evm: ru ? "Освоенный объём · EVM" : "Earned Value",
     forecast: "Monte Carlo",
     priority: ru ? "Приоритизация" : "Prioritization",
-    flow: "Little’s Law",
+    flow: ru ? "Закон Литтла" : "Little’s Law",
   };
   return (
     <>
       <header className="catalog-hero" id="fit">
-        <p className="eyebrow">Deterministic · explainable · local</p>
+        <p className="eyebrow">{ru ? "Прозрачные расчёты · локально" : "Deterministic · explainable · local"}</p>
         <h1>{ru ? "Инструменты решений" : "Decision tools"}</h1>
         <p className="lead">
           {ru
@@ -135,7 +136,7 @@ function Fit({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>{ru ? "Контекст проекта" : "Project context"}</h2>
-        <p className="muted">1 = low · 5 = high</p>
+        <p className="muted">{ru ? "1 — низкий уровень · 5 — высокий" : "1 = low · 5 = high"}</p>
         <div className="form-grid">
           {(Object.keys(c) as (keyof Context)[]).map((k) => (
             <div className="field" key={k}>
@@ -144,12 +145,14 @@ function Fit({ locale }: { locale: Locale }) {
               </label>
               <input
                 id={`fit-${k}`}
+                aria-valuetext={`${c[k]} / 5`}
                 type="range"
                 min="1"
                 max="5"
                 value={c[k]}
                 onChange={(e) => setC({ ...c, [k]: Number(e.target.value) })}
               />
+              <div className="range-endpoints"><span>{ru ? "Низкий · 1" : "Low · 1"}</span><span>{ru ? "Высокий · 5" : "High · 5"}</span></div>
             </div>
           ))}
         </div>
@@ -157,7 +160,7 @@ function Fit({ locale }: { locale: Locale }) {
       <div className="result-box">
         <small>{ru ? "Лучшее соответствие" : "Best fit"}</small>
         <strong>
-          {best.approach} · {best.score}%
+          {displayLabel(locale, "approach", best.approach)} · {best.score}%
         </strong>
         <p>
           {ru ? "Почему" : "Why"}:{" "}
@@ -165,7 +168,7 @@ function Fit({ locale }: { locale: Locale }) {
           {ru ? "близки профилю подхода." : "match this approach profile."}
         </p>
         <p>
-          {ru ? "Управление" : "Governance"}: <b>{governanceLevel(c)}</b>
+          {ru ? "Управление" : "Governance"}: <b>{displayLabel(locale,"governance",governanceLevel(c))}</b>
         </p>
         <table>
           <thead>
@@ -177,7 +180,7 @@ function Fit({ locale }: { locale: Locale }) {
           <tbody>
             {scores.map((x) => (
               <tr key={x.approach}>
-                <td>{x.approach}</td>
+                <td>{displayLabel(locale,"approach",x.approach)}</td>
                 <td>{x.score}%</td>
               </tr>
             ))}
@@ -254,8 +257,9 @@ function Composer({ locale }: { locale: Locale }) {
             ],
           ].map(([label, val, set, opts]) => (
             <div className="field" key={String(label)}>
-              <label>{String(label)}</label>
+              <label htmlFor={`composer-${String(label)}`}>{String(label)}</label>
               <select
+                id={`composer-${String(label)}`}
                 value={String(val)}
                 onChange={(e) => (set as (x: string) => void)(e.target.value)}
               >
@@ -425,6 +429,7 @@ function PERT({ locale }: { locale: Locale }) {
         </div>
       </div>
       <div className="result-box">
+        {!r && <p role="alert">{ru ? "Требуется 0 ≤ O ≤ M ≤ P." : "Required: 0 ≤ O ≤ M ≤ P."}</p>}
         <small>TE = (O + 4M + P) / 6</small>
         <strong>{r ? r.expected.toFixed(2) : "—"}</strong>
         <p>
@@ -443,11 +448,12 @@ function PERT({ locale }: { locale: Locale }) {
 function EVM({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [v, setV] = useState({ pv: 100, ev: 90, ac: 110, bac: 300 }),
-    r = calculateEVM(v.pv, v.ev, v.ac, v.bac);
+    valid = Object.values(v).every(n => Number.isFinite(n) && n >= 0),
+    r = valid ? calculateEVM(v.pv, v.ev, v.ac, v.bac) : null;
   return (
     <div className="calculator-grid">
       <div className="panel">
-        <h2>Earned Value</h2>
+        <h2>{ru ? "Освоенный объём · EVM" : "Earned Value"}</h2>
         <div className="form-grid">
           {(Object.keys(v) as (keyof typeof v)[]).map((k) => (
             <NumberField
@@ -460,13 +466,15 @@ function EVM({ locale }: { locale: Locale }) {
         </div>
       </div>
       <div className="result-box">
+        {!r && <p role="alert">{ru ? "Введите конечные неотрицательные значения." : "Enter finite non-negative values."}</p>}
+        {r && <p>{ru ? (r.cv < 0 ? "Перерасход относительно освоенного объёма." : "Затраты в пределах освоенного объёма.") : (r.cv < 0 ? "Over budget for earned work." : "Cost is within earned value.")} {ru ? (r.sv < 0 ? "Объём выполненного отстаёт от плана." : "Освоенный объём не отстаёт от плана.") : (r.sv < 0 ? "Earned work is behind plan." : "Earned work is on or ahead of plan.")}</p>}
         <small>CPI = EV / AC · SPI = EV / PV</small>
         <strong>
-          CPI {r.cpi?.toFixed(2) ?? "—"} · SPI {r.spi?.toFixed(2) ?? "—"}
+          CPI {r?.cpi?.toFixed(2) ?? "—"} · SPI {r?.spi?.toFixed(2) ?? "—"}
         </strong>
         <p>
-          CV {r.cv.toFixed(0)} · SV {r.sv.toFixed(0)} · EAC{" "}
-          {r.eac?.toFixed(0) ?? "—"} · VAC {r.vac?.toFixed(0) ?? "—"}
+          CV {r?.cv.toFixed(0) ?? "—"} · SV {r?.sv.toFixed(0) ?? "—"} · EAC{" "}
+          {r?.eac?.toFixed(0) ?? "—"} · VAC {r?.vac?.toFixed(0) ?? "—"}
         </p>
         <small>
           {ru
@@ -481,13 +489,11 @@ function Forecast({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [raw, setRaw] = useState("5,7,6,8,4,7,9,6"),
     [weeks, setWeeks] = useState(8);
-  const samples = raw.split(",").map(Number).filter(Number.isFinite);
-  let r;
-  try {
-    r = monteCarlo(samples, weeks, 5000, Math.random, "itemsByDate");
-  } catch {
-    r = null;
-  }
+  const r = useMemo(() => {
+    const tokens = raw.split(",").map(x => x.trim());
+    if (tokens.some(x => x === "")) return null;
+    try { return monteCarlo(tokens.map(Number), weeks, 5000, Math.random, "itemsByDate"); } catch { return null; }
+  }, [raw, weeks]);
   return (
     <div className="calculator-grid">
       <div className="panel">
@@ -495,12 +501,12 @@ function Forecast({ locale }: { locale: Locale }) {
           Monte Carlo · {ru ? "сколько элементов к дате" : "items by date"}
         </h2>
         <div className="field">
-          <label>
+          <label htmlFor="forecast-samples">
             {ru
               ? "Историческая пропускная способность по неделям"
               : "Historical weekly throughput"}
           </label>
-          <input value={raw} onChange={(e) => setRaw(e.target.value)} />
+          <input id="forecast-samples" value={raw} onChange={(e) => setRaw(e.target.value)} />
         </div>
         <NumberField
           label={ru ? "Горизонт, недель" : "Horizon, weeks"}
@@ -510,17 +516,18 @@ function Forecast({ locale }: { locale: Locale }) {
         />
       </div>
       <div className="result-box">
+        {!r && <p role="alert">{ru ? "Введите минимум 3 неотрицательных наблюдения, включая положительное, и целый горизонт 1–1000 недель." : "Enter at least 3 non-negative observations including a positive value, and an integer horizon of 1–1000 weeks."}</p>}
         <small>{ru ? "5 000 симуляций" : "5,000 simulations"}</small>
         <strong>
-          P85 · {r?.p85 ?? "—"} {ru ? "элементов" : "items"}
+          P80 · {r?.p80 ?? "—"} {ru ? "элементов" : "items"}
         </strong>
         <p>
-          P50 {r?.p50 ?? "—"} · P70 {r?.p70 ?? "—"} · P95 {r?.p95 ?? "—"}
+          P50 {r?.p50 ?? "—"} · P80 {r?.p80 ?? "—"} · P90 {r?.p90 ?? "—"}
         </p>
         <small>
           {ru
-            ? "P85 не гарантия. Прогноз требует репрезентативной истории и стабильных границ системы."
-            : "P85 is not a guarantee. Forecasting requires representative history and stable system boundaries."}
+            ? "P80: около 80% симуляций завершили не меньше указанного числа элементов. Исторические недели выбираются независимо с возвращением. Это не гарантия: нужны репрезентативная история, одинаковые единицы и стабильный поток."
+            : "P80: about 80% of simulations delivered at least this many items. Historical weeks are sampled independently with replacement. This is not a guarantee; representative history, consistent units and stable flow are required."}
         </small>
       </div>
     </div>
@@ -538,6 +545,9 @@ function Priority({ locale }: { locale: Locale }) {
       risk: 4,
       size: 3,
     });
+  let r: number | null = null, w: number | null = null;
+  try { r = rice(v.reach,v.impact,v.confidence,v.effort); w = wsjf(v.value,v.time,v.risk,v.size); } catch { /* Inline validation below. */ }
+  const inputLabels: Record<string, string> = ru ? { reach:"Охват", impact:"Влияние", confidence:"Уверенность, %", effort:"Усилия", value:"Ценность", time:"Срочность", risk:"Снижение риска", size:"Размер работы" } : { reach:"Reach", impact:"Impact", confidence:"Confidence, %", effort:"Effort", value:"Value", time:"Time criticality", risk:"Risk reduction", size:"Job size" };
   return (
     <div className="calculator-grid">
       <div className="panel">
@@ -546,7 +556,7 @@ function Priority({ locale }: { locale: Locale }) {
           {Object.entries(v).map(([k, n]) => (
             <NumberField
               key={k}
-              label={k}
+              label={inputLabels[k]!}
               value={n}
               onChange={(x) => setV({ ...v, [k]: x })}
             />
@@ -554,11 +564,13 @@ function Priority({ locale }: { locale: Locale }) {
         </div>
       </div>
       <div className="result-box">
-        <small>RICE = Reach × Impact × Confidence / Effort</small>
+        {(r === null || w === null) && <p role="alert">{ru ? "Усилия и размер должны быть > 0; уверенность — 0–100%; остальные оценки — ≥ 0." : "Effort and size must be > 0; confidence 0–100%; other scores ≥ 0."}</p>}
+        <p>{ru ? "RICE — для продуктовых инициатив с оценкой охвата; WSJF — для порядка работ с учётом стоимости задержки." : "RICE fits product initiatives with reach estimates; WSJF sequences work using relative cost of delay."}</p>
+        <small>RICE = Reach × Impact × (Confidence / 100) / Effort</small>
         <strong>
-          RICE · {rice(v.reach, v.impact, v.confidence, v.effort).toFixed(1)}
+          RICE · {r?.toFixed(1) ?? "—"}
         </strong>
-        <p>WSJF · {wsjf(v.value, v.time, v.risk, v.size).toFixed(1)}</p>
+        <p>WSJF · {w?.toFixed(1) ?? "—"}</p>
         <small>
           {ru
             ? "Оценки помогают сделать допущения явными, но не превращают стратегию в арифметику. Не сравнивайте несопоставимые элементы."
@@ -572,11 +584,11 @@ function Flow({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [wip, setWip] = useState(12),
     [throughput, setThroughput] = useState(3),
-    r = throughput > 0 ? littleLaw(wip, throughput) : null;
+    r = Number.isFinite(wip) && wip >= 0 && Number.isFinite(throughput) && throughput > 0 ? littleLaw(wip, throughput) : null;
   return (
     <div className="calculator-grid">
       <div className="panel">
-        <h2>Little’s Law</h2>
+        <h2>{ru ? "Закон Литтла" : "Little’s Law"}</h2>
         <div className="form-grid">
           <NumberField label="WIP" value={wip} onChange={setWip} />
           <NumberField
@@ -589,6 +601,7 @@ function Flow({ locale }: { locale: Locale }) {
         </div>
       </div>
       <div className="result-box">
+        {!r && <p role="alert">{ru ? "WIP должен быть ≥ 0, пропускная способность — > 0." : "WIP must be ≥ 0 and throughput > 0."}</p>}
         <small>WIP = Throughput × Cycle Time</small>
         <strong>
           {r ? r.cycleTime.toFixed(1) : "—"} {ru ? "периода" : "periods"}

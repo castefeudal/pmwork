@@ -7,6 +7,12 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        base: [root, github]
+    env:
+      PMWORK_BASE_PATH: ${{ matrix.base }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,3 +23,11 @@ jobs:
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-qa-${{ matrix.base }}
+          path: |
+            test-results
+            playwright-report
+          retention-days: 7

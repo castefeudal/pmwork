@@ -263,7 +263,7 @@ export function displayLabel(
   value: string,
 ): string {
   const labels = enumLabels[locale][group] as Record<string, string>;
-  return labels[value] ?? value;
+  return labels[value] ?? labels[value.toLowerCase()] ?? value;
 }
 
 export const workspaceText = {

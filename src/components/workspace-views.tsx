@@ -1,5 +1,8 @@
 "use client";
-import { useMemo, useState } from "react";
+import { ProjectHealth } from "./project-health";
+import { PlanningTimeline } from "./planning-timeline";
+import { localDay } from "@/domain/work-views";
+import { useState } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -7,7 +10,6 @@ import {
   CheckCircle2,
   FileText,
   Plus,
-  Search,
   ShieldAlert,
   Trash2,
 } from "lucide-react";
@@ -281,38 +283,7 @@ export function OverviewView({
             </div>
           )}
         </section>
-        <section className="panel span-4">
-          <h3>{ru ? "Здоровье проекта" : "Project health"}</h3>
-          <div className="health-grid">
-            {Object.entries(project.health).map(([k, v]) => (
-              <div className="health-item" key={k}>
-                <span>
-                  {ru
-                    ? ((
-                        {
-                          schedule: "Сроки",
-                          scope: "Объём работ",
-                          budget: "Бюджет",
-                          risks: "Риски",
-                          blockers: "Блокеры",
-                          capacity: "Загрузка",
-                          alignment: "Согласованность",
-                        } as Record<string, string>
-                      )[k] ?? k)
-                    : k}
-                </span>
-                <strong className={`status ${healthClass(v)}`}>
-                  {displayLabel(locale, "health", v)}
-                </strong>
-              </div>
-            ))}
-          </div>
-          <p className="muted compact">
-            {ru
-              ? "RAG — сигнал для разговора, а не объективная истина. Правило и подтверждения должны быть явными."
-              : "RAG is a conversation signal, not objective truth. Keep the rule and evidence explicit."}
-          </p>
-        </section>
+        <ProjectHealth workspace={workspace} project={project} locale={locale} onView={onView} />
         <section className="panel span-6">
           <h3>
             {ru ? "Измеримые результаты и выгоды" : "Outcomes and benefits"}
@@ -502,214 +473,16 @@ export function GuideView({
     </div>
   );
 }
-export function WorkView({
-  workspace,
-  project,
-  locale,
-  onCreate,
-  onChange,
-  onEdit,
-}: ViewProps) {
-  const ru = locale === "ru",
-    [filter, setFilter] = useState("all"),
-    [query, setQuery] = useState(""),
-    all = workspace.workItems.filter(
-      (x) => x.projectId === project.id && !x.archived,
-    ),
-    items = all.filter(
-      (x) =>
-        (filter === "all" || x.status === filter) &&
-        `${x.id} ${x.title} ${x.owner} ${x.labels.join(" ")}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-    );
-  const update = (id: string, patch: Partial<WorkItem>) =>
-    onChange({
-      ...workspace,
-      workItems: workspace.workItems.map((x) =>
-        x.id === id
-          ? {
-              ...x,
-              ...patch,
-              updatedAt: new Date().toISOString(),
-              done: (patch.status ?? x.status) === "done",
-              completedAt:
-                (patch.status ?? x.status) === "done"
-                  ? (x.completedAt ?? new Date().toISOString())
-                  : undefined,
-            }
-          : x,
-      ),
-    });
-  return (
-    <>
-      <div className="toolbar">
-        <div className="search-input">
-          <Search size={17} />
-          <input
-            className="input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={
-              ru
-                ? "Поиск по работе, владельцу, метке"
-                : "Search work, owner, label"
-            }
-          />
-        </div>
-        <select
-          className="input compact-select"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          aria-label={ru ? "Фильтр статуса" : "Status filter"}
-        >
-          <option value="all">{ru ? "Все статусы" : "All statuses"}</option>
-          {columns.map((c) => (
-            <option key={c} value={c}>
-              {statusLabel[locale][c]}
-            </option>
-          ))}
-        </select>
-        <span className="pill">
-          {items.length} / {all.length}
-        </span>
-        <button className="button primary" onClick={() => onCreate("work")}>
-          <Plus size={17} />
-          {ru ? "Добавить" : "Add"}
-        </button>
-      </div>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{ru ? "Работа" : "Work"}</th>
-              <th>{ru ? "Владелец" : "Owner"}</th>
-              <th>{ru ? "Срок" : "Due"}</th>
-              <th>{ru ? "Трудоёмкость" : "Effort"}</th>
-              <th>{ru ? "Статус" : "Status"}</th>
-              <th aria-label={ru ? "Действия" : "Actions"} />
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((x) => (
-              <tr key={x.id}>
-                <td>{x.id}</td>
-                <td>
-                  <strong>{x.title}</strong>
-                  <br />
-                  <span className="muted">
-                    {displayLabel(locale, "workType", x.type)} ·{" "}
-                    {displayLabel(locale, "priority", x.priority)}
-                    {x.blocked ? ` · ${ru ? "БЛОКЕР" : "BLOCKED"}` : ""}
-                  </span>
-                  {(!x.owner || !x.acceptanceCriteria.length) && (
-                    <>
-                      <br />
-                      <small className="bad-text">
-                        {!x.owner
-                          ? ru
-                            ? "Нет владельца. "
-                            : "No owner. "
-                          : ""}
-                        {!x.acceptanceCriteria.length
-                          ? ru
-                            ? "Нет критериев приёмки."
-                            : "No acceptance criteria."
-                          : ""}
-                      </small>
-                    </>
-                  )}
-                </td>
-                <td>
-                  <input
-                    className="cell-input"
-                    value={x.owner}
-                    onChange={(e) => update(x.id, { owner: e.target.value })}
-                    aria-label={`${ru ? "Владелец" : "Owner"} ${x.title}`}
-                  />
-                </td>
-                <td>{x.dueDate || "—"}</td>
-                <td>{x.estimate ?? "—"}</td>
-                <td>
-                  <select
-                    className="input"
-                    value={x.status}
-                    onChange={(e) =>
-                      update(x.id, {
-                        status: e.target.value as WorkItem["status"],
-                      })
-                    }
-                  >
-                    {columns.map((c) => (
-                      <option key={c} value={c}>
-                        {statusLabel[locale][c]}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <div className="button-row">
-                    <button
-                      className="button small"
-                      onClick={() => onEdit("work", x.id)}
-                    >
-                      {ru ? "Изменить" : "Edit"}
-                    </button>
-                    <button
-                      className={`button small ${x.blocked ? "danger" : ""}`}
-                      onClick={() =>
-                        update(x.id, {
-                          blocked: !x.blocked,
-                          blockerReason: x.blocked
-                            ? undefined
-                            : ru
-                              ? "Требуется решение"
-                              : "Decision required",
-                        })
-                      }
-                    >
-                      {x.blocked
-                        ? ru
-                          ? "Разблокировать"
-                          : "Unblock"
-                        : ru
-                          ? "Блокер"
-                          : "Block"}
-                    </button>
-                    <button
-                      className="icon-button"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            ru
-                              ? `Архивировать «${x.title}»?`
-                              : `Archive “${x.title}”?`,
-                          )
-                        )
-                          update(x.id, { archived: true });
-                      }}
-                      aria-label={`${ru ? "Архивировать" : "Archive"} ${x.title}`}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  );
-}
+export { WorkSurface as WorkView } from "./work-surface";
 export function BoardView({
   workspace,
   project,
   locale,
   onCreate,
   onChange,
-}: ViewProps) {
+  onEdit,
+  visibleItems,
+}: ViewProps & { visibleItems?: WorkItem[] }) {
   const ru = locale === "ru",
     items = workspace.workItems.filter(
       (x) => x.projectId === project.id && !x.archived,
@@ -756,7 +529,7 @@ export function BoardView({
       </div>
       <div className="board">
         {columns.map((col, ci) => {
-          const rows = items.filter((x) => x.status === col),
+          const rows = (visibleItems ?? items).filter((x) => x.status === col),
             limit = settings?.wipLimits[col];
           return (
             <section
@@ -772,13 +545,14 @@ export function BoardView({
                 <span>{statusLabel[locale][col]}</span>
                 <span
                   className={
-                    limit && rows.length > limit ? "status bad" : "pill"
+                    limit && items.filter(x => x.status === col).length > limit ? "status bad" : "pill"
                   }
                 >
                   {rows.length}
                   {limit ? ` / ${limit}` : ""}
                 </span>
               </div>
+              {limit && items.filter(x => x.status === col).length > limit && <p className="bad-text">{ru ? "Превышен лимит WIP" : "WIP limit exceeded"}: {items.filter(x => x.status === col).length} / {limit}</p>}
               {rows.map((x) => (
                 <article
                   className={`work-card ${x.blocked ? "blocked" : ""}`}
@@ -791,7 +565,9 @@ export function BoardView({
                   <small>
                     {x.id} · {displayLabel(locale, "workType", x.type)}
                   </small>
-                  <h4>{x.title}</h4>
+                  <button className="work-title-button" onClick={() => onEdit("work", x.id)}>{x.title}</button>
+                  {x.blocked && <span className="status bad">{ru ? "Блокер" : "Blocked"}</span>}
+                  {x.dueDate && x.dueDate < localDay() && !x.done && <span className="status warn">{ru ? "Просрочено" : "Overdue"}</span>}
                   <div className="card-meta">
                     <span>{x.owner || (ru ? "Без владельца" : "Unowned")}</span>
                     <span>{displayLabel(locale, "priority", x.priority)}</span>
@@ -838,15 +614,10 @@ export function PlanningView({
 }: ViewProps) {
   const ru = locale === "ru",
     [tab, setTab] = useState("timeline"),
-    items = workspace.workItems.filter(
-      (x) => x.projectId === project.id && !x.archived,
-    ),
     milestones = workspace.milestones.filter((x) => x.projectId === project.id),
     iterations = workspace.iterations.filter((x) => x.projectId === project.id),
-    deps = workspace.dependencies.filter((x) => x.projectId === project.id),
-    start = new Date(project.startDate).getTime(),
-    end = Math.max(start + 86400000, new Date(project.targetDate).getTime()),
-    range = end - start;
+    deps = workspace.dependencies.filter((x) => x.projectId === project.id);
+
   const tabs = [
     ["timeline", ru ? "План-график" : "Timeline"],
     ["milestones", ru ? "Контрольные точки" : "Milestones"],
@@ -866,48 +637,7 @@ export function PlanningView({
           </button>
         ))}
       </div>
-      {tab === "timeline" && (
-        <div className="panel">
-          <div className="timeline-scale">
-            <span>{project.startDate}</span>
-            <span>{project.targetDate}</span>
-          </div>
-          <div className="timeline">
-            {items
-              .filter((x) => x.startDate || x.dueDate)
-              .map((x) => {
-                const s = new Date(x.startDate || project.startDate).getTime(),
-                  e = new Date(
-                    x.dueDate || x.startDate || project.targetDate,
-                  ).getTime(),
-                  left = Math.max(0, Math.min(95, ((s - start) / range) * 100)),
-                  width = Math.max(
-                    2,
-                    Math.min(100 - left, ((e - s + 86400000) / range) * 100),
-                  );
-                return (
-                  <div className="timeline-row" key={x.id}>
-                    <span>
-                      {x.id} · {x.title}
-                    </span>
-                    <div>
-                      <i
-                        style={{ marginLeft: `${left}%`, width: `${width}%` }}
-                        className={x.blocked ? "blocked" : ""}
-                        title={`${x.startDate || "—"} → ${x.dueDate || "—"}`}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-          <p className="muted">
-            {ru
-              ? "Полосы рассчитаны по фактическим датам начала и окончания относительно границ проекта."
-              : "Bars are calculated from actual start/due dates against project boundaries."}
-          </p>
-        </div>
-      )}
+      {tab === "timeline" && <PlanningTimeline workspace={workspace} project={project} locale={locale} onCreate={onCreate} onEdit={onEdit} />}
       {tab === "milestones" && (
         <>
           <button
@@ -1066,6 +796,7 @@ export function RaidView({
   const ru = locale === "ru",
     [tab, setTab] = useState<CreateType>("risk"),
     map = {
+      dependency: workspace.dependencies.filter((x) => x.projectId === project.id),
       risk: workspace.risks.filter((x) => x.projectId === project.id),
       issue: workspace.issues.filter((x) => x.projectId === project.id),
       assumption: workspace.assumptions.filter(
@@ -1098,7 +829,7 @@ export function RaidView({
   return (
     <>
       <div className="tabs">
-        {(["risk", "issue", "assumption", "decision"] as CreateType[]).map(
+        {(["risk", "assumption", "issue", "dependency", "decision"] as CreateType[]).map(
           (k) => (
             <button
               key={k}
@@ -1108,17 +839,19 @@ export function RaidView({
               {
                 (ru
                   ? {
+                      dependency: "Зависимости",
                       risk: "Риски",
                       issue: "Проблемы",
                       assumption: "Допущения",
                       decision: "Решения",
                     }
                   : {
+                      dependency: "Dependencies",
                       risk: "Risks",
                       issue: "Issues",
                       assumption: "Assumptions",
                       decision: "Decisions",
-                    })[k as "risk" | "issue" | "assumption" | "decision"]
+                    })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"]
               }{" "}
               · {map[k as keyof typeof map]?.length ?? 0}
             </button>
@@ -1132,6 +865,7 @@ export function RaidView({
         <Plus size={17} />
         {ru ? "Добавить запись" : `Add ${tab}`}
       </button>
+      {tab === "dependency" && <EntityTable rows={map.dependency.map(d => ({id:d.id,title:`${d.predecessorId} → ${d.successorId}`,meta:`${d.type} · ${d.lag} ${ru ? "дн. лага" : "lag days"} · ${d.dueDate || "—"}`,owner:d.owner,status:displayLabel(locale,"dependencyStatus",d.status)}))} locale={locale} onEdit={id => onEdit("dependency",id)} />}
       {tab === "risk" && (
         <div className="dashboard-grid">
           <div className="panel span-8">
@@ -1150,6 +884,7 @@ export function RaidView({
           </div>
           <div className="panel span-4">
             <h3>{ru ? "Матрица риска" : "Risk matrix"}</h3>
+            <p className="muted compact">{ru ? "Вероятность: 5 сверху → 1 снизу. Влияние: 1 слева → 5 справа. Число — открытые риски." : "Probability: 5 at top → 1 at bottom. Impact: 1 left → 5 right. Count: open risks."}</p>
             <div className="risk-matrix">
               {Array.from({ length: 25 }, (_, i) => {
                 const p = 5 - Math.floor(i / 5),
@@ -1157,12 +892,14 @@ export function RaidView({
                   score = p * impact;
                 return (
                   <div
+                    role="img"
                     className={`risk-cell ${score >= 15 ? "risk-high" : score >= 8 ? "risk-mid" : "risk-low"}`}
                     key={i}
+                    aria-label={`${ru ? "Вероятность" : "Probability"} ${p}, ${ru ? "влияние" : "impact"} ${impact}: ${map.risk.filter(r => r.status !== "closed" && r.probability === p && r.impact === impact).length}`}
                     title={`P${p} × I${impact}`}
                   >
                     {map.risk.filter(
-                      (r) => r.probability === p && r.impact === impact,
+                      (r) => r.status !== "closed" && r.probability === p && r.impact === impact,
                     ).length || ""}
                   </div>
                 );
@@ -1332,6 +1069,7 @@ export function PeopleView({
       )}
       {tab === "team" && (
         <>
+          <p className="muted">{ru ? "Число работ показывает ответственность, а не часы загрузки. Для процента загрузки нужны согласованные оценки и период; имя владельца должно совпадать с именем участника." : "Work counts show ownership, not hours of load. Capacity percentages require aligned estimates and a period; owner names must match team member names."}</p>
           <button
             className="button primary section-action"
             onClick={() => onCreate("team")}
@@ -1347,6 +1085,7 @@ export function PeopleView({
                   <th>{ru ? "Роль" : "Role"}</th>
                   <th>{ru ? "Ответственность" : "Responsibility"}</th>
                   <th>{ru ? "Мощность" : "Capacity"}</th>
+                  <th>{ru ? "Назначено / блокеры" : "Assigned / blocked"}</th>
                   <th>{ru ? "Часовой пояс" : "Timezone"}</th>
                   <th />
                 </tr>
@@ -1361,7 +1100,8 @@ export function PeopleView({
                     </td>
                     <td>{x.role}</td>
                     <td>{x.responsibility}</td>
-                    <td>{x.weeklyCapacity}h</td>
+                    <td>{x.weeklyCapacity} {ru ? "ч/нед." : "h/week"}</td>
+                    <td>{workspace.workItems.filter(w => w.projectId === project.id && !w.archived && !w.done && w.owner === x.name).length} / {workspace.workItems.filter(w => w.projectId === project.id && !w.archived && !w.done && w.owner === x.name && w.blocked).length}</td>
                     <td>{x.timezone}</td>
                     <td>
                       <button
@@ -1905,7 +1645,7 @@ export function DocumentsView({
         {rows.map((x) => (
           <article className="catalog-card" key={x.id}>
             <FileText size={22} />
-            <p className="eyebrow">{x.type}</p>
+            <p className="eyebrow">{x.type.startsWith("template:") ? (ru ? "Шаблон" : "Template") : ({charter: ru ? "Устав" : "Charter", note: ru ? "Заметка" : "Note"}[x.type] ?? x.type)}</p>
             <h3>{x.title}</h3>
             <p>
               {x.body.replaceAll("#", "").slice(0, 180) ||
@@ -2100,147 +1840,4 @@ function TextArea({
     </div>
   );
 }
-export function CommandPalette({
-  workspace,
-  project,
-  locale,
-  onClose,
-  onView,
-}: {
-  workspace: Workspace;
-  project: Project;
-  locale: Locale;
-  onClose: () => void;
-  onView: (view: WorkspaceView) => void;
-}) {
-  const ru = locale === "ru",
-    [query, setQuery] = useState(""),
-    views: Array<[WorkspaceView, string]> = [
-      ["portfolio", ru ? "Все проекты" : "All projects"],
-      ["overview", ru ? "Обзор" : "Overview"],
-      ["guide", ru ? "Проведи меня" : "Guide me"],
-      ["work", ru ? "Работа" : "Work"],
-      ["board", ru ? "Доска" : "Board"],
-      ["planning", ru ? "Планирование" : "Planning"],
-      ["raid", "RAID"],
-      ["people", ru ? "Люди" : "People"],
-      ["finance", ru ? "Финансы" : "Finance"],
-      ["control", ru ? "Контроль" : "Control"],
-      ["documents", ru ? "Документы" : "Documents"],
-    ];
-  const entities = useMemo(
-    () =>
-      [
-        ...workspace.workItems
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({ label: x.title, meta: x.id, view: "work" as const })),
-        ...workspace.risks
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({ label: x.title, meta: x.id, view: "raid" as const })),
-        ...workspace.issues
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({
-            label: x.title,
-            meta: `${ru ? "Проблема" : "Issue"} · ${x.id}`,
-            view: "raid" as const,
-          })),
-        ...workspace.decisions
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({
-            label: x.question,
-            meta: `${ru ? "Решение" : "Decision"} · ${x.id}`,
-            view: "raid" as const,
-          })),
-        ...workspace.milestones
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({
-            label: x.title,
-            meta: `${ru ? "Контрольная точка" : "Milestone"} · ${x.date}`,
-            view: "planning" as const,
-          })),
-        ...workspace.dependencies
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({
-            label: `${x.predecessorId} → ${x.successorId}`,
-            meta: `${ru ? "Зависимость" : "Dependency"} · ${x.id}`,
-            view: "planning" as const,
-          })),
-        ...workspace.stakeholders
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({
-            label: x.name,
-            meta: `${ru ? "Заинтересованная сторона" : "Stakeholder"} · ${x.role}`,
-            view: "people" as const,
-          })),
-        ...workspace.documents
-          .filter((x) => x.projectId === project.id)
-          .map((x) => ({
-            label: x.title,
-            meta: x.type,
-            view: "documents" as const,
-          })),
-      ]
-        .filter((x) =>
-          `${x.label} ${x.meta}`.toLowerCase().includes(query.toLowerCase()),
-        )
-        .slice(0, 12),
-    [workspace, project.id, query, ru],
-  );
-  return (
-    <div
-      className="dialog-backdrop"
-      role="presentation"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <section
-        className="command-palette"
-        role="dialog"
-        aria-modal="true"
-        aria-label={ru ? "Командная палитра" : "Command palette"}
-      >
-        <div className="search-input">
-          <Search />
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={ru ? "Перейти или найти…" : "Go to or find…"}
-          />
-          <kbd>Esc</kbd>
-        </div>
-        <div className="command-results">
-          {views
-            .filter(([, label]) =>
-              label.toLowerCase().includes(query.toLowerCase()),
-            )
-            .map(([view, label]) => (
-              <button
-                key={view}
-                onClick={() => {
-                  onView(view);
-                  onClose();
-                }}
-              >
-                <span>{label}</span>
-                <small>{ru ? "раздел" : "view"}</small>
-              </button>
-            ))}
-          {entities.map((x) => (
-            <button
-              key={`${x.meta}-${x.label}`}
-              onClick={() => {
-                onView(x.view);
-                onClose();
-              }}
-            >
-              <span>{x.label}</span>
-              <small>{x.meta}</small>
-            </button>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
+export { CommandMenu as CommandPalette } from "./command-menu";

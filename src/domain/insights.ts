@@ -1,3 +1,4 @@
+import { dependencyConflicts } from "./planning";
 import type { Locale, Project, Workspace, WorkItem } from "./schemas";
 
 export type ActionSignal = {
@@ -142,6 +143,12 @@ export function projectActions(
         : "Assign an owner or remove the item from the active horizon.",
       view: "work",
     });
+  dependencyConflicts(workspace, projectId).forEach(c => out.push({
+    id: `dependency-${c.id}`, severity: "high",
+    title: `${ru ? "Конфликт зависимости" : "Dependency conflict"}: ${c.from} → ${c.to}`,
+    why: c.missing ? (ru ? "Связанная работа недоступна." : "Linked work is unavailable.") : `${c.type} · ${c.days} ${ru ? "дн. нарушения связи" : "days of timing conflict"}`,
+    action: ru ? "Согласовать даты или уточнить тип связи и лаг." : "Align dates or review relationship type and lag.", view: "planning",
+  }));
   return out.sort(
     (a, b) =>
       ({ critical: 0, high: 1, medium: 2 })[a.severity] -
