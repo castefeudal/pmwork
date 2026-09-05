@@ -1,4 +1,5 @@
 "use client";
+import { ProjectSetup } from "./project-setup";
 import { useDialogFocus } from "./use-dialog-focus";
 import { useId } from "react";
 import { X } from "lucide-react";
@@ -147,7 +148,7 @@ export function WorkspaceDialog({
             type: (text(fd, "projectType") ||
               "general") as Workspace["projects"][number]["type"],
             startDate: today,
-            targetDate: due,
+            targetDate: text(fd, "dueDate"),
             purpose: description,
             objective: text(fd, "objective"),
             successMeasures: lines(text(fd, "successMeasures")),
@@ -172,6 +173,7 @@ export function WorkspaceDialog({
           ...workspace.projectSettings,
           {
             projectId: id,
+            context,
             enabledTypes: [
               "initiative",
               "epic",
@@ -697,6 +699,7 @@ export function WorkspaceDialog({
   const workOptions = workspace.workItems.filter(
     (item) => item.projectId === projectId && !item.archived,
   );
+  if(type === "project") return <ProjectSetup locale={locale} onClose={onClose} onSubmit={submit}/>;
   return (
     <div
       className="dialog-backdrop"
@@ -776,11 +779,7 @@ export function WorkspaceDialog({
           ].includes(type) &&
             field(
               "owner",
-              type === "project"
-                ? ru
-                  ? "Руководитель проекта"
-                  : "Project lead"
-                : ru
+              ru
                   ? "Владелец"
                   : "Owner",
             )}
@@ -800,11 +799,7 @@ export function WorkspaceDialog({
           ].includes(type) &&
             field(
               "dueDate",
-              type === "project"
-                ? ru
-                  ? "Целевая дата"
-                  : "Target date"
-                : ru
+              ru
                   ? "Срок / дата пересмотра"
                   : "Due / review date",
               "date",
@@ -1113,117 +1108,6 @@ export function WorkspaceDialog({
                 "textarea",
               )}
               {field("evidence", ru ? "Подтверждения" : "Evidence", "textarea")}
-            </>
-          )}
-          {type === "project" && (
-            <>
-              <div className="field">
-                <label htmlFor={`${prefix}-projectType`}>
-                  {ru ? "Тип проекта" : "Project type"}
-                </label>
-                <select id={`${prefix}-projectType`} name="projectType">
-                  {(
-                    [
-                      "software",
-                      "marketing",
-                      "operations",
-                      "education",
-                      "agency",
-                      "transformation",
-                      "infrastructure",
-                      "research",
-                      "general",
-                    ] as const
-                  ).map((value) => (
-                    <option value={value} key={value}>
-                      {displayLabel(locale, "projectType", value)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {field("sponsor", ru ? "Спонсор" : "Sponsor")}
-              {field(
-                "objective",
-                ru ? "Измеримый результат" : "Measurable outcome",
-                "textarea",
-                true,
-              )}
-              {field(
-                "successMeasures",
-                ru
-                  ? "Метрики успеха — по строке"
-                  : "Success measures — one per line",
-                "textarea",
-              )}
-              {field(
-                "scopeIn",
-                ru ? "В границах проекта" : "In scope",
-                "textarea",
-              )}
-              {field(
-                "scopeOut",
-                ru ? "Вне границ проекта" : "Out of scope",
-                "textarea",
-              )}
-              {field(
-                "constraints",
-                ru ? "Ограничения" : "Constraints",
-                "textarea",
-              )}
-              {field(
-                "definitionOfDone",
-                ru ? "Критерии готовности" : "Definition of Done",
-                "textarea",
-              )}
-              {field("currency", ru ? "Валюта, ISO код" : "Currency, ISO code")}
-              <p className="wide muted">
-                {ru
-                  ? "Контекст 1–5: система правил прозрачно выберет рабочий подход и уровень управления."
-                  : "Context 1–5: the rule engine transparently selects an operating approach and governance level."}
-              </p>
-              {(
-                [
-                  "uncertainty",
-                  "volatility",
-                  "feedback",
-                  "frequency",
-                  "compliance",
-                  "dependencies",
-                  "autonomy",
-                  "scopeRigidity",
-                  "deadlineRigidity",
-                  "stakeholders",
-                ] as (keyof Context)[]
-              ).map((k) => (
-                <div className="field" key={k}>
-                  <label htmlFor={`${prefix}-${k}`}>
-                    {ru
-                      ? (
-                          {
-                            uncertainty: "Неопределённость",
-                            volatility: "Изменчивость",
-                            feedback: "Частота обратной связи",
-                            frequency: "Частота поставки",
-                            compliance: "Регуляторные требования",
-                            dependencies: "Зависимости",
-                            autonomy: "Автономность команды",
-                            scopeRigidity: "Жёсткость границ",
-                            deadlineRigidity: "Жёсткость сроков",
-                            stakeholders: "Заинтересованные стороны",
-                          } as Record<keyof Context, string>
-                        )[k]
-                      : k}
-                  </label>
-                  <input
-                    id={`${prefix}-${k}`}
-                    name={k}
-                    type="range"
-                    min="1"
-                    max="5"
-                    defaultValue="3"
-                  />
-                </div>
-              ))}
             </>
           )}
           <div className="button-row wide">

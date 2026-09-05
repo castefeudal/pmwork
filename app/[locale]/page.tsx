@@ -100,8 +100,6 @@ export default async function Home({
             <div className="trust-line">
               <span>{ru ? "Локальное хранение" : "Local-first"}</span>
               <span>RU / EN</span>
-              <span>{ru ? "Цель: WCAG 2.2 AA" : "WCAG 2.2 AA target"}</span>
-              <span>{ru ? "Без ИИ" : "AI-free"}</span>
             </div>
           </div>
           <div
@@ -182,8 +180,8 @@ export default async function Home({
             </div>
             <p>
               {ru
-                ? "PMWORK связывает объяснение с решением, инструментом и контролем. Управление рисками — это не статья, а рабочий реестр, матрица, план реагирования и периодический обзор с понятным источником."
-                : "PMWORK connects explanation to decision, tool, and control. Risk management is not merely an article: it is a working register, matrix, response plan, and review cadence with a clear source."}
+                ? "PMWORK помогает вести риск от оценки до реагирования: вероятность, влияние, владелец, триггер, действия и дата следующей проверки."
+                : "PMWORK supports risk assessment and response: probability, impact, owner, trigger, actions and next review date."}
             </p>
           </div>
           <div className="feature-grid">
@@ -213,8 +211,8 @@ export default async function Home({
                 GitBranch,
                 ru ? "Подбор подхода" : "Approach fit",
                 ru
-                  ? "Прозрачная эвристика сравнивает предиктивный, адаптивный, потоковый и гибридный подходы без магии."
-                  : "A transparent heuristic compares predictive, adaptive, flow, and hybrid—no magic.",
+                  ? "Сравните подходы по требованиям, срокам, зависимостям и устройству команды."
+                  : "Compare approaches using requirements, deadlines, dependencies and team context.",
               ],
               [
                 ChartNoAxesCombined,

@@ -5,6 +5,11 @@ const files=[];
 function walk(dir) { for (const entry of fs.readdirSync(dir,{withFileTypes:true})) {const file=path.join(dir,entry.name);if(entry.isDirectory())walk(file);else if(/\.(html|js|css|woff2|png|svg|webmanifest|txt|xml)$/.test(file)&&!file.endsWith('/sw.js')&&!/out\/(?:404(?:\/|\.)|_not-found\/)/.test(file))files.push(file);} }
 walk("out");
 files.sort();
+// Set route language before hashing so HTML and the offline cache agree.
+for (const file of files) {
+  const locale = file.match(/^out\/(ru|en)\/.*\.html$/)?.[1];
+  if (locale) fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/<html lang="[^"]*"/, `<html lang="${locale}"`));
+}
 const hash=createHash("sha256");
 hash.update(fs.readFileSync("public/sw.js"));
 for(const file of files)hash.update(file).update(fs.readFileSync(file));

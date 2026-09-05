@@ -7,3 +7,5 @@ Twelve categories are explicit. Aliases resolve to the canonical concept. Valida
 Methods retain original source records and receive individual implementation notes. Their source registry distinguishes standards, official guides and practice. Shared generic secondary fields still require editorial review before claiming every method field is individually authored.
 
 47 templates, 39 playbooks and 26 knowledge domains are retained. Templates are selected by collection and require a destination project. The foundation learning path is a navigation sequence through existing practical knowledge guides.
+
+The contextual-workbench branch adds template-specific usage/failure/effort notes, 17 completed examples, 39 next-cycle playbook actions, 16 method-combination notes, and 18 term-specific glossary enrichments. Shared secondary prose remains reported by `copy:check`; full editorial completion is not asserted.

@@ -31,13 +31,13 @@ test('clean project creation leaves demo behind',async({page})=>{
  await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:'Create first project'}).click();
  const dialog=page.getByRole('dialog');await dialog.getByLabel('Title',{exact:true}).fill('My first project');
  await dialog.getByLabel('Measurable outcome',{exact:true}).fill('Deliver the agreed pilot');
- await dialog.getByRole('button',{name:'Create',exact:true}).click();await expect(page.locator('.page-context').getByRole('heading',{name:'Guide me',exact:true})).toBeVisible();
+ await dialog.getByRole('button',{name:'Next',exact:true}).click();await dialog.getByRole('button',{name:'Show recommendations',exact:true}).click();await dialog.getByRole('button',{name:'Create',exact:true}).click();await expect(page.locator('.page-context').getByRole('heading',{name:'Today',exact:true})).toBeVisible();
  await expect(page.getByText('Atlas Digital Product Launch',{exact:true})).toHaveCount(0);
 });
 test('template destination, open and undo',async({page})=>{
  await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:'Explore demo'}).click();await expect(page.locator('.workspace-shell')).toBeVisible();
  await page.goto(route('/en/templates/'));const card=page.locator('article').first();await card.getByRole('button',{name:'Use template'}).click();
- const dialog=page.getByRole('dialog');await dialog.getByRole('combobox').selectOption('campaign');await dialog.getByRole('button',{name:'Apply',exact:true}).click();
+ const dialog=page.getByRole('dialog');await dialog.getByLabel('Project',{exact:true}).selectOption('campaign');await dialog.getByRole('button',{name:'Apply',exact:true}).click();
  await expect(card.getByRole('status')).toContainText('Autumn Education Campaign');await expect(card.getByRole('link',{name:'Open',exact:true})).toHaveAttribute('href',/project=campaign/);
  await card.getByRole('button',{name:'Undo',exact:true}).click();await expect(card.getByRole('status')).toHaveText('Application undone');
 });

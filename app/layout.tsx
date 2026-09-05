@@ -1,22 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Manrope } from "next/font/google";
+import "./fonts.css";
+import "./tokens.css";
 import "./globals.css";
 import "./premium.css";
 import { PwaRegister } from "@/components/pwa-register";
-
-const inter = Inter({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-sans",
-  display: "swap",
-  preload: true,
-});
-
-const manrope = Manrope({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-display",
-  display: "swap",
-  preload: true,
-});
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
 export const metadata: Metadata = {
@@ -40,7 +27,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body className={`${inter.variable} ${manrope.variable}`}>
+      <body className="local-fonts">
         {children}
         <PwaRegister />
       </body>

@@ -45,7 +45,7 @@ export function projectActions(
       }),
     );
   issues
-    .filter((x) => x.status !== "closed" && x.dueDate < today())
+    .filter((x) => x.status !== "closed" && x.dueDate && x.dueDate < today())
     .forEach((x) =>
       out.push({
         id: `issue-${x.id}`,
@@ -59,7 +59,7 @@ export function projectActions(
       }),
     );
   decisions
-    .filter((x) => x.status === "pending" && x.date < today())
+    .filter((x) => x.status === "pending" && x.date && x.date < today())
     .forEach((x) =>
       out.push({
         id: `decision-${x.id}`,
@@ -101,7 +101,7 @@ export function projectActions(
       }),
     );
   assumptions
-    .filter((x) => x.status === "untested" && x.validationDate <= today())
+    .filter((x) => x.status === "untested" && x.validationDate && x.validationDate <= today())
     .forEach((x) =>
       out.push({
         id: `assumption-${x.id}`,
@@ -150,6 +150,7 @@ export function projectActions(
     why: c.missing ? (ru ? "Связанная работа недоступна." : "Linked work is unavailable.") : `${c.type} · ${c.days} ${ru ? "дн. нарушения связи" : "days of timing conflict"}`,
     action: ru ? "Согласовать даты или уточнить тип связи и лаг." : "Align dates or review relationship type and lag.", view: "planning",
   }));
+  workspace.changes.filter(x=>x.projectId===projectId && x.status==="assessing").forEach(x=>out.push({id:`change-${x.id}`,severity:"high",title:`${ru?"Согласовать изменение":"Approve change"}: ${x.change}`,why:x.reason,action:ru?"Сравнить влияние на сроки, стоимость и объём; зафиксировать решение.":"Compare schedule, cost and scope impact; record the decision.",view:"control"}));
   return out.sort(
     (a, b) =>
       ({ critical: 0, high: 1, medium: 2 })[a.severity] -

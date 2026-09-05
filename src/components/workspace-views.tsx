@@ -99,8 +99,8 @@ export function PortfolioView({
           <h2>{ru ? "Все проекты" : "All projects"}</h2>
           <p className="muted">
             {ru
-              ? "Сравнивайте не активность, а результат, риск и качество управления."
-              : "Compare outcomes, risk, and control quality—not activity."}
+              ? "Сравните результаты, ближайшие сроки и нерешённые вопросы проектов."
+              : "Compare outcomes, upcoming dates and unresolved project questions."}
           </p>
         </div>
         <button className="button primary" onClick={() => onCreate("project")}>

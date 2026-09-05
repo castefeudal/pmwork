@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+const [verifyLog,e2eLog]=process.argv.slice(2);
+if(!verifyLog||!e2eLog)throw Error('Usage: node scripts/record-release-evidence.mjs VERIFY_LOG E2E_LOG (run performance:check after E2E first)');
+const verify=fs.readFileSync(verifyLog,'utf8'),e2e=fs.readFileSync(e2eLog,'utf8');
+const unit=Number(verify.match(/Tests\s+(\d+) passed/)?.[1]);
+const browser=Number(e2e.match(/^\s+(\d+) passed\b/m)?.[1]);
+const html=Number(verify.match(/export valid: (\d+) HTML/)?.[1]);
+if(!unit||!browser||!html||/^\s+\d+ (failed|flaky)\b/m.test(e2e)||!verify.includes('export valid:'))throw Error('Run evidence incomplete or failing; no release evidence written');
+const report={measuredAt:new Date().toISOString(),branch:execFileSync('git',['branch','--show-current'],{encoding:'utf8'}).trim(),scope:'Local working tree; exact committed state is verified separately by GitHub CI',unitComponentTests:unit,browserTests:browser,htmlPages:html,chromium:'149.0.7827.0 (local); GitHub CI uses Playwright-pinned Chromium',performance:JSON.parse(fs.readFileSync('test-results/performance-bundles.json','utf8')),editorialAcceptanceComplete:false,productionDeployed:false};
+fs.writeFileSync('docs/release-evidence.json',JSON.stringify(report,null,2)+'\n');
+console.log(`Recorded ${unit} unit/component tests, ${browser} browser tests, ${html} HTML files. Full product acceptance remains open.`);

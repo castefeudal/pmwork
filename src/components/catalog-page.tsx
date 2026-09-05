@@ -1,4 +1,7 @@
 "use client";
+import {templatePractice} from "@/content/template-practice";
+import {PlaybookAction} from "./playbook-action";
+import { templateExamples } from "@/content/template-examples";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useUrlValue } from "./use-url-state";
@@ -92,7 +95,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
       );
     if (kind === "templates")
       return templates.filter((x) =>
-        (collection === "all" || templateCollection(x) === collection) && (pick(x.title, locale) + pick(x.purpose, locale))
+        (collection === "all" || templateCollection(x) === collection) && (pick(x.title, locale) + pick(x.purpose, locale)+" "+x.slug.split("-").join(" "))
           .toLowerCase()
           .includes(q),
       );
@@ -209,6 +212,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
               </span>
               <h2>{pick(x.title, locale)}</h2>
               <p>{pick(x.purpose, locale)}</p>
+              <small>{ru?"Ориентир заполнения":"Completion estimate"}: {templatePractice[x.slug]?.[4]} {ru?"минут; зависит от готовности входных данных":"minutes; depends on input readiness"}</small>
               <details>
                 <summary>
                   {ru ? "Поля и рекомендации" : "Fields and guidance"}
@@ -227,6 +231,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                   {pick(x.antiPattern, locale)}
                 </p>
               </details>
+              {templateExamples[x.slug]&&<details><summary>{ru?"Заполненный пример · вымышленные данные":"Completed example · fictional data"}</summary><p>{templateExamples[x.slug][locale]}</p></details>}
               <div className="card-foot">
                 <TemplateApply template={x} locale={locale} />
                 <details><summary aria-label={ru ? "Другие действия" : "More actions"}>…</summary>
@@ -265,6 +270,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                   : "Diagnose → Act → Stabilize"}
               </span>
               <h2>{pick(x.title, locale)}</h2>
+              <PlaybookAction playbook={x} locale={locale}/>
               <p>
                 <strong>{ru ? "Диагностика" : "Diagnose"}:</strong>{" "}
                 {pick(x.diagnose[0]!, locale)}

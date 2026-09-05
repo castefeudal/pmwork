@@ -10,7 +10,7 @@ describe("workspace data", () => {
       expect(
         w.workItems.every((x) => w.projects.some((p) => p.id === x.projectId)),
       ).toBe(true);
-      expect(w.schemaVersion).toBe(4);
+      expect(w.schemaVersion).toBe(5);
     }
   });
   it("round trips JSON with persisted closure", () => {
@@ -43,7 +43,7 @@ describe("workspace data", () => {
         ])
           delete (legacy as Record<string, unknown>)[key];
       const migrated = migrateWorkspace(legacy);
-      expect(migrated.schemaVersion).toBe(4);
+      expect(migrated.schemaVersion).toBe(5);
       expect(migrated.projects).toHaveLength(3);
       expect(migrated.closureRecords).toEqual([]);
     }
