@@ -46,7 +46,7 @@ for (const locale of ["ru", "en"] as const) {
     await page.getByRole("button", { name: "RAID", exact: true }).click();
     await page
       .getByRole("button", {
-        name: locale === "ru" ? "Добавить риск" : "Add risk",
+        name: locale === "ru" ? "Добавить запись" : "Add risk",
         exact: true,
       })
       .click();
