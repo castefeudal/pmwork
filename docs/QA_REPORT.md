@@ -1,3 +1,15 @@
+# Current branch QA — 2026-09-05
+
+44 unit/component tests passed. The complete final Playwright run passed 80/80 scenarios on desktop/mobile, without retries. Representative axe checks passed in RU/EN and light/dark; the seven requested viewport sizes passed body-overflow checks. Additional scenarios cover explicit first run, clean project creation, project/view history, locale preservation, glossary alias/detail accessibility, global keyboard search, template destination/open/undo and screenshot evidence.
+
+Static build and export validation passed. Local transfer budgets passed. This is representative testing, not a blanket WCAG conformance certification or field Core Web Vitals assessment.
+
+See RELEASE.md for scope qualifications and pending remote CI/deployment evidence.
+
+---
+
+> Current branch note: refer to PRODUCT_SPEC.md, CONTENT_MODEL.md, QUALITY_GATE.md and RELEASE.md for current behavior and validation. Earlier measurements below are historical and are not evidence for the new branch.
+
 # PMWORK 2.2 release QA
 
 Run date: 2026-09-05. Node 24, Chromium desktop and Pixel 7 emulation.

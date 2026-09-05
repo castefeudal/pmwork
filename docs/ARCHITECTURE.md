@@ -1,20 +1,14 @@
 # Architecture
 
-PMWORK is a static-exportable Next.js 16 application. Public knowledge routes are generated as static pages; the workspace is a client-side application whose data is validated with Zod and persisted in IndexedDB. No account, backend, tracker, or network sync is required.
+PMWORK is a Next.js static export. GitHub Pages serves `/pmwork`; root builds remain supported. There is no backend, authentication or cloud synchronization.
 
-## Boundaries
-
-- `app/`: routes, metadata, sitemap, robots.
-- `src/content/`: bilingual structured content and source registry.
-- `src/domain/`: strict schemas, method-fit heuristic, pure calculations.
-- `src/data/`: normalized demo workspace and IndexedDB import/export.
-- `src/components/`: public shell, working surfaces, calculators.
-- `scripts/`: content, localization, and link quality gates.
-
-Entity relationships use stable IDs rather than duplicated nested objects. Schema version `2` persists the operating model: objectives, work, milestones, iterations, RAID, stakeholders, team/capacity, budget, change control, suppliers, meetings, reports, lessons, communications, quality gates and activity. Versioned import accepts both a raw workspace and an export envelope; a deterministic v1-to-v2 migration preserves existing data. Daily rotating recovery snapshots retain the latest five valid states.
-
-The client is split into a small state/persistence orchestrator, typed creation dialog, workspace views and pure domain insight functions. Portfolio summaries, action ranking, flow metrics and completeness scores remain deterministic and testable without browser state.
-
-## Rendering and deployment
-
-`output: export` produces `out/`. In GitHub Actions a `/pmwork` base path and asset prefix are applied. Routes use trailing slashes so GitHub Pages can serve generated directory indexes. Pull requests run the full quality pipeline; pushes to `main` publish the verified static export through GitHub Pages. The same static output can also be hosted by Vercel, Netlify, Cloudflare Pages or ChatGPT Sites.
+- `src/domain/schemas.ts`: schema v4. `experience` controls guidance, `density` independently controls comfortable/compact rendering. Owner IDs and local project member selection are optional; text owners remain compatible.
+- `src/data/storage.ts`: v1/v2/v3 migrations, IndexedDB plus timestamped localStorage mirror, snapshots and validated import/export. The `pmwork:workspace:v3` storage key remains intentionally stable to preserve existing storage discovery; the payload schema is v4.
+- `src/components/workspace-app.tsx`: explicit first run, workspace shell, project selection, language and recovery.
+- `src/domain/workspace-url.ts` and `src/components/use-url-state.ts`: project/view/layout and tab/tool/query browser state.
+- `src/domain/workspace-commands.ts`: validated work updates, owner assignment, risk conversion and status document draft commands. Other existing mutations still use their existing validated paths.
+- `src/content/glossary-seed.ts`: original bilingual definitions and examples; `glossary.ts`: taxonomy, aliases, relationships and validation.
+- `src/components/glossary-browser.tsx`: compact search, categories, levels and term details. `app/[locale]/glossary/[slug]`: statically generated bilingual pages and DefinedTerm metadata.
+- Public catalog records are selected server-side. Public search is dynamically imported only when invoked. Existing catalog rendering is shared for methods/templates/playbooks/knowledge, with task-specific comparison, collections and learning-path controls.
+- Work cards and planning agenda provide narrow-screen alternatives; the table and timeline remain available on desktop.
+- The service worker precaches exported routes. A waiting update is activated only after a user action; offline status is visible.
