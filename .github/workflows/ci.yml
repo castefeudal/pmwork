@@ -21,9 +21,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run verify
-      - run: npm run performance:check
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - run: npm run performance:check
       - uses: actions/upload-artifact@v4
         if: always()
         with:

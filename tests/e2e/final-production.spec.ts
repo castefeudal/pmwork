@@ -40,12 +40,10 @@ test('template destination, open and undo',async({page})=>{
  await expect(card.getByRole('status')).toContainText('Autumn Education Campaign');await expect(card.getByRole('link',{name:'Open',exact:true})).toHaveAttribute('href',/project=campaign/);
  await card.getByRole('button',{name:'Undo',exact:true}).click();await expect(card.getByRole('status')).toHaveText('Application undone');
 });
-test('catalog and comparison visual evidence',async({page},testInfo)=>{
- for(const surface of ['glossary','playbooks','knowledge','methods','templates']){
+for(const surface of ['glossary','playbooks','knowledge','methods','templates']) test(`catalog visual evidence ${surface}`,async({page},testInfo)=>{
   await page.goto(route(`/ru/${surface}/`));await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:`test-results/final-${surface}-${testInfo.project.name}.png`,fullPage:true});
   expect(await page.evaluate(()=>document.body.scrollWidth)).toBeLessThanOrEqual((page.viewportSize()?.width??1280)+1);
   if(surface==='methods') {await page.locator('#method-comparison summary').click();await page.locator('#method-comparison input').nth(0).check();await page.locator('#method-comparison input').nth(3).check();await page.screenshot({path:`test-results/method-compare-${testInfo.project.name}.png`,fullPage:true});}
- }
 });
 test('guide and More menu visual evidence',async({page},testInfo)=>{
  await page.goto(route('/ru/workspace/'));await page.getByRole('button',{name:'Посмотреть готовый пример'}).click();await navigateWorkspace(page,'Проведи меня');

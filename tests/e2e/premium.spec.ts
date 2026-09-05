@@ -99,7 +99,8 @@ test("Pages navigation keeps prefix and both fonts actually load",async({page})=
   const fonts=await page.evaluate(()=>Array.from(document.fonts).filter(f=>f.status==="loaded").map(f=>f.family));
   expect(fonts.some(f=>/inter/i.test(f))).toBe(true);expect(fonts.some(f=>/manrope/i.test(f))).toBe(true);
   await page.getByRole("link",{name:"Открыть рабочее пространство",exact:true}).click();
-  const home=page.getByRole("link",{name:"PMWORK — главная",exact:true});await expect(home).toHaveAttribute("href",route("/ru/"));
+  const home=page.getByRole("link",{name:"PMWORK — главная",exact:true});await expect(home).toBeVisible();await expect(home).toHaveAttribute("href",route("/ru/"));
+  await home.click();await expect(page).toHaveURL(new RegExp(`${route("/ru/")}$`));
 });
 
 test("project switching and validated backup replacement",async({page})=>{
@@ -117,8 +118,8 @@ test("project switching and validated backup replacement",async({page})=>{
  await page.locator('input[type="file"]').setInputFiles({name:"backup.json",mimeType:"application/json",buffer:raw});
  await expect(page.getByText("Backup restored",{exact:true})).toBeVisible();
 });
-for(const locale of ["ru","en"]) test(`public and tool visual review ${locale}`,async({page},testInfo)=>{
- for(const path of ["","knowledge","methods","templates","tools"]){
+for(const locale of ["ru","en"]) {
+ for(const path of ["","knowledge","methods","templates","tools"]) test(`public visual review ${locale} ${path||"landing"}`,async({page},testInfo)=>{
   await page.goto(route(`/${locale}/${path?path+"/":""}`));await expect(page.locator("main")).toBeVisible();
   await page.screenshot({path:`test-results/public-${testInfo.project.name}-${locale}-${path||"landing"}.png`,fullPage:true});
   if(path === "knowledge") {
@@ -127,10 +128,13 @@ for(const locale of ["ru","en"]) test(`public and tool visual review ${locale}`,
     await expect(page.getByRole("heading",{name:locale === "ru" ? "Контроль" : "Control",exact:true})).toBeVisible();
   }
   if(path === "tools" && locale === "ru") await expect(page.locator(".result-box")).toContainText("Потоковый");
- }
- for(const name of (locale==="ru"?["Конструктор метода","Критический путь · CPM","PERT","Освоенный объём · EVM","Monte Carlo","Приоритизация","Закон Литтла"]:["Method composer","Critical Path","PERT","Earned Value","Monte Carlo","Prioritization","Little’s Law"])){
+ });
+ for(const name of (locale==="ru"?["Конструктор метода","Критический путь · CPM","PERT","Освоенный объём · EVM","Monte Carlo","Приоритизация","Закон Литтла"]:["Method composer","Critical Path","PERT","Earned Value","Monte Carlo","Prioritization","Little’s Law"])) test(`tool visual review ${locale} ${name}`,async({page},testInfo)=>{
+  await page.goto(route(`/${locale}/tools/`));
   await page.getByRole("button",{name,exact:true}).click();
   await page.screenshot({path:`test-results/tool-${testInfo.project.name}-${locale}-${name}.png`,fullPage:true});
- }
- const result=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(result.violations).toEqual([]);
-});
+  if(name === "Закон Литтла" || name === "Little’s Law") {
+   const result=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(result.violations).toEqual([]);
+  }
+ });
+}

@@ -10,6 +10,7 @@ import {
   ClipboardCheck,
   Download,
   FileText,
+  Home,
   KanbanSquare,
   LayoutDashboard,
   ListChecks,
@@ -432,6 +433,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       </WorkspaceMore>}
       <main className="workspace-main">
         <header className="workspace-top">
+          <Link className="button small workspace-home-mobile" href={`/${locale}/`} aria-label={ru ? "PMWORK — главная" : "PMWORK home"}>
+            <Home size={18} aria-hidden="true" />
+          </Link>
           <select
             className="input mobile-project-switch"
             value={project.id}

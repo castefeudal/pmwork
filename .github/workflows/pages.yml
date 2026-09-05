@@ -27,6 +27,7 @@ jobs:
       - run: npm run test:e2e
         env:
           PMWORK_BASE_PATH: github
+      - run: npm run performance:check
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
