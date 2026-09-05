@@ -371,7 +371,8 @@ export const savedWorkViewSchema = z.object({
   id: z.string(), projectId: z.string(), name: z.string().min(1).max(80), config: workViewConfigSchema,
 });
 export const workspaceSchema = z.object({
-  schemaVersion: z.literal(3),
+  schemaVersion: z.literal(4),
+  density: z.enum(["comfortable", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
   workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),
   id: z.string(),

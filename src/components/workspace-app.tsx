@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
-import { demoWorkspace, localizeBundledDemo } from "@/data/demo";
+import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
 import { displayLabel, enumLabels } from "@/content/workspace-i18n";
 import {
   exportWorkspace,
@@ -106,6 +106,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [view, setView] = useState<WorkspaceView>("overview"),
     [ready, setReady] = useState(false),
     [recovery, setRecovery] = useState(false),
+    [firstRun, setFirstRun] = useState(true),
     [dialog, setDialog] = useState<CreateType | null>(null),
     [editor, setEditor] = useState<{ kind: EditableKind; id: string } | null>(
       null,
@@ -126,6 +127,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         if (value) {
           const normalized = localizeBundledDemo(value, locale);
           setWorkspace(normalized);
+          setFirstRun(false);
+          setView(normalized.experience === "foundation" ? "guide" : "overview");
           let remembered: string | null = null;
           try {
             remembered = sessionStorage.getItem("pmwork-project");
@@ -145,6 +148,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       })
       .catch(() => {
         setRecovery(true);
+        setFirstRun(false);
         setReady(true);
         listSnapshots().then(setSnapshots).catch(() => undefined);
         setToast(
@@ -155,7 +159,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       });
   }, [locale, ru]);
   useEffect(() => {
-    if (!ready || recovery) return;
+    if (!ready || recovery || firstRun) return;
     const id = setTimeout(
       () =>
         saveWorkspace(workspace)
@@ -168,15 +172,15 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       350,
     );
     return () => clearTimeout(id);
-  }, [workspace, ready, ru, locale, recovery]);
+  }, [workspace, ready, ru, locale, recovery, firstRun]);
   useEffect(() => {
-    if (!ready || recovery) return;
+    if (!ready || recovery || firstRun) return;
     const flush = () => { void saveWorkspace(workspace).catch(() => undefined); };
     const hidden = () => { if (document.visibilityState === "hidden") flush(); };
     addEventListener("pagehide", flush);
     document.addEventListener("visibilitychange", hidden);
     return () => { removeEventListener("pagehide", flush); document.removeEventListener("visibilitychange", hidden); };
-  }, [workspace, ready, recovery]);
+  }, [workspace, ready, recovery, firstRun]);
   useEffect(() => {
     if (ready && view === "setup") listSnapshots().then(setSnapshots).catch(() => undefined);
   }, [ready, view]);
@@ -209,6 +213,23 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         </p>
       </main>
     );
+  if (firstRun) return (
+    <main className="language-gate">
+      <Brand />
+      <h1>{ru ? "Начните работу в PMWORK" : "Start working in PMWORK"}</h1>
+      <p>{ru ? "Создайте своё пространство или изучите готовый проект." : "Create your own workspace or explore a completed example."}</p>
+      <button className="button primary" onClick={() => { setWorkspace(emptyWorkspace(locale)); setDialog("project"); }}>{ru ? "Создать первый проект" : "Create first project"}</button>
+      <button className="button" onClick={() => { setWorkspace(demoWorkspace(locale)); setProjectId("atlas"); setFirstRun(false); }}>{ru ? "Посмотреть готовый пример" : "Explore demo"}</button>
+      <button className="button" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить резервную копию" : "Restore backup"}</button>
+      <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {
+        const file = e.target.files?.[0]; if (!file) return;
+        try { const restored = await importWorkspace(file); setWorkspace({ ...restored, locale }); setProjectId(restored.projects[0]?.id ?? ""); setView(restored.experience === "foundation" ? "guide" : "overview"); setFirstRun(false); }
+        catch { setToast(ru ? "Файл не прошёл проверку" : "File did not pass validation"); }
+      }} />
+      {toast && <p role="alert">{toast}</p>}
+      {dialog && <WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={() => setDialog(null)} onCommit={(next, id) => { setWorkspace(workspaceSchema.parse(next)); setProjectId(id ?? ""); setView("guide"); setFirstRun(false); }} />}
+    </main>
+  );
   const project =
     workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
   if (!project)
@@ -335,7 +356,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     }
   };
   return (
-    <div className="workspace-shell">
+    <div className={`workspace-shell density-${workspace.density}`}>
       <aside className="sidebar">
         <Link
           href={`/${locale}`}
@@ -594,8 +615,8 @@ function SetupView({
               : "Each area includes purpose, next action, and a common mistake."
             : workspace.experience === "advanced"
               ? ru
-                ? "Компактный режим: приоритет сигналам и контрольным данным."
-                : "Compact mode: signals and control data first."
+                ? "Приоритет сигналам и контрольным данным; меньше пояснений."
+                : "Signals and control data first, with fewer explanations."
               : ru
                 ? "Сбалансированные подсказки для регулярной проектной работы."
                 : "Balanced guidance for regular project delivery."}
@@ -618,6 +639,13 @@ function SetupView({
               </option>
             ),
           )}
+        </select>
+      </section>
+      <section className="panel span-6">
+        <h3>{ru ? "Плотность интерфейса" : "Interface density"}</h3>
+        <select className="input" aria-label={ru ? "Плотность интерфейса" : "Interface density"} value={workspace.density} onChange={e => onChange({ ...workspace, density: e.target.value as Workspace["density"] })}>
+          <option value="comfortable">{ru ? "Комфортная" : "Comfortable"}</option>
+          <option value="compact">{ru ? "Компактная" : "Compact"}</option>
         </select>
       </section>
       <section className="panel span-6">

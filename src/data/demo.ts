@@ -330,13 +330,14 @@ export function demoWorkspace(locale: Locale): Workspace {
     }),
   );
   return {
-    schemaVersion: 3,
+    schemaVersion: 4,
     savedWorkViews: [],
     workViewPreferences: [],
     id: "pmwork-demo",
     name: "PMWORK",
     locale,
     experience: "practitioner",
+    density: "comfortable",
     projects,
     workItems,
     risks: [
@@ -816,4 +817,12 @@ export function localizeBundledDemo(
   const target = demoWorkspace(locale);
   const localized = localizeSeedValue(workspace, source, target) as Workspace;
   return { ...localized, locale };
+}
+
+/** A new workspace contains no bundled project records. */
+export function emptyWorkspace(locale: Locale): Workspace {
+  const seed = demoWorkspace(locale);
+  return { ...seed, ...Object.fromEntries(Object.entries(seed).map(([key, value]) =>
+    [key, Array.isArray(value) ? [] : value]
+  )), id: "local-workspace", experience: "foundation" };
 }

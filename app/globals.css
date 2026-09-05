@@ -1705,3 +1705,8 @@ blockquote {
     break-inside: avoid;
   }
 }
+
+/* Guidance and visual density are independent preferences. */
+.density-compact .workspace-content { padding: 16px; }
+.density-compact .panel { padding: 14px; }
+.density-compact td, .density-compact th { padding-top: 7px; padding-bottom: 7px; }
