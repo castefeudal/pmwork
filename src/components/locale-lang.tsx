@@ -1,8 +1,10 @@
 "use client";
-import {useEffect} from "react";
-import type {Locale} from "@/domain/schemas";
+import { useEffect } from "react";
+import type { Locale } from "@/domain/schemas";
 
-export function LocaleLang({locale}:{locale:Locale}){
-  useEffect(()=>{document.documentElement.lang=locale},[locale]);
+export function LocaleLang({ locale }: { locale: Locale }) {
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
   return null;
 }

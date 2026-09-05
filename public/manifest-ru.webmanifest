@@ -1,13 +1,13 @@
 {
-  "name": "PMWORK — Project Management Operating System",
+  "name": "PMWORK — система управления проектами",
   "short_name": "PMWORK",
-  "description": "Practical local-first workspace for project managers",
-  "id": "./",
-  "start_url": "./",
+  "description": "Практическое рабочее пространство руководителя проекта с локальным хранением данных",
+  "id": "./ru/workspace/",
+  "start_url": "./ru/workspace/",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0b1117",
-  "theme_color": "#176B87",
+  "background_color": "#071017",
+  "theme_color": "#176b87",
   "icons": [
     {
       "src": "./icon-192.png",

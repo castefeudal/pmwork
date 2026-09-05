@@ -1,1 +1,35 @@
-import type{MetadataRoute}from"next";export const dynamic="force-static";export default function sitemap():MetadataRoute.Sitemap{const base="https://castefeudal.github.io/pmwork";const paths=["","workspace","methods","templates","playbooks","tools","knowledge","glossary","sources","about","privacy"];return[...paths.flatMap(path=>["ru","en"].map(locale=>({url:`${base}/${locale}/${path}`,lastModified:new Date("2026-09-04"),changeFrequency:path==="workspace"?"never" as const:"monthly" as const,priority:path===""?1:path==="workspace"?.4:.7}))),{url:`${base}/`,lastModified:new Date("2026-09-04"),changeFrequency:"monthly",priority:.8}]}
+import type { MetadataRoute } from "next";
+export const dynamic = "force-static";
+export default function sitemap(): MetadataRoute.Sitemap {
+  const base = "https://castefeudal.github.io/pmwork";
+  const paths = [
+    "",
+    "workspace",
+    "methods",
+    "templates",
+    "playbooks",
+    "tools",
+    "knowledge",
+    "glossary",
+    "sources",
+    "about",
+    "privacy",
+  ];
+  return [
+    ...paths.flatMap((path) =>
+      ["ru", "en"].map((locale) => ({
+        url: `${base}/${locale}/${path}`,
+        lastModified: new Date("2026-09-04"),
+        changeFrequency:
+          path === "workspace" ? ("never" as const) : ("monthly" as const),
+        priority: path === "" ? 1 : path === "workspace" ? 0.4 : 0.7,
+      })),
+    ),
+    {
+      url: `${base}/`,
+      lastModified: new Date("2026-09-04"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+  ];
+}

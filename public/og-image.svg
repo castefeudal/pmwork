@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">PMWORK</title>
+  <desc id="description">Project management control system preview</desc>
+  <rect width="1200" height="630" fill="#071017"/>
+  <circle cx="1080" cy="-20" r="260" fill="#0f2530"/>
+  <circle cx="1040" cy="30" r="150" fill="#123846"/>
+  <rect x="72" y="64" width="1056" height="502" rx="28" fill="#0d1820" stroke="#29414d" stroke-width="2"/>
+  <rect x="72" y="64" width="248" height="502" rx="28" fill="#09131a"/>
+  <rect x="290" y="64" width="30" height="502" fill="#09131a"/>
+  <rect x="106" y="100" width="42" height="42" rx="12" fill="#176b87"/>
+  <path d="M117 129V112h11c8 0 13 4 13 11s-5 11-13 11h-4v8h-7v-13Zm7-2h4c4 0 6-1 6-4s-2-4-6-4h-4v8Z" fill="#eef9fc"/>
+  <text x="162" y="132" fill="#f3f8fa" font-size="27" font-weight="700" font-family="Arial, sans-serif" letter-spacing="1">PMWORK</text>
+  <rect x="106" y="190" width="180" height="44" rx="10" fill="#123240"/>
+  <circle cx="126" cy="212" r="5" fill="#3da5c5"/>
+  <rect x="142" y="204" width="108" height="8" rx="4" fill="#dce9ed"/>
+  <rect x="142" y="218" width="72" height="6" rx="3" fill="#64808b"/>
+  <g fill="#637984">
+    <rect x="106" y="262" width="138" height="9" rx="4"/>
+    <rect x="106" y="298" width="112" height="9" rx="4"/>
+    <rect x="106" y="334" width="152" height="9" rx="4"/>
+    <rect x="106" y="370" width="124" height="9" rx="4"/>
+  </g>
+  <text x="366" y="128" fill="#f4f8fa" font-size="34" font-weight="700" font-family="Arial, sans-serif">Project control room</text>
+  <text x="366" y="158" fill="#79939e" font-size="16" font-family="Arial, sans-serif">Understand · Decide · Do · Control · Learn</text>
+  <g>
+    <rect x="366" y="194" width="218" height="108" rx="14" fill="#101f28" stroke="#263b45"/>
+    <text x="390" y="225" fill="#78939e" font-size="14" font-family="Arial, sans-serif">DELIVERY</text>
+    <text x="390" y="270" fill="#f1f8fa" font-size="38" font-weight="700" font-family="Arial, sans-serif">68%</text>
+    <rect x="390" y="284" width="160" height="5" rx="2" fill="#233842"/>
+    <rect x="390" y="284" width="109" height="5" rx="2" fill="#3da5c5"/>
+    <rect x="606" y="194" width="218" height="108" rx="14" fill="#101f28" stroke="#263b45"/>
+    <text x="630" y="225" fill="#78939e" font-size="14" font-family="Arial, sans-serif">BUDGET FORECAST</text>
+    <text x="630" y="270" fill="#f1f8fa" font-size="38" font-weight="700" font-family="Arial, sans-serif">$184k</text>
+    <text x="630" y="288" fill="#6fd3a2" font-size="13" font-family="Arial, sans-serif">Within baseline</text>
+    <rect x="846" y="194" width="230" height="108" rx="14" fill="#101f28" stroke="#263b45"/>
+    <text x="870" y="225" fill="#78939e" font-size="14" font-family="Arial, sans-serif">ATTENTION</text>
+    <text x="870" y="270" fill="#f5c26b" font-size="38" font-weight="700" font-family="Arial, sans-serif">3</text>
+    <text x="906" y="270" fill="#f1f8fa" font-size="16" font-family="Arial, sans-serif">priority actions</text>
+  </g>
+  <rect x="366" y="328" width="710" height="190" rx="16" fill="#101f28" stroke="#263b45"/>
+  <text x="390" y="360" fill="#eef6f8" font-size="17" font-weight="700" font-family="Arial, sans-serif">Operational flow</text>
+  <g font-family="Arial, sans-serif" font-size="13">
+    <rect x="390" y="382" width="194" height="112" rx="10" fill="#0c1921" stroke="#263b45"/>
+    <text x="408" y="408" fill="#78939e">READY · 6</text>
+    <rect x="408" y="424" width="158" height="50" rx="8" fill="#142733"/>
+    <rect x="420" y="437" width="112" height="7" rx="3" fill="#bed0d6"/>
+    <rect x="420" y="452" width="76" height="6" rx="3" fill="#597681"/>
+    <rect x="606" y="382" width="194" height="112" rx="10" fill="#0c1921" stroke="#315562"/>
+    <text x="624" y="408" fill="#3da5c5">IN PROGRESS · 3/4</text>
+    <rect x="624" y="424" width="158" height="50" rx="8" fill="#15313d"/>
+    <rect x="636" y="437" width="126" height="7" rx="3" fill="#d1e1e5"/>
+    <rect x="636" y="452" width="88" height="6" rx="3" fill="#5d8290"/>
+    <rect x="822" y="382" width="230" height="112" rx="10" fill="#0c1921" stroke="#263b45"/>
+    <text x="840" y="408" fill="#78939e">CONTROL SIGNAL</text>
+    <circle cx="850" cy="444" r="6" fill="#f5c26b"/>
+    <rect x="866" y="437" width="160" height="7" rx="3" fill="#d1e1e5"/>
+    <rect x="866" y="452" width="120" height="6" rx="3" fill="#5d8290"/>
+  </g>
+</svg>

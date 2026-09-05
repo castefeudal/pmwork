@@ -1,19 +1,126 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect,useRef,useState } from "react";
-import { Menu,X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
 import type { Locale } from "@/domain/schemas";
 import { ui } from "@/content/ui";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
 
-export function PublicHeader({locale}: {locale:Locale}){
- const t=ui(locale),path=usePathname(),other=locale==="ru"?"en":"ru",switched=path.replace(`/${locale}`,`/${other}`),[open,setOpen]=useState(false),firstLink=useRef<HTMLAnchorElement>(null);
- const links=[[t.nav.workspace,"workspace"],[t.nav.methods,"methods"],[t.nav.templates,"templates"],[t.nav.playbooks,"playbooks"],[t.nav.tools,"tools"],[t.nav.knowledge,"knowledge"],[t.nav.glossary,"glossary"]] as const;
- useEffect(()=>{if(!open)return;firstLink.current?.focus();const close=(event:KeyboardEvent)=>{if(event.key==="Escape")setOpen(false)};addEventListener("keydown",close);return()=>removeEventListener("keydown",close)},[open]);
- return <><a className="skip-link" href="#main">{locale==="ru"?"К содержанию":"Skip to content"}</a><header className="topbar"><Link href={`/${locale}`} aria-label={locale==="ru"?"PMWORK — главная":"PMWORK home"}><Brand/></Link><nav className="topnav" aria-label={locale==="ru"?"Основная навигация":"Primary navigation"}>
-  <div className="desktop-nav">{links.map(([label,slug])=><Link key={slug} href={`/${locale}/${slug}`}>{label}</Link>)}</div>
-  <Link className="language-link" href={switched} aria-label={locale==="ru"?"Switch to English":"Переключить на русский"}>{other.toUpperCase()}</Link><ThemeToggle/><button type="button" className="mobile-menu" aria-label={open?(locale==="ru"?"Закрыть меню":"Close menu"):(locale==="ru"?"Открыть меню":"Open menu")} aria-expanded={open} aria-controls="mobile-navigation" onClick={()=>setOpen(value=>!value)}>{open?<X size={20}/>:<Menu size={20}/>}</button>
- </nav></header>{open&&<><button type="button" className="mobile-nav-backdrop" aria-label={locale==="ru"?"Закрыть меню":"Close menu"} onClick={()=>setOpen(false)}/><nav id="mobile-navigation" className="mobile-nav" aria-label={locale==="ru"?"Мобильная навигация":"Mobile navigation"}>{links.map(([label,slug],index)=><Link ref={index===0?firstLink:undefined} key={slug} href={`/${locale}/${slug}`} onClick={()=>setOpen(false)}>{label}<span aria-hidden="true">→</span></Link>)}<Link href={`/${locale}/about`} onClick={()=>setOpen(false)}>{t.nav.about}<span aria-hidden="true">→</span></Link></nav></> }</>;
+export function PublicHeader({ locale }: { locale: Locale }) {
+  const t = ui(locale),
+    path = usePathname(),
+    other = locale === "ru" ? "en" : "ru",
+    switched = path.replace(`/${locale}`, `/${other}`),
+    [open, setOpen] = useState(false),
+    firstLink = useRef<HTMLAnchorElement>(null);
+  const links = [
+    [t.nav.workspace, "workspace"],
+    [t.nav.methods, "methods"],
+    [t.nav.templates, "templates"],
+    [t.nav.playbooks, "playbooks"],
+    [t.nav.tools, "tools"],
+    [t.nav.knowledge, "knowledge"],
+    [t.nav.glossary, "glossary"],
+  ] as const;
+  useEffect(() => {
+    if (!open) return;
+    firstLink.current?.focus();
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    addEventListener("keydown", close);
+    return () => removeEventListener("keydown", close);
+  }, [open]);
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        {locale === "ru" ? "К содержанию" : "Skip to content"}
+      </a>
+      <header className="topbar">
+        <Link
+          href={`/${locale}`}
+          aria-label={locale === "ru" ? "PMWORK — главная" : "PMWORK home"}
+        >
+          <Brand />
+        </Link>
+        <nav
+          className="topnav"
+          aria-label={
+            locale === "ru" ? "Основная навигация" : "Primary navigation"
+          }
+        >
+          <div className="desktop-nav">
+            {links.map(([label, slug]) => (
+              <Link key={slug} href={`/${locale}/${slug}`}>
+                {label}
+              </Link>
+            ))}
+          </div>
+          <Link
+            className="language-link"
+            href={switched}
+            aria-label={
+              locale === "ru" ? "Switch to English" : "Переключить на русский"
+            }
+          >
+            {other.toUpperCase()}
+          </Link>
+          <ThemeToggle />
+          <button
+            type="button"
+            className="mobile-menu"
+            aria-label={
+              open
+                ? locale === "ru"
+                  ? "Закрыть меню"
+                  : "Close menu"
+                : locale === "ru"
+                  ? "Открыть меню"
+                  : "Open menu"
+            }
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </nav>
+      </header>
+      {open && (
+        <>
+          <button
+            type="button"
+            className="mobile-nav-backdrop"
+            aria-label={locale === "ru" ? "Закрыть меню" : "Close menu"}
+            onClick={() => setOpen(false)}
+          />
+          <nav
+            id="mobile-navigation"
+            className="mobile-nav"
+            aria-label={
+              locale === "ru" ? "Мобильная навигация" : "Mobile navigation"
+            }
+          >
+            {links.map(([label, slug], index) => (
+              <Link
+                ref={index === 0 ? firstLink : undefined}
+                key={slug}
+                href={`/${locale}/${slug}`}
+                onClick={() => setOpen(false)}
+              >
+                {label}
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+            <Link href={`/${locale}/about`} onClick={() => setOpen(false)}>
+              {t.nav.about}
+              <span aria-hidden="true">→</span>
+            </Link>
+          </nav>
+        </>
+      )}
+    </>
+  );
 }
