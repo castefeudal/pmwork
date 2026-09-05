@@ -17,7 +17,7 @@ describe("workspace interactions", () => {
     expect(localStorage.getItem("pmwork:workspace:v3")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Create first project" }));
     expect(screen.getByRole("dialog", { name: "Create project" })).toBeTruthy();
-    expect(screen.queryByText("Atlas Digital Product Launch")).toBeNull();
+    expect(screen.queryByText("MARKOVMADE Digital Product Launch")).toBeNull();
   });
 
   it("switches views and adds work", async () => {

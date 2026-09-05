@@ -32,7 +32,7 @@ test('clean project creation leaves demo behind',async({page})=>{
  const dialog=page.getByRole('dialog');await dialog.getByLabel('Title',{exact:true}).fill('My first project');
  await dialog.getByLabel('Measurable outcome',{exact:true}).fill('Deliver the agreed pilot');
  await dialog.getByRole('button',{name:'Next',exact:true}).click();await dialog.getByRole('button',{name:'Show recommendations',exact:true}).click();await dialog.getByRole('button',{name:'Create',exact:true}).click();await expect(page.locator('.page-context').getByRole('heading',{name:'Today',exact:true})).toBeVisible();
- await expect(page.getByText('Atlas Digital Product Launch',{exact:true})).toHaveCount(0);
+ await expect(page.getByText('MARKOVMADE Digital Product Launch',{exact:true})).toHaveCount(0);
 });
 test('template destination, open and undo',async({page})=>{
  await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:'Explore demo'}).click();await expect(page.locator('.workspace-shell')).toBeVisible();

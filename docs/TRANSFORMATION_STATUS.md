@@ -1,4 +1,6 @@
-# Product transformation acceptance ledger
+# Historical product transformation acceptance ledger
+
+This ledger records the scope of PR #4, subsequently merged by the repository owner. The later layout/identity repair is documented in RELEASE.md and LAYOUT_QA.md. The open product gaps below remain factual; the previous draft-release policy applied to that earlier broad transformation.
 
 Base: `dd6aa85b5c46310d62738a7fc494b59fbbdba931`. This ledger describes implemented behavior, not certification of the entire user specification.
 
@@ -36,4 +38,4 @@ These are implementation gaps, not permission or platform limitations. Do not me
 
 ## Release policy
 
-Keep this work in a draft PR while these acceptance gaps remain. Existing production is not the output of this branch. See RELEASE.md for actual validation evidence.
+PR #4 was initially delivered as a draft with these gaps, then merged into main by the repository owner. See RELEASE.md for the current release scope and evidence.

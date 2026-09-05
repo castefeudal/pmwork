@@ -13,8 +13,8 @@ export function demoWorkspace(locale: Locale): Workspace {
       ...projectDefaults,
       id: "atlas",
       name: ru
-        ? "Запуск цифрового продукта Atlas"
-        : "Atlas Digital Product Launch",
+        ? "Запуск цифрового продукта MARKOVMADE"
+        : "MARKOVMADE Digital Product Launch",
       status: "active",
       owner: ru ? "Анна Смирнова" : "Anna Smirnova",
       sponsor: ru ? "Игорь Волков" : "Igor Volkov",

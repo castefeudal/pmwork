@@ -3,6 +3,7 @@ import "./fonts.css";
 import "./tokens.css";
 import "./globals.css";
 import "./premium.css";
+import "./editorial.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   title: { default: "PMWORK", template: "%s · PMWORK" },
   description: "The practical operating system for project managers.",
   manifest: `${publicBase}/manifest.webmanifest`,
-  icons: { icon: `${publicBase}/icon.svg` },
+  icons: { icon: `${publicBase}/brand/favicon.png`, apple: `${publicBase}/apple-touch-icon.png` },
   applicationName: "PMWORK",
 };
 
