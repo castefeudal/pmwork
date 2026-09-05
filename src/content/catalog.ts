@@ -273,7 +273,7 @@ export const methods: Method[] = [
   ),
   m(
     "waterfall",
-    "Waterfall",
+    "Каскадная модель",
     "Waterfall",
     "Последовательная модель фаз с формализованными переходами.",
     "Sequential phase model with formal transitions.",
@@ -287,7 +287,7 @@ export const methods: Method[] = [
   ),
   m(
     "agile",
-    "Agile",
+    "Гибкий подход",
     "Agile",
     "Система ценностей для адаптивной разработки через частую поставку и обучение.",
     "A value system for adaptive delivery through frequent value and learning.",
@@ -319,7 +319,7 @@ export const methods: Method[] = [
     "Scrum",
     "Лёгкая методика для сложных продуктов на основе эмпирического подхода.",
     "A lightweight framework for complex products based on empiricism.",
-    "Product Backlog → Sprint Planning → Sprint → Review + Retrospective → adaptation.",
+    "Бэклог продукта → планирование спринта → спринт → обзор и ретроспектива → адаптация.",
     "Product Backlog → Sprint Planning → Sprint → Review + Retrospective → adaptation.",
     "Кросс-функциональная команда может создавать пригодный инкремент в каждом спринте.",
     "A cross-functional team can create a usable Increment every Sprint.",
@@ -345,7 +345,7 @@ export const methods: Method[] = [
   ),
   m(
     "scrumban",
-    "Scrumban",
+    "Скрамбан",
     "Scrumban",
     "Ритм Scrum с практиками потока Kanban и эволюционным улучшением.",
     "Scrum cadence combined with Kanban flow practices and evolutionary improvement.",
@@ -359,7 +359,7 @@ export const methods: Method[] = [
   ),
   m(
     "lean",
-    "Lean",
+    "Бережливый подход",
     "Lean",
     "Управление ценностью, потоком, качеством и устранением потерь.",
     "Manage value, flow, quality, and waste elimination.",
@@ -406,7 +406,7 @@ export const methods: Method[] = [
     "Critical Path Method",
     "Сетевая модель графика, показывающая цепочку без общего временного резерва.",
     "A schedule network model identifying the chain with no total float.",
-    "Dependencies + durations → forward pass → backward pass → float.",
+    "Зависимости и длительности → прямой проход → обратный проход → временной резерв.",
     "Dependencies + durations → forward pass → backward pass → float.",
     "Проекты с зависимыми операциями и достаточно стабильными оценками.",
     "Projects with dependent activities and reasonably stable estimates.",
@@ -420,7 +420,7 @@ export const methods: Method[] = [
     "Critical Chain",
     "Планирование с учётом ресурсных ограничений и общих резервов.",
     "Planning that considers resource constraints and aggregate buffers.",
-    "Resource-level schedule → critical chain → project/feeding buffers → buffer control.",
+    "График с ресурсами → критическая цепь → проектный и питающие резервы → контроль резервов.",
     "Resource-level schedule → critical chain → project/feeding buffers → buffer control.",
     "Мультипроектная среда с конкуренцией за ограниченные ресурсы.",
     "Multi-project environments competing for constrained resources.",
@@ -430,11 +430,11 @@ export const methods: Method[] = [
   ),
   m(
     "stage-gate",
-    "Stage-Gate",
+    "Этапно-контрольная модель",
     "Stage-Gate",
     "Инвестиционные решения между стадиями развития инициативы.",
     "Investment decisions between stages of initiative development.",
-    "Stage work → evidence package → gate decision: go/hold/recycle/stop.",
+    "Работа этапа → пакет подтверждений → решение: продолжить, приостановить, доработать или остановить.",
     "Stage work → evidence package → gate decision: go/hold/recycle/stop.",
     "Высокая стоимость следующей стадии и необходимость выбора на уровне портфеля.",
     "High next-stage cost and portfolio choices.",
@@ -444,7 +444,7 @@ export const methods: Method[] = [
   ),
   m(
     "lean-startup",
-    "Lean Startup",
+    "Бережливый стартап",
     "Lean Startup",
     "Проверка бизнес-гипотез через цикл «создать — измерить — изучить».",
     "Testing business hypotheses through build–measure–learn.",
@@ -460,9 +460,9 @@ export const methods: Method[] = [
     "design-thinking",
     "Дизайн-мышление",
     "Design Thinking",
+    "Исследование потребностей людей и формирование решения.",
     "Human-centered exploration and solution framing.",
-    "Human-centered exploration and solution framing.",
-    "Empathize → define → ideate → prototype → test; loops are expected.",
+    "Понять людей → определить проблему → создать идеи → сделать прототип → проверить; возвраты между этапами ожидаемы.",
     "Empathize → define → ideate → prototype → test; loops are expected.",
     "Нечёткая проблема и необходимость понять поведение пользователя.",
     "Ambiguous problem requiring user understanding.",
@@ -565,13 +565,13 @@ export const templates: Template[] = [
     "Согласовать полномочия, цель и границы проекта.",
     "Align authority, purpose, and project boundaries.",
     [
-      { ru: "Scope in / out", en: "Scope in / out" },
+      { ru: "Входит / не входит в границы", en: "Scope in / out" },
       { ru: "Бюджетный диапазон", en: "Budget envelope" },
     ],
   ),
   template(
     "business-case-lite",
-    "Business Case Lite",
+    "Краткое экономическое обоснование",
     "Business Case Lite",
     "strategy",
     "Проверить, стоит ли инициатива инвестиций.",
@@ -617,7 +617,7 @@ export const templates: Template[] = [
   ),
   template(
     "wbs",
-    "WBS",
+    "Иерархическая структура работ (WBS)",
     "Work Breakdown Structure",
     "plan",
     "Декомпозировать 100% согласованного объёма работ на результаты поставки и рабочие пакеты.",
@@ -633,7 +633,7 @@ export const templates: Template[] = [
   ),
   template(
     "backlog-item",
-    "Backlog item",
+    "Элемент бэклога",
     "Backlog Item",
     "log",
     "Сформулировать единицу работы достаточно ясно для решения.",
@@ -641,7 +641,7 @@ export const templates: Template[] = [
   ),
   template(
     "user-story",
-    "User story",
+    "Пользовательская история",
     "User Story",
     "strategy",
     "Зафиксировать пользователя, потребность и ценность без подмены требования форматом.",
@@ -657,7 +657,7 @@ export const templates: Template[] = [
   ),
   template(
     "definition-ready",
-    "Definition of Ready",
+    "Критерии готовности к работе",
     "Definition of Ready",
     "control",
     "Установить минимальные условия для начала работы.",
@@ -665,7 +665,7 @@ export const templates: Template[] = [
   ),
   template(
     "definition-done",
-    "Definition of Done",
+    "Критерии готовности",
     "Definition of Done",
     "control",
     "Установить общий уровень качества завершённой работы.",
@@ -681,7 +681,7 @@ export const templates: Template[] = [
   ),
   template(
     "roadmap",
-    "Roadmap",
+    "Дорожная карта",
     "Project Roadmap",
     "plan",
     "Связать темы, измеримые результаты и выпуски во времени.",
@@ -713,7 +713,7 @@ export const templates: Template[] = [
   ),
   template(
     "raid-log",
-    "RAID log",
+    "Журнал RAID",
     "RAID Log",
     "log",
     "Вести риски, допущения, проблемы и зависимости в единой контрольной точке.",
@@ -801,7 +801,7 @@ export const templates: Template[] = [
   ),
   template(
     "kickoff",
-    "Kickoff",
+    "Стартовая встреча",
     "Kickoff",
     "meeting",
     "Синхронизировать цель, роли, способ работы и ближайший шаг.",
@@ -913,7 +913,7 @@ export const templates: Template[] = [
   ),
   template(
     "postmortem",
-    "Postmortem",
+    "Разбор инцидента",
     "Postmortem",
     "meeting",
     "Без обвинений разобрать последствия, причины и предотвращение повторения.",
@@ -1062,7 +1062,7 @@ export const playbooks: Playbook[] = [
     "The team debates solutions without a shared user, outcome, or acceptance view.",
     "Выберите самый рискованный вопрос и проведите короткий цикл исследования и проверки.",
     "Choose the riskiest question and run a short discovery/validation loop.",
-    "Assumption validation rate.",
+    "Доля проверенных допущений.",
     "Assumption validation rate.",
   ),
   pb(
@@ -1084,7 +1084,7 @@ export const playbooks: Playbook[] = [
     "Decisions exceed tolerance and lack an accountable owner.",
     "Соберите пакет решения: вопрос, варианты, рекомендация, срок и последствие бездействия.",
     "Prepare a decision pack: question, options, recommendation, deadline, consequence of no decision.",
-    "Decision latency.",
+    "Задержка принятия решений.",
     "Decision latency.",
   ),
   pb(
@@ -1095,7 +1095,7 @@ export const playbooks: Playbook[] = [
     "Allocation exceeds capacity, WIP grows, and cycle time deteriorates.",
     "Остановите старт новой работы и завершите/снимите часть WIP.",
     "Stop starting work and finish or remove part of WIP.",
-    "WIP, work item age, overtime trend.",
+    "WIP, возраст рабочих элементов и динамика переработок.",
     "WIP, work item age, overtime trend.",
   ),
   pb(
@@ -1128,7 +1128,7 @@ export const playbooks: Playbook[] = [
     "Much is started, little is finished; aging rises.",
     "Временно снизьте лимиты WIP, объедините команду вокруг старейших элементов и запретите скрытые очереди.",
     "Temporarily lower WIP limits, swarm on oldest items, and expose hidden queues.",
-    "WIP, throughput, cycle time, age.",
+    "WIP, пропускная способность, время цикла и возраст элементов.",
     "WIP, throughput, cycle time, age.",
   ),
   pb(
@@ -1161,7 +1161,7 @@ export const playbooks: Playbook[] = [
     "Error is directional and ignored in forecasts.",
     "Сегментируйте типы работ, сравните прогноз с фактом, используйте диапазоны.",
     "Segment work types, compare forecast to actual, and use ranges.",
-    "Forecast error distribution.",
+    "Распределение ошибки прогноза.",
     "Forecast error distribution.",
   ),
   pb(
@@ -1183,7 +1183,7 @@ export const playbooks: Playbook[] = [
     "No one can make trade-offs or accept the outcome.",
     "Эскалируйте пробел в управлении; назначьте ответственного спонсора до принятия новых обязательств.",
     "Escalate the governance gap; assign an accountable sponsor before new commitments.",
-    "Unowned decisions.",
+    "Решения без владельца.",
     "Unowned decisions.",
   ),
   pb(
@@ -1238,7 +1238,7 @@ export const playbooks: Playbook[] = [
     "A contract milestone slipped without quantified impact or alternatives.",
     "Подтвердите факты, влияние на критический путь, план восстановления и договорную эскалацию.",
     "Confirm facts, critical-path impact, recovery plan, and contractual escalation.",
-    "Vendor milestone variance.",
+    "Отклонение контрольных точек поставщика.",
     "Vendor milestone variance.",
   ),
   pb(
@@ -1271,7 +1271,7 @@ export const playbooks: Playbook[] = [
     "There is no cost owner, baseline, or decision range.",
     "Соберите категории затрат, обязательства и диапазон; назначьте владельца финансовых данных.",
     "Collect cost categories, commitments, and range; assign financial data ownership.",
-    "Forecast coverage.",
+    "Покрытие прогноза.",
     "Forecast coverage.",
   ),
   pb(
@@ -1282,14 +1282,14 @@ export const playbooks: Playbook[] = [
     "One subjective score hides different dimensions.",
     "Оцените сроки, объём работ, бюджет, риски, блокировки, доступную мощность и согласованность отдельно по явным правилам.",
     "Assess schedule, scope, budget, risk, blockers, capacity, and alignment separately with rules.",
-    "Unknown health dimensions.",
+    "Неизвестные измерения состояния.",
     "Unknown health dimensions.",
   ),
   pb(
     "too-many-meetings",
     "Слишком много встреч",
     "Too many meetings",
-    "Meetings consume capacity without unique decisions or outputs.",
+    "Встречи расходуют доступную мощность, не создавая уникальных решений или результатов.",
     "Meetings consume capacity without unique decisions or outputs.",
     "Отмените встречи без владельца и результата; объедините сведения о состоянии в асинхронном документе.",
     "Cancel meetings without an owner/output; consolidate status in an async artifact.",
@@ -1315,7 +1315,7 @@ export const playbooks: Playbook[] = [
     "Actions are vague, unowned, and never reviewed.",
     "Выберите один наблюдаемый эксперимент, владельца, срок и ожидаемый сигнал.",
     "Choose one observable experiment, owner, date, and expected signal.",
-    "Improvement action completion.",
+    "Выполнение действий по улучшению.",
     "Improvement action completion.",
   ),
   pb(
@@ -1348,7 +1348,7 @@ export const playbooks: Playbook[] = [
     "Approval latency exceeds risk reduction; data is duplicated.",
     "Свяжите каждую контрольную точку с риском или решением; удалите артефакты без потребителя.",
     "Map every gate to a risk/decision; remove artifacts without a consumer.",
-    "Approval lead time.",
+    "Срок согласования.",
     "Approval lead time.",
   ),
   pb(
@@ -1359,7 +1359,7 @@ export const playbooks: Playbook[] = [
     "There are no tolerances, decision rights, or escalation paths.",
     "Определите спонсора, три ключевых решения, пороговые значения и ритм обзора.",
     "Define sponsor, three key decisions, thresholds, and review cadence.",
-    "Unresolved exceptions.",
+    "Неразрешённые исключения.",
     "Unresolved exceptions.",
   ),
   pb(
@@ -1403,7 +1403,7 @@ export const playbooks: Playbook[] = [
     "Objective, scope, ownership, schedule, and confidence diverge.",
     "Остановить новые обязательства. Стабилизировать факты и безопасность. Перепланировать варианты. Согласовать решение. Провести короткий цикл подтверждения.",
     "Stop new commitments. Stabilize facts and safety. Replan options. Align a decision. Deliver a short proof cycle.",
-    "Critical blockers, decision age, forecast confidence.",
+    "Критические блокировки, возраст решений и уверенность в прогнозе.",
     "Critical blockers, decision age, forecast confidence.",
   ),
   pb(
@@ -1414,7 +1414,7 @@ export const playbooks: Playbook[] = [
     "Tacit knowledge, access, and unresolved work lack a new owner.",
     "Составьте карту передачи: решения, риски, контакты, артефакты, доступы и ближайшие 30 дней.",
     "Build a handover map: decisions, risks, contacts, artifacts, access, next 30 days.",
-    "Accepted handover items.",
+    "Принятые результаты передачи.",
     "Accepted handover items.",
   ),
   pb(
@@ -1425,7 +1425,7 @@ export const playbooks: Playbook[] = [
     "Documents differ from reality and decision history is hidden.",
     "Проведите обзор подтверждений: спонсор, команда, заказчик, план, поток, риски и решения.",
     "Run an evidence tour: sponsor, team, customer, plan, flow, risks, decisions.",
-    "Unknowns retired per week.",
+    "Число снятых неопределённостей за неделю.",
     "Unknowns retired per week.",
   ),
   pb(
@@ -1436,7 +1436,7 @@ export const playbooks: Playbook[] = [
     "Continuation cost exceeds expected value but sunk cost biases the decision.",
     "Подготовьте обоснование остановки, защитите людей и данные, определите передачу, уроки и остаточные обязательства.",
     "Prepare a stop case, protect people/data, define handover and lessons, and name residual obligations.",
-    "Residual obligations closed.",
+    "Закрытые остаточные обязательства.",
     "Residual obligations closed.",
   ),
   pb(
@@ -1447,7 +1447,7 @@ export const playbooks: Playbook[] = [
     "There is an idea but no problem owner, outcome, or constraints.",
     "Согласуйте проблему, спонсора, метрику результата, границы и первую проверку неопределённости.",
     "Align problem, sponsor, outcome measure, boundaries, and the first uncertainty test.",
-    "Time to first validated learning.",
+    "Время до первого подтверждённого вывода.",
     "Time to first validated learning.",
   ),
 ];
@@ -1638,7 +1638,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Зависимость",
     "Логическая связь, где одна работа влияет на возможность или срок другой.",
     "A logical relationship where one item affects another's feasibility or timing.",
-    "Integration starts after API contract approval.",
+    "Интеграция начинается после согласования контракта API.",
     "Integration starts after API contract approval.",
   ],
   [
@@ -1662,7 +1662,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Эскалация",
     "Передача решения на уровень с необходимыми полномочиями.",
     "Moving a decision to a level with adequate authority.",
-    "PM escalates budget exception to sponsor.",
+    "Руководитель проекта передаёт бюджетное исключение спонсору.",
     "The PM escalates a budget exception to the sponsor.",
   ],
   [
@@ -1694,7 +1694,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Управленческий контроль",
     "Система прав принятия решений, надзора и ответственности в проекте.",
     "The system of decision rights, oversight, and project accountability.",
-    "Sponsor approves exceptions above tolerance.",
+    "Спонсор согласует исключения выше допустимого отклонения.",
     "The sponsor approves exceptions above tolerance.",
   ],
   [
@@ -1726,7 +1726,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Контрольная точка",
     "Событие нулевой длительности, отмечающее значимое достижение или решение.",
     "A zero-duration event marking a meaningful achievement or decision.",
-    "Regulatory approval received.",
+    "Получено согласование регулирующего органа.",
     "Regulatory approval received.",
   ],
   [
@@ -1758,7 +1758,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "RAID",
     "Связанный обзор рисков, допущений, проблем и зависимостей.",
     "A connected view of risks, assumptions, issues, and dependencies.",
-    "Weekly RAID review focuses on changed items.",
+    "Еженедельный обзор RAID сосредоточен на изменившихся записях.",
     "Weekly RAID review focuses on changed items.",
   ],
   [
@@ -1796,7 +1796,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "SPI",
     "Индекс выполнения сроков",
-    "EV / PV; schedule performance indicator in EVM.",
+    "EV / PV; показатель соблюдения сроков в методе освоенного объёма (EVM).",
     "EV / PV; schedule performance indicator in EVM.",
     "SPI ниже 1 означает меньший освоенный объём, чем планировалось.",
     "SPI below 1 means less earned work than planned.",
@@ -1806,7 +1806,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Заинтересованная сторона",
     "Человек или группа, влияющие на проект или затронутые им.",
     "A person or group influencing or affected by the project.",
-    "Support team affected by the new workflow.",
+    "Новый рабочий процесс затрагивает команду поддержки.",
     "The support team is affected by the new workflow.",
   ],
   [

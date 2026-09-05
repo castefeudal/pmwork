@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import ts from "typescript";
 
 const required = ["src/content/catalog.ts", "src/content/ui.ts"];
 for (const file of required) {
@@ -122,6 +123,52 @@ for (const file of userFacing) {
   for (const match of source.matchAll(/\ben\s*:\s*"([^"]*[А-Яа-яЁё][^"]*)"/g))
     violations.push(`${file}: Russian text in EN value: ${match[1]}`);
 }
+
+// Catalog constructors keep some bilingual values as positional arguments, so
+// source-only checks cannot tell an English-only RU value from its EN pair.
+const catalogSource = fs.readFileSync("src/content/catalog.ts", "utf8");
+const catalogJavaScript = ts.transpileModule(catalogSource, {
+  compilerOptions: {
+    module: ts.ModuleKind.ESNext,
+    target: ts.ScriptTarget.ES2022,
+  },
+}).outputText;
+const catalog = await import(
+  `data:text/javascript;base64,${Buffer.from(catalogJavaScript).toString("base64")}`
+);
+const englishOnlyRuAllow = new Set([
+  "Scrum",
+  "Kanban",
+  "PRINCE2",
+  "RACI",
+  "CPI, EAC, VAC.",
+]);
+const inspectBilingualValues = (value, path) => {
+  if (!value || typeof value !== "object") return;
+  if (
+    typeof value.ru === "string" &&
+    typeof value.en === "string" &&
+    /[A-Za-z]/.test(value.ru) &&
+    !/[А-Яа-яЁё]/.test(value.ru) &&
+    !englishOnlyRuAllow.has(value.ru)
+  ) {
+    violations.push(
+      `src/content/catalog.ts: English-only RU value at ${path}: ${value.ru}`,
+    );
+  }
+  for (const [key, child] of Object.entries(value))
+    inspectBilingualValues(child, `${path}.${key}`);
+};
+inspectBilingualValues(
+  {
+    methods: catalog.methods,
+    templates: catalog.templates,
+    playbooks: catalog.playbooks,
+    glossary: catalog.glossary,
+  },
+  "catalog",
+);
+
 if (violations.length)
   throw new Error(
     `i18n language-purity violations:\n${violations.slice(0, 30).join("\n")}`,
