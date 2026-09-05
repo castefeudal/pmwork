@@ -1,5 +1,5 @@
 import fs from "node:fs";
-const text = fs.readFileSync("src/content/catalog.ts", "utf8");
+const text = fs.readFileSync("src/content/catalog.ts", "utf8") + fs.readFileSync("src/content/glossary-seed.ts", "utf8");
 const counts = {
   methods: (text.match(/\bm\(\s*"/g) || []).length,
   templates: (text.match(/\btemplate\(\s*"/g) || []).length,
@@ -61,3 +61,8 @@ for(const method of methods) for(const id of method.sourceIds) if(!sourceIds.has
 for(const domain of knowledgeDomains) if(!knowledgeGuides[domain.en]) defects.push(`Missing practical guide: ${domain.en}`);
 if(defects.length){console.error(defects.join('\n'));process.exit(1);}
 console.log('Deep content audit: bilingual values, placeholders, duplicate primary descriptions, 26 practical guides and methodology source relations PASS');
+
+const {glossaryTerms,validateGlossary}=await import('../src/content/glossary.ts');
+const glossaryErrors=validateGlossary(glossaryTerms,[...sourceIds]);
+if(glossaryErrors.length) { console.error(glossaryErrors.join('\n')); process.exit(1); }
+console.log('Glossary taxonomy, aliases and relations PASS');
