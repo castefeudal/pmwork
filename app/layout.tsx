@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
+import "./premium.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const inter = Inter({
