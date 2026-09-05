@@ -16,7 +16,6 @@ export function PublicHeader({ locale }: { locale: Locale }) {
     [open, setOpen] = useState(false),
     firstLink = useRef<HTMLAnchorElement>(null);
   const links = [
-    [t.nav.workspace, "workspace"],
     [t.nav.methods, "methods"],
     [t.nav.templates, "templates"],
     [t.nav.playbooks, "playbooks"],
@@ -24,6 +23,9 @@ export function PublicHeader({ locale }: { locale: Locale }) {
     [t.nav.knowledge, "knowledge"],
     [t.nav.glossary, "glossary"],
   ] as const;
+  const isActive = (slug: string) => path === `/${locale}/${slug}` || path.startsWith(`/${locale}/${slug}/`);
+  const workspaceActive = isActive("workspace");
+
   useEffect(() => {
     if (!open) return;
     firstLink.current?.focus();
@@ -33,6 +35,11 @@ export function PublicHeader({ locale }: { locale: Locale }) {
     addEventListener("keydown", close);
     return () => removeEventListener("keydown", close);
   }, [open]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
+
   return (
     <>
       <a className="skip-link" href="#main">
@@ -47,23 +54,30 @@ export function PublicHeader({ locale }: { locale: Locale }) {
         </Link>
         <nav
           className="topnav"
-          aria-label={
-            locale === "ru" ? "Основная навигация" : "Primary navigation"
-          }
+          aria-label={locale === "ru" ? "Основная навигация" : "Primary navigation"}
         >
           <div className="desktop-nav">
             {links.map(([label, slug]) => (
-              <Link key={slug} href={`/${locale}/${slug}`}>
+              <Link
+                key={slug}
+                href={`/${locale}/${slug}`}
+                aria-current={isActive(slug) ? "page" : undefined}
+              >
                 {label}
               </Link>
             ))}
           </div>
           <Link
+            className="workspace-cta desktop-only"
+            href={`/${locale}/workspace`}
+            aria-current={workspaceActive ? "page" : undefined}
+          >
+            {t.nav.workspace}
+          </Link>
+          <Link
             className="language-link"
             href={switched}
-            aria-label={
-              locale === "ru" ? "Switch to English" : "Переключить на русский"
-            }
+            aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
           >
             {other.toUpperCase()}
           </Link>
@@ -99,22 +113,27 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           <nav
             id="mobile-navigation"
             className="mobile-nav"
-            aria-label={
-              locale === "ru" ? "Мобильная навигация" : "Mobile navigation"
-            }
+            aria-label={locale === "ru" ? "Мобильная навигация" : "Mobile navigation"}
           >
-            {links.map(([label, slug], index) => (
+            <Link
+              ref={firstLink}
+              href={`/${locale}/workspace`}
+              aria-current={workspaceActive ? "page" : undefined}
+            >
+              {t.nav.workspace}
+              <span aria-hidden="true">→</span>
+            </Link>
+            {links.map(([label, slug]) => (
               <Link
-                ref={index === 0 ? firstLink : undefined}
                 key={slug}
                 href={`/${locale}/${slug}`}
-                onClick={() => setOpen(false)}
+                aria-current={isActive(slug) ? "page" : undefined}
               >
                 {label}
                 <span aria-hidden="true">→</span>
               </Link>
             ))}
-            <Link href={`/${locale}/about`} onClick={() => setOpen(false)}>
+            <Link href={`/${locale}/about`} aria-current={isActive("about") ? "page" : undefined}>
               {t.nav.about}
               <span aria-hidden="true">→</span>
             </Link>
