@@ -18,7 +18,7 @@ import {
   sources,
   templates,
 } from "@/content/catalog";
-import { demoWorkspace } from "@/data/demo";
+import { demoWorkspace, localizeBundledDemo } from "@/data/demo";
 import { loadWorkspace, saveWorkspace } from "@/data/storage";
 
 type Kind = "methods" | "templates" | "playbooks" | "knowledge" | "glossary";
@@ -75,7 +75,10 @@ export function CatalogPage({ kind, locale }: { kind: Kind; locale: Locale }) {
   };
   const applyTemplate = async (template: (typeof templates)[number]) => {
     try {
-      const workspace = (await loadWorkspace()) ?? demoWorkspace(locale),
+      const stored = await loadWorkspace(),
+        workspace = stored
+          ? localizeBundledDemo(stored, locale)
+          : demoWorkspace(locale),
         project = workspace.projects[0];
       if (!project) throw new Error();
       const at = new Date().toISOString(),

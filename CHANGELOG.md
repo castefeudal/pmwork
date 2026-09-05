@@ -5,7 +5,7 @@
 - Completed RU/EN workspace localization with centralized enum labels and a practical language-purity gate.
 - Added full edit/delete lifecycles for dependencies, milestones, iterations, RAID, people, finance, change, quality and documents.
 - Added dependency cycle validation, persisted project closure and safe workspace schema v3 migrations.
-- Made bundled demo content locale-aware without translating or replacing user-authored data.
+- Made bundled demo content and template application locale-aware without translating or replacing user-authored data.
 - Added template-to-project document application, broader command search and destructive restore confirmations.
 - Refined landing/workspace hierarchy, forms, tables, mobile dialogs, themes and premium control-room styling.
 - Added locale-aware PWA manifests/offline routing, production icons, Apple touch icon and social preview.
