@@ -12,8 +12,8 @@ for (const locale of ["ru", "en"] as const) {
     await expect(
       page.getByText(
         locale === "ru"
-          ? "Приоритетные управленческие действия"
-          : "Priority management actions",
+          ? "Требуется действие"
+          : "Requires action",
       ),
     ).toBeVisible();
     await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
@@ -114,13 +114,13 @@ test("workspace falls back when IndexedDB is unavailable", async ({ page }) => {
     }),
   );
   await page.goto(route("/en/workspace/"));
-  await expect(page.getByText("Priority management actions")).toBeVisible({
+  await expect(page.getByText("Requires action")).toBeVisible({
     timeout: 5000,
   });
 });
 test("workspace has no serious accessibility violations", async ({ page }) => {
   await page.goto(route("/en/workspace/"));
-  await expect(page.getByText("Priority management actions")).toBeVisible();
+  await expect(page.getByText("Requires action")).toBeVisible();
   const results = await new AxeBuilder({ page: page as never }).analyze();
   expect(
     results.violations.filter((v) =>

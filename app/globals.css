@@ -1,43 +1,7 @@
-:root {
-  --bg: #f4f7f8;
-  --surface: #ffffff;
-  --surface-2: #eaf0f2;
-  --ink: #102129;
-  --muted: #5b6c74;
-  --line: #cfdadd;
-  --accent: #176b87;
-  --accent-2: #0e857e;
-  --focus: #d97706;
-  --good: #18794e;
-  --warn: #a15c00;
-  --bad: #b4233c;
-  --info: #245aa8;
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
-  --shadow: 0 14px 36px rgb(16 33 41 / 0.09);
-  --sidebar: 248px;
-  --content: 1240px;
-}
 ::selection {
   background: color-mix(in srgb, var(--accent) 28%, transparent);
 }
-[data-theme="dark"] {
-  --bg: #071017;
-  --surface: #0e1a22;
-  --surface-2: #152630;
-  --ink: #eef6f7;
-  --muted: #9db0b7;
-  --line: #29404a;
-  --accent: #62c4df;
-  --accent-2: #5ed3c8;
-  --focus: #f6b85a;
-  --good: #67d39a;
-  --warn: #ffc267;
-  --bad: #ff8093;
-  --info: #8cb9ff;
-  --shadow: 0 20px 46px rgb(0 0 0 / 0.28);
-}
+
 * {
   box-sizing: border-box;
 }
@@ -1767,3 +1731,19 @@ blockquote {
 .pwa-notice { position: fixed; bottom: 80px; right: 16px; max-width: min(440px,calc(100vw - 32px)); padding: 12px 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; z-index: 100; display: flex; gap: 12px; align-items: center; }
 .foundation-help { margin-bottom: 20px; }
 .foundation-help h3 { font-size: 15px; margin-top: 12px; }
+
+.local-fonts { --font-sans: "Inter Variable"; --font-display: "Manrope Variable"; }
+
+.context-anchors { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; font-size:.875rem; line-height:1.5; margin-bottom:.5rem; }
+.today-layout {display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:1rem;align-items:start}
+.today-layout .panel {margin-bottom:1rem}.today-layout .action-list li {align-items:start}.today-layout aside {min-width:0}
+@media(max-width:900px){.today-layout{grid-template-columns:1fr}.context-anchors{grid-template-columns:1fr;gap:.25rem}}
+
+.tool-output{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface);padding:1rem;font:inherit;border:1px solid var(--border);border-radius:8px}
+
+.setup-fields{border:0;padding:0;margin:1rem 0}.setup-fields[hidden]{display:none}.setup-fields legend{font-weight:650;margin-bottom:1rem}
+
+.catalog-hero.tools-hero { padding-top:3rem; padding-bottom:1rem; }
+.catalog-hero.tools-hero h1 {font-size:clamp(2rem,4vw,3rem);line-height:1.1;letter-spacing:-.04em}
+.decision-tool h2 {font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;letter-spacing:-.03em}
+.decision-tool>.form-grid {margin-block:1rem}

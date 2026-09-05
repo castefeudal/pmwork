@@ -353,6 +353,7 @@ export const activitySchema = z.object({
 export const projectSettingsSchema = z.object({
   projectId: z.string(),
   localMemberId: z.string().optional(),
+  context: z.object({uncertainty:z.number().min(1).max(5),volatility:z.number().min(1).max(5),feedback:z.number().min(1).max(5),frequency:z.number().min(1).max(5),compliance:z.number().min(1).max(5),dependencies:z.number().min(1).max(5),autonomy:z.number().min(1).max(5),scopeRigidity:z.number().min(1).max(5),deadlineRigidity:z.number().min(1).max(5),stakeholders:z.number().min(1).max(5)}).optional(),
   enabledTypes: z.array(workItemSchema.shape.type),
   wipLimits: z.record(z.string(), z.number().positive()),
   governance: z.enum(["lightweight", "standard", "controlled"]),
@@ -374,7 +375,7 @@ export const savedWorkViewSchema = z.object({
   id: z.string(), projectId: z.string(), name: z.string().min(1).max(80), config: workViewConfigSchema,
 });
 export const workspaceSchema = z.object({
-  schemaVersion: z.literal(4),
+  schemaVersion: z.literal(5),
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
   workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),

@@ -1,29 +1,28 @@
-# Release status
+# Contextual workbench — validation status
 
-Start: `7cfd004e61748f559fa6b4891b64f70e9929eb5d`
-Branch: `astra/pmwork-final-production`
+Base main: `dd6aa85b5c46310d62738a7fc494b59fbbdba931`.
+Branch: `feat/pmwork-contextual-workbench`.
 
-47 unit/component tests passed during implementation. Static export generated 371 pages; export validation reported 370 HTML pages (its route-count convention differs). 134 Playwright tests passed on desktop and mobile Chromium, including axe checks, seven reflow sizes, offline navigation, template destination/undo, first run, URL history and RU/EN preferences. Local Chromium was version 149; CI uses the Playwright-pinned browser. No full WCAG conformance or field Core Web Vitals claim is made.
+This is an implementation branch, not a completed production transformation. Production remains on the existing main release. The explicit open acceptance items in [TRANSFORMATION_STATUS.md](TRANSFORMATION_STATUS.md) prevent presenting or deploying this branch as the requested final release.
 
-Production release requires a green root/GitHub quality gate, browser verification and Pages deployment. Hosted evidence is linked from PR #3 and the deployment workflow; merge requires their successful checks.
+## Authoritative evidence
 
-Release tracking: [PR #3](https://github.com/castefeudal/pmwork/pull/3). The first hosted CI run passed 79/80 browser scenarios on both base paths and caught an inaccessible mobile home link. The repair exposes a home link in the mobile workspace header; the regression now checks visibility and the actual return navigation, preserving the original prefix and font assertions. Final checks are available in the PR's Checks tab. Transfer-size evidence is generated after Playwright so its output-directory cleanup cannot delete the performance report.
+The final local run is recorded in [release-evidence.json](release-evidence.json). That generated file is the authority for test/export counts and compressed transfer sizes; historical counts in `docs/archive/` describe earlier releases only. GitHub PR checks separately validate the committed code on root and `/pmwork` base paths.
 
+Baseline at the commit above: `npm ci` passed; lint, types, content, i18n, links and 47 unit/component tests passed. The build failed downloading Google fonts in this environment. Baseline performance and browser checks consequently had no valid export to test. No baseline browser count or measured bundle comparison is claimed. Fonts are now bundled locally, using the existing Inter/Manrope families.
 
-## Local evidence
+Final commands: `npm ci`, `npm run verify`, `PMWORK_CHROMIUM=/tmp/pmwork-chromium npm run test:e2e`, then `npm run performance:check`. Browser tests run with two workers to bound concurrent full-page capture load. No test or accessibility assertion is disabled. Local Chromium is 149.0.7827.0; hosted CI installs Playwright's pinned Chromium.
 
-- `npm ci`: passed.
-- `npm run verify`: passed (lint, typecheck, content, i18n, links, 47 unit/component tests, build, export).
-- Final rebuilt export: 134/134 E2E passed, no retries required (3.6 minutes). Screenshot batches were separated into individual surface tests to avoid combining several long captures under one test deadline.
-- Compressed initial JS: landing 183,167 B; glossary/methods 289,544 B; tools 192,988 B; workspace 302,392 B.
-- Local CLS checks passed on five representative routes. No field LCP/INP claim.
-- Actual screenshots captured for workspace sections, public catalogs, term detail, method comparison, first run, mobile More, palette, drawer and dark theme. Desktop and mobile contact sheets were inspected.
-- Service-worker install batches eight shell/shared resources at a time. Individual term pages are cached on visit.
+Copy checking rejects high-confidence placeholders and formulaic rhetoric. It also reports exact shared secondary prose; passing this checker does not certify complete editorial distinctiveness. npm emits an environment-level `http-proxy` configuration warning.
 
-## Scope qualification
+## Accessibility and visual scope
 
-This branch delivers the implemented behaviors in PRODUCT_SPEC.md. It does not certify every item of the supplied extensive execution specification as complete. Glossary editorial enrichment still includes category-level guidance; some cross-resource links are empty. Catalog components retain shared rendering infrastructure. Timeline and comparison controls do not implement every requested enhancement, and existing domain mutations have not all moved into the new command module. See CONTENT_MODEL.md. These are implementation gaps, not platform permission limitations.
+Automated browser checks cover representative RU/EN public and workspace routes, new decision tools, labels, keyboard flows, dialogs, initial document language, reduced motion, offline navigation and reflow. The suite captures widths 320, 360, 390, 768, 1024, 1280, 1440 and 1920. Actual manual visual review includes mobile Today, a desktop contact sheet spanning work/board/planning/RAID/people/control/documents/setup/portfolio/finance, English landing and the decision matrix. Duplicate Today headings and oversized tool headings were corrected after inspection. Capturing all screenshots is not a claim that every image was manually inspected.
 
-## Owner-reference regression
+A real scrollable calculator-result accessibility finding was fixed by exposing a named, keyboard-focusable result region. No formal WCAG certification, comprehensive screen-reader audit or product-wide accessibility conformance is claimed.
 
-My work resolves the selected local team-member ID, including after a rename. Work updates and the record editor reconcile text reassignment with stable IDs, retain external labels, and fall back safely after a team member is removed. Domain tests cover these cases; desktop/mobile browser tests cover editing an assigned item out of My work. No authentication is involved.
+## Performance and release boundary
+
+Bundle budgets are enforced for five representative routes. Browser checks enforce local CLS ≤ 0.1; these are laboratory observations, not field Core Web Vitals. PWA resources are built from the actual export and English/Russian HTML language is corrected before cache hashing.
+
+No merge, Pages deployment or live verification of this branch is claimed. The existing public production URL returned HTTP 200 during the work; that response validates availability of the previous release only. The implementation must remain a draft while the product acceptance gaps remain.

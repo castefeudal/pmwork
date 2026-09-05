@@ -96,7 +96,7 @@ describe("workspace interactions", () => {
     fireEvent.click(acceptance);
     expect(acceptance.checked).toBe(true);
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Обзор" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "Сейчас" })[0]);
     fireEvent.click(screen.getByRole("button", { name: "Контроль" }));
     fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
     expect(

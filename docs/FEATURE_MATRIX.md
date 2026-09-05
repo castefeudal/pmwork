@@ -1,13 +1,13 @@
-> Current branch note: refer to PRODUCT_SPEC.md, CONTENT_MODEL.md, QUALITY_GATE.md and RELEASE.md for current behavior and validation. Earlier measurements below are historical and are not evidence for the new branch.
-
 # Feature matrix
+
+Current implementation status. [TRANSFORMATION_STATUS.md](TRANSFORMATION_STATUS.md) lists the remaining acceptance gaps; [RELEASE.md](RELEASE.md) identifies validation evidence.
 
 Status meanings: **implemented** = changes validated persisted state or provides a complete deterministic tool; **partial** = useful but lacks a full record lifecycle; **excluded** = deliberate v2 boundary.
 
 | Capability | Status | Automated evidence | RU/EN | Notes |
 | --- | --- | --- | :---: | --- |
 | Landing / public navigation | Implemented | build + E2E spec | ✓ | Static routes and SEO metadata |
-| Project setup with context fit | Implemented | method-fit unit tests | ✓ | Creates approach, governance and settings; wizard remains single-dialog |
+| Project setup with context fit | Implemented | method-fit unit tests | ✓ | Three-step dialog; ten anchored questions; context persists in schema v5; explicit recommendations |
 | Multi-project portfolio | Implemented | portfolio unit test | ✓ | Progress, critical signals, forecast, completeness |
 | What should I do now? | Implemented | insights unit tests | ✓ | Deterministic ranked signals with reasons and destinations |
 | Guided lifecycle | Implemented | component/build | ✓ | Initiate → Plan → Deliver → Control → Close |
@@ -23,15 +23,16 @@ Status meanings: **implemented** = changes validated persisted state or provides
 | Charter | Implemented | schema + build | ✓ | Editable scope, outcome, owners, constraints, DoD and measures |
 | Change / quality / closure | Implemented | schema + component + build | ✓ | Operational editors and persisted closure/benefits record |
 | Documents / Markdown export | Implemented | component + build | ✓ | Create, open, edit, archive/delete and Markdown export |
-| JSON backup / import | Implemented | migration + round-trip tests | ✓ | Safe v1/v2→v3 migration, v3 envelope and validation |
+| JSON backup / import | Implemented | migration + round-trip tests | ✓ | v1–v4 migration to v5; preserves discovery key, locale, owner IDs and saved views |
 | Automatic snapshots | Implemented | storage logic | ✓ | One per day, latest five; dated destructive restore confirmation |
 | Global command palette | Implemented | component test | ✓ | Ctrl/Cmd+K, views plus core records |
 | Methods | 16 entries | content gate | ✓ | Structured, sourced; per-method prose depth varies |
-| Templates | 47 entries | content + build | ✓ | Copy/download and one-click application as an editable project document |
+| Templates | 47 entries | content + build | ✓ | Destination, depth, preview, apply, open and guarded undo; 17 completed examples |
 | Playbooks | 39 entries | content gate | ✓ | Structured diagnosis/action system |
 | Knowledge / glossary | 26 / 172 | content gate | ✓ | Glossary extension has an acknowledged editorial-quality gap |
-| CPM / PERT / EVM | Implemented | unit tests | ✓ | CPM accepts editable networks |
+| CPM / PERT / EVM | Implemented | unit tests | ✓ | Manual modes plus compatible project inputs; CPM requires dated FS/zero-lag dependencies |
 | Monte Carlo / RICE / WSJF / Little's Law | Implemented | unit tests | ✓ | Monte Carlo uses runtime random sampling |
+| Deadline / EMV / capacity / matrix / ownership / change / calibration | Implemented with limits | domain + browser tests | ✓ | Seven local tools; history thresholds and assumptions explicit; see acceptance ledger |
 | PWA / offline shell | Implemented | unit + build | ✓ | Locale-aware manifests, start routes, offline fallback and production icons |
 | Theme | Implemented | component/build | n/a | Light/dark with safe system initial value |
 | Team collaboration / auth / sync | Excluded | n/a | n/a | Deliberate local-first v2 boundary |

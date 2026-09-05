@@ -1,5 +1,8 @@
 "use client";
 import Link from "next/link";
+import {ContextFields} from "./context-fields";
+import {defaultContext} from "@/content/project-context";
+import { TodayView } from "./today-view";
 import { readWorkspaceUrl, workspaceUrl } from "@/domain/workspace-url";
 import { WorkspaceMore } from "./workspace-more";
 import { useEffect, useRef, useState } from "react";
@@ -48,7 +51,7 @@ import {
   DocumentsView,
   FinanceView,
   GuideView,
-  OverviewView,
+
   PeopleView,
   PlanningView,
   PortfolioView,
@@ -73,7 +76,7 @@ const navIcons = {
 const navLabels = {
   ru: {
     portfolio: "Портфель",
-    overview: "Обзор",
+    overview: "Сейчас",
     guide: "Проведи меня",
     work: "Работа",
     board: "Доска",
@@ -87,7 +90,7 @@ const navLabels = {
   },
   en: {
     portfolio: "Portfolio",
-    overview: "Overview",
+    overview: "Today",
     guide: "Guide me",
     work: "Work",
     board: "Board",
@@ -133,7 +136,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           const normalized = localizeBundledDemo(value, locale);
           setWorkspace(normalized);
           setFirstRun(false);
-          setView(normalized.experience === "foundation" ? "guide" : "overview");
+          setView("overview");
           let remembered: string | null = null;
           try {
             remembered = sessionStorage.getItem("pmwork-project");
@@ -147,6 +150,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         if (value) {
           const context = readWorkspaceUrl(window.location.search, value);
           setProjectId(context.project); setView(context.view);
+          const itemId=new URLSearchParams(window.location.search).get('item');
+          if(itemId){
+            const collections:[EditableKind,Array<{id:string;projectId?:string}>][]=[['document',value.documents],['work',value.workItems],['risk',value.risks],['issue',value.issues],['decision',value.decisions],['team',value.teamMembers],['milestone',value.milestones],['change',value.changes]];
+            const found=collections.find(([,rows])=>rows.some(row=>row.id===itemId&&row.projectId===context.project));
+            if(found)setEditor({kind:found[0],id:itemId});
+          }
         }
         setReady(true);
         listSnapshots()
@@ -241,11 +250,11 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       <button className="button" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить резервную копию" : "Restore backup"}</button>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {
         const file = e.target.files?.[0]; if (!file) return;
-        try { const restored = await importWorkspace(file); setWorkspace({ ...restored, locale }); setProjectId(restored.projects[0]?.id ?? ""); setView(restored.experience === "foundation" ? "guide" : "overview"); setFirstRun(false); }
+        try { const restored = await importWorkspace(file); setWorkspace({ ...restored, locale }); setProjectId(restored.projects[0]?.id ?? ""); setView("overview"); setFirstRun(false); }
         catch { setToast(ru ? "Файл не прошёл проверку" : "File did not pass validation"); }
       }} />
       {toast && <p role="alert">{toast}</p>}
-      {dialog && <WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={() => setDialog(null)} onCommit={(next, id) => { setWorkspace(workspaceSchema.parse(next)); setProjectId(id ?? ""); setView("guide"); setFirstRun(false); }} />}
+      {dialog && <WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={() => setDialog(null)} onCommit={(next, id) => { setWorkspace(workspaceSchema.parse(next)); setProjectId(id ?? ""); setView("overview"); setFirstRun(false); }} />}
     </main>
   );
   const project =
@@ -295,7 +304,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       case "portfolio":
         return <PortfolioView {...common} />;
       case "overview":
-        return <OverviewView {...common} />;
+        return <TodayView {...common} />;
       case "guide":
         return <GuideView {...common} />;
       case "work":
@@ -405,7 +414,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             [ru ? "УПРАВЛЕНИЕ" : "MANAGE", ["overview", "guide"]],
             [ru ? "ВЫПОЛНЕНИЕ" : "DELIVER", ["work", "board", "planning"]],
             [ru ? "КОНТРОЛЬ" : "CONTROL", ["raid", "control", "finance"]],
-            [ru ? "СОВМЕСТНАЯ РАБОТА" : "COLLABORATE", ["people", "documents"]],
+            [ru ? "ЛЮДИ И ДОКУМЕНТЫ" : "PEOPLE & DOCUMENTS", ["people", "documents"]],
             [ru ? "СИСТЕМА" : "SYSTEM", ["portfolio", "setup"]],
           ] as [string, WorkspaceView[]][]).map(([label, ids]) => <div className="nav-group" key={label}><small>{label}</small>{ids.map(id => {
             const Icon = navIcons[id];
@@ -528,7 +537,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           {workspace.experience === "foundation" && (() => {
             const domain = ({overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];
             const help = knowledgeGuides[domain] ?? knowledgeGuides.Fundamentals;
-            return <details className="panel foundation-help" open><summary>{ru ? "Что сделать сейчас" : "What to do now"}</summary><h3>{ru ? "Зачем это нужно" : "Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru ? "Действие" : "Action"}</h3><p>{help.steps[locale]}</p><h3>{ru ? "Что получится" : "Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru ? "Типичная ошибка" : "Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru ? "Объяснения терминов" : "Term explanations"}</Link></details>;
+            return <details className="panel foundation-help"><summary>{ru ? "Что сделать сейчас" : "What to do now"}</summary><h3>{ru ? "Зачем это нужно" : "Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru ? "Действие" : "Action"}</h3><p>{help.steps[locale]}</p><h3>{ru ? "Что получится" : "Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru ? "Типичная ошибка" : "Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru ? "Объяснения терминов" : "Term explanations"}</Link></details>;
           })()}
           {render()}
         </div>
@@ -641,6 +650,7 @@ function SetupView({
       });
   return (
     <div className="dashboard-grid">
+      <details className="panel span-12"><summary>{ru?"Контекст проекта и рекомендации":"Project context and recommendations"}</summary><p>{ru?"Ответы меняют рекомендации на экране «Сейчас». Сохранённый подход проекта изменяется отдельно в карточке проекта.":"Answers change Today recommendations. Change the recorded project approach separately in the project editor."}</p><ContextFields locale={locale} value={settings?.context??defaultContext} onChange={context=>onChange({...workspace,projectSettings:[...workspace.projectSettings.filter(x=>x.projectId!==project.id),{projectId:project.id,enabledTypes:["task"],wipLimits:{},governance:project.governance,probabilityScale:5,impactScale:5,...settings,context}]})}/></details>
       <section className="panel span-6"><h3>{ru ? "Это я в этом проекте" : "This is me in this project"}</h3><select className="input" aria-label={ru ? "Это я в этом проекте" : "This is me in this project"} value={workspace.projectSettings.find(s=>s.projectId===project.id)?.localMemberId ?? ""} onChange={e=>{const existing=workspace.projectSettings.find(s=>s.projectId===project.id);onChange({...workspace,projectSettings:[...workspace.projectSettings.filter(s=>s.projectId!==project.id),{projectId:project.id,enabledTypes:["task"],wipLimits:{},governance:project.governance,probabilityScale:5,impactScale:5,...existing,localMemberId:e.target.value||undefined}]});}}><option value="">{ru ? "Не выбрано" : "Not selected"}</option>{workspace.teamMembers.filter(m=>m.projectId===project.id).map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select><p className="muted">{ru ? "Локальная настройка для представления «Моя работа»." : "A local preference for the My work view."}</p></section>
       <section className="panel span-6">
         <h3>{ru ? "Уровень подсказок" : "Guidance level"}</h3>

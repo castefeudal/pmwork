@@ -4,7 +4,7 @@ const views: WorkspaceView[] = ['portfolio','overview','guide','work','board','p
 export function readWorkspaceUrl(search: string, workspace: Workspace) {
   const params = new URLSearchParams(search);
   const requested = params.get('view') as WorkspaceView;
-  const view = views.includes(requested) ? requested : workspace.experience === 'foundation' ? 'guide' : 'overview';
+  const view = views.includes(requested) ? requested : 'overview';
   return { project: workspace.projects.some(p => p.id === params.get('project')) ? params.get('project')! : workspace.projects[0]?.id ?? '', view: view === 'work' && params.get('layout') === 'board' ? 'board' as const : view };
 }
 export function workspaceUrl(url: string, project: string, view: WorkspaceView) {

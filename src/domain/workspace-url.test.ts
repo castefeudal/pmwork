@@ -9,8 +9,8 @@ describe('workspace URL state', () => {
   expect(url.searchParams.get('tab')).toBe('dependencies');
   expect(url.searchParams.get('view')).toBe('work');
  });
- it('falls back safely for invalid params and respects guidance', () => {
+ it('falls back safely for invalid params and opens Today', () => {
   const workspace = {...demoWorkspace('ru'), experience: 'foundation' as const};
-  expect(readWorkspaceUrl('?project=missing&view=bogus', workspace)).toEqual({ project: workspace.projects[0].id, view: 'guide' });
+  expect(readWorkspaceUrl('?project=missing&view=bogus', workspace)).toEqual({ project: workspace.projects[0].id, view: 'overview' });
  });
 });

@@ -19,7 +19,7 @@ test("saved views survive navigation and reload",async({page})=>{
   await page.getByRole("button",{name:"Reset filters",exact:true}).click();
   await page.getByRole("button",{name:"Release blockers",exact:true}).click();
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
-  await navigateWorkspace(page,"Overview");
+  await navigateWorkspace(page,"Today");
   await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
   await page.waitForTimeout(650);await page.reload();
@@ -60,7 +60,7 @@ test("corrupt browser data is preserved while autosave is paused",async({page})=
   expect(await page.evaluate(()=>localStorage.getItem("pmwork:workspace:v3"))).toBe("{broken");
 });
 test("offline workspace includes its scripts and fonts",async({page,context},testInfo)=>{
-  await page.goto(route("/en/workspace/"));await expect(page.getByText("Priority management actions")).toBeVisible();
+  await page.goto(route("/en/workspace/"));await expect(page.getByText("Requires action")).toBeVisible();
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
   await page.reload();await expect(page.getByRole("button",{name:"Work",exact:true}).filter({visible:true})).toBeVisible();
   await context.setOffline(true);await page.reload();await navigateWorkspace(page,"Work");await expect(page.getByRole("button",{name:"Add",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();
@@ -70,10 +70,10 @@ test("offline workspace includes its scripts and fonts",async({page,context},tes
   await page.getByRole("link",{name:"Methods",exact:true}).filter({visible:true}).click();await expect(page.getByRole("heading",{name:"Methods library"})).toBeVisible();
   await context.setOffline(false);
 });
-for(const [width,height] of [[360,800],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1920,1080]]){
+for(const [width,height] of [[320,760],[360,800],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1920,1080]]){
   test(`workspace reflow ${width}x${height}`,async({page},testInfo)=>{
     await page.setViewportSize({width,height});await page.goto(route("/ru/workspace/"));
-    for(const name of ["Обзор","Портфель","Работа","Доска","Планирование","RAID","Люди","Финансы","Контроль","Документы","Настройка"]){
+    for(const name of ["Сейчас","Портфель","Работа","Доска","Планирование","RAID","Люди","Финансы","Контроль","Документы","Настройка"]){
       await navigateWorkspace(page,name);
       if(width===1440 || width===390) await page.screenshot({path:`test-results/visual-${testInfo.project.name}-${width}-${name}.png`,fullPage:true});
       const overflow=await page.evaluate(()=>({width:innerWidth,body:document.body.scrollWidth,elements:[...document.querySelectorAll(".workspace-top, .panel, .project-card, .section-line, .card-foot, .toolbar")].filter(el=>el.getBoundingClientRect().right>innerWidth+1).map(el=>({class:el.className,right:el.getBoundingClientRect().right}))}));
@@ -86,7 +86,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
   test(`accessibility representative surfaces ${locale} ${theme}`,async({page},testInfo)=>{
     await page.addInitScript(theme=>localStorage.setItem("pmwork-theme",theme),theme);
     await page.goto(route(`/${locale}/workspace/`));
-    for(const name of (locale==="ru"?["Обзор","Работа","Доска","Планирование","RAID"]:["Overview","Work","Board","Planning","RAID"])){
+    for(const name of (locale==="ru"?["Сейчас","Работа","Доска","Планирование","RAID"]:["Today","Work","Board","Planning","RAID"])){
       await navigateWorkspace(page,name);
       await page.screenshot({path:`test-results/theme-${testInfo.project.name}-${locale}-${theme}-${name}.png`,fullPage:true});
       const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
@@ -98,7 +98,7 @@ test("Pages navigation keeps prefix and both fonts actually load",async({page})=
   await page.goto(route("/ru/"));await page.evaluate(()=>document.fonts.ready);
   const fonts=await page.evaluate(()=>Array.from(document.fonts).filter(f=>f.status==="loaded").map(f=>f.family));
   expect(fonts.some(f=>/inter/i.test(f))).toBe(true);expect(fonts.some(f=>/manrope/i.test(f))).toBe(true);
-  await page.getByRole("link",{name:"Открыть рабочее пространство",exact:true}).click();
+  await page.getByRole("link",{name:"Создать / открыть проект",exact:true}).click();
   const home=page.getByRole("link",{name:"PMWORK — главная",exact:true});await expect(home).toBeVisible();await expect(home).toHaveAttribute("href",route("/ru/"));
   await home.click();await expect(page).toHaveURL(new RegExp(`${route("/ru/")}$`));
 });

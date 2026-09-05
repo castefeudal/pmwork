@@ -13,9 +13,9 @@ const translations = {
     },
     hero: {
       eyebrow: "Практическая система руководителя проекта",
-      title: "Управление проектом — от первого решения до закрытия.",
-      lead: "Методы, бэклог, Kanban, риски, заинтересованные стороны, сроки, бюджет, документы и практические сценарии в единой рабочей системе.",
-      open: "Открыть рабочее пространство",
+      title: "Понимайте, что происходит. Решайте, что делать дальше.",
+      lead: "Рабочее пространство руководителя проекта: задачи, сроки, риски и решения с понятными причинами и действиями. Данные хранятся на вашем устройстве.",
+      open: "Создать / открыть проект",
       choose: "Подобрать подход",
     },
     workspace: {
@@ -61,9 +61,9 @@ const translations = {
     },
     hero: {
       eyebrow: "Practical PM operating system",
-      title: "All of project management—from the first decision to closure.",
+      title: "Understand what is happening. Decide what to do next.",
       lead: "Methods, backlog, Kanban, risks, stakeholders, schedule, budget, documents, and professional playbooks in one practical system.",
-      open: "Open workspace",
+      open: "Create / open project",
       choose: "Choose an approach",
     },
     workspace: {

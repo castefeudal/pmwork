@@ -2,6 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
+  // Bound concurrent full-page captures to avoid memory contention.
+  workers: 2,
   retries: 1,
   reporter: "list",
   use: { launchOptions: process.env.PMWORK_CHROMIUM ? { executablePath: process.env.PMWORK_CHROMIUM, args: ["--no-sandbox", "--disable-dev-shm-usage", "--no-zygote", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] } : {}, baseURL: "http://127.0.0.1:3000", trace: "on-first-retry" },

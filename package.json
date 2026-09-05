@@ -13,12 +13,15 @@
     "i18n:check": "node scripts/i18n-check.mjs",
     "links:check": "node scripts/links-check.mjs",
     "export:validate": "node scripts/export-check.mjs",
-    "verify": "npm run lint && npm run typecheck && npm run content:validate && npm run i18n:check && npm run links:check && npm run test && npm run build && npm run export:validate",
-    "performance:check": "node scripts/performance-check.mjs"
+    "verify": "npm run lint && npm run typecheck && npm run content:validate && npm run copy:check && npm run i18n:check && npm run links:check && npm run test && npm run build && npm run export:validate",
+    "performance:check": "node scripts/performance-check.mjs",
+    "copy:check": "node scripts/copy-quality-check.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
     "@dnd-kit/sortable": "10.0.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
     "date-fns": "4.1.0",
     "fuse.js": "7.1.0",
     "lucide-react": "0.542.0",

@@ -1,3 +1,5 @@
+import {templatePractice} from "./template-practice.ts";
+import {playbookNext} from "./playbook-next.ts";
 import { methodPractice } from "./method-practice.ts";
 import type { Locale } from "@/domain/schemas";
 
@@ -542,19 +544,13 @@ const template = (
   title: { ru, en },
   category,
   purpose: { ru: purposeRu, en: purposeEn },
-  when: {
-    ru: "Используйте, когда артефакт помогает принять решение, синхронизировать участников или подтвердить результат.",
-    en: "Use when the artifact supports a decision, aligns participants, or verifies an outcome.",
-  },
+  when: {ru:templatePractice[slug][0],en:templatePractice[slug][1]},
   fields: [...tf[category], ...extra],
   guidance: {
     ru: "Заполняйте до уровня, достаточного для следующего управленческого действия. Удалите секции, которые ничего не меняют.",
     en: "Complete only to the depth needed for the next management action. Remove sections that change nothing.",
   },
-  antiPattern: {
-    ru: "Документ обновляется ради отчётности, но не используется в решениях.",
-    en: "The document is maintained for reporting but never used in decisions.",
-  },
+  antiPattern: {ru:templatePractice[slug][2],en:templatePractice[slug][3]},
 });
 
 export const templates: Template[] = [
@@ -984,12 +980,7 @@ const pb = (
       en: "Assign one owner for the next decision and a review date.",
     },
   ],
-  next: [
-    {
-      ru: "В следующий рабочий цикл соберите минимальные данные, перепланируйте затронутую работу и сообщите последствия.",
-      en: "In the next working cycle, collect minimum evidence, replan affected work, and communicate impact.",
-    },
-  ],
+  next: [playbookNext[slug]],
   stabilize: [
     {
       ru: "Сократите активную работу, сделайте приоритеты и зависимости явными, восстановите ритм контроля.",

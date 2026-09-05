@@ -1,8 +1,14 @@
 "use client";
+
+import {projectNetwork} from "@/domain/project-tool-data";
+import {dailyHistory} from "@/domain/decision-tools";
+import dynamic from "next/dynamic";
+const ProjectDataSource=dynamic(()=>import("./project-data-source").then(m=>m.ProjectDataSource));
+const ProjectTools=dynamic(()=>import("./project-tools").then(m=>m.ProjectTools));
 import { useUrlChoice } from "./use-url-state";
 import { useId, useMemo, useState } from "react";
 import { displayLabel } from "@/content/workspace-i18n";
-import type { Locale } from "@/domain/schemas";
+import type { Locale, WorkItem } from "@/domain/schemas";
 import {
   calculateCPM,
   calculateEVM,
@@ -25,7 +31,7 @@ type Tool =
   | "evm"
   | "forecast"
   | "priority"
-  | "flow";
+  | "flow" | "deadline" | "emv" | "capacity" | "matrix" | "ownership" | "change" | "calibration";
 const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
   uncertainty: { ru: "Неопределённость", en: "Uncertainty" },
   volatility: { ru: "Изменчивость требований", en: "Requirements volatility" },
@@ -43,8 +49,15 @@ const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
 };
 export function ToolsLab({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
-    [tool, setTool] = useUrlChoice<Tool>("tool",["fit","composer","cpm","pert","evm","forecast","priority","flow"],"fit");
+    [tool, setTool] = useUrlChoice<Tool>("tool",["fit","composer","cpm","pert","evm","forecast","priority","flow","deadline","emv","capacity","matrix","ownership","change","calibration"],"fit");
   const titles: Record<Tool, string> = {
+    deadline: ru?"Уверенность в сроке":"Deadline confidence",
+    emv: ru?"Денежный риск · EMV":"Monetary risk · EMV",
+    capacity: ru?"Мощность и WIP":"Capacity & WIP",
+    matrix: ru?"Выбор и чувствительность":"Decision & sensitivity",
+    ownership: ru?"Ответственность":"Ownership coverage",
+    change: ru?"Сценарий изменения":"Change scenario",
+    calibration: ru?"Точность оценок":"Estimate calibration",
     fit: ru ? "Подбор подхода" : "Approach fit",
     composer: ru ? "Конструктор метода" : "Method composer",
     cpm: ru ? "Критический путь · CPM" : "Critical Path",
@@ -56,13 +69,13 @@ export function ToolsLab({ locale }: { locale: Locale }) {
   };
   return (
     <>
-      <header className="catalog-hero" id="fit">
+      <header className="catalog-hero tools-hero" id="fit">
         <p className="eyebrow">{ru ? "Прозрачные расчёты · локально" : "Deterministic · explainable · local"}</p>
         <h1>{ru ? "Инструменты решений" : "Decision tools"}</h1>
         <p className="lead">
           {ru
-            ? "Расчёты выполняются в браузере. PMWORK показывает формулу, допущения и ограничения — число не маскируется под достоверность."
-            : "Calculations run in-browser. PMWORK shows formulas, assumptions, and limits—the number never pretends to be certainty."}
+            ? "Выберите вопрос, загрузите доступные данные проекта или введите свои. Результат сопровождается допущениями и следующим действием."
+            : "Choose a question, load available project data or enter your own. Results include assumptions and a next action."}
         </p>
         <div className="tabs">
           {(Object.keys(titles) as Tool[]).map((k) => (
@@ -85,6 +98,7 @@ export function ToolsLab({ locale }: { locale: Locale }) {
         {tool === "forecast" && <Forecast locale={locale} />}{" "}
         {tool === "priority" && <Priority locale={locale} />}{" "}
         {tool === "flow" && <Flow locale={locale} />}
+        {(tool === "deadline" || tool === "emv" || tool === "capacity" || tool === "matrix" || tool === "ownership" || tool === "change" || tool === "calibration") && <ProjectTools key={tool} locale={locale} tool={tool}/>}
       </section>
     </>
   );
@@ -158,7 +172,7 @@ function Fit({ locale }: { locale: Locale }) {
           ))}
         </div>
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         <small>{ru ? "Лучшее соответствие" : "Best fit"}</small>
         <strong>
           {scores.filter(x => best.score - x.score <= 3).map(x => displayLabel(locale, "approach", x.approach)).join(" / ")} · {best.score} / 100
@@ -275,7 +289,7 @@ function Composer({ locale }: { locale: Locale }) {
           ))}
         </div>
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         <small>{ru ? "Ваш подход" : "Your approach"}</small>
         <strong>{optionLabel(governance)}</strong>
         <p>
@@ -331,6 +345,7 @@ function CPM({ locale }: { locale: Locale }) {
         <h2>
           {ru ? "Редактируемая сетевая модель" : "Editable network model"}
         </h2>
+        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const tasks=projectNetwork(w,id);setRaw(tasks.map(t=>`${t.id},${t.duration},${t.predecessors.join('|')}`).join('\n'));return ru?'Длительности взяты из календарных дат. Только FS с нулевым лагом; завершённые предшественники исключены. Проверьте остаточные длительности начатых работ.':'Durations use calendar dates. Only FS with zero lag; completed predecessors excluded. Check remaining durations of started work.'}}/>
         <div className="field">
           <label htmlFor="cpm-input">
             {ru
@@ -351,7 +366,7 @@ function CPM({ locale }: { locale: Locale }) {
           </p>
         )}
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         <small>{ru ? "Критический путь" : "Critical path"}</small>
         <strong>
           {result
@@ -430,7 +445,7 @@ function PERT({ locale }: { locale: Locale }) {
           />
         </div>
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {!r && <p role="alert">{ru ? "Требуется 0 ≤ O ≤ M ≤ P." : "Required: 0 ≤ O ≤ M ≤ P."}</p>}
         <small>TE = (O + 4M + P) / 6</small>
         <strong>{r ? r.expected.toFixed(2) : "—"}</strong>
@@ -456,6 +471,7 @@ function EVM({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>{ru ? "Освоенный объём · EVM" : "Earned Value"}</h2>
+        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const rows=w.budgets.filter(b=>b.projectId===id);if(!rows.length)throw Error();setV({pv:0,ev:0,ac:rows.reduce((s,b)=>s+b.actual,0),bac:rows.reduce((s,b)=>s+b.planned,0)});return ru?'AC и BAC загружены из бюджета. PV и EV пока равны 0: введите измеренные значения в той же валюте; процент закрытых задач не заменяет освоенный объём.':'AC and BAC loaded from budget. PV and EV are currently 0: enter measured values in the same currency; closed-item percentage is not earned value.'}}/>
         <div className="form-grid">
           {(Object.keys(v) as (keyof typeof v)[]).map((k) => (
             <NumberField
@@ -467,7 +483,7 @@ function EVM({ locale }: { locale: Locale }) {
           ))}
         </div>
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {!r && <p role="alert">{ru ? "Введите конечные неотрицательные значения." : "Enter finite non-negative values."}</p>}
         {r && <p>{ru ? (r.cv < 0 ? "Перерасход относительно освоенного объёма." : "Затраты в пределах освоенного объёма.") : (r.cv < 0 ? "Over budget for earned work." : "Cost is within earned value.")} {ru ? (r.sv < 0 ? "Объём выполненного отстаёт от плана." : "Освоенный объём не отстаёт от плана.") : (r.sv < 0 ? "Earned work is behind plan." : "Earned work is on or ahead of plan.")}</p>}
         <small>CPI = EV / AC · SPI = EV / PV</small>
@@ -502,6 +518,7 @@ function Forecast({ locale }: { locale: Locale }) {
         <h2>
           Monte Carlo · {ru ? "сколько элементов к дате" : "items by date"}
         </h2>
+        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const h=dailyHistory(w,id,new Date().toISOString().slice(0,10));if(!h)throw Error();setRaw(Array.from({length:4},(_,i)=>h.slice(i*7,i*7+7).reduce((a,b)=>a+b,0)).join(','));return ru?'Четыре полных недельных интервала, включая нулевые дни. Короткая выборка: проверьте полноту журнала и стабильность потока.':'Four complete weekly intervals including zero days. Short sample: verify history completeness and flow stability.'}}/>
         <div className="field">
           <label htmlFor="forecast-samples">
             {ru
@@ -517,7 +534,7 @@ function Forecast({ locale }: { locale: Locale }) {
           min={1}
         />
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {!r && <p role="alert">{ru ? "Введите минимум 3 неотрицательных наблюдения, включая положительное, и целый горизонт 1–1000 недель." : "Enter at least 3 non-negative observations including a positive value, and an integer horizon of 1–1000 weeks."}</p>}
         <small>{ru ? "5 000 симуляций" : "5,000 simulations"}</small>
         <strong>
@@ -536,6 +553,8 @@ function Forecast({ locale }: { locale: Locale }) {
   );
 }
 function Priority({ locale }: { locale: Locale }) {
+  const [projectItems,setProjectItems]=useState<WorkItem[]>([]);
+  const [selectedItem,setSelectedItem]=useState('');
   const ru = locale === "ru",
     [v, setV] = useState({
       reach: 100,
@@ -554,6 +573,8 @@ function Priority({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>RICE + WSJF</h2>
+        <ProjectDataSource locale={locale} onLoad={(w,id)=>{setProjectItems(w.workItems.filter(x=>x.projectId===id&&!x.archived&&!x.done));setSelectedItem('');return ru?'Выберите работу. Её оценка подставится как усилия и размер; остальные оценки задайте вручную в согласованной шкале.':'Choose a work item. Its estimate supplies effort and size; enter the remaining scores manually on an agreed scale.'}}/>
+        {!!projectItems.length&&<label className="field">{ru?'Рабочий элемент':'Work item'}<select aria-label={ru?'Рабочий элемент':'Work item'} value={selectedItem} onChange={e=>{setSelectedItem(e.target.value);const item=projectItems.find(x=>x.id===e.target.value);if(item)setV({reach:0,impact:0,confidence:0,effort:item.estimate??0,value:0,time:0,risk:0,size:item.estimate??0})}}><option value="">{ru?'Выберите работу':'Choose work'}</option>{projectItems.map(x=><option key={x.id} value={x.id}>{x.title}</option>)}</select></label>}
         <div className="form-grid">
           {Object.entries(v).map(([k, n]) => (
             <NumberField
@@ -565,7 +586,7 @@ function Priority({ locale }: { locale: Locale }) {
           ))}
         </div>
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {(r === null || w === null) && <p role="alert">{ru ? "Усилия и размер должны быть > 0; уверенность — 0–100%; остальные оценки — ≥ 0." : "Effort and size must be > 0; confidence 0–100%; other scores ≥ 0."}</p>}
         <p>{ru ? "RICE — для продуктовых инициатив с оценкой охвата; WSJF — для порядка работ с учётом стоимости задержки." : "RICE fits product initiatives with reach estimates; WSJF sequences work using relative cost of delay."}</p>
         <small>RICE = Reach × Impact × (Confidence / 100) / Effort</small>
@@ -591,6 +612,7 @@ function Flow({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>{ru ? "Закон Литтла" : "Little’s Law"}</h2>
+        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const h=dailyHistory(w,id,new Date().toISOString().slice(0,10));if(!h)throw Error();setWip(w.workItems.filter(x=>x.projectId===id&&!x.archived&&(x.status==='in-progress'||x.status==='review')).length);setThroughput(h.reduce((a,b)=>a+b,0)/h.length);return ru?'Период = календарный день; 28 дней истории. Текущий WIP — снимок, а закон Литтла требует среднего WIP стабильного потока.':'Period = calendar day; 28 days of history. Current WIP is a snapshot; Little’s Law needs average WIP of a stable flow.'}}/>
         <div className="form-grid">
           <NumberField label="WIP" value={wip} onChange={setWip} />
           <NumberField
@@ -602,7 +624,7 @@ function Flow({ locale }: { locale: Locale }) {
           />
         </div>
       </div>
-      <div className="result-box">
+      <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {!r && <p role="alert">{ru ? "WIP должен быть ≥ 0, пропускная способность — > 0." : "WIP must be ≥ 0 and throughput > 0."}</p>}
         <small>WIP = Throughput × Cycle Time</small>
         <strong>

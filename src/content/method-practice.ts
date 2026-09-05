@@ -1,3 +1,4 @@
+import {methodCombinations} from './method-combinations.ts';
 import type { Bi, Method } from './catalog';
 const bi=(ru:string,en:string):Bi=>({ru,en});
 /** Original PMWORK implementation notes; these are tailoring advice, not additional standard requirements. */
@@ -39,7 +40,7 @@ const operatingDetails:Record<string,[string,string,string,string]> = {
 };
 export function methodPractice(method:Method):Method {
  const p=practices[method.slug], detail=operatingDetails[method.slug];
- return {...method, roles:bi(detail[0],detail[1]),metrics:bi(detail[2],detail[3]),strengths:method.flow,poorFit:method.limitations,tailoring:bi(`Настройте этот механизм под свой проект: ${p[4].toLowerCase()}. Не теряйте принцип: ${p[0].toLowerCase()}.`,`Tailor this mechanism to the project: ${p[5].toLowerCase()}. Preserve the principle: ${p[1].toLowerCase()}.`),origin:bi(p[0],p[1]),principles:[bi(p[0],p[1])],artifacts:bi(p[2],p[3]),cadence:bi(p[4],p[5]),antiPatterns:bi(p[6],p[7]),
+ return {...method, combinations:methodCombinations[method.slug], roles:bi(detail[0],detail[1]),metrics:bi(detail[2],detail[3]),strengths:method.flow,poorFit:method.limitations,tailoring:bi(`Настройте этот механизм под свой проект: ${p[4].toLowerCase()}. Не теряйте принцип: ${p[0].toLowerCase()}.`,`Tailor this mechanism to the project: ${p[5].toLowerCase()}. Preserve the principle: ${p[1].toLowerCase()}.`),origin:bi(p[0],p[1]),principles:[bi(p[0],p[1])],artifacts:bi(p[2],p[3]),cadence:bi(p[4],p[5]),antiPatterns:bi(p[6],p[7]),
  prerequisites:bi(`Проверьте допущение: ${p[0].toLowerCase()}.`,`Check the assumption: ${p[1].toLowerCase()}.`),
  checklist:[bi(p[0],p[1]),bi(p[2],p[3]),bi(p[4],p[5])],
  };
