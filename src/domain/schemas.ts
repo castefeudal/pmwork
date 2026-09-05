@@ -356,8 +356,24 @@ export const projectSettingsSchema = z.object({
   probabilityScale: z.number().min(3).max(5),
   impactScale: z.number().min(3).max(5),
 });
+export const workViewConfigSchema = z.object({
+  query: z.string().default(""),
+  preset: z.enum(["all", "my", "attention", "soon", "overdue", "blocked", "priority", "unassigned", "recent"]).default("all"),
+  status: z.enum(["all", "backlog", "ready", "in-progress", "review", "done"]).default("all"),
+  owner: z.string().default(""),
+  sort: z.enum(["priority", "due", "updated", "title"]).default("priority"),
+  group: z.enum(["none", "status", "owner", "priority"]).default("none"),
+  type: z.enum(["list", "board"]).default("list"),
+  properties: z.array(z.enum(["owner", "due", "priority", "effort", "milestone"])).default(["owner", "due", "priority"]),
+});
+export type WorkViewConfig = z.infer<typeof workViewConfigSchema>;
+export const savedWorkViewSchema = z.object({
+  id: z.string(), projectId: z.string(), name: z.string().min(1).max(80), config: workViewConfigSchema,
+});
 export const workspaceSchema = z.object({
   schemaVersion: z.literal(3),
+  savedWorkViews: z.array(savedWorkViewSchema).default([]),
+  workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),
   id: z.string(),
   name: z.string(),
   locale: localeSchema,

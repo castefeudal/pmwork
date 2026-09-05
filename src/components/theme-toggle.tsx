@@ -1,7 +1,7 @@
 "use client";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-export function ThemeToggle() {
+export function ThemeToggle({locale = "en"}: {locale?: "ru" | "en"}) {
   const [dark, setDark] = useState(false);
   useEffect(() => {
     let saved: string | null = null;
@@ -35,7 +35,8 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={dark ? "Use light theme" : "Use dark theme"}
+      className="icon-button"
+      aria-label={locale === "ru" ? (dark ? "Светлая тема" : "Тёмная тема") : (dark ? "Use light theme" : "Use dark theme")}
     >
       {dark ? <Sun size={18} /> : <Moon size={18} />}
     </button>

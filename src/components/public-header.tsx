@@ -36,9 +36,6 @@ export function PublicHeader({ locale }: { locale: Locale }) {
     return () => removeEventListener("keydown", close);
   }, [open]);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [path]);
 
   return (
     <>
@@ -81,7 +78,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           >
             {other.toUpperCase()}
           </Link>
-          <ThemeToggle />
+          <ThemeToggle locale={locale} />
           <button
             type="button"
             className="mobile-menu"
@@ -111,6 +108,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
             onClick={() => setOpen(false)}
           />
           <nav
+            onClick={(event) => { if ((event.target as HTMLElement).closest("a")) setOpen(false); }}
             id="mobile-navigation"
             className="mobile-nav"
             aria-label={locale === "ru" ? "Мобильная навигация" : "Mobile navigation"}

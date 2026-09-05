@@ -1,4 +1,5 @@
 "use client";
+import { useDialogFocus } from "./use-dialog-focus";
 import { useId } from "react";
 import { X } from "lucide-react";
 import type { Locale, Workspace, WorkItem } from "@/domain/schemas";
@@ -67,6 +68,7 @@ export function WorkspaceDialog({
   onClose: () => void;
   onCommit: (workspace: Workspace, projectId?: string) => void;
 }) {
+  const dialogRef = useDialogFocus();
   const ru = locale === "ru",
     prefix = useId(),
     today = new Date().toISOString().slice(0, 10),
@@ -705,6 +707,8 @@ export function WorkspaceDialog({
     >
       <section
         className="dialog"
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${prefix}-heading`}
