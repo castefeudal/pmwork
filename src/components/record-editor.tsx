@@ -1,4 +1,5 @@
 "use client";
+import {DocumentBodyField} from "./document-body-field";
 import { useDialogFocus } from "./use-dialog-focus";
 import { updateWork } from "@/domain/workspace-commands";
 
@@ -789,7 +790,7 @@ export function RecordEditor({
               key={field.name}
             >
               <label htmlFor={`${prefix}-${field.name}`}>{field.label}</label>
-              {field.type === "textarea" || field.type === "list" ? (
+              {kind === "document" && field.name === "body" ? <DocumentBodyField id={`${prefix}-${field.name}`} name={field.name} value={String(valueOf(field))} ru={ru}/> : field.type === "textarea" || field.type === "list" ? (
                 <textarea
                   id={`${prefix}-${field.name}`}
                   name={field.name}

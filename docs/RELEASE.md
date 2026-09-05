@@ -1,28 +1,21 @@
-# Contextual workbench — validation status
+# Document layout and PMWORK identity release
 
-Base main: `dd6aa85b5c46310d62738a7fc494b59fbbdba931`.
-Branch: `feat/pmwork-contextual-workbench`.
+Scope: repair clipped template dialogs, improve document reading and catalog layout, integrate the owner-supplied PM identity, and rename the bundled Atlas demonstration to MARKOVMADE. This release builds on main after PR #4; it does not claim completion of every item in the earlier broad transformation specification.
 
-This is an implementation branch, not a completed production transformation. Production remains on the existing main release. The explicit open acceptance items in [TRANSFORMATION_STATUS.md](TRANSFORMATION_STATUS.md) prevent presenting or deploying this branch as the requested final release.
+## Evidence
 
-## Authoritative evidence
+[release-evidence.json](release-evidence.json) is the authority for final local test/export counts and compressed transfer sizes. The required run is `npm ci`, `npm run verify`, `npm run test:e2e`, then `npm run performance:check`. Local Chromium 149 is used; GitHub CI validates root and `/pmwork` with its pinned browser. Hosted results belong to the PR Checks and Pages workflow for this commit.
 
-The final local run is recorded in [release-evidence.json](release-evidence.json). That generated file is the authority for test/export counts and compressed transfer sizes; historical counts in `docs/archive/` describe earlier releases only. GitHub PR checks separately validate the committed code on root and `/pmwork` base paths.
+[LAYOUT_QA.md](LAYOUT_QA.md) explains the reported defect, repair and regression coverage. Actual visual review includes mobile Russian and desktop English template dialogs, the Russian template catalog and the English dark board. Existing broader screenshots and automated reflow/axe checks are retained. No formal WCAG certification, field Core Web Vitals or unsupported 10/10 product score is asserted.
 
-Baseline at the commit above: `npm ci` passed; lint, types, content, i18n, links and 47 unit/component tests passed. The build failed downloading Google fonts in this environment. Baseline performance and browser checks consequently had no valid export to test. No baseline browser count or measured bundle comparison is claimed. Fonts are now bundled locally, using the existing Inter/Manrope families.
+## User-visible changes
 
-Final commands: `npm ci`, `npm run verify`, `PMWORK_CHROMIUM=/tmp/pmwork-chromium npm run test:e2e`, then `npm run performance:check`. Browser tests run with two workers to bound concurrent full-page capture load. No test or accessibility assertion is disabled. Local Chromium is 149.0.7827.0; hosted CI installs Playwright's pinned Chromium.
+- Viewport-owned modal windows with full document content, scrolling, a sticky title/close control and an accessible apply action.
+- Shared document reading layout with headings, paragraphs, lists, emphasis and tables; editable source remains available without losing changes.
+- Two-column desktop catalogs, single-column mobile catalogs, wrapping content and localized template categories.
+- PM symbol in navigation and install icons; refined navy dark surfaces and restrained teal accents. The mark uses a navy background, not claimed transparency. See [BRAND.md](BRAND.md).
+- MARKOVMADE demonstration title; only exact original names on explicitly marked demo records migrate. Stable IDs and user-created names are preserved.
 
-Copy checking rejects high-confidence placeholders and formulaic rhetoric. It also reports exact shared secondary prose; passing this checker does not certify complete editorial distinctiveness. npm emits an environment-level `http-proxy` configuration warning.
+## Limits
 
-## Accessibility and visual scope
-
-Automated browser checks cover representative RU/EN public and workspace routes, new decision tools, labels, keyboard flows, dialogs, initial document language, reduced motion, offline navigation and reflow. The suite captures widths 320, 360, 390, 768, 1024, 1280, 1440 and 1920. Actual manual visual review includes mobile Today, a desktop contact sheet spanning work/board/planning/RAID/people/control/documents/setup/portfolio/finance, English landing and the decision matrix. Duplicate Today headings and oversized tool headings were corrected after inspection. Capturing all screenshots is not a claim that every image was manually inspected.
-
-A real scrollable calculator-result accessibility finding was fixed by exposing a named, keyboard-focusable result region. No formal WCAG certification, comprehensive screen-reader audit or product-wide accessibility conformance is claimed.
-
-## Performance and release boundary
-
-Bundle budgets are enforced for five representative routes. Browser checks enforce local CLS ≤ 0.1; these are laboratory observations, not field Core Web Vitals. PWA resources are built from the actual export and English/Russian HTML language is corrected before cache hashing.
-
-No merge, Pages deployment or live verification of this branch is claimed. The existing public production URL returned HTTP 200 during the work; that response validates availability of the previous release only. The implementation must remain a draft while the product acceptance gaps remain.
+Document reading supports a deliberate Markdown subset, not a complete rich-text editor. Very wide work boards and tables retain local scrolling. The original references were raster JPGs; no genuine SVG source was supplied or invented. Earlier product/editorial gaps remain described in the historical transformation ledger and are not presented as solved by this visual repair.

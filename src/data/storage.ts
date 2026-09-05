@@ -64,6 +64,10 @@ export function migrateWorkspace(value: unknown): Workspace {
   const migrated = record.schemaVersion === 1 || record.schemaVersion === 2 || record.schemaVersion === 3 || record.schemaVersion === 4
     ? workspaceSchema.parse({ ...emptyV3, ...record, schemaVersion: 5 })
     : workspaceSchema.parse(value);
+  // Rename only the shipped demo title; preserve user names and stable project IDs.
+  for (const project of migrated.projects) {
+    if (project.demo && project.id === 'atlas' && ['Atlas Digital Product Launch','Запуск цифрового продукта Atlas'].includes(project.name)) project.name = project.name.replace('Atlas','MARKOVMADE');
+  }
   if (record.schemaVersion === 4 || record.schemaVersion === 5) return migrated;
   return { ...migrated, workItems: migrated.workItems.map(item => {
     const matches = migrated.teamMembers.filter(member => member.projectId === item.projectId && member.name === item.owner);

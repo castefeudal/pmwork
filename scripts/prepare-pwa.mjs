@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 const files=[];
-function walk(dir) { for (const entry of fs.readdirSync(dir,{withFileTypes:true})) {const file=path.join(dir,entry.name);if(entry.isDirectory())walk(file);else if(/\.(html|js|css|woff2|png|svg|webmanifest|txt|xml)$/.test(file)&&!file.endsWith('/sw.js')&&!/out\/(?:404(?:\/|\.)|_not-found\/)/.test(file))files.push(file);} }
+function walk(dir) { for (const entry of fs.readdirSync(dir,{withFileTypes:true})) {const file=path.join(dir,entry.name);if(entry.isDirectory())walk(file);else if(/\.(html|js|css|woff2|png|webp|svg|webmanifest|txt|xml)$/.test(file)&&!file.endsWith('/sw.js')&&!/out\/(?:404(?:\/|\.)|_not-found\/)/.test(file))files.push(file);} }
 walk("out");
 files.sort();
 // Set route language before hashing so HTML and the offline cache agree.

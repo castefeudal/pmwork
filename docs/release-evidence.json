@@ -1,41 +1,41 @@
 {
-  "measuredAt": "2026-09-05T21:25:13.951Z",
-  "branch": "feat/pmwork-contextual-workbench",
+  "measuredAt": "2026-09-05T22:53:04.032Z",
+  "branch": "fix/pmwork-document-layout-brand",
   "scope": "Local working tree; exact committed state is verified separately by GitHub CI",
-  "unitComponentTests": 61,
-  "browserTests": 180,
+  "unitComponentTests": 63,
+  "browserTests": 192,
   "htmlPages": 370,
   "chromium": "149.0.7827.0 (local); GitHub CI uses Playwright-pinned Chromium",
   "performance": [
     {
       "route": "/en/",
-      "htmlGzipBytes": 6751,
-      "initialJsGzipBytes": 183180,
-      "scriptCount": 9
-    },
-    {
-      "route": "/en/glossary",
-      "htmlGzipBytes": 48607,
-      "initialJsGzipBytes": 301165,
-      "scriptCount": 13
-    },
-    {
-      "route": "/en/methods",
-      "htmlGzipBytes": 25958,
-      "initialJsGzipBytes": 301165,
-      "scriptCount": 13
-    },
-    {
-      "route": "/en/tools",
-      "htmlGzipBytes": 4175,
-      "initialJsGzipBytes": 196359,
+      "htmlGzipBytes": 6846,
+      "initialJsGzipBytes": 188832,
       "scriptCount": 10
     },
     {
+      "route": "/en/glossary",
+      "htmlGzipBytes": 48722,
+      "initialJsGzipBytes": 307965,
+      "scriptCount": 14
+    },
+    {
+      "route": "/en/methods",
+      "htmlGzipBytes": 26072,
+      "initialJsGzipBytes": 307965,
+      "scriptCount": 14
+    },
+    {
+      "route": "/en/tools",
+      "htmlGzipBytes": 4259,
+      "initialJsGzipBytes": 202087,
+      "scriptCount": 11
+    },
+    {
       "route": "/en/workspace",
-      "htmlGzipBytes": 2240,
-      "initialJsGzipBytes": 309510,
-      "scriptCount": 13
+      "htmlGzipBytes": 2326,
+      "initialJsGzipBytes": 316122,
+      "scriptCount": 14
     }
   ],
   "editorialAcceptanceComplete": false,

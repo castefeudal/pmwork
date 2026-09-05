@@ -60,10 +60,17 @@ describe("workspace data", () => {
       };
     const en = localizeBundledDemo(edited, "en");
     expect(en.projects.find((project) => project.id === "atlas")?.name).toBe(
-      "Atlas Digital Product Launch",
+      "MARKOVMADE Digital Product Launch",
     );
     expect(
       en.projects.find((project) => project.id === "atlas")?.objective,
     ).toBe("Моя неизменяемая цель");
   });
+});
+
+it('renames only the original explicitly labelled demo, retaining IDs and user titles',()=>{
+ const w=demoWorkspace('en');w.projects[0].name='Atlas Digital Product Launch';
+ const renamed=migrateWorkspace(w);expect(renamed.projects[0].name).toBe('MARKOVMADE Digital Product Launch');expect(renamed.projects[0].id).toBe('atlas');
+ w.projects[0].name='Atlas customer delivery';expect(migrateWorkspace(w).projects[0].name).toBe('Atlas customer delivery');
+ w.projects[0].name='Atlas Digital Product Launch';w.projects[0].demo=false;expect(migrateWorkspace(w).projects[0].name).toBe('Atlas Digital Product Launch');
 });

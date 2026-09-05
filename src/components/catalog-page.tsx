@@ -42,14 +42,14 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
     methods: [
       ru ? "Библиотека методов" : "Methods library",
       ru
-        ? "Выбирайте подход по контексту, а не по моде."
-        : "Choose an approach by context, not fashion.",
+        ? "Сравните подходы по изменчивости требований, срокам и устройству команды."
+        : "Compare approaches by requirement changes, deadlines and team structure.",
     ],
     templates: [
       ru ? "Рабочие шаблоны" : "Practical templates",
       ru
-        ? "Готовые поля, рекомендации и типичные ошибки — не пустые документы."
-        : "Real fields, guidance, and anti-patterns—not empty documents.",
+        ? "Выберите документ, проверьте пример и заполните его данными своего проекта."
+        : "Choose a document, review an example and fill it with your project data.",
     ],
     playbooks: [
       ru ? "Практические сценарии руководителя проекта" : "PM playbooks",
@@ -201,6 +201,10 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
               <span className="pill">
                 {ru
                   ? ({
+                      strategy: "стратегия",
+                      plan: "планирование",
+                      log: "реестр",
+                      meeting: "встреча",
                       core: "основа",
                       planning: "планирование",
                       delivery: "выполнение",
