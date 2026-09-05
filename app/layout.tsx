@@ -1,6 +1,21 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { PwaRegister } from "@/components/pwa-register";
+
+const inter = Inter({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-sans",
+  display: "swap",
+  preload: true,
+});
+
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-display",
+  display: "swap",
+  preload: true,
+});
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
 export const metadata: Metadata = {
@@ -12,7 +27,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#176B87",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F6F8FB" },
+    { media: "(prefers-color-scheme: dark)", color: "#080B10" },
+  ],
   colorScheme: "light dark",
 };
 
@@ -21,7 +39,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body>
+      <body className={`${inter.variable} ${manrope.variable}`}>
         {children}
         <PwaRegister />
       </body>
