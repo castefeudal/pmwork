@@ -1744,3 +1744,22 @@ blockquote {
  .public-container { padding: 28px 16px; }
  .workspace-more { width: 100%; max-height: 92dvh; }
 }
+.public-nav-group { position: relative; }
+.public-nav-group summary { cursor: pointer; padding: 10px; }
+.public-nav-group > div { position: absolute; top: 100%; min-width: 210px; display: grid; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px; box-shadow: var(--shadow); }
+.public-nav-group a { padding: 10px; }
+.public-search-result { display: grid; gap: 4px; padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--ink); }
+.public-search-result small { color: var(--muted); }
+.public-search-result.active { background: var(--surface-2); outline: 2px solid var(--accent); outline-offset: -2px; }
+.mobile-work-list,.mobile-planning-agenda { display: none; }
+.learning-path { display: flex; flex-wrap: wrap; gap: 12px 30px; padding-left: 25px; }
+@media(max-width:767px) {
+ .work-table { display: none; }
+ .mobile-work-list,.mobile-planning-agenda { display: grid; gap: 10px; }
+ .mobile-work-card { display: grid; gap: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; text-align: left; padding: 16px; width: 100%; overflow-wrap: anywhere; }
+ .mobile-work-card small,.mobile-work-card span { font-size: 13px; color: var(--muted); }
+ .planning-panel .timeline-scroll:not(.mobile-expanded) { display: none; }
+ .board { scroll-snap-type: x mandatory; align-items: start; }
+ .board-column { scroll-snap-align: start; height: auto; min-height: 0; }
+}
+.pwa-notice { position: fixed; bottom: 80px; right: 16px; max-width: min(440px,calc(100vw - 32px)); padding: 12px 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; z-index: 100; display: flex; gap: 12px; align-items: center; }

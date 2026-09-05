@@ -160,12 +160,13 @@ function Fit({ locale }: { locale: Locale }) {
       <div className="result-box">
         <small>{ru ? "Лучшее соответствие" : "Best fit"}</small>
         <strong>
-          {displayLabel(locale, "approach", best.approach)} · {best.score}%
+          {scores.filter(x => best.score - x.score <= 3).map(x => displayLabel(locale, "approach", x.approach)).join(" / ")} · {best.score} / 100
         </strong>
         <p>
           {ru ? "Почему" : "Why"}:{" "}
           {best.reasons.map((k) => contextLabels[k][locale]).join(", ")}{" "}
           {ru ? "близки профилю подхода." : "match this approach profile."}
+          {ru ? " Эвристическая оценка соответствия контексту. Это не вероятность успеха проекта." : " Heuristic context-fit score. This is not a probability of project success."}
         </p>
         <p>
           {ru ? "Управление" : "Governance"}: <b>{displayLabel(locale,"governance",governanceLevel(c))}</b>
@@ -181,7 +182,7 @@ function Fit({ locale }: { locale: Locale }) {
             {scores.map((x) => (
               <tr key={x.approach}>
                 <td>{displayLabel(locale,"approach",x.approach)}</td>
-                <td>{x.score}%</td>
+                <td>{x.score} / 100</td>
               </tr>
             ))}
           </tbody>

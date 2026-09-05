@@ -1,3 +1,4 @@
+import { methodPractice } from "./method-practice.ts";
 import type { Locale } from "@/domain/schemas";
 
 export type Bi = { ru: string; en: string };
@@ -484,7 +485,7 @@ export const methods: Method[] = [
     "A scaling framework amplifies complexity and does not repair weak teams.",
     ["agile2"],
   ),
-];
+].map(methodPractice);
 
 export type Template = {
   slug: string;
