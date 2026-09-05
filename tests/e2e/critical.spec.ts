@@ -24,7 +24,7 @@ for (const locale of ["ru", "en"] as const) {
       })
       .click();
     await page
-      .getByLabel(locale === "ru" ? "Название" : "Title")
+      .getByRole("dialog").getByLabel(locale === "ru" ? "Название" : "Title", {exact: true})
       .fill(`E2E ${locale}`);
     await page
       .getByRole("button", { name: locale === "ru" ? "Создать" : "Create" })
@@ -52,7 +52,7 @@ for (const locale of ["ru", "en"] as const) {
       })
       .click();
     await page
-      .getByLabel(locale === "ru" ? "Название" : "Title")
+      .getByRole("dialog").getByLabel(locale === "ru" ? "Название" : "Title", {exact: true})
       .fill(`Risk ${locale}`);
     await page
       .getByRole("button", {

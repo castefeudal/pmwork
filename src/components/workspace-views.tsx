@@ -796,6 +796,7 @@ export function RaidView({
   const ru = locale === "ru",
     [tab, setTab] = useState<CreateType>("risk"),
     map = {
+      dependency: workspace.dependencies.filter((x) => x.projectId === project.id),
       risk: workspace.risks.filter((x) => x.projectId === project.id),
       issue: workspace.issues.filter((x) => x.projectId === project.id),
       assumption: workspace.assumptions.filter(
@@ -828,7 +829,7 @@ export function RaidView({
   return (
     <>
       <div className="tabs">
-        {(["risk", "issue", "assumption", "decision"] as CreateType[]).map(
+        {(["risk", "assumption", "issue", "dependency", "decision"] as CreateType[]).map(
           (k) => (
             <button
               key={k}
@@ -838,17 +839,19 @@ export function RaidView({
               {
                 (ru
                   ? {
+                      dependency: "Зависимости",
                       risk: "Риски",
                       issue: "Проблемы",
                       assumption: "Допущения",
                       decision: "Решения",
                     }
                   : {
+                      dependency: "Dependencies",
                       risk: "Risks",
                       issue: "Issues",
                       assumption: "Assumptions",
                       decision: "Decisions",
-                    })[k as "risk" | "issue" | "assumption" | "decision"]
+                    })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"]
               }{" "}
               · {map[k as keyof typeof map]?.length ?? 0}
             </button>
@@ -862,6 +865,7 @@ export function RaidView({
         <Plus size={17} />
         {ru ? "Добавить запись" : `Add ${tab}`}
       </button>
+      {tab === "dependency" && <EntityTable rows={map.dependency.map(d => ({id:d.id,title:`${d.predecessorId} → ${d.successorId}`,meta:`${d.type} · ${d.lag} ${ru ? "дн. лага" : "lag days"} · ${d.dueDate || "—"}`,owner:d.owner,status:displayLabel(locale,"dependencyStatus",d.status)}))} locale={locale} onEdit={id => onEdit("dependency",id)} />}
       {tab === "risk" && (
         <div className="dashboard-grid">
           <div className="panel span-8">
@@ -880,6 +884,7 @@ export function RaidView({
           </div>
           <div className="panel span-4">
             <h3>{ru ? "Матрица риска" : "Risk matrix"}</h3>
+            <p className="muted compact">{ru ? "Вероятность: 5 сверху → 1 снизу. Влияние: 1 слева → 5 справа. Число — открытые риски." : "Probability: 5 at top → 1 at bottom. Impact: 1 left → 5 right. Count: open risks."}</p>
             <div className="risk-matrix">
               {Array.from({ length: 25 }, (_, i) => {
                 const p = 5 - Math.floor(i / 5),
@@ -889,10 +894,11 @@ export function RaidView({
                   <div
                     className={`risk-cell ${score >= 15 ? "risk-high" : score >= 8 ? "risk-mid" : "risk-low"}`}
                     key={i}
+                    aria-label={`${ru ? "Вероятность" : "Probability"} ${p}, ${ru ? "влияние" : "impact"} ${impact}: ${map.risk.filter(r => r.status !== "closed" && r.probability === p && r.impact === impact).length}`}
                     title={`P${p} × I${impact}`}
                   >
                     {map.risk.filter(
-                      (r) => r.probability === p && r.impact === impact,
+                      (r) => r.status !== "closed" && r.probability === p && r.impact === impact,
                     ).length || ""}
                   </div>
                 );
@@ -1062,6 +1068,7 @@ export function PeopleView({
       )}
       {tab === "team" && (
         <>
+          <p className="muted">{ru ? "Число работ показывает ответственность, а не часы загрузки. Для процента загрузки нужны согласованные оценки и период; имя владельца должно совпадать с именем участника." : "Work counts show ownership, not hours of load. Capacity percentages require aligned estimates and a period; owner names must match team member names."}</p>
           <button
             className="button primary section-action"
             onClick={() => onCreate("team")}
@@ -1077,6 +1084,7 @@ export function PeopleView({
                   <th>{ru ? "Роль" : "Role"}</th>
                   <th>{ru ? "Ответственность" : "Responsibility"}</th>
                   <th>{ru ? "Мощность" : "Capacity"}</th>
+                  <th>{ru ? "Назначено / блокеры" : "Assigned / blocked"}</th>
                   <th>{ru ? "Часовой пояс" : "Timezone"}</th>
                   <th />
                 </tr>
@@ -1091,7 +1099,8 @@ export function PeopleView({
                     </td>
                     <td>{x.role}</td>
                     <td>{x.responsibility}</td>
-                    <td>{x.weeklyCapacity}h</td>
+                    <td>{x.weeklyCapacity} {ru ? "ч/нед." : "h/week"}</td>
+                    <td>{workspace.workItems.filter(w => w.projectId === project.id && !w.archived && !w.done && w.owner === x.name).length} / {workspace.workItems.filter(w => w.projectId === project.id && !w.archived && !w.done && w.owner === x.name && w.blocked).length}</td>
                     <td>{x.timezone}</td>
                     <td>
                       <button

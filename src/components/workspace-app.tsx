@@ -112,6 +112,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     ),
     [palette, setPalette] = useState(false),
     [toast, setToast] = useState(""),
+    [lastSaved, setLastSaved] = useState(""),
     [snapshots, setSnapshots] = useState<
       {
         key: string;
@@ -157,7 +158,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       () =>
         saveWorkspace(workspace)
           .then(() =>
-            setToast(ru ? "Сохранено на устройстве" : "Saved on this device"),
+            setLastSaved(new Date().toLocaleTimeString(locale)),
           )
           .catch(() =>
             setToast(ru ? "Не удалось сохранить" : "Could not save"),
@@ -165,7 +166,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       350,
     );
     return () => clearTimeout(id);
-  }, [workspace, ready, ru, recovery]);
+  }, [workspace, ready, ru, locale, recovery]);
   useEffect(() => {
     if (!ready || recovery) return;
     const flush = () => { void saveWorkspace(workspace).catch(() => undefined); };
@@ -404,6 +405,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             {displayLabel(locale, "projectStatus", project.status)}
           </span>
           <div className="spacer" />
+          <small className="muted desktop-only" title={lastSaved}>{recovery ? (ru ? "Сохранение приостановлено" : "Autosave paused") : lastSaved ? (ru ? "Сохранено" : "Saved") : (ru ? "Локально" : "Local")}</small>
           <button
             className="button small command-trigger"
             aria-label={ru ? "Открыть поиск" : "Open search"}

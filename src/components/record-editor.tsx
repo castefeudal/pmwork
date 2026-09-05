@@ -757,12 +757,12 @@ export function RecordEditor({
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={`${prefix}-title`}
+        aria-labelledby={`${prefix}-heading`}
       >
         <div className="page-title">
           <div>
             <p className="eyebrow">{id}</p>
-            <h2 id={`${prefix}-title`}>
+            <h2 id={`${prefix}-heading`}>
               {ru
                 ? `Изменить: ${titleByKind.ru[kind]}`
                 : `Edit ${titleByKind.en[kind]}`}

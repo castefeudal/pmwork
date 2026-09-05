@@ -42,10 +42,10 @@ test("palette keyboard search opens a record and creates an issue",async({page})
 test("calculators validate without crashing and sliders support keys",async({page})=>{
   await page.goto(route("/en/tools/"));
   const slider=page.getByRole("slider").first();await slider.focus();await slider.press("ArrowLeft");await expect(slider).toHaveValue("3");
-  await page.getByRole("button",{name:"Prioritization",exact:true}).click();await page.getByLabel("Effort",{exact:true}).fill("0");await expect(page.getByRole("alert")).toContainText("Effort");
-  await page.getByLabel("Effort",{exact:true}).fill("4");await expect(page.getByRole("alert")).toHaveCount(0);
-  await page.getByRole("button",{name:"Earned Value",exact:true}).click();await page.getByLabel("AC",{exact:true}).fill("-1");await expect(page.getByRole("alert")).toContainText("non-negative");
-  await page.getByRole("button",{name:"Monte Carlo",exact:true}).click();await page.getByLabel("Historical weekly throughput").fill("5,wrong,7");await expect(page.getByRole("alert")).toContainText("observations");
+  await page.getByRole("button",{name:"Prioritization",exact:true}).click();await page.getByLabel("Effort",{exact:true}).fill("0");await expect(page.locator("main").getByRole("alert")).toContainText("Effort");
+  await page.getByLabel("Effort",{exact:true}).fill("4");await expect(page.locator("main").getByRole("alert")).toHaveCount(0);
+  await page.getByRole("button",{name:"Earned Value",exact:true}).click();await page.getByLabel("AC",{exact:true}).fill("-1");await expect(page.locator("main").getByRole("alert")).toContainText("non-negative");
+  await page.getByRole("button",{name:"Monte Carlo",exact:true}).click();await page.getByLabel("Historical weekly throughput").fill("5,wrong,7");await expect(page.locator("main").getByRole("alert")).toContainText("observations");
 });
 test("corrupt browser data is preserved while autosave is paused",async({page})=>{
   await page.addInitScript(()=>{Object.defineProperty(window,"indexedDB",{value:undefined,configurable:true});localStorage.setItem("pmwork:workspace:v3","{broken");});
@@ -64,7 +64,8 @@ for(const [width,height] of [[360,800],[390,844],[768,1024],[1024,768],[1280,800
     for(const name of ["Обзор","Портфель","Работа","Доска","Планирование","RAID","Люди","Финансы","Контроль","Документы","Настройка"]){
       await page.getByRole("button",{name,exact:true}).click();
       if(width===1440 || width===390) await page.screenshot({path:`test-results/visual-${width}-${name}.png`,fullPage:true});
-      expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+1),name).toBe(true);
+      const overflow=await page.evaluate(()=>({width:innerWidth,body:document.body.scrollWidth,elements:[...document.querySelectorAll(".workspace-top, .panel, .project-card, .section-line, .card-foot, .toolbar")].filter(el=>el.getBoundingClientRect().right>innerWidth+1).map(el=>({class:el.className,right:el.getBoundingClientRect().right}))}));
+      expect(overflow.body,JSON.stringify({name,...overflow})).toBeLessThanOrEqual(width+1);
       expect(await page.evaluate(()=>[...document.querySelectorAll('.workspace-content')].every(el=>el.getBoundingClientRect().right<=innerWidth+1)),name).toBe(true);
     }
   });
