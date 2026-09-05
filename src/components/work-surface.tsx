@@ -16,9 +16,12 @@ export function WorkSurface(props: ViewProps) {
   const [name, setName] = useState(""), [undo, setUndo] = useState<string | null>(null);
   const config = workspace.workViewPreferences.find(x => x.projectId === project.id)?.config ?? workViewConfigSchema.parse({});
   const saved = workspace.savedWorkViews.filter(x => x.projectId === project.id);
-  const all = workspace.workItems.filter(x => x.projectId === project.id && !x.archived);
-  const self = workspace.teamMembers.find(m => m.id === workspace.projectSettings.find(s => s.projectId === project.id)?.localMemberId);
-  const items = selectWork(all, config.preset === "my" && self ? {...config, owner:self.name} : config);
+  const all = workspace.workItems.filter(x => x.projectId === project.id && !x.archived).map(item => {
+    const member=workspace.teamMembers.find(m=>m.id===item.ownerId&&m.projectId===project.id);
+    return member?{...item,owner:member.name}:item;
+  });
+  const self = workspace.teamMembers.find(m => m.projectId===project.id && m.id === workspace.projectSettings.find(s => s.projectId === project.id)?.localMemberId);
+  const items = config.preset === "my" && !self ? [] : selectWork(all, config.preset === "my" && self ? {...config, owner:self.name} : config, new Date(), self?.id);
   const owners = [...new Set(all.map(x => x.owner).filter(Boolean))].sort();
   const configure = (patch: Partial<WorkViewConfig>) => onChange({...workspace, workViewPreferences: [...workspace.workViewPreferences.filter(x => x.projectId !== project.id), {projectId: project.id, config: {...config, ...patch}}]});
   const update = (id: string, patch: Partial<WorkItem>) => onChange(updateWork(workspace,id,patch));
@@ -28,6 +31,7 @@ export function WorkSurface(props: ViewProps) {
     groups.set(key, [...(groups.get(key) ?? []), item]);
   }
   return <>
+    {config.preset === "my" && !self && <p className="notice" role="status">{ru ? "Выберите «Это я в этом проекте» в настройках проекта, чтобы увидеть свою работу." : "Choose ‘This is me in this project’ in project settings to see your work."}</p>}
     <div className="view-presets" aria-label={ru ? "Быстрые представления" : "Quick views"}>
       {Object.entries(presets).map(([id, label]) => <button key={id} className={config.preset === id ? "active" : ""} aria-pressed={config.preset === id} onClick={() => configure({preset: id as WorkViewConfig["preset"]})}>{label[lang]}</button>)}
     </div>

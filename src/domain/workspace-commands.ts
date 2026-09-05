@@ -4,8 +4,21 @@ function finish(workspace:Workspace,projectId:string,type:string,message:string)
 }
 export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>):Workspace {
  const item=workspace.workItems.find(x=>x.id===id);if(!item)throw new Error('Work item not found');
+ const ownerPatch={...patch};
+ if('owner' in patch && patch.owner!==item.owner && !('ownerId' in patch)) {
+  const matches=workspace.teamMembers.filter(m=>m.projectId===item.projectId&&m.name===patch.owner);
+  ownerPatch.ownerId=matches.length===1?matches[0].id:undefined;
+  ownerPatch.ownerLabel=patch.owner;
+ }
+ const ownerId='ownerId' in ownerPatch?ownerPatch.ownerId:item.ownerId;
+ if(ownerId) {
+  const member=workspace.teamMembers.find(m=>m.id===ownerId&&m.projectId===item.projectId);
+  if(!member && 'ownerId' in patch)throw new Error('Owner does not belong to project');
+  if(member){ownerPatch.owner=member.name;ownerPatch.ownerLabel=member.name;}
+  else {ownerPatch.ownerId=undefined;ownerPatch.ownerLabel=ownerPatch.owner??item.ownerLabel??item.owner;}
+ }
  const at=new Date().toISOString(),status=patch.status??item.status;
- return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...patch,id:x.id,projectId:x.projectId,updatedAt:at,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
+ return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
 }
 export const changeWorkStatus=(w:Workspace,id:string,status:WorkItem['status'])=>updateWork(w,id,{status});
 export const archiveWork=(w:Workspace,id:string)=>updateWork(w,id,{archived:true});

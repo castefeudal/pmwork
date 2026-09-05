@@ -1,6 +1,7 @@
 import { test,expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { route,navigateWorkspace } from './support';
+import { demoWorkspace } from '../../src/data/demo';
 test('explicit first run, URL history, locale and independent preferences',async({page})=>{
  await page.goto(route('/en/workspace/'));
  await expect(page.getByRole('heading',{name:'Start working in PMWORK'})).toBeVisible();
@@ -39,6 +40,20 @@ test('template destination, open and undo',async({page})=>{
  const dialog=page.getByRole('dialog');await dialog.getByRole('combobox').selectOption('campaign');await dialog.getByRole('button',{name:'Apply',exact:true}).click();
  await expect(card.getByRole('status')).toContainText('Autumn Education Campaign');await expect(card.getByRole('link',{name:'Open',exact:true})).toHaveAttribute('href',/project=campaign/);
  await card.getByRole('button',{name:'Undo',exact:true}).click();await expect(card.getByRole('status')).toHaveText('Application undone');
+});
+test('My work uses local member identity and editor reassignment clears it',async({page})=>{
+ const workspace=demoWorkspace('en');
+ workspace.projectSettings=workspace.projectSettings.map(s=>s.projectId==='atlas'?{...s,localMemberId:'TM-1'}:s);
+ const original=workspace.workItems[0];
+ workspace.workItems=[{...original,title:'Identity-linked work',ownerId:'TM-1',owner:'Former name',status:'ready',done:false},{...original,id:'PW-OTHER',title:'Same name, different member',ownerId:'TM-2',owner:'Anna Smirnova',status:'ready',done:false}];
+ await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),workspace);
+ await page.goto(route('/en/workspace/?project=atlas&view=work'));
+ await page.getByRole('button',{name:'My work',exact:true}).click();
+ const card=page.locator('.work-title-button,.mobile-work-card').filter({hasText:'Identity-linked work',visible:true});
+ await expect(card).toBeVisible();await expect(page.getByText('Same name, different member',{exact:true})).toHaveCount(0);
+ await card.click();const editor=page.getByRole('dialog');await editor.getByLabel('Owner',{exact:true}).fill('External partner');await editor.getByRole('button',{name:'Save',exact:true}).click();
+ await expect(card).toHaveCount(0);
+ await page.getByRole('button',{name:'All work',exact:true}).click();await expect(card).toBeVisible();
 });
 for(const surface of ['glossary','playbooks','knowledge','methods','templates']) test(`catalog visual evidence ${surface}`,async({page},testInfo)=>{
   await page.goto(route(`/ru/${surface}/`));await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:`test-results/final-${surface}-${testInfo.project.name}.png`,fullPage:true});

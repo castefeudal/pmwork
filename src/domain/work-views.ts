@@ -3,17 +3,19 @@ export const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
 export function localDay(now = new Date()) {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
-export function selectWork(items: WorkItem[], config: WorkViewConfig, now = new Date()) {
+export function selectWork(items: WorkItem[], config: WorkViewConfig, now = new Date(), localOwnerId?: string) {
   const today = localDay(now), next = new Date(now);
   next.setDate(next.getDate() + 7);
   const soon = localDay(next), recent = now.getTime() - 7 * 86400000;
   return items.filter(x => {
     if (x.archived || (config.status !== "all" && x.status !== config.status)) return false;
-    if (config.owner && x.owner !== config.owner) return false;
+    if (config.preset === "my" && localOwnerId && x.ownerId) {
+      if(x.ownerId !== localOwnerId) return false;
+    } else if (config.owner && x.owner !== config.owner) return false;
     if (!`${x.id} ${x.title} ${x.owner} ${x.labels.join(" ")}`.toLocaleLowerCase().includes(config.query.toLocaleLowerCase())) return false;
     const open = x.status !== "done", overdue = open && !!x.dueDate && x.dueDate < today;
     switch (config.preset) {
-      case "my": return !!config.owner && open;
+      case "my": return !!(localOwnerId || config.owner) && open;
       case "attention": return open && (overdue || x.blocked || (x.priority === "critical" && !x.owner));
       case "soon": return open && !!x.dueDate && x.dueDate >= today && x.dueDate <= soon;
       case "overdue": return overdue;
