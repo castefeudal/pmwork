@@ -1710,3 +1710,13 @@ blockquote {
 .density-compact .workspace-content { padding: 16px; }
 .density-compact .panel { padding: 14px; }
 .density-compact td, .density-compact th { padding-top: 7px; padding-bottom: 7px; }
+.nav-group { display: grid; gap: 3px; }
+.nav-group > small { padding: 14px 10px 4px; font-size: 10px; letter-spacing: .09em; opacity: .7; }
+.mobile-workspace-nav { display: none; }
+.workspace-more { width: min(480px, 94vw); max-height: 85dvh; overflow: auto; display: grid; gap: 10px; }
+@media (max-width: 767px) {
+  .workspace-shell .sidebar { display: none; }
+  .mobile-workspace-nav { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); position: fixed; bottom: 0; inset-inline: 0; z-index: 60; padding-bottom: env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--line); }
+  .mobile-workspace-nav button { min-height: 60px; border: 0; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; }
+  .mobile-workspace-nav button[aria-current] { color: var(--accent); font-weight: 700; border-top: 3px solid currentColor; }
+}

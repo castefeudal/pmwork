@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { readWorkspaceUrl, workspaceUrl } from "@/domain/workspace-url";
+import { WorkspaceMore } from "./workspace-more";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -96,7 +98,7 @@ const navLabels = {
     setup: "Setup",
   },
 };
-const views = Object.keys(navIcons) as WorkspaceView[];
+
 export function WorkspaceApp({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [workspace, setWorkspace] = useState<Workspace>(() =>
@@ -112,6 +114,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       null,
     ),
     [palette, setPalette] = useState(false),
+    [more, setMore] = useState(false),
     [toast, setToast] = useState(""),
     [lastSaved, setLastSaved] = useState(""),
     [snapshots, setSnapshots] = useState<
@@ -139,8 +142,10 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
               : (normalized.projects[0]?.id ?? ""),
           );
         }
-        const requestedView = new URLSearchParams(window.location.search).get("view");
-        if (views.includes(requestedView as WorkspaceView)) setView(requestedView as WorkspaceView);
+        if (value) {
+          const context = readWorkspaceUrl(window.location.search, value);
+          setProjectId(context.project); setView(context.view);
+        }
         setReady(true);
         listSnapshots()
           .then(setSnapshots)
@@ -204,6 +209,17 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
   }, []);
+  useEffect(() => {
+    if (!ready || firstRun) return;
+    const restore = () => { const context = readWorkspaceUrl(window.location.search, workspace); setProjectId(context.project); setView(context.view); };
+    addEventListener("popstate", restore);
+    return () => removeEventListener("popstate", restore);
+  }, [ready, firstRun, workspace]);
+  useEffect(() => {
+    if (!ready || firstRun || !projectId) return;
+    const next = workspaceUrl(window.location.href, projectId, view);
+    if (next.href !== window.location.href) history.pushState(null, "", next);
+  }, [ready, firstRun, projectId, view]);
   if (!ready)
     return (
       <main className="language-gate" aria-busy="true">
@@ -383,24 +399,19 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             ru ? "Разделы рабочего пространства" : "Workspace sections"
           }
         >
-          {views.map((id) => {
+          {([
+            [ru ? "УПРАВЛЕНИЕ" : "MANAGE", ["overview", "guide"]],
+            [ru ? "ВЫПОЛНЕНИЕ" : "DELIVER", ["work", "board", "planning"]],
+            [ru ? "КОНТРОЛЬ" : "CONTROL", ["raid", "control", "finance"]],
+            [ru ? "СОВМЕСТНАЯ РАБОТА" : "COLLABORATE", ["people", "documents"]],
+            [ru ? "СИСТЕМА" : "SYSTEM", ["portfolio", "setup"]],
+          ] as [string, WorkspaceView[]][]).map(([label, ids]) => <div className="nav-group" key={label}><small>{label}</small>{ids.map(id => {
             const Icon = navIcons[id];
-            return (
-              <button
-                key={id}
-                className={view === id ? "active" : ""}
-                onClick={() => setView(id)}
-                aria-current={view === id ? "page" : undefined}
-                title={navLabels[locale][id]}
-              >
-                <Icon size={19} />
-                <span>{navLabels[locale][id]}</span>
-              </button>
-            );
-          })}
+            return <button key={id} className={view === id ? "active" : ""} onClick={() => setView(id)} aria-current={view === id ? "page" : undefined}><Icon size={19}/><span>{id === "board" ? (ru ? "Работа · Доска" : "Work · Board") : navLabels[locale][id]}</span></button>;
+          })}</div>)}
         </nav>
         <div className="side-foot">
-          <Link className="button small" href={`/${locale}/methods`}>
+          <Link className="button small" href={`/${locale}/knowledge`}>
             <BookOpen size={16} />
             <span>{ru ? "База знаний" : "Knowledge"}</span>
           </Link>
@@ -410,6 +421,14 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           </button>
         </div>
       </aside>
+      <nav className="mobile-workspace-nav" aria-label={ru ? "Рабочее пространство" : "Workspace"}>
+        {(["overview", "work", "planning", "guide"] as WorkspaceView[]).map(id => <button key={id} aria-current={view === id || (id === "work" && view === "board") ? "page" : undefined} onClick={() => setView(id)}>{id === "planning" ? (ru ? "План" : "Planning") : id === "guide" ? (ru ? "Гид" : "Guide") : navLabels[locale][id]}</button>)}
+        <button onClick={() => setMore(true)} aria-haspopup="dialog">{ru ? "Ещё" : "More"}</button>
+      </nav>
+      {more && <WorkspaceMore title={ru ? "Ещё" : "More"} onClose={() => setMore(false)}>
+        {(["raid", "people", "finance", "control", "documents", "portfolio", "setup"] as WorkspaceView[]).map(id => <button className="button" key={id} onClick={() => { setView(id); setMore(false); }}>{navLabels[locale][id]}</button>)}
+        <Link className="button" href={`/${locale}/knowledge`}>{ru ? "База знаний" : "Knowledge"}</Link>
+      </WorkspaceMore>}
       <main className="workspace-main">
         <header className="workspace-top">
           <select
@@ -426,9 +445,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           </select>
           <h1>{project.name}</h1>
           <span
-            className={`status ${project.health.schedule === "green" ? "good" : project.health.schedule === "red" ? "bad" : project.health.schedule === "amber" ? "warn" : "info"}`}
+            className="status info"
           >
-            {displayLabel(locale, "projectStatus", project.status)}
+            {ru ? "Статус проекта: " : "Project status: "}{displayLabel(locale, "projectStatus", project.status)}
           </span>
           <div className="spacer" />
           <small className="muted desktop-only" title={lastSaved}>{recovery ? (ru ? "Сохранение приостановлено" : "Autosave paused") : lastSaved ? (ru ? "Сохранено" : "Saved") : (ru ? "Локально" : "Local")}</small>
@@ -441,6 +460,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             <span>{ru ? "Поиск" : "Search"}</span>
             <kbd>Ctrl K</kbd>
           </button>
+          <button className="button small" onClick={async () => {
+            if (!recovery) await saveWorkspace(workspace);
+            const next = workspaceUrl(window.location.href, project.id, view);
+            next.pathname = next.pathname.replace(`/${locale}/workspace`, `/${ru ? "en" : "ru"}/workspace`);
+            window.location.assign(next.href);
+          }}>{ru ? "EN" : "RU"}</button>
           <ThemeToggle locale={locale} />
           <button
             className="button small"

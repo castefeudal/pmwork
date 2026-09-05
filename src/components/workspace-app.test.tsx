@@ -23,7 +23,7 @@ describe("workspace interactions", () => {
   it("switches views and adds work", async () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: "Посмотреть готовый пример" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Работа" }));
+    fireEvent.click((await screen.findAllByRole("button", { name: "Работа" }))[0]);
     expect(screen.getByRole("heading", { name: "Работа" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Добавить" }));
     fireEvent.change(screen.getByLabelText("Название"), {
@@ -37,7 +37,7 @@ describe("workspace interactions", () => {
   it("moves a board card with accessible controls", async () => {
     render(<WorkspaceApp locale="en" />);
     fireEvent.click(await screen.findByRole("button", { name: "Explore demo" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Board" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Work · Board" }));
     const card = screen
       .getByText("Align first-release scope")
       .closest("article");
@@ -48,7 +48,7 @@ describe("workspace interactions", () => {
   it("opens the command palette with a keyboard shortcut", async () => {
     render(<WorkspaceApp locale="en" />);
     fireEvent.click(await screen.findByRole("button", { name: "Explore demo" }));
-    await screen.findByRole("button", { name: "Work" });
+    (await screen.findAllByRole("button", { name: "Work" }))[0];
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
     expect(
       screen.getByRole("dialog", { name: "Command palette" }),
@@ -58,7 +58,7 @@ describe("workspace interactions", () => {
   it("creates and edits a validated dependency", async () => {
     render(<WorkspaceApp locale="en" />);
     fireEvent.click(await screen.findByRole("button", { name: "Explore demo" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Planning" }));
+    fireEvent.click((await screen.findAllByRole("button", { name: "Planning" }))[0]);
     fireEvent.click(screen.getByRole("button", { name: "Dependencies" }));
     fireEvent.click(screen.getByRole("button", { name: "Add dependency" }));
 
@@ -96,7 +96,7 @@ describe("workspace interactions", () => {
     fireEvent.click(acceptance);
     expect(acceptance.checked).toBe(true);
 
-    fireEvent.click(screen.getByRole("button", { name: "Обзор" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Обзор" })[0]);
     fireEvent.click(screen.getByRole("button", { name: "Контроль" }));
     fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
     expect(

@@ -197,14 +197,14 @@ export function OverviewView({
     <>
       <div className="metric-cards">
         <Metric
-          name={ru ? "Контроль" : "Control quality"}
+          name={ru ? "Покрытие контура управления" : "Management coverage"}
           value={`${complete.score}%`}
           detail={
-            complete.gaps.length
+            (ru ? "Полнота заполнения, не вероятность успеха. " : "Completeness, not probability of success. ") + (complete.gaps.length
               ? `${complete.gaps.length} ${ru ? "пробелов" : "gaps"}`
               : ru
                 ? "контур полный"
-                : "complete"
+                : "complete")
           }
         />
         <Metric
