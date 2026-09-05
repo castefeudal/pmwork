@@ -1,1596 +1,127 @@
-import type { Locale } from "@/domain/schemas";
-
-export type Bi = { ru: string; en: string };
-export const pick = (value: Bi, locale: Locale) => value[locale];
-export type Source = {
-  id: string;
-  title: string;
-  organization: string;
-  version: string;
-  published: string;
-  checked: string;
-  url: string;
-  authority: "Standard" | "Official Guide" | "Practice";
-  notes: Bi;
-};
-
-export const sources: Source[] = [
-  {
-    id: "pmbok8",
-    title: "PMBOKÂ® Guide and The Standard for Project Management",
-    organization: "Project Management Institute",
-    version: "8th edition",
-    published: "2025",
-    checked: "2026-09-05",
-    url: "https://www.pmi.org/standards/pmbok",
-    authority: "Standard",
-    notes: {
-      ru: "ĞÑ„Ğ¸Ñ†Ğ¸Ğ°Ğ»ÑŒĞ½Ñ‹Ğ¹ ÑÑ‚Ğ°Ğ½Ğ´Ğ°Ñ€Ñ‚ PMI; Ğ¸Ğ·Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğµ PMWORK Ğ¾Ñ€Ğ¸Ğ³Ğ¸Ğ½Ğ°Ğ»ÑŒĞ½Ğ¾.",
-      en: "Official PMI standard; PMWORK uses original explanations.",
-    },
-  },
-  {
-    id: "agile2",
-    title: "Agile Practice Guide",
-    organization: "Project Management Institute",
-    version: "2nd edition",
-    published: "2025",
-    checked: "2026-09-05",
-    url: "https://www.pmi.org/standards/agile",
-    authority: "Official Guide",
-    notes: {
-      ru: "ĞÑ„Ğ¸Ñ†Ğ¸Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ñ€ÑƒĞºĞ¾Ğ²Ğ¾Ğ´ÑÑ‚Ğ²Ğ¾ Ğ¿Ğ¾ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚Ğ½Ğ¾Ğ¼Ñƒ Ğ¿Ñ€Ğ¸Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ adaptive practices.",
-      en: "Official guidance for contextual use of adaptive practices.",
-    },
-  },
-  {
-    id: "scrum2020",
-    title: "The Scrum Guide",
-    organization: "Scrum.org / Scrum Inc.",
-    version: "November 2020",
-    published: "2020-11",
-    checked: "2026-09-05",
-    url: "https://scrumguides.org/scrum-guide.html",
-    authority: "Official Guide",
-    notes: {
-      ru: "ĞĞºÑ‚ÑƒĞ°Ğ»ÑŒĞ½Ğ°Ñ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞµĞ½Ğ½Ğ°Ñ Ğ²ĞµÑ€ÑĞ¸Ñ Scrum Guide.",
-      en: "Current verified Scrum Guide version.",
-    },
-  },
-  {
-    id: "kanban2025",
-    title: "The Kanban Guide",
-    organization: "Kanban Guides",
-    version: "May 2025",
-    published: "2025-05",
-    checked: "2026-09-05",
-    url: "https://kanbanguides.org/the-kanban-guide/2025.5/",
-    authority: "Official Guide",
-    notes: {
-      ru: "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»ÑĞµÑ‚ workflow, WIP, throughput, work item age Ğ¸ cycle time.",
-      en: "Defines workflow, WIP, throughput, work item age, and cycle time.",
-    },
-  },
-  {
-    id: "prince2v7",
-    title: "PRINCE2 Project Management",
-    organization: "PeopleCert",
-    version: "Version 7",
-    published: "2023",
-    checked: "2026-09-05",
-    url: "https://www.peoplecert.org/browse-certifications/project-programme-and-portfolio-management/PRINCE2-2",
-    authority: "Official Guide",
-    notes: {
-      ru: "ĞÑ„Ğ¸Ñ†Ğ¸Ğ°Ğ»ÑŒĞ½Ğ°Ñ ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğ° Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ° framework.",
-      en: "Official framework owner page.",
-    },
-  },
-  {
-    id: "iso21502",
-    title:
-      "ISO 21502:2020 Project, programme and portfolio management â€” Guidance on project management",
-    organization: "ISO",
-    version: "ISO 21502:2020",
-    published: "2020",
-    checked: "2026-09-05",
-    url: "https://www.iso.org/standard/74947.html",
-    authority: "Standard",
-    notes: {
-      ru: "ĞœĞµĞ¶Ğ´ÑƒĞ½Ğ°Ñ€Ğ¾Ğ´Ğ½Ñ‹Ğ¹ ÑÑ‚Ğ°Ğ½Ğ´Ğ°Ñ€Ñ‚; Ğ¿Ğ¾Ğ»Ğ½Ñ‹Ğ¹ Ñ‚ĞµĞºÑÑ‚ Ğ½Ğµ Ğ²Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²Ğ¾Ğ´Ğ¸Ñ‚ÑÑ.",
-      en: "International standard; full text is not reproduced.",
-    },
-  },
-  {
-    id: "agilemanifesto",
-    title: "Manifesto for Agile Software Development",
-    organization: "Agile Manifesto authors",
-    version: "2001",
-    published: "2001",
-    checked: "2026-09-05",
-    url: "https://agilemanifesto.org/",
-    authority: "Official Guide",
-    notes: {
-      ru: "ĞŸĞµÑ€Ğ²Ğ¸Ñ‡Ğ½Ñ‹Ğ¹ Ğ¸ÑÑ‚Ğ¾Ñ‡Ğ½Ğ¸Ğº Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹ Ğ¸ Ğ¿Ñ€Ğ¸Ğ½Ñ†Ğ¸Ğ¿Ğ¾Ğ² Agile.",
-      en: "Primary source for Agile values and principles.",
-    },
-  },
-  {
-    id: "wcag22",
-    title: "Web Content Accessibility Guidelines",
-    organization: "W3C",
-    version: "WCAG 2.2",
-    published: "2023",
-    checked: "2026-09-05",
-    url: "https://www.w3.org/TR/WCAG22/",
-    authority: "Standard",
-    notes: {
-      ru: "Ğ¦ĞµĞ»ĞµĞ²Ğ°Ñ Ğ¿Ğ»Ğ°Ğ½ĞºĞ° Ğ¸Ğ½Ñ‚ĞµÑ€Ñ„ĞµĞ¹ÑĞ° â€” ÑƒÑ€Ğ¾Ğ²ĞµĞ½ÑŒ AA.",
-      en: "The interface targets Level AA.",
-    },
-  },
-];
-
-export type Method = {
-  slug: string;
-  title: Bi;
-  summary: Bi;
-  origin: Bi;
-  principles: Bi[];
-  flow: Bi;
-  roles: Bi;
-  artifacts: Bi;
-  cadence: Bi;
-  metrics: Bi;
-  strengths: Bi;
-  limitations: Bi;
-  prerequisites: Bi;
-  bestFit: Bi;
-  poorFit: Bi;
-  antiPatterns: Bi;
-  tailoring: Bi;
-  combinations: Bi;
-  checklist: Bi[];
-  sourceIds: string[];
-  version: string;
-  updatedAt: string;
-};
-const m = (
-  slug: string,
-  ru: string,
-  en: string,
-  summaryRu: string,
-  summaryEn: string,
-  flowRu: string,
-  flowEn: string,
-  bestRu: string,
-  bestEn: string,
-  limitsRu: string,
-  limitsEn: string,
-  sourceIds: string[],
-  version = "Practice",
-): Method => ({
-  slug,
-  title: { ru, en },
-  summary: { ru: summaryRu, en: summaryEn },
-  origin: {
-    ru: "Ğ’Ğ¾Ğ·Ğ½Ğ¸Ğº ĞºĞ°Ğº Ğ¾Ñ‚Ğ²ĞµÑ‚ Ğ½Ğ° Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ; Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞ¹Ñ‚Ğµ Ğ¿Ñ€Ğ¾Ğ¸ÑÑ…Ğ¾Ğ¶Ğ´ĞµĞ½Ğ¸Ğµ Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ½Ğ¸Ğ¼Ğ°Ğ½Ğ¸Ñ Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ğ¹, Ğ° Ğ½Ğµ ĞºĞ°Ğº Ğ·Ğ½Ğ°Ğº ÑƒĞ½Ğ¸Ğ²ĞµÑ€ÑĞ°Ğ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸.",
-    en: "Emerged for a specific management context; use its origin to understand assumptions, not as proof of universality.",
-  },
-  principles: [
-    {
-      ru: "Ğ¯Ğ²Ğ½Ğ¾ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚ÑŒ ÑĞ¿Ğ¾ÑĞ¾Ğ± Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¸Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹ Ğ¸ Ğ¿Ğ¾Ñ‚Ğ¾Ğº Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
-      en: "Make decision rights and work flow explicit.",
-    },
-    {
-      ru: "ĞŸĞ¾Ğ´Ğ±Ğ¸Ñ€Ğ°Ñ‚ÑŒ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ Ğ¿Ñ€Ğ¾Ğ¿Ğ¾Ñ€Ñ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½Ğ¾ Ñ€Ğ¸ÑĞºÑƒ Ğ¸ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚Ğ¸.",
-      en: "Tailor control to risk and uncertainty.",
-    },
-    {
-      ru: "Ğ—Ğ°Ğ¼Ñ‹ĞºĞ°Ñ‚ÑŒ Ñ†Ğ¸ĞºĞ» Ğ¿Ğ»Ğ°Ğ½ â†’ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ° â†’ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ğ°Ñ ÑĞ²ÑĞ·ÑŒ â†’ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ°Ñ†Ğ¸Ñ.",
-      en: "Close the plan â†’ work â†’ feedback â†’ adaptation loop.",
-    },
-  ],
-  flow: { ru: flowRu, en: flowEn },
-  roles: {
-    ru: "Ğ Ğ¾Ğ»Ğ¸ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»ÑÑÑ‚ÑÑ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ñ‹Ğ¼ Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´Ğ¾Ğ¼; Ğ²Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°, Ñ€ÑƒĞºĞ¾Ğ²Ğ¾Ğ´Ğ¸Ñ‚ĞµĞ»ÑŒ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Ğ¸ Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ĞµĞ»Ğ¸ Ğ´Ğ¾Ğ»Ğ¶Ğ½Ñ‹ Ğ¸Ğ¼ĞµÑ‚ÑŒ ÑÑĞ½Ñ‹Ğµ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ñ.",
-    en: "Roles follow the chosen approach; outcome owner, project lead, and delivery team need clear decision rights.",
-  },
-  artifacts: {
-    ru: "Ğ˜ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞ¹Ñ‚Ğµ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ñ‚Ğµ Ğ°Ñ€Ñ‚ĞµÑ„Ğ°ĞºÑ‚Ñ‹, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğµ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶Ğ¸Ğ²Ğ°ÑÑ‚ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ, ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ°Ñ†Ğ¸Ñ, Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºÑƒ Ğ¸Ğ»Ğ¸ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ.",
-    en: "Use only artifacts that support a decision, coordination, verification, or accountability.",
-  },
-  cadence: {
-    ru: "ĞšĞ°Ğ´ĞµĞ½Ñ†Ğ¸Ñ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ñ‚ Ğ¾Ñ‚ ÑĞºĞ¾Ñ€Ğ¾ÑÑ‚Ğ¸ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ğ¾Ğ¹ ÑĞ²ÑĞ·Ğ¸, ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ°Ñ†Ğ¸Ğ¸ Ğ¸ Ñ€Ğ¸ÑĞºĞ° Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ¸.",
-    en: "Cadence depends on feedback speed, coordination cost, and delay risk.",
-  },
-  metrics: {
-    ru: "Ğ¡Ğ¼Ğ¾Ñ‚Ñ€Ğ¸Ñ‚Ğµ Ğ½Ğ° Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚, predictability, flow, ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ¾ Ğ¸ Ñ€Ğ¸ÑĞº â€” Ğ½Ğµ Ğ½Ğ° Ğ¾Ğ±ÑŠÑ‘Ğ¼ Ğ°ĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸.",
-    en: "Track outcomes, predictability, flow, quality, and riskâ€”not activity volume.",
-  },
-  strengths: {
-    ru: "Ğ”Ğ°Ñ‘Ñ‚ Ğ¾Ğ±Ñ‰ÑƒÑ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½ÑƒÑ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Ğ¸ ÑĞ·Ñ‹Ğº ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ°Ñ†Ğ¸Ğ¸, ĞµÑĞ»Ğ¸ ÑĞ¾Ğ²Ğ¿Ğ°Ğ´Ğ°ĞµÑ‚ Ñ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚Ğ¾Ğ¼.",
-    en: "Provides a shared operating model and coordination language when context fits.",
-  },
-  limitations: { ru: limitsRu, en: limitsEn },
-  prerequisites: {
-    ru: "ĞĞ±Ñ‰Ğ°Ñ Ñ†ĞµĞ»ÑŒ, ÑĞ²Ğ½Ñ‹Ğµ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ñ‹, Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ Ğº Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ğ¾Ğ¹ ÑĞ²ÑĞ·Ğ¸ Ğ¸ Ğ´Ğ¸ÑÑ†Ğ¸Ğ¿Ğ»Ğ¸Ğ½Ğ° Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ñ… Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….",
-    en: "Shared goal, explicit ownership, access to feedback, and discipline in updating work data.",
-  },
-  bestFit: { ru: bestRu, en: bestEn },
-  poorFit: {
-    ru: "Ğ¡Ñ€ĞµĞ´Ğ°, Ğ³Ğ´Ğµ ĞºĞ»ÑÑ‡ĞµĞ²Ñ‹Ğµ Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ñ Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´Ğ° Ğ¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ğ²ÑƒÑÑ‚ Ğ¸Ğ»Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ»Ğ¸ĞºÑ‚ÑƒÑÑ‚ Ñ governance.",
-    en: "Environments where core assumptions are absent or conflict with governance.",
-  },
-  antiPatterns: {
-    ru: "ĞœĞµÑ…Ğ°Ğ½Ğ¸Ñ‡ĞµÑĞºĞ¾Ğµ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ Ñ†ĞµÑ€ĞµĞ¼Ğ¾Ğ½Ğ¸Ğ¹; Ğ¿Ğ¾ĞºĞ°Ğ·Ğ°Ñ‚ĞµĞ»Ğ¸ ĞºĞ°Ğº Ñ†ĞµĞ»ÑŒ; Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ ÑĞ»Ğ¾Ñ‘Ğ² Ğ±ĞµĞ· ÑƒĞ´Ğ°Ğ»ĞµĞ½Ğ¸Ñ Ğ»Ğ¸ÑˆĞ½Ğ¸Ñ….",
-    en: "Mechanical ceremonies; metrics as targets; adding layers without removing waste.",
-  },
-  tailoring: {
-    ru: "ĞĞ°Ñ‡Ğ½Ğ¸Ñ‚Ğµ Ñ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾ Ğ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ğ¾Ğ¹ ÑÑ‚Ñ€ÑƒĞºÑ‚ÑƒÑ€Ñ‹ Ğ¸ ÑƒÑĞ¸Ğ»Ğ¸Ğ²Ğ°Ğ¹Ñ‚Ğµ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ¿Ğ¾ Ğ½Ğ°Ğ±Ğ»ÑĞ´Ğ°ĞµĞ¼Ğ¾Ğ¹ Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚Ğ¸.",
-    en: "Start with minimum sufficient structure and add control only for an observed need.",
-  },
-  combinations: {
-    ru: "ĞšĞ¾Ğ¼Ğ±Ğ¸Ğ½Ğ¸Ñ€ÑƒĞ¹Ñ‚Ğµ governance, planning Ğ¸ execution ĞºĞ°Ğº Ğ¾Ñ‚Ğ´ĞµĞ»ÑŒĞ½Ñ‹Ğµ ÑĞ»Ğ¾Ğ¸; ÑĞ²Ğ½Ğ¾ Ñ„Ğ¸ĞºÑĞ¸Ñ€ÑƒĞ¹Ñ‚Ğµ ĞºĞ¾Ğ½Ñ„Ğ»Ğ¸ĞºÑ‚Ñ‹ Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ğ¹.",
-    en: "Combine governance, planning, and execution as separate layers; expose conflicting assumptions.",
-  },
-  checklist: [
-    {
-      ru: "Ğ¡Ñ„Ğ¾Ñ€Ğ¼ÑƒĞ»Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ñ‹Ğ¹ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ¸ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ñ.",
-      en: "State the expected outcome and constraints.",
-    },
-    {
-      ru: "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚ÑŒ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†ĞµĞ² Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹ Ğ¸ cadence.",
-      en: "Define decision owners and cadence.",
-    },
-    {
-      ru: "Ğ’Ñ‹Ğ±Ñ€Ğ°Ñ‚ÑŒ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼ÑƒĞ¼ Ğ°Ñ€Ñ‚ĞµÑ„Ğ°ĞºÑ‚Ğ¾Ğ² Ğ¸ Ğ¼ĞµÑ‚Ñ€Ğ¸Ğº.",
-      en: "Select the minimum artifacts and metrics.",
-    },
-    {
-      ru: "ĞŸÑ€Ğ¾Ğ²ĞµÑÑ‚Ğ¸ review Ñ‡ĞµÑ€ĞµĞ· Ğ¾Ğ´Ğ¸Ğ½ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğ¹ Ñ†Ğ¸ĞºĞ».",
-      en: "Review after one working cycle.",
-    },
-  ],
-  sourceIds,
-  version,
-  updatedAt: "2026-09-05",
-});
-
-export const methods: Method[] = [
-  m(
-    "predictive",
-    "ĞŸÑ€ĞµĞ´Ğ¸ĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾Ğµ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ",
-    "Predictive project management",
-    "Ğ”ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ñ€ĞµĞ´Ğ²Ğ°Ñ€Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ baseline.",
-    "Plan substantial scope in advance and control delivery against a baseline.",
-    "Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ†Ğ¸Ñ â†’ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ â†’ Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ â†’ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ â†’ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ğµ.",
-    "Initiate â†’ plan â†’ execute â†’ control â†’ close.",
-    "Ğ¡Ñ‚Ğ°Ğ±Ğ¸Ğ»ÑŒĞ½Ñ‹Ğ¹ scope, Ñ„Ğ¾Ñ€Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ approvals, Ğ²Ñ‹ÑĞ¾ĞºĞ°Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹.",
-    "Stable scope, formal approvals, high change cost.",
-    "ĞŸĞ»Ğ¾Ñ…Ğ¾ Ğ¿ĞµÑ€ĞµĞ½Ğ¾ÑĞ¸Ñ‚ Ñ‡Ğ°ÑÑ‚ÑƒÑ ÑĞ¼ĞµĞ½Ñƒ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹ Ğ¸ Ğ¿Ğ¾Ğ·Ğ´Ğ½ÑÑ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½ÑƒÑ ÑĞ²ÑĞ·ÑŒ.",
-    "Handles frequent requirement change and late feedback poorly.",
-    ["pmbok8", "iso21502"],
-  ),
-  m(
-    "waterfall",
-    "Waterfall",
-    "Waterfall",
-    "ĞŸĞ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Ñ„Ğ°Ğ· Ñ Ñ„Ğ¾Ñ€Ğ¼Ğ°Ğ»Ğ¸Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¼Ğ¸ Ğ¿ĞµÑ€ĞµÑ…Ğ¾Ğ´Ğ°Ğ¼Ğ¸.",
-    "Sequential phase model with formal transitions.",
-    "Ğ¢Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ â†’ design â†’ build â†’ verify â†’ transition.",
-    "Requirements â†’ design â†’ build â†’ verify â†’ transition.",
-    "ĞŸĞ¾Ğ²Ñ‚Ğ¾Ñ€ÑĞµĞ¼Ğ°Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ° Ñ Ğ¿Ñ€ĞµĞ´ÑĞºĞ°Ğ·ÑƒĞµĞ¼Ñ‹Ğ¼Ğ¸ interfaces Ğ¸ gates.",
-    "Repeatable work with predictable interfaces and gates.",
-    "ĞÑˆĞ¸Ğ±ĞºĞ¸ Ğ¿Ñ€ĞµĞ´Ğ¿Ğ¾Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğ¹ Ğ¾Ğ±Ğ½Ğ°Ñ€ÑƒĞ¶Ğ¸Ğ²Ğ°ÑÑ‚ÑÑ Ğ¿Ğ¾Ğ·Ğ´Ğ½Ğ¾.",
-    "Wrong assumptions may surface late.",
-    ["iso21502"],
-  ),
-  m(
-    "agile",
-    "Agile",
-    "Agile",
-    "Ğ¡Ğ¸ÑÑ‚ĞµĞ¼Ğ° Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹ Ğ´Ğ»Ñ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ¸Ğ²Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ¸ Ñ‡ĞµÑ€ĞµĞ· Ñ‡Ğ°ÑÑ‚ÑƒÑ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºÑƒ Ğ¸ Ğ¾Ğ±ÑƒÑ‡ĞµĞ½Ğ¸Ğµ.",
-    "A value system for adaptive delivery through frequent value and learning.",
-    "ĞšĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğµ Ñ†Ğ¸ĞºĞ»Ñ‹: Ğ²Ñ‹Ğ±Ñ€Ğ°Ñ‚ÑŒ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ â†’ ÑĞ´ĞµĞ»Ğ°Ñ‚ÑŒ â†’ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€Ğ¸Ñ‚ÑŒ â†’ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ.",
-    "Short loops: choose value â†’ deliver â†’ inspect â†’ adapt.",
-    "Ğ’Ñ‹ÑĞ¾ĞºĞ°Ñ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ°Ñ Ñ‡Ğ°ÑÑ‚Ğ°Ñ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ğ°Ñ ÑĞ²ÑĞ·ÑŒ.",
-    "High uncertainty with frequent accessible feedback.",
-    "Ğ‘ĞµĞ· ÑÑĞ½Ğ¾Ğ¹ Ñ†ĞµĞ»Ğ¸ Ğ¸ empowered team Ğ¿Ñ€ĞµĞ²Ñ€Ğ°Ñ‰Ğ°ĞµÑ‚ÑÑ Ğ² Ñ€ĞµĞ°ĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ.",
-    "Without a clear goal and empowered team it becomes reactive.",
-    ["agilemanifesto", "agile2"],
-  ),
-  m(
-    "hybrid",
-    "Ğ“Ğ¸Ğ±Ñ€Ğ¸Ğ´Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´",
-    "Hybrid",
-    "ĞÑĞ¼Ñ‹ÑĞ»ĞµĞ½Ğ½Ğ¾Ğµ ÑĞ¾Ñ‡ĞµÑ‚Ğ°Ğ½Ğ¸Ğµ governance Ğ¸ adaptive delivery.",
-    "Purposeful combination of governance and adaptive delivery.",
-    "Ğ¤Ğ¾Ñ€Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ñ‹Ğµ Ñ‚Ğ¾Ñ‡ĞºĞ¸ Ğ¾ĞºÑ€ÑƒĞ¶Ğ°ÑÑ‚ ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğµ Ñ†Ğ¸ĞºĞ»Ñ‹ delivery.",
-    "Formal control points surround short delivery cycles.",
-    "Ğ–Ñ‘ÑÑ‚ĞºĞ¸Ğµ Ğ²Ğ½ĞµÑˆĞ½Ğ¸Ğµ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ñ Ğ¿Ñ€Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½Ñ‡Ğ¸Ğ²Ğ¾Ğ¼ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğµ Ğ´Ğ¾ÑÑ‚Ğ¸Ğ¶ĞµĞ½Ğ¸Ñ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
-    "Hard external constraints with an evolving solution path.",
-    "Ğ‘ĞµĞ· ÑĞ²Ğ½Ñ‹Ñ… Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ† ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑÑ ÑĞ»ÑƒÑ‡Ğ°Ğ¹Ğ½Ñ‹Ğ¼ framework soup.",
-    "Without explicit boundaries it becomes random framework soup.",
-    ["pmbok8", "agile2"],
-  ),
-  m(
-    "scrum",
-    "Scrum",
-    "Scrum",
-    "Ğ›Ñ‘Ğ³ĞºĞ¸Ğ¹ framework Ğ´Ğ»Ñ ÑĞ»Ğ¾Ğ¶Ğ½Ñ‹Ñ… Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ¾Ğ² Ğ½Ğ° Ğ¾ÑĞ½Ğ¾Ğ²Ğµ empiricism.",
-    "A lightweight framework for complex products based on empiricism.",
-    "Product Backlog â†’ Sprint Planning â†’ Sprint â†’ Review + Retrospective â†’ adaptation.",
-    "Product Backlog â†’ Sprint Planning â†’ Sprint â†’ Review + Retrospective â†’ adaptation.",
-    "ĞšÑ€Ğ¾ÑÑ-Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¼Ğ¾Ğ¶ĞµÑ‚ ÑĞ¾Ğ·Ğ´Ğ°Ğ²Ğ°Ñ‚ÑŒ usable increment ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Sprint.",
-    "A cross-functional team can create a usable Increment every Sprint.",
-    "ĞĞµ Ñ€ĞµÑˆĞ°ĞµÑ‚ portfolio, contracts Ğ¸ governance Ğ°Ğ²Ñ‚Ğ¾Ğ¼Ğ°Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¸.",
-    "Does not automatically solve portfolio, contracts, or governance.",
-    ["scrum2020"],
-    "Scrum Guide 2020",
-  ),
-  m(
-    "kanban",
-    "Kanban",
-    "Kanban",
-    "ĞĞ¿Ñ‚Ğ¸Ğ¼Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ° Ñ‡ĞµÑ€ĞµĞ· ÑĞ²Ğ½Ñ‹Ğ¹ workflow, ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ WIP Ğ¸ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½ÑƒÑ ÑĞ²ÑĞ·ÑŒ.",
-    "Flow optimization through an explicit workflow, WIP control, and feedback.",
-    "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚ÑŒ workflow â†’ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑÑ‚ÑŒ WIP â†’ Ğ½Ğ°Ğ±Ğ»ÑĞ´Ğ°Ñ‚ÑŒ flow metrics â†’ ÑƒĞ»ÑƒÑ‡ÑˆĞ°Ñ‚ÑŒ.",
-    "Define workflow â†’ control WIP â†’ observe flow metrics â†’ improve.",
-    "ĞĞµĞ¿Ñ€ĞµÑ€Ñ‹Ğ²Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ñ‚Ğ¾Ğº Ñ€Ğ°Ğ·Ğ½Ğ¾Ñ€Ğ¾Ğ´Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ¸ Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚ÑŒ ÑĞ¾ĞºÑ€Ğ°Ñ‚Ğ¸Ñ‚ÑŒ Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ¸.",
-    "Continuous heterogeneous work where reducing delay matters.",
-    "Ğ”Ğ¾ÑĞºĞ° Ğ±ĞµĞ· WIP Ğ¸ flow reviews Ğ´Ğ°Ñ‘Ñ‚ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ²Ğ¸Ğ·ÑƒĞ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ğ·Ğ°Ğ´Ğ°Ñ‡.",
-    "A board without WIP control and flow reviews only visualizes tasks.",
-    ["kanban2025"],
-    "Kanban Guide May 2025",
-  ),
-  m(
-    "scrumban",
-    "Scrumban",
-    "Scrumban",
-    "Scrum cadence Ñ Kanban flow practices Ğ¸ ÑĞ²Ğ¾Ğ»ÑÑ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğ¼ ÑƒĞ»ÑƒÑ‡ÑˆĞµĞ½Ğ¸ĞµĞ¼.",
-    "Scrum cadence combined with Kanban flow practices and evolutionary improvement.",
-    "Sprint goal Ğ¸ reviews ÑĞ¾Ñ…Ñ€Ğ°Ğ½ÑÑÑ‚ÑÑ; WIP, pull Ğ¸ flow metrics ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑÑÑ‚ Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸ĞµĞ¼.",
-    "Sprint goal and reviews remain; WIP, pull, and flow metrics govern execution.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Scrum Ğ¸ÑĞ¿Ñ‹Ñ‚Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¿ĞµÑ€ĞµĞ³Ñ€ÑƒĞ·ĞºÑƒ, carry-over Ğ¸Ğ»Ğ¸ interrupt work.",
-    "A Scrum team faces overload, carry-over, or interrupt work.",
-    "ĞĞ°Ğ·Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ½Ğµ Ğ·Ğ°Ğ¼ĞµĞ½ÑĞµÑ‚ ÑĞ²Ğ½Ğ¾Ğ³Ğ¾ Definition of Workflow.",
-    "The label does not replace an explicit Definition of Workflow.",
-    ["scrum2020", "kanban2025"],
-  ),
-  m(
-    "lean",
-    "Lean",
-    "Lean",
-    "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒÑ, Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ¼, ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ¾Ğ¼ Ğ¸ ÑƒÑÑ‚Ñ€Ğ°Ğ½ĞµĞ½Ğ¸ĞµĞ¼ Ğ¿Ğ¾Ñ‚ĞµÑ€ÑŒ.",
-    "Manage value, flow, quality, and waste elimination.",
-    "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚ÑŒ value â†’ map flow â†’ remove constraints â†’ improve continuously.",
-    "Define value â†’ map flow â†’ remove constraints â†’ improve continuously.",
-    "ĞŸĞ¾Ğ²Ñ‚Ğ¾Ñ€ÑĞµĞ¼Ñ‹Ğµ value streams Ğ¸ Ğ¸Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ñ‹Ğµ Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ¸.",
-    "Repeatable value streams with observable delays.",
-    "Ğ›Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ°Ñ ÑĞºĞ¾Ğ½Ğ¾Ğ¼Ğ¸Ñ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ¿Ğ¾Ğ²Ñ€ĞµĞ´Ğ¸Ñ‚ÑŒ ÑĞ¸ÑÑ‚ĞµĞ¼Ğ½Ğ¾Ğ¼Ñƒ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ñƒ.",
-    "Local optimization can harm the system outcome.",
-    ["kanban2025"],
-  ),
-  m(
-    "xp",
-    "Ğ­ĞºÑÑ‚Ñ€ĞµĞ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ñ€Ğ¾Ğ³Ñ€Ğ°Ğ¼Ğ¼Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ",
-    "Extreme Programming",
-    "Ğ˜Ğ½Ğ¶ĞµĞ½ĞµÑ€Ğ½Ñ‹Ğµ Ğ¿Ñ€Ğ°ĞºÑ‚Ğ¸ĞºĞ¸ Ğ´Ğ»Ñ Ğ±Ñ‹ÑÑ‚Ñ€Ğ¾Ğ¹ Ğ¸ ÑƒÑÑ‚Ğ¾Ğ¹Ñ‡Ğ¸Ğ²Ğ¾Ğ¹ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ software.",
-    "Engineering practices for rapid, sustainable software delivery.",
-    "ĞœĞ°Ğ»Ñ‹Ğµ releases, tests, continuous integration, pair work, refactoring.",
-    "Small releases, tests, continuous integration, pair work, refactoring.",
-    "Software teams Ñ Ñ‡Ğ°ÑÑ‚Ñ‹Ğ¼Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸ÑĞ¼Ğ¸ Ğ¸ ÑĞ¸Ğ»ÑŒĞ½Ğ¾Ğ¹ Ğ¸Ğ½Ğ¶ĞµĞ½ĞµÑ€Ğ½Ğ¾Ğ¹ Ğ´Ğ¸ÑÑ†Ğ¸Ğ¿Ğ»Ğ¸Ğ½Ğ¾Ğ¹.",
-    "Software teams with frequent change and strong engineering discipline.",
-    "ĞŸÑ€Ğ°ĞºÑ‚Ğ¸ĞºĞ¸ Ñ‚Ñ€ĞµĞ±ÑƒÑÑ‚ skill Ğ¸ Ğ½Ğµ Ğ·Ğ°Ğ¼ĞµĞ½ÑÑÑ‚ product direction.",
-    "Practices require skill and do not replace product direction.",
-    ["agilemanifesto"],
-  ),
-  m(
-    "prince2",
-    "PRINCE2",
-    "PRINCE2",
-    "Ğ¡Ñ‚Ñ€ÑƒĞºÑ‚ÑƒÑ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¼ĞµÑ‚Ğ¾Ğ´ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ñ‡ĞµÑ€ĞµĞ· Ğ¿Ñ€Ğ¸Ğ½Ñ†Ğ¸Ğ¿Ñ‹, Ğ¿Ñ€Ğ°ĞºÑ‚Ğ¸ĞºĞ¸, Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑÑ‹ Ğ¸ tailoring.",
-    "Structured project management through principles, practices, processes, and tailoring.",
-    "Business justification Ğ¸ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾ ÑÑ‚Ğ°Ğ´Ğ¸ÑĞ¼ Ñ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ñ‹Ğ¼Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸ÑĞ¼Ğ¸.",
-    "Continued business justification and management by stages with defined decisions.",
-    "ĞÑ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸ Ñ formal governance Ğ¸ ÑÑĞ½Ğ¾Ğ¹ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒÑ.",
-    "Organizations needing formal governance and clear accountability.",
-    "ĞŸĞ»Ğ¾Ñ…Ğ¾Ğ¹ tailoring ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ğ´Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ½ÑƒÑ Ğ½Ğ°Ğ³Ñ€ÑƒĞ·ĞºÑƒ Ğ±ĞµĞ· Ğ»ÑƒÑ‡ÑˆĞµĞ³Ğ¾ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ñ.",
-    "Poor tailoring creates document load without better control.",
-    ["prince2v7"],
-    "PRINCE2 7",
-  ),
-  m(
-    "cpm",
-    "ĞœĞµÑ‚Ğ¾Ğ´ ĞºÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ Ğ¿ÑƒÑ‚Ğ¸",
-    "Critical Path Method",
-    "Ğ¡ĞµÑ‚ĞµĞ²Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ schedule, Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ÑÑ‰Ğ°Ñ Ñ†ĞµĞ¿Ğ¾Ñ‡ĞºÑƒ Ğ±ĞµĞ· total float.",
-    "A schedule network model identifying the chain with no total float.",
-    "Dependencies + durations â†’ forward pass â†’ backward pass â†’ float.",
-    "Dependencies + durations â†’ forward pass â†’ backward pass â†’ float.",
-    "ĞŸÑ€Ğ¾ĞµĞºÑ‚Ñ‹ Ñ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ñ‹Ğ¼Ğ¸ activity Ğ¸ Ğ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ğ¾ ÑÑ‚Ğ°Ğ±Ğ¸Ğ»ÑŒĞ½Ñ‹Ğ¼Ğ¸ estimates.",
-    "Projects with dependent activities and reasonably stable estimates.",
-    "Ğ ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ñ‚ Ğ¾Ñ‚ ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ° Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ĞµĞ¹ Ğ¸ Ğ¾Ñ†ĞµĞ½Ğ¾Ğº.",
-    "Output is only as good as dependencies and estimates.",
-    ["pmbok8"],
-  ),
-  m(
-    "critical-chain",
-    "ĞšÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ°Ñ Ñ†ĞµĞ¿ÑŒ",
-    "Critical Chain",
-    "ĞŸĞ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ resource constraints Ğ¸ aggregate buffers.",
-    "Planning that considers resource constraints and aggregate buffers.",
-    "Resource-level schedule â†’ critical chain â†’ project/feeding buffers â†’ buffer control.",
-    "Resource-level schedule â†’ critical chain â†’ project/feeding buffers â†’ buffer control.",
-    "ĞœÑƒĞ»ÑŒÑ‚Ğ¸Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ½Ğ°Ñ ÑÑ€ĞµĞ´Ğ° Ñ ĞºĞ¾Ğ½ĞºÑƒÑ€ĞµĞ½Ñ†Ğ¸ĞµĞ¹ Ğ·Ğ° Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ½Ñ‹Ğµ Ñ€ĞµÑÑƒÑ€ÑÑ‹.",
-    "Multi-project environments competing for constrained resources.",
-    "ĞĞµĞºĞ¾Ñ€Ñ€ĞµĞºÑ‚Ğ½Ñ‹Ğµ buffers Ğ¼Ğ°ÑĞºĞ¸Ñ€ÑƒÑÑ‚ Ğ¿Ğ»Ğ¾Ñ…Ğ¸Ğµ Ğ¸ÑÑ…Ğ¾Ğ´Ğ½Ñ‹Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ.",
-    "Poorly designed buffers can mask weak inputs.",
-    ["pmbok8"],
-  ),
-  m(
-    "stage-gate",
-    "Stage-Gate",
-    "Stage-Gate",
-    "Ğ˜Ğ½Ğ²ĞµÑÑ‚Ğ¸Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¼ĞµĞ¶Ğ´Ñƒ ÑÑ‚Ğ°Ğ´Ğ¸ÑĞ¼Ğ¸ Ñ€Ğ°Ğ·Ğ²Ğ¸Ñ‚Ğ¸Ñ Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ñ‹.",
-    "Investment decisions between stages of initiative development.",
-    "Stage work â†’ evidence package â†’ gate decision: go/hold/recycle/stop.",
-    "Stage work â†’ evidence package â†’ gate decision: go/hold/recycle/stop.",
-    "Ğ’Ñ‹ÑĞ¾ĞºĞ°Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞ¹ ÑÑ‚Ğ°Ğ´Ğ¸Ğ¸ Ğ¸ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ portfolio choices.",
-    "High next-stage cost and portfolio choices.",
-    "Gates ÑÑ‚Ğ°Ğ½Ğ¾Ğ²ÑÑ‚ÑÑ Ñ‚ĞµĞ°Ñ‚Ñ€Ğ¾Ğ¼, ĞµÑĞ»Ğ¸ stop decision Ğ½ĞµĞ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶ĞµĞ½.",
-    "Gates become theater when stopping is impossible.",
-    ["pmbok8"],
-  ),
-  m(
-    "lean-startup",
-    "Lean Startup",
-    "Lean Startup",
-    "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ±Ğ¸Ğ·Ğ½ĞµÑ-Ğ³Ğ¸Ğ¿Ğ¾Ñ‚ĞµĞ· Ñ‡ĞµÑ€ĞµĞ· buildâ€“measureâ€“learn.",
-    "Testing business hypotheses through buildâ€“measureâ€“learn.",
-    "Ğ“Ğ¸Ğ¿Ğ¾Ñ‚ĞµĞ·Ğ° â†’ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ğ¹ ÑĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚ â†’ evidence â†’ pivot/persevere.",
-    "Hypothesis â†’ minimum experiment â†’ evidence â†’ pivot/persevere.",
-    "ĞĞ¾Ğ²Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚ Ñ Ğ²Ñ‹ÑĞ¾ĞºĞ¾Ğ¹ market uncertainty.",
-    "New products with high market uncertainty.",
-    "MVP Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ±Ñ‹Ñ‚ÑŒ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚ Ğ·Ğ° Ğ½Ğ¸Ğ·ĞºĞ¾ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ğ¹ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚.",
-    "An MVP can be mistaken for a low-quality final product.",
-    ["agile2"],
-  ),
-  m(
-    "design-thinking",
-    "Ğ”Ğ¸Ğ·Ğ°Ğ¹Ğ½-Ğ¼Ñ‹ÑˆĞ»ĞµĞ½Ğ¸Ğµ",
-    "Design Thinking",
-    "Human-centered exploration and solution framing.",
-    "Human-centered exploration and solution framing.",
-    "Empathize â†’ define â†’ ideate â†’ prototype â†’ test; loops are expected.",
-    "Empathize â†’ define â†’ ideate â†’ prototype â†’ test; loops are expected.",
-    "ĞĞµÑ‡Ñ‘Ñ‚ĞºĞ°Ñ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ğ° Ğ¸ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ğ¿Ğ¾Ğ½ÑÑ‚ÑŒ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ.",
-    "Ambiguous problem requiring user understanding.",
-    "Ğ˜Ğ´ĞµĞ°Ñ†Ğ¸Ñ Ğ±ĞµĞ· delivery Ğ¸ evidence Ğ½Ğµ ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚.",
-    "Ideation without delivery and evidence creates no outcome.",
-    ["agile2"],
-  ),
-  m(
-    "scaling",
-    "ĞœĞ°ÑÑˆÑ‚Ğ°Ğ±Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ: SAFe, LeSS, DA",
-    "Scaling: SAFe, LeSS, DA",
-    "ĞĞµĞ¹Ñ‚Ñ€Ğ°Ğ»ÑŒĞ½Ğ°Ñ ĞºĞ°Ñ€Ñ‚Ğ° Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´Ğ¾Ğ² ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ°Ñ†Ğ¸Ğ¸ Ğ½ĞµÑĞºĞ¾Ğ»ÑŒĞºĞ¸Ñ… ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´.",
-    "A neutral map of approaches for coordinating multiple teams.",
-    "Ğ¡Ğ¸Ğ½Ñ…Ñ€Ğ¾Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ strategy, architecture, delivery Ğ¸ feedback Ñ€Ğ°Ğ·Ğ»Ğ¸Ñ‡Ğ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ framework.",
-    "Strategy, architecture, delivery, and feedback synchronization varies by framework.",
-    "Ğ ĞµĞ°Ğ»ÑŒĞ½Ğ°Ñ Ğ¼ĞµĞ¶ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ½Ğ°Ñ ÑĞ²ÑĞ·Ğ°Ğ½Ğ½Ğ¾ÑÑ‚ÑŒ, ĞºĞ¾Ñ‚Ğ¾Ñ€ÑƒÑ Ğ½ĞµĞ»ÑŒĞ·Ñ ÑƒÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ñ‰Ğµ.",
-    "Real cross-team coupling that cannot be removed more simply.",
-    "Scaling framework ÑƒÑĞ¸Ğ»Ğ¸Ğ²Ğ°ĞµÑ‚ ÑÑƒÑ‰ĞµÑÑ‚Ğ²ÑƒÑÑ‰ÑƒÑ ÑĞ»Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ğ½Ğµ Ğ»ĞµÑ‡Ğ¸Ñ‚ ÑĞ»Ğ°Ğ±Ñ‹Ğµ teams.",
-    "A scaling framework amplifies complexity and does not repair weak teams.",
-    ["agile2"],
-  ),
-];
-
-export type Template = {
-  slug: string;
-  title: Bi;
-  category: string;
-  purpose: Bi;
-  when: Bi;
-  fields: Bi[];
-  guidance: Bi;
-  antiPattern: Bi;
-};
-const tf = {
-  strategy: [
-    { ru: "ĞšĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚ Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ", en: "Context and decision" },
-    { ru: "ĞĞ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ñ‹Ğ¹ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚", en: "Expected outcome" },
-    { ru: "ĞšÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¹ ÑƒÑĞ¿ĞµÑ…Ğ°", en: "Success measure" },
-    { ru: "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ†", en: "Owner" },
-  ],
-  plan: [
-    { ru: "Scope / Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹", en: "Scope / boundaries" },
-    { ru: "Milestones Ğ¸ Ğ´Ğ°Ñ‚Ñ‹", en: "Milestones and dates" },
-    { ru: "Ğ—Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚Ğ¸", en: "Dependencies" },
-    { ru: "Ğ Ğ¸ÑĞºĞ¸ Ğ¸ Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ñ", en: "Risks and assumptions" },
-  ],
-  log: [
-    { ru: "ID Ğ¸ Ğ´Ğ°Ñ‚Ğ°", en: "ID and date" },
-    { ru: "ĞĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ", en: "Description" },
-    { ru: "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ†", en: "Owner" },
-    { ru: "Ğ¡Ñ‚Ğ°Ñ‚ÑƒÑ Ğ¸ ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞµ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ğµ", en: "Status and next action" },
-  ],
-  meeting: [
-    { ru: "Ğ¦ĞµĞ»ÑŒ Ğ²ÑÑ‚Ñ€ĞµÑ‡Ğ¸", en: "Meeting purpose" },
-    { ru: "ĞŸĞ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²ĞºĞ°", en: "Preparation" },
-    { ru: "Agenda Ğ¸ timeboxes", en: "Agenda and timeboxes" },
-    { ru: "Ğ ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¸ actions", en: "Decisions and actions" },
-  ],
-  control: [
-    { ru: "Baseline / Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ğµ", en: "Baseline / expectation" },
-    { ru: "Ğ¤Ğ°ĞºÑ‚", en: "Actual" },
-    { ru: "ĞÑ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ", en: "Variance" },
-    { ru: "Ğ ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¸ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ†", en: "Decision and owner" },
-  ],
-};
-const template = (
-  slug: string,
-  ru: string,
-  en: string,
-  category: keyof typeof tf,
-  purposeRu: string,
-  purposeEn: string,
-  extra: Bi[] = [],
-): Template => ({
-  slug,
-  title: { ru, en },
-  category,
-  purpose: { ru: purposeRu, en: purposeEn },
-  when: {
-    ru: "Ğ˜ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞ¹Ñ‚Ğµ, ĞºĞ¾Ğ³Ğ´Ğ° Ğ°Ñ€Ñ‚ĞµÑ„Ğ°ĞºÑ‚ Ğ¿Ğ¾Ğ¼Ğ¾Ğ³Ğ°ĞµÑ‚ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚ÑŒ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ, ÑĞ¸Ğ½Ñ…Ñ€Ğ¾Ğ½Ğ¸Ğ·Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ ÑƒÑ‡Ğ°ÑÑ‚Ğ½Ğ¸ĞºĞ¾Ğ² Ğ¸Ğ»Ğ¸ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ´Ğ¸Ñ‚ÑŒ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚.",
-    en: "Use when the artifact supports a decision, aligns participants, or verifies an outcome.",
-  },
-  fields: [...tf[category], ...extra],
-  guidance: {
-    ru: "Ğ—Ğ°Ğ¿Ğ¾Ğ»Ğ½ÑĞ¹Ñ‚Ğµ Ğ´Ğ¾ ÑƒÑ€Ğ¾Ğ²Ğ½Ñ, Ğ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ğ¾Ğ³Ğ¾ Ğ´Ğ»Ñ ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞ³Ğ¾ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ. Ğ£Ğ´Ğ°Ğ»Ğ¸Ñ‚Ğµ ÑĞµĞºÑ†Ğ¸Ğ¸, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğµ Ğ½Ğ¸Ñ‡ĞµĞ³Ğ¾ Ğ½Ğµ Ğ¼ĞµĞ½ÑÑÑ‚.",
-    en: "Complete only to the depth needed for the next management action. Remove sections that change nothing.",
-  },
-  antiPattern: {
-    ru: "Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑĞµÑ‚ÑÑ Ñ€Ğ°Ğ´Ğ¸ Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚Ğ½Ğ¾ÑÑ‚Ğ¸, Ğ½Ğ¾ Ğ½Ğµ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞµÑ‚ÑÑ Ğ² Ñ€ĞµÑˆĞµĞ½Ğ¸ÑÑ….",
-    en: "The document is maintained for reporting but never used in decisions.",
-  },
-});
-
-export const templates: Template[] = [
-  template(
-    "project-charter",
-    "Ğ£ÑÑ‚Ğ°Ğ² Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°",
-    "Project Charter",
-    "strategy",
-    "Ğ¡Ğ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ñ‚ÑŒ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ñ, Ñ†ĞµĞ»ÑŒ Ğ¸ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
-    "Align authority, purpose, and project boundaries.",
-    [
-      { ru: "Scope in / out", en: "Scope in / out" },
-      { ru: "Ğ‘ÑĞ´Ğ¶ĞµÑ‚Ğ½Ñ‹Ğ¹ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½", en: "Budget envelope" },
-    ],
-  ),
-  template(
-    "business-case-lite",
-    "Business Case Lite",
-    "Business Case Lite",
-    "strategy",
-    "ĞŸÑ€Ğ¾Ğ²ĞµÑ€Ğ¸Ñ‚ÑŒ, ÑÑ‚Ğ¾Ğ¸Ñ‚ Ğ»Ğ¸ Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ğ° Ğ¸Ğ½Ğ²ĞµÑÑ‚Ğ¸Ñ†Ğ¸Ğ¹.",
-    "Check whether the initiative deserves investment.",
-  ),
-  template(
-    "business-case",
-    "Ğ‘Ğ¸Ğ·Ğ½ĞµÑ-ĞºĞµĞ¹Ñ",
-    "Business Case",
-    "strategy",
-    "Ğ¡Ñ€Ğ°Ğ²Ğ½Ğ¸Ñ‚ÑŒ Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ñ‹, Ğ²Ñ‹Ğ³Ğ¾Ğ´Ñ‹, Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚Ñ‹ Ğ¸ Ñ€Ğ¸ÑĞºĞ¸.",
-    "Compare options, benefits, costs, and risks.",
-    [
-      {
-        ru: "ĞĞ¿Ñ†Ğ¸Ğ¸ Ğ¸ NPV/ROI Ğ¿Ñ€Ğ¸ ÑƒĞ¼ĞµÑÑ‚Ğ½Ğ¾ÑÑ‚Ğ¸",
-        en: "Options and NPV/ROI where applicable",
-      },
-    ],
-  ),
-  template(
-    "project-brief",
-    "Ğ‘Ñ€Ğ¸Ñ„ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°",
-    "Project Brief",
-    "strategy",
-    "Ğ”Ğ°Ñ‚ÑŒ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğµ ĞºÑ€Ğ°Ñ‚ĞºĞ¸Ğ¹ Ğ¾Ğ±Ñ‰Ğ¸Ğ¹ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚.",
-    "Give the team concise shared context.",
-  ),
-  template(
-    "project-plan",
-    "ĞŸĞ»Ğ°Ğ½ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°",
-    "Project Plan",
-    "plan",
-    "ĞĞ±ÑŠĞµĞ´Ğ¸Ğ½Ğ¸Ñ‚ÑŒ ÑĞ¿Ğ¾ÑĞ¾Ğ± Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ñ.",
-    "Unify the delivery and control approach.",
-  ),
-  template(
-    "scope-statement",
-    "ĞĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ scope",
-    "Scope Statement",
-    "plan",
-    "Ğ¡Ğ´ĞµĞ»Ğ°Ñ‚ÑŒ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ Ğ¸ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ ÑĞ²Ğ½Ñ‹Ğ¼Ğ¸.",
-    "Make boundaries and exclusions explicit.",
-  ),
-  template(
-    "wbs",
-    "WBS",
-    "Work Breakdown Structure",
-    "plan",
-    "Ğ”ĞµĞºĞ¾Ğ¼Ğ¿Ğ¾Ğ·Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ 100% ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ scope Ğ½Ğ° deliverables Ğ¸ work packages.",
-    "Decompose 100% of agreed scope into deliverables and work packages.",
-  ),
-  template(
-    "requirements-register",
-    "Ğ ĞµĞµÑÑ‚Ñ€ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹",
-    "Requirements Register",
-    "log",
-    "Ğ¡Ğ²ÑĞ·Ğ°Ñ‚ÑŒ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ñ Ğ¸ÑÑ‚Ğ¾Ñ‡Ğ½Ğ¸ĞºĞ¾Ğ¼, Ğ¿Ñ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚ĞµÑ‚Ğ¾Ğ¼ Ğ¸ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¾Ğ¹.",
-    "Connect requirements to source, priority, and validation.",
-  ),
-  template(
-    "backlog-item",
-    "Backlog item",
-    "Backlog Item",
-    "log",
-    "Ğ¡Ñ„Ğ¾Ñ€Ğ¼ÑƒĞ»Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ñƒ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ğ¾ ÑÑĞ½Ğ¾ Ğ´Ğ»Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
-    "Define a work item clearly enough for a decision.",
-  ),
-  template(
-    "user-story",
-    "User story",
-    "User Story",
-    "strategy",
-    "Ğ—Ğ°Ñ„Ğ¸ĞºÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ, Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ±ĞµĞ· Ğ¿Ğ¾Ğ´Ğ¼ĞµĞ½Ñ‹ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚Ğ¾Ğ¼.",
-    "Capture user, need, and value without letting the format replace the requirement.",
-  ),
-  template(
-    "acceptance-criteria",
-    "ĞšÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¸ Ğ¿Ñ€Ğ¸Ñ‘Ğ¼ĞºĞ¸",
-    "Acceptance Criteria",
-    "control",
-    "Ğ¡Ğ´ĞµĞ»Ğ°Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºÑƒ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ¾Ğ´Ğ½Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ½Ğ¾Ğ¹.",
-    "Make outcome verification unambiguous.",
-  ),
-  template(
-    "definition-ready",
-    "Definition of Ready",
-    "Definition of Ready",
-    "control",
-    "Ğ£ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ Ğ´Ğ»Ñ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
-    "Set minimum conditions for starting work.",
-  ),
-  template(
-    "definition-done",
-    "Definition of Done",
-    "Definition of Done",
-    "control",
-    "Ğ£ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ¾Ğ±Ñ‰Ğ¸Ğ¹ ÑƒÑ€Ğ¾Ğ²ĞµĞ½ÑŒ ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
-    "Set a shared quality bar for completed work.",
-  ),
-  template(
-    "milestone-plan",
-    "ĞŸĞ»Ğ°Ğ½ milestones",
-    "Milestone Plan",
-    "plan",
-    "ĞŸĞ¾ĞºĞ°Ğ·Ğ°Ñ‚ÑŒ Ğ·Ğ½Ğ°Ñ‡Ğ¸Ğ¼Ñ‹Ğµ Ñ‚Ğ¾Ñ‡ĞºĞ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
-    "Show meaningful outcome and decision points.",
-  ),
-  template(
-    "roadmap",
-    "Roadmap",
-    "Project Roadmap",
-    "plan",
-    "Ğ¡Ğ²ÑĞ·Ğ°Ñ‚ÑŒ themes, outcomes Ğ¸ releases Ğ²Ğ¾ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
-    "Connect themes, outcomes, and releases over time.",
-  ),
-  template(
-    "release-plan",
-    "ĞŸĞ»Ğ°Ğ½ Ñ€ĞµĞ»Ğ¸Ğ·Ğ°",
-    "Release Plan",
-    "plan",
-    "Ğ¡Ğ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ñ‚ÑŒ scope Ñ€ĞµĞ»Ğ¸Ğ·Ğ°, readiness Ğ¸ go/no-go.",
-    "Align release scope, readiness, and go/no-go.",
-  ),
-  template(
-    "sprint-goal",
-    "Ğ¦ĞµĞ»ÑŒ Sprint",
-    "Sprint Goal",
-    "strategy",
-    "Ğ”Ğ°Ñ‚ÑŒ Sprint ĞµĞ´Ğ¸Ğ½ÑƒÑ Ñ†ĞµĞ»ÑŒ Ğ²Ğ¼ĞµÑÑ‚Ğ¾ Ğ½Ğ°Ğ±Ğ¾Ñ€Ğ° Ğ½ĞµÑĞ²ÑĞ·Ğ°Ğ½Ğ½Ñ‹Ñ… items.",
-    "Give a Sprint one goal rather than unrelated items.",
-  ),
-  template(
-    "risk-register",
-    "Ğ ĞµĞµÑÑ‚Ñ€ Ñ€Ğ¸ÑĞºĞ¾Ğ²",
-    "Risk Register",
-    "log",
-    "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ÑÑ‚ÑŒ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ÑĞ¼Ğ¸ Ğ´Ğ¾ Ñ‚Ğ¾Ğ³Ğ¾, ĞºĞ°Ğº Ğ¾Ğ½Ğ¸ ÑÑ‚Ğ°Ğ½ÑƒÑ‚ issues.",
-    "Manage uncertainties before they become issues.",
-  ),
-  template(
-    "raid-log",
-    "RAID log",
-    "RAID Log",
-    "log",
-    "Ğ’ĞµÑÑ‚Ğ¸ risks, assumptions, issues Ğ¸ dependencies Ğ² Ğ¾Ğ´Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ¾Ğ¹ Ñ‚Ğ¾Ñ‡ĞºĞµ.",
-    "Maintain risks, assumptions, issues, and dependencies in one control point.",
-  ),
-  template(
-    "issue-log",
-    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼",
-    "Issue Log",
-    "log",
-    "ĞĞ°Ğ·Ğ½Ğ°Ñ‡Ğ¸Ñ‚ÑŒ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ Ğ¿Ğ¾ ÑƒĞ¶Ğµ Ğ²Ğ¾Ğ·Ğ½Ğ¸ĞºÑˆĞ¸Ğ¼ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ğ°Ğ¼.",
-    "Assign action for problems already occurring.",
-  ),
-  template(
-    "assumption-log",
-    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ğ¹",
-    "Assumption Log",
-    "log",
-    "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑÑ‚ÑŒ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ñ, Ğ½Ğ° ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ñ… Ğ´ĞµÑ€Ğ¶Ğ¸Ñ‚ÑÑ Ğ¿Ğ»Ğ°Ğ½.",
-    "Test the assumptions the plan relies on.",
-  ),
-  template(
-    "dependency-log",
-    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ĞµĞ¹",
-    "Dependency Log",
-    "log",
-    "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ÑÑ‚ÑŒ Ğ²Ğ½ĞµÑˆĞ½Ğ¸Ğ¼Ğ¸ Ğ¸ Ğ²Ğ½ÑƒÑ‚Ñ€ĞµĞ½Ğ½Ğ¸Ğ¼Ğ¸ Ğ±Ğ»Ğ¾ĞºĞ¸Ñ€ÑƒÑÑ‰Ğ¸Ğ¼Ğ¸ ÑĞ²ÑĞ·ÑĞ¼Ğ¸.",
-    "Manage external and internal blocking relationships.",
-  ),
-  template(
-    "decision-log",
-    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹",
-    "Decision Log",
-    "log",
-    "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚ Ğ¸ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ñ ĞºĞ»ÑÑ‡ĞµĞ²Ñ‹Ñ… Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
-    "Preserve context and consequences of key decisions.",
-  ),
-  template(
-    "stakeholder-register",
-    "Ğ ĞµĞµÑÑ‚Ñ€ stakeholders",
-    "Stakeholder Register",
-    "log",
-    "ĞŸĞ¾Ğ½ÑÑ‚ÑŒ Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ñ Ğ¸ Ğ½ÑƒĞ¶Ğ½ÑƒÑ Ğ²Ğ¾Ğ²Ğ»ĞµÑ‡Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ÑŒ ÑƒÑ‡Ğ°ÑÑ‚Ğ½Ğ¸ĞºĞ¾Ğ².",
-    "Understand stakeholder expectations and needed engagement.",
-  ),
-  template(
-    "stakeholder-matrix",
-    "ĞœĞ°Ñ‚Ñ€Ğ¸Ñ†Ğ° stakeholders",
-    "Stakeholder Matrix",
-    "strategy",
-    "Ğ¡Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ¿Ğ¾Ñ€Ñ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½ÑƒÑ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ñ Ğ¿Ğ¾ influence Ğ¸ interest.",
-    "Plan proportionate communication by influence and interest.",
-  ),
-  template(
-    "raci",
-    "RACI",
-    "RACI",
-    "control",
-    "Ğ¡Ğ½ÑÑ‚ÑŒ Ğ½ĞµĞ¾Ğ´Ğ½Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ·Ğ° deliverables Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
-    "Remove ambiguity in accountability for deliverables and decisions.",
-  ),
-  template(
-    "communication-plan",
-    "ĞŸĞ»Ğ°Ğ½ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ğ¹",
-    "Communication Plan",
-    "plan",
-    "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚ÑŒ ĞºĞ¾Ğ¼Ñƒ, Ğ·Ğ°Ñ‡ĞµĞ¼, Ñ‡Ñ‚Ğ¾, ĞºĞ¾Ğ³Ğ´Ğ° Ğ¸ ĞºĞµĞ¼ ÑĞ¾Ğ¾Ğ±Ñ‰Ğ°ĞµÑ‚ÑÑ.",
-    "Define who needs what information, why, when, and from whom.",
-  ),
-  template(
-    "meeting-agenda",
-    "Agenda Ğ²ÑÑ‚Ñ€ĞµÑ‡Ğ¸",
-    "Meeting Agenda",
-    "meeting",
-    "ĞŸĞ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¸Ğ»Ğ¸ ÑĞ¸Ğ½Ñ…Ñ€Ğ¾Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ñ ÑÑĞ½Ñ‹Ğ¼ output.",
-    "Prepare a decision or alignment session with a clear output.",
-  ),
-  template(
-    "meeting-minutes",
-    "ĞŸÑ€Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ» Ğ²ÑÑ‚Ñ€ĞµÑ‡Ğ¸",
-    "Meeting Minutes",
-    "meeting",
-    "Ğ—Ğ°Ñ„Ğ¸ĞºÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, actions Ğ¸ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†ĞµĞ².",
-    "Record decisions, actions, and owners.",
-  ),
-  template(
-    "kickoff",
-    "Kickoff",
-    "Kickoff",
-    "meeting",
-    "Ğ¡Ğ¸Ğ½Ñ…Ñ€Ğ¾Ğ½Ğ¸Ğ·Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ñ†ĞµĞ»ÑŒ, Ñ€Ğ¾Ğ»Ğ¸, ÑĞ¿Ğ¾ÑĞ¾Ğ± Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ¸ Ğ±Ğ»Ğ¸Ğ¶Ğ°Ğ¹ÑˆĞ¸Ğ¹ ÑˆĞ°Ğ³.",
-    "Align purpose, roles, way of working, and next step.",
-  ),
-  template(
-    "status-report",
-    "Ğ¡Ñ‚Ğ°Ñ‚ÑƒÑ-Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚",
-    "Status Report",
-    "control",
-    "Ğ¡Ñ„Ğ¾ĞºÑƒÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ stakeholders Ğ½Ğ° Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸ÑÑ… Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸ÑÑ….",
-    "Focus stakeholders on changes and decisions.",
-  ),
-  template(
-    "steering-pack",
-    "ĞŸĞ°ĞºĞµÑ‚ steering committee",
-    "Steering Committee Pack",
-    "control",
-    "ĞŸĞ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ¸Ñ‚ÑŒ governance decisions Ğ±ĞµĞ· Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½Ğ¾Ğ³Ğ¾ ÑˆÑƒĞ¼Ğ°.",
-    "Prepare governance decisions without operational noise.",
-  ),
-  template(
-    "change-request",
-    "Ğ—Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ½Ğ° Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ",
-    "Change Request",
-    "control",
-    "ĞÑ†ĞµĞ½Ğ¸Ñ‚ÑŒ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ñ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ Ğ´Ğ¾ approval.",
-    "Assess change impact before approval.",
-  ),
-  template(
-    "change-log",
-    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹",
-    "Change Log",
-    "log",
-    "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ¸ÑÑ‚Ğ¾Ñ€Ğ¸Ñ scope/baseline changes.",
-    "Preserve scope and baseline change history.",
-  ),
-  template(
-    "quality-plan",
-    "ĞŸĞ»Ğ°Ğ½ ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ°",
-    "Quality Plan",
-    "plan",
-    "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚ÑŒ quality goals, checks Ğ¸ acceptance.",
-    "Define quality goals, checks, and acceptance.",
-  ),
-  template(
-    "acceptance-checklist",
-    "Ğ§ĞµĞº-Ğ»Ğ¸ÑÑ‚ Ğ¿Ñ€Ğ¸Ñ‘Ğ¼ĞºĞ¸",
-    "Test / Acceptance Checklist",
-    "control",
-    "ĞĞµ Ğ¿Ñ€Ğ¾Ğ¿ÑƒÑÑ‚Ğ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğµ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸.",
-    "Avoid missing verifiable readiness conditions.",
-  ),
-  template(
-    "capacity-plan",
-    "ĞŸĞ»Ğ°Ğ½ capacity",
-    "Capacity Plan",
-    "plan",
-    "Ğ¡Ğ¾Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ğ¸Ñ‚ÑŒ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½ÑƒÑ capacity Ñ Ğ¿Ğ»Ğ°Ğ½Ğ¾Ğ²Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ¾Ğ¹.",
-    "Match available capacity to planned work.",
-  ),
-  template(
-    "resource-plan",
-    "Ğ ĞµÑÑƒÑ€ÑĞ½Ñ‹Ğ¹ Ğ¿Ğ»Ğ°Ğ½",
-    "Resource Plan",
-    "plan",
-    "Ğ’Ñ‹ÑĞ²Ğ¸Ñ‚ÑŒ Ğ¿ĞµÑ€ĞµĞ³Ñ€ÑƒĞ·ĞºÑƒ, Ğ¿Ñ€Ğ¾Ğ±ĞµĞ»Ñ‹ Ğ¸ ĞºĞ¾Ğ½Ñ„Ğ»Ğ¸ĞºÑ‚Ñ‹ allocation.",
-    "Expose overload, gaps, and allocation conflicts.",
-  ),
-  template(
-    "budget-tracker",
-    "Ğ¢Ñ€ĞµĞºĞµÑ€ Ğ±ÑĞ´Ğ¶ĞµÑ‚Ğ°",
-    "Budget Tracker",
-    "control",
-    "Ğ¡Ñ€Ğ°Ğ²Ğ½Ğ¸Ğ²Ğ°Ñ‚ÑŒ baseline, actual, committed Ğ¸ forecast.",
-    "Compare baseline, actual, committed, and forecast.",
-  ),
-  template(
-    "vendor-evaluation",
-    "ĞÑ†ĞµĞ½ĞºĞ° Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸ĞºĞ°",
-    "Vendor Evaluation",
-    "control",
-    "Ğ¡Ñ€Ğ°Ğ²Ğ½Ğ¸Ñ‚ÑŒ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸ĞºĞ¾Ğ² Ğ¿Ğ¾ ÑĞ²Ğ½Ñ‹Ğ¼ ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ÑĞ¼ Ğ¸ Ñ€Ğ¸ÑĞºĞ°Ğ¼.",
-    "Compare vendors against explicit criteria and risks.",
-  ),
-  template(
-    "procurement-tracker",
-    "Ğ¢Ñ€ĞµĞºĞµÑ€ Ğ·Ğ°ĞºÑƒĞ¿Ğ¾Ğº",
-    "Procurement Tracker",
-    "log",
-    "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ÑÑ‚ÑŒ deliverables, ÑÑ€Ğ¾ĞºĞ°Ğ¼Ğ¸ Ğ¸ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ÑĞ¼Ğ¸ vendors.",
-    "Manage vendor deliverables, dates, and dependencies.",
-  ),
-  template(
-    "retrospective",
-    "Ğ ĞµÑ‚Ñ€Ğ¾ÑĞ¿ĞµĞºÑ‚Ğ¸Ğ²Ğ°",
-    "Retrospective",
-    "meeting",
-    "Ğ’Ñ‹Ğ±Ñ€Ğ°Ñ‚ÑŒ Ğ¾Ğ´Ğ½Ğ¾-Ğ´Ğ²Ğ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ñ… ÑƒĞ»ÑƒÑ‡ÑˆĞµĞ½Ğ¸Ñ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
-    "Choose one or two testable improvements to the way of working.",
-  ),
-  template(
-    "lessons-learned",
-    "Ğ˜Ğ·Ğ²Ğ»ĞµÑ‡Ñ‘Ğ½Ğ½Ñ‹Ğµ ÑƒÑ€Ğ¾ĞºĞ¸",
-    "Lessons Learned",
-    "strategy",
-    "ĞŸÑ€ĞµĞ²Ñ€Ğ°Ñ‚Ğ¸Ñ‚ÑŒ Ğ¾Ğ¿Ñ‹Ñ‚ Ğ² Ñ€ĞµĞºĞ¾Ğ¼ĞµĞ½Ğ´Ğ°Ñ†Ğ¸Ñ Ğ´Ğ»Ñ ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞ³Ğ¾ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚Ğ°.",
-    "Turn experience into a recommendation for the next context.",
-  ),
-  template(
-    "postmortem",
-    "Postmortem",
-    "Postmortem",
-    "meeting",
-    "Ğ‘ĞµĞ· Ğ¾Ğ±Ğ²Ğ¸Ğ½ĞµĞ½Ğ¸Ğ¹ Ñ€Ğ°Ğ·Ğ¾Ğ±Ñ€Ğ°Ñ‚ÑŒ impact, causes Ğ¸ prevention.",
-    "Review impact, causes, and prevention without blame.",
-  ),
-  template(
-    "handover",
-    "Ğ§ĞµĞº-Ğ»Ğ¸ÑÑ‚ Ğ¿ĞµÑ€ĞµĞ´Ğ°Ñ‡Ğ¸",
-    "Handover Checklist",
-    "control",
-    "ĞŸĞµÑ€ĞµĞ´Ğ°Ñ‚ÑŒ ownership, Ğ·Ğ½Ğ°Ğ½Ğ¸Ñ, Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ñ‹ Ğ¸ unresolved items.",
-    "Transfer ownership, knowledge, access, and unresolved items.",
-  ),
-  template(
-    "closure-report",
-    "ĞÑ‚Ñ‡Ñ‘Ñ‚ Ğ¾ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ğ¸",
-    "Closure Report",
-    "control",
-    "Ğ—Ğ°Ñ„Ğ¸ĞºÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ acceptance, performance Ğ¸ Ğ´Ğ°Ğ»ÑŒĞ½ĞµĞ¹ÑˆĞµĞµ Ğ¸Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ğµ benefits.",
-    "Record acceptance, performance, and future benefits measurement.",
-  ),
-  template(
-    "closure-checklist",
-    "Ğ§ĞµĞº-Ğ»Ğ¸ÑÑ‚ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ñ",
-    "Project Closure Checklist",
-    "control",
-    "Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚ÑŒ contracts, finance, archives, handover Ğ¸ lessons.",
-    "Close contracts, finance, archives, handover, and lessons.",
-  ),
-];
-
-export type Playbook = {
-  slug: string;
-  title: Bi;
-  diagnose: Bi[];
-  immediate: Bi[];
-  next: Bi[];
-  stabilize: Bi[];
-  prevent: Bi[];
-  metrics: Bi[];
-  antiPatterns: Bi[];
-};
-const pb = (
-  slug: string,
-  ru: string,
-  en: string,
-  signalRu: string,
-  signalEn: string,
-  actionRu: string,
-  actionEn: string,
-  metricRu: string,
-  metricEn: string,
-): Playbook => ({
-  slug,
-  title: { ru, en },
-  diagnose: [
-    { ru: signalRu, en: signalEn },
-    {
-      ru: "ĞÑ‚Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ Ğ½Ğ°Ğ±Ğ»ÑĞ´Ğ°ĞµĞ¼Ñ‹Ğ¹ Ñ„Ğ°ĞºÑ‚ Ğ¾Ñ‚ Ğ¸Ğ½Ñ‚ĞµÑ€Ğ¿Ñ€ĞµÑ‚Ğ°Ñ†Ğ¸Ğ¸ Ğ¸ Ğ½Ğ°Ğ¹Ğ´Ğ¸Ñ‚Ğµ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ğµ ÑĞ¸ÑÑ‚ĞµĞ¼Ñ‹.",
-      en: "Separate observed fact from interpretation and identify the system constraint.",
-    },
-  ],
-  immediate: [
-    { ru: actionRu, en: actionEn },
-    {
-      ru: "ĞĞ°Ğ·Ğ½Ğ°Ñ‡ÑŒÑ‚Ğµ Ğ¾Ğ´Ğ½Ğ¾Ğ³Ğ¾ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ° ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞ³Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¸ ÑÑ€Ğ¾Ğº Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸.",
-      en: "Assign one owner for the next decision and a review date.",
-    },
-  ],
-  next: [
-    {
-      ru: "Ğ’ ÑĞ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğ¹ Ñ†Ğ¸ĞºĞ» ÑĞ¾Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ, Ğ¿ĞµÑ€ĞµĞ¿Ğ»Ğ°Ğ½Ğ¸Ñ€ÑƒĞ¹Ñ‚Ğµ Ğ·Ğ°Ñ‚Ñ€Ğ¾Ğ½ÑƒÑ‚ÑƒÑ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ Ğ¸ ÑĞ¾Ğ¾Ğ±Ñ‰Ğ¸Ñ‚Ğµ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ñ.",
-      en: "In the next working cycle, collect minimum evidence, replan affected work, and communicate impact.",
-    },
-  ],
-  stabilize: [
-    {
-      ru: "Ğ¡Ğ¾ĞºÑ€Ğ°Ñ‚Ğ¸Ñ‚Ğµ Ğ°ĞºÑ‚Ğ¸Ğ²Ğ½ÑƒÑ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ, ÑĞ´ĞµĞ»Ğ°Ğ¹Ñ‚Ğµ Ğ¿Ñ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚ĞµÑ‚Ñ‹ Ğ¸ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ ÑĞ²Ğ½Ñ‹Ğ¼Ğ¸, Ğ²Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚Ğµ cadence ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ñ.",
-      en: "Reduce active work, expose priorities and dependencies, and restore a control cadence.",
-    },
-  ],
-  prevent: [
-    {
-      ru: "Ğ”Ğ¾Ğ±Ğ°Ğ²ÑŒÑ‚Ğµ Ñ€Ğ°Ğ½Ğ½Ğ¸Ğ¹ trigger, Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ° Ğ¸ Ñ€ĞµĞ³ÑƒĞ»ÑÑ€Ğ½Ñ‹Ğ¹ review â€” Ğ½Ğµ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚ Ñ€Ğ°Ğ´Ğ¸ Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚Ğ°.",
-      en: "Add an early trigger, owner, and regular reviewâ€”not another report for its own sake.",
-    },
-  ],
-  metrics: [
-    { ru: metricRu, en: metricEn },
-    {
-      ru: "Ğ’Ğ¾Ğ·Ñ€Ğ°ÑÑ‚ Ğ±Ğ»Ğ¾ĞºĞ¸Ñ€Ğ¾Ğ²Ğ¾Ğº Ğ¸ Ğ²Ñ€ĞµĞ¼Ñ Ğ´Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
-      en: "Blocker age and time to decision.",
-    },
-  ],
-  antiPatterns: [
-    {
-      ru: "ĞĞ±ĞµÑ‰Ğ°Ñ‚ÑŒ Ğ½Ğ¾Ğ²ÑƒÑ Ğ´Ğ°Ñ‚Ñƒ Ğ´Ğ¾ Ğ°Ğ½Ğ°Ğ»Ğ¸Ğ·Ğ° Ğ¿Ñ€Ğ¸Ñ‡Ğ¸Ğ½ Ğ¸ trade-offs.",
-      en: "Promise a new date before analyzing causes and trade-offs.",
-    },
-    {
-      ru: "Ğ£Ğ²ĞµĞ»Ğ¸Ñ‡Ğ¸Ğ²Ğ°Ñ‚ÑŒ Ğ¿Ğ°Ñ€Ğ°Ğ»Ğ»ĞµĞ»ÑŒĞ½ÑƒÑ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ, Ñ‡Ñ‚Ğ¾Ğ±Ñ‹ ÑĞ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Ğ²Ğ¸Ğ´Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ ÑĞºĞ¾Ñ€Ğ¾ÑÑ‚Ğ¸.",
-      en: "Increase parallel work to create an appearance of speed.",
-    },
-  ],
-});
-
-export const playbooks: Playbook[] = [
-  pb(
-    "project-late",
-    "ĞŸÑ€Ğ¾ĞµĞºÑ‚ Ğ¾Ğ¿Ğ°Ğ·Ğ´Ñ‹Ğ²Ğ°ĞµÑ‚",
-    "Project is late",
-    "Milestones ÑĞ¸ÑÑ‚ĞµĞ¼Ğ½Ğ¾ ÑĞ´Ğ²Ğ¸Ğ³Ğ°ÑÑ‚ÑÑ; ĞºÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ°Ñ Ñ†ĞµĞ¿Ğ¾Ñ‡ĞºĞ° Ğ½Ğµ ÑÑĞ½Ğ°.",
-    "Milestones move repeatedly; the critical chain is unclear.",
-    "Ğ—Ğ°Ğ¼Ğ¾Ñ€Ğ¾Ğ·ÑŒÑ‚Ğµ Ğ½Ğ¾Ğ²Ñ‹Ğµ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒÑÑ‚Ğ²Ğ°, Ğ¿ĞµÑ€ĞµÑÑ‡Ğ¸Ñ‚Ğ°Ğ¹Ñ‚Ğµ critical path Ğ¸ Ğ¾Ñ‚Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ recoverable delay Ğ¾Ñ‚ sunk delay.",
-    "Freeze new commitments, recalculate the critical path, and separate recoverable from sunk delay.",
-    "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ· milestone Ğ¸ total float.",
-    "Milestone forecast and total float.",
-  ),
-  pb(
-    "fixed-deadline",
-    "Ğ”ĞµĞ´Ğ»Ğ°Ğ¹Ğ½ Ğ½ĞµĞ»ÑŒĞ·Ñ ÑĞ´Ğ²Ğ¸Ğ½ÑƒÑ‚ÑŒ",
-    "Deadline cannot move",
-    "Ğ”Ğ°Ñ‚Ğ° Ğ²Ğ½ĞµÑˆĞ½Ğµ Ñ„Ğ¸ĞºÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ°, Ğ½Ğ¾ scope Ğ¸ quality assumptions Ğ½Ğµ Ğ¿ĞµÑ€ĞµÑĞ¼Ğ¾Ñ‚Ñ€ĞµĞ½Ñ‹.",
-    "The date is externally fixed but scope and quality assumptions remain unchanged.",
-    "Ğ—Ğ°Ñ„Ğ¸ĞºÑĞ¸Ñ€ÑƒĞ¹Ñ‚Ğµ Ğ´Ğ°Ñ‚Ñƒ ĞºĞ°Ğº constraint; Ğ¿Ñ€ĞµĞ´Ğ»Ğ¾Ğ¶Ğ¸Ñ‚Ğµ Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ñ‹ scope, sequence, resources Ğ¸ risk acceptance.",
-    "Treat the date as a constraint; offer options across scope, sequence, resources, and risk acceptance.",
-    "Burn-up scope Ğ¸ readiness criteria.",
-    "Scope burn-up and readiness criteria.",
-  ),
-  pb(
-    "scope-growth",
-    "Scope Ğ¿Ğ¾ÑÑ‚Ğ¾ÑĞ½Ğ½Ğ¾ Ñ€Ğ°ÑÑ‚Ñ‘Ñ‚",
-    "Scope keeps growing",
-    "ĞĞ¾Ğ²Ñ‹Ğµ Ğ·Ğ°Ğ¿Ñ€Ğ¾ÑÑ‹ Ğ²Ñ…Ğ¾Ğ´ÑÑ‚ Ğ±ĞµĞ· Ğ¾Ñ†ĞµĞ½ĞºĞ¸ Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ñ Ğ¸ removal decision.",
-    "Requests enter without impact assessment or removal decisions.",
-    "Ğ¡Ğ¾Ğ·Ğ´Ğ°Ğ¹Ñ‚Ğµ change boundary: ĞºĞ°Ğ¶Ğ´Ğ¾Ğµ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ°ĞµÑ‚ impact Ğ¸ ĞºĞ¾Ğ¼Ğ¿ĞµĞ½ÑĞ¸Ñ€ÑƒÑÑ‰Ğ¸Ğ¹ trade-off.",
-    "Create a change boundary: every addition gets impact analysis and a compensating trade-off.",
-    "Scope added/removed Ğ¸ schedule variance.",
-    "Scope added/removed and schedule variance.",
-  ),
-  pb(
-    "unclear-requirements",
-    "Ğ¢Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ½ĞµÑÑĞ½Ñ‹",
-    "Requirements are unclear",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° ÑĞ¿Ğ¾Ñ€Ğ¸Ñ‚ Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¸, Ğ½Ğµ Ğ¿Ğ¾Ğ½Ğ¸Ğ¼Ğ°Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ, outcome Ğ¸Ğ»Ğ¸ acceptance.",
-    "The team debates solutions without a shared user, outcome, or acceptance view.",
-    "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ ÑĞ°Ğ¼Ñ‹Ğ¹ Ñ€Ğ¸ÑĞºĞ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ²Ğ¾Ğ¿Ñ€Ğ¾Ñ Ğ¸ Ğ¿Ñ€Ğ¾Ğ²ĞµĞ´Ğ¸Ñ‚Ğµ ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğ¹ discovery/validation loop.",
-    "Choose the riskiest question and run a short discovery/validation loop.",
-    "Assumption validation rate.",
-    "Assumption validation rate.",
-  ),
-  pb(
-    "changing-priorities",
-    "Stakeholder Ğ¼ĞµĞ½ÑĞµÑ‚ Ğ¿Ñ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚ĞµÑ‚Ñ‹",
-    "Stakeholder changes priorities",
-    "ĞŸÑ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚ĞµÑ‚ Ğ¼ĞµĞ½ÑĞµÑ‚ÑÑ Ñ‡Ğ°Ñ‰Ğµ, Ñ‡ĞµĞ¼ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°Ñ‚ÑŒ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ.",
-    "Priority changes faster than the team can finish work.",
-    "Ğ¡Ğ¾Ğ³Ğ»Ğ°ÑÑƒĞ¹Ñ‚Ğµ decision cadence Ğ¸ Ñ†ĞµĞ½Ñƒ Ğ¿ĞµÑ€ĞµĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ; Ğ½Ğ¾Ğ²Ñ‹Ğµ ÑÑ€Ğ¾Ñ‡Ğ½Ñ‹Ğµ items Ğ²Ñ‹Ñ‚ĞµÑĞ½ÑÑÑ‚ ÑĞ²Ğ½Ñ‹Ğµ Ñ‚ĞµĞºÑƒÑ‰Ğ¸Ğµ.",
-    "Agree a decision cadence and switching cost; new urgent items explicitly displace current work.",
-    "Interrupt rate Ğ¸ abandoned work.",
-    "Interrupt rate and abandoned work.",
-  ),
-  pb(
-    "sponsor-unavailable",
-    "Sponsor Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½",
-    "Sponsor unavailable",
-    "Decisions Ğ²Ñ‹Ñ…Ğ¾Ğ´ÑÑ‚ Ğ·Ğ° tolerance Ğ¸ Ğ¾ÑÑ‚Ğ°ÑÑ‚ÑÑ Ğ±ĞµĞ· accountable owner.",
-    "Decisions exceed tolerance and lack an accountable owner.",
-    "Ğ¡Ğ¾Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ decision pack: Ğ²Ğ¾Ğ¿Ñ€Ğ¾Ñ, options, recommendation, deadline, consequence of no decision.",
-    "Prepare a decision pack: question, options, recommendation, deadline, consequence of no decision.",
-    "Decision latency.",
-    "Decision latency.",
-  ),
-  pb(
-    "team-overloaded",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¿ĞµÑ€ĞµĞ³Ñ€ÑƒĞ¶ĞµĞ½Ğ°",
-    "Team overloaded",
-    "Allocation Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞ°ĞµÑ‚ capacity, WIP Ñ€Ğ°ÑÑ‚Ñ‘Ñ‚, cycle time ÑƒÑ…ÑƒĞ´ÑˆĞ°ĞµÑ‚ÑÑ.",
-    "Allocation exceeds capacity, WIP grows, and cycle time deteriorates.",
-    "ĞÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚Ğµ ÑÑ‚Ğ°Ñ€Ñ‚ Ğ½Ğ¾Ğ²Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ¸ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚Ğµ/ÑĞ½Ğ¸Ğ¼Ğ¸Ñ‚Ğµ Ñ‡Ğ°ÑÑ‚ÑŒ WIP.",
-    "Stop starting work and finish or remove part of WIP.",
-    "WIP, work item age, overtime trend.",
-    "WIP, work item age, overtime trend.",
-  ),
-  pb(
-    "key-person",
-    "ĞšĞ»ÑÑ‡ĞµĞ²Ğ¾Ğ¹ Ñ‡ĞµĞ»Ğ¾Ğ²ĞµĞº Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½",
-    "Key person unavailable",
-    "Ğ—Ğ½Ğ°Ğ½Ğ¸Ñ Ğ¸Ğ»Ğ¸ approval ÑĞ¾ÑÑ€ĞµĞ´Ğ¾Ñ‚Ğ¾Ñ‡ĞµĞ½Ñ‹ Ğ² Ğ¾Ğ´Ğ½Ğ¾Ğ¹ Ñ‚Ğ¾Ñ‡ĞºĞµ.",
-    "Knowledge or approval is concentrated in one person.",
-    "Ğ Ğ°Ğ·Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ blocking Ğ¸ non-blocking work; Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡ÑŒÑ‚Ğµ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾Ğ³Ğ¾ decision owner.",
-    "Separate blocking from non-blocking work; assign a temporary decision owner.",
-    "Bus factor Ğ¸ blocked age.",
-    "Bus factor and blocked age.",
-  ),
-  pb(
-    "missed-commitments",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ½Ğµ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ÑĞµÑ‚ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒÑÑ‚Ğ²Ğ°",
-    "Team misses commitments",
-    "Carry-over Ğ¿Ğ¾Ğ²Ñ‚Ğ¾Ñ€ÑĞµÑ‚ÑÑ, Ğ½Ğ¾ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ½Ğµ Ğ¼ĞµĞ½ÑĞµÑ‚ÑÑ.",
-    "Carry-over repeats while planning remains unchanged.",
-    "Ğ¡Ñ€Ğ°Ğ²Ğ½Ğ¸Ñ‚Ğµ demand, capacity, interrupts Ğ¸ item size; ÑƒĞ¼ĞµĞ½ÑŒÑˆĞ¸Ñ‚Ğµ batch Ğ¸ commitment.",
-    "Compare demand, capacity, interrupts, and item size; reduce batch and commitment.",
-    "Commitment reliability Ğ¸ item size.",
-    "Commitment reliability and item size.",
-  ),
-  pb(
-    "too-much-wip",
-    "Ğ¡Ğ»Ğ¸ÑˆĞºĞ¾Ğ¼ Ğ¼Ğ½Ğ¾Ğ³Ğ¾ WIP",
-    "Too much WIP",
-    "ĞœĞ½Ğ¾Ğ³Ğ¾ Ğ½Ğ°Ñ‡Ğ°Ñ‚Ğ¾, Ğ¼Ğ°Ğ»Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¾; aging Ñ€Ğ°ÑÑ‚Ñ‘Ñ‚.",
-    "Much is started, little is finished; aging rises.",
-    "Ğ’Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾ ÑĞ½Ğ¸Ğ·ÑŒÑ‚Ğµ WIP limits, swarm Ğ½Ğ° ÑÑ‚Ğ°Ñ€ĞµĞ¹ÑˆĞ¸Ñ… items, Ğ·Ğ°Ğ¿Ñ€ĞµÑ‚Ğ¸Ñ‚Ğµ hidden queues.",
-    "Temporarily lower WIP limits, swarm on oldest items, and expose hidden queues.",
-    "WIP, throughput, cycle time, age.",
-    "WIP, throughput, cycle time, age.",
-  ),
-  pb(
-    "all-high-priority",
-    "Ğ’ÑÑ‘ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ²Ñ‹ÑĞ¾ĞºĞ¸Ğ¹ Ğ¿Ñ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚ĞµÑ‚",
-    "Everything is high priority",
-    "Priority label Ğ½Ğµ Ğ¼ĞµĞ½ÑĞµÑ‚ sequence Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
-    "Priority labels do not change decision sequence.",
-    "ĞŸĞ¾Ğ¿Ñ€Ğ¾ÑĞ¸Ñ‚Ğµ rank order Ğ¸ Ğ²Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ cost-of-delay ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¹.",
-    "Require rank order and choose a cost-of-delay criterion.",
-    "ĞšĞ¾Ğ»Ğ¸Ñ‡ĞµÑÑ‚Ğ²Ğ¾ concurrent priorities.",
-    "Number of concurrent priorities.",
-  ),
-  pb(
-    "backlog-chaos",
-    "Backlog Ğ¿Ñ€ĞµĞ²Ñ€Ğ°Ñ‚Ğ¸Ğ»ÑÑ Ğ² Ñ…Ğ°Ğ¾Ñ",
-    "Backlog is chaos",
-    "Items Ğ´ÑƒĞ±Ğ»Ğ¸Ñ€ÑƒÑÑ‚ÑÑ, ÑƒÑÑ‚Ğ°Ñ€ĞµĞ»Ğ¸ Ğ¸ Ğ½Ğµ Ğ¸Ğ¼ĞµÑÑ‚ outcome/owner.",
-    "Items are duplicated, stale, and lack outcome or owner.",
-    "ĞÑ€Ñ…Ğ¸Ğ²Ğ¸Ñ€ÑƒĞ¹Ñ‚Ğµ stale items, Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½Ğ¸Ñ‚Ğµ duplicates, Ğ²Ñ‹Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ ready horizon Ğ½Ğ° 1â€“2 Ñ†Ğ¸ĞºĞ»Ğ°.",
-    "Archive stale items, merge duplicates, and define a ready horizon of 1â€“2 cycles.",
-    "Backlog age Ğ¸ ready ratio.",
-    "Backlog age and ready ratio.",
-  ),
-  pb(
-    "estimation-wrong",
-    "ĞÑ†ĞµĞ½ĞºĞ¸ ÑĞ¸ÑÑ‚ĞµĞ¼Ğ½Ğ¾ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡Ğ½Ñ‹",
-    "Estimation is consistently wrong",
-    "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ° Ğ² Ğ¾Ğ´Ğ½Ñƒ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñƒ Ğ¸ Ğ½Ğµ ÑƒÑ‡Ğ¸Ñ‚Ñ‹Ğ²Ğ°ĞµÑ‚ÑÑ Ğ² forecast.",
-    "Error is directional and ignored in forecasts.",
-    "Ğ¡ĞµĞ³Ğ¼ĞµĞ½Ñ‚Ğ¸Ñ€ÑƒĞ¹Ñ‚Ğµ work types, ÑÑ€Ğ°Ğ²Ğ½Ğ¸Ñ‚Ğµ forecast Ñ actual, Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞ¹Ñ‚Ğµ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½Ñ‹.",
-    "Segment work types, compare forecast to actual, and use ranges.",
-    "Forecast error distribution.",
-    "Forecast error distribution.",
-  ),
-  pb(
-    "no-goal",
-    "Ğ£ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Ğ½ĞµÑ‚ ÑÑĞ½Ğ¾Ğ¹ Ñ†ĞµĞ»Ğ¸",
-    "Project has no clear goal",
-    "Ğ•ÑÑ‚ÑŒ output list, Ğ½Ğ¾ Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾, ĞºĞ°ĞºĞ¾Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ ÑÑ‡Ğ¸Ñ‚Ğ°ĞµÑ‚ÑÑ ÑƒÑĞ¿ĞµÑ…Ğ¾Ğ¼.",
-    "There is an output list but no defined successful change.",
-    "ĞÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚Ğµ Ğ´ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¸ ÑĞ¾Ğ³Ğ»Ğ°ÑÑƒĞ¹Ñ‚Ğµ problem, outcome, measure, owner.",
-    "Pause detailed planning and align problem, outcome, measure, and owner.",
-    "Outcome measure Ğ¸ decision alignment.",
-    "Outcome measure and decision alignment.",
-  ),
-  pb(
-    "no-owner",
-    "Ğ£ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Ğ½ĞµÑ‚ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ°",
-    "Project has no owner",
-    "ĞĞ¸ĞºÑ‚Ğ¾ Ğ½Ğµ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚ÑŒ trade-off Ğ¸Ğ»Ğ¸ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ´Ğ¸Ñ‚ÑŒ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚.",
-    "No one can make trade-offs or accept the outcome.",
-    "Ğ­ÑĞºĞ°Ğ»Ğ¸Ñ€ÑƒĞ¹Ñ‚Ğµ governance gap; Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡ÑŒÑ‚Ğµ accountable sponsor Ğ´Ğ¾ Ğ½Ğ¾Ğ²Ñ‹Ñ… commitments.",
-    "Escalate the governance gap; assign an accountable sponsor before new commitments.",
-    "Unowned decisions.",
-    "Unowned decisions.",
-  ),
-  pb(
-    "client-unhappy",
-    "ĞšĞ»Ğ¸ĞµĞ½Ñ‚ Ğ½ĞµĞ´Ğ¾Ğ²Ğ¾Ğ»ĞµĞ½",
-    "Client dissatisfaction",
-    "Ğ­Ğ¼Ğ¾Ñ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½Ğ°Ñ Ğ¾Ñ†ĞµĞ½ĞºĞ° Ğ½Ğµ Ñ€Ğ°Ğ·Ğ»Ğ¾Ğ¶ĞµĞ½Ğ° Ğ½Ğ° gaps Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ñ, ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ°, ÑÑ€Ğ¾ĞºĞ° Ğ¸Ğ»Ğ¸ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ğ¸.",
-    "Emotional feedback is not decomposed into expectation, quality, timing, or communication gaps.",
-    "ĞŸÑ€Ğ¸Ğ·Ğ½Ğ°Ğ¹Ñ‚Ğµ impact, ÑƒÑ‚Ğ¾Ñ‡Ğ½Ğ¸Ñ‚Ğµ observable gaps, ÑĞ¾Ğ³Ğ»Ğ°ÑÑƒĞ¹Ñ‚Ğµ recovery actions Ğ¸ check-in.",
-    "Acknowledge impact, clarify observable gaps, agree recovery actions and a check-in.",
-    "Open gaps Ğ¸ confidence check.",
-    "Open gaps and confidence check.",
-  ),
-  pb(
-    "stakeholder-conflict",
-    "ĞšĞ¾Ğ½Ñ„Ğ»Ğ¸ĞºÑ‚ stakeholders",
-    "Stakeholder conflict",
-    "Ğ£ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½ Ñ€Ğ°Ğ·Ğ½Ñ‹Ğµ Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑÑ‹, criteria Ğ¸Ğ»Ğ¸ decision rights.",
-    "Parties have different interests, criteria, or decision rights.",
-    "ĞÑ‚Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ Ğ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ğ¸ Ğ¾Ñ‚ Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑĞ¾Ğ²; ÑĞ¾Ğ³Ğ»Ğ°ÑÑƒĞ¹Ñ‚Ğµ ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¸ Ğ¸ decision owner.",
-    "Separate positions from interests; agree criteria and decision owner.",
-    "Decision latency Ğ¸ reopened decisions.",
-    "Decision latency and reopened decisions.",
-  ),
-  pb(
-    "no-authority",
-    "Ğ£ PM Ğ½ĞµÑ‚ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ğ¹",
-    "PM has no authority",
-    "ĞĞ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ñ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ²Ñ‹ÑˆĞµ Ğ¿Ñ€ĞµĞ´Ğ¾ÑÑ‚Ğ°Ğ²Ğ»ĞµĞ½Ğ½Ñ‹Ñ… decision rights.",
-    "Accountability expectations exceed granted decision rights.",
-    "Ğ¡Ğ´ĞµĞ»Ğ°Ğ¹Ñ‚Ğµ gap ÑĞ²Ğ½Ñ‹Ğ¼: ĞºĞ°ĞºĞ¸Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ½ÑƒĞ¶Ğ½Ñ‹, ĞºÑ‚Ğ¾ Ğ¿Ñ€Ğ¸Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚, ĞºĞ°ĞºĞ¾Ğ¹ escalation path.",
-    "Expose the gap: decisions needed, decision owners, and escalation path.",
-    "Escalations Ğ¸ waiting time.",
-    "Escalations and waiting time.",
-  ),
-  pb(
-    "cross-team-block",
-    "ĞœĞµĞ¶ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ½Ğ°Ñ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ğ±Ğ»Ğ¾ĞºĞ¸Ñ€ÑƒĞµÑ‚",
-    "Cross-team dependency blocks delivery",
-    "Dependency Ğ½Ğµ Ğ¸Ğ¼ĞµĞµÑ‚ bilateral owner, date Ğ¸Ğ»Ğ¸ acceptance.",
-    "The dependency lacks bilateral owner, date, or acceptance.",
-    "Ğ¡Ğ¾Ğ·Ğ´Ğ°Ğ¹Ñ‚Ğµ handshake: predecessor output, successor need, owner Ñ Ğ¾Ğ±ĞµĞ¸Ñ… ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½, date, fallback.",
-    "Create a handshake: predecessor output, successor need, owners on both sides, date, fallback.",
-    "Dependency age Ğ¸ breach rate.",
-    "Dependency age and breach rate.",
-  ),
-  pb(
-    "vendor-late",
-    "ĞŸĞ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸Ğº Ğ¾Ğ¿Ğ°Ğ·Ğ´Ñ‹Ğ²Ğ°ĞµÑ‚",
-    "External vendor is late",
-    "Contract milestone Ğ½Ğ°Ñ€ÑƒÑˆĞµĞ½, Ğ½Ğ¾ impact Ğ¸ alternatives Ğ½Ğµ Ğ¿Ñ€Ğ¾ÑÑ‡Ğ¸Ñ‚Ğ°Ğ½Ñ‹.",
-    "A contract milestone slipped without quantified impact or alternatives.",
-    "ĞŸĞ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ´Ğ¸Ñ‚Ğµ Ñ„Ğ°ĞºÑ‚Ñ‹, critical-path impact, recovery plan Ğ¸ contractual escalation.",
-    "Confirm facts, critical-path impact, recovery plan, and contractual escalation.",
-    "Vendor milestone variance.",
-    "Vendor milestone variance.",
-  ),
-  pb(
-    "high-risk-release",
-    "Ğ ĞµĞ»Ğ¸Ğ· Ğ²Ñ‹ÑĞ¾ĞºĞ¾Ğ³Ğ¾ Ñ€Ğ¸ÑĞºĞ°",
-    "High-risk release",
-    "Blast radius Ğ²Ñ‹ÑĞ¾Ğº, rollback/readiness Ğ½Ğµ Ğ´Ğ¾ĞºĞ°Ğ·Ğ°Ğ½Ñ‹.",
-    "Blast radius is high and rollback/readiness are unproven.",
-    "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚Ğµ go/no-go criteria, rollback owner, monitoring Ğ¸ staged exposure.",
-    "Define go/no-go criteria, rollback owner, monitoring, and staged exposure.",
-    "Readiness gaps Ğ¸ recovery time.",
-    "Readiness gaps and recovery time.",
-  ),
-  pb(
-    "budget-overrun",
-    "Ğ‘ÑĞ´Ğ¶ĞµÑ‚ Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞµĞ½",
-    "Budget overrun",
-    "Actual/committed Ğ²Ñ‹ÑˆĞµ baseline Ğ±ĞµĞ· Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ forecast.",
-    "Actual/committed costs exceed baseline without a new forecast.",
-    "Ğ Ğ°Ğ·Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ variance Ğ½Ğ° rate, volume, scope Ğ¸ timing; Ğ¿ĞµÑ€ĞµÑÑ‡Ğ¸Ñ‚Ğ°Ğ¹Ñ‚Ğµ EAC Ğ¸ Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ñ‹.",
-    "Split variance into rate, volume, scope, and timing; recalculate EAC and options.",
-    "CPI, EAC, VAC.",
-    "CPI, EAC, VAC.",
-  ),
-  pb(
-    "unknown-budget",
-    "Ğ‘ÑĞ´Ğ¶ĞµÑ‚ Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚ĞµĞ½",
-    "Unknown budget",
-    "ĞĞµÑ‚ cost owner, baseline Ğ¸Ğ»Ğ¸ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ¾Ğ³Ğ¾ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½Ğ° Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
-    "There is no cost owner, baseline, or decision range.",
-    "Ğ¡Ğ¾Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ cost categories, commitments Ğ¸ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½; Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡ÑŒÑ‚Ğµ owner Ñ„Ğ¸Ğ½Ğ°Ğ½ÑĞ¾Ğ²Ñ‹Ñ… Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….",
-    "Collect cost categories, commitments, and range; assign financial data ownership.",
-    "Forecast coverage.",
-    "Forecast coverage.",
-  ),
-  pb(
-    "health-unclear",
-    "Ğ¡Ğ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Ğ½ĞµÑÑĞ½Ğ¾",
-    "Project health is unclear",
-    "ĞĞ´Ğ¸Ğ½ ÑÑƒĞ±ÑŠĞµĞºÑ‚Ğ¸Ğ²Ğ½Ñ‹Ğ¹ score ÑĞºÑ€Ñ‹Ğ²Ğ°ĞµÑ‚ Ñ€Ğ°Ğ·Ğ½Ñ‹Ğµ dimensions.",
-    "One subjective score hides different dimensions.",
-    "ĞÑ†ĞµĞ½Ğ¸Ñ‚Ğµ schedule, scope, budget, risk, blockers, capacity Ğ¸ alignment Ğ¾Ñ‚Ğ´ĞµĞ»ÑŒĞ½Ğ¾ Ñ Ğ¿Ñ€Ğ°Ğ²Ğ¸Ğ»Ğ°Ğ¼Ğ¸.",
-    "Assess schedule, scope, budget, risk, blockers, capacity, and alignment separately with rules.",
-    "Unknown health dimensions.",
-    "Unknown health dimensions.",
-  ),
-  pb(
-    "too-many-meetings",
-    "Ğ¡Ğ»Ğ¸ÑˆĞºĞ¾Ğ¼ Ğ¼Ğ½Ğ¾Ğ³Ğ¾ Ğ²ÑÑ‚Ñ€ĞµÑ‡",
-    "Too many meetings",
-    "Meetings consume capacity without unique decisions or outputs.",
-    "Meetings consume capacity without unique decisions or outputs.",
-    "ĞÑ‚Ğ¼ĞµĞ½Ğ¸Ñ‚Ğµ Ğ²ÑÑ‚Ñ€ĞµÑ‡Ğ¸ Ğ±ĞµĞ· owner/output; Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½Ğ¸Ñ‚Ğµ status Ğ² async artifact.",
-    "Cancel meetings without an owner/output; consolidate status in an async artifact.",
-    "Meeting hours Ğ¸ decision yield.",
-    "Meeting hours and decision yield.",
-  ),
-  pb(
-    "useless-meetings",
-    "Ğ’ÑÑ‚Ñ€ĞµÑ‡Ğ¸ Ğ±ĞµÑĞ¿Ğ¾Ğ»ĞµĞ·Ğ½Ñ‹",
-    "No useful meetings",
-    "Agenda Ğ¾Ğ¿Ğ¸ÑÑ‹Ğ²Ğ°ĞµÑ‚ Ñ‚ĞµĞ¼Ñ‹, Ğ° Ğ½Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ; actions Ğ½Ğµ Ğ¾Ñ‚ÑĞ»ĞµĞ¶Ğ¸Ğ²Ğ°ÑÑ‚ÑÑ.",
-    "The agenda lists topics, not decisions; actions are not tracked.",
-    "ĞŸĞµÑ€ĞµĞ¿Ğ¸ÑˆĞ¸Ñ‚Ğµ agenda ĞºĞ°Ğº Ğ²Ğ¾Ğ¿Ñ€Ğ¾ÑÑ‹/Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, Ğ´Ğ¾Ğ±Ğ°Ğ²ÑŒÑ‚Ğµ pre-read Ğ¸ owner Ğ¿Ñ€Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ»Ğ°.",
-    "Rewrite the agenda as questions/decisions; add a pre-read and minutes owner.",
-    "Actions closed Ğ¸ decisions per meeting.",
-    "Actions closed and decisions per meeting.",
-  ),
-  pb(
-    "retro-no-change",
-    "Ğ ĞµÑ‚Ñ€Ğ¾ Ğ½Ğ¸Ñ‡ĞµĞ³Ğ¾ Ğ½Ğµ Ğ¼ĞµĞ½ÑĞµÑ‚",
-    "Retrospective changes nothing",
-    "Actions ÑĞ»Ğ¸ÑˆĞºĞ¾Ğ¼ Ğ¾Ğ±Ñ‰Ğ¸Ğµ, Ğ±ĞµĞ· owner Ğ¸ follow-up.",
-    "Actions are vague, unowned, and never reviewed.",
-    "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ Ğ¾Ğ´Ğ¸Ğ½ observable experiment, owner, ÑÑ€Ğ¾Ğº Ğ¸ expected signal.",
-    "Choose one observable experiment, owner, date, and expected signal.",
-    "Improvement action completion.",
-    "Improvement action completion.",
-  ),
-  pb(
-    "fear",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° ÑĞºÑ€Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ñ‹",
-    "Team is afraid to surface problems",
-    "ĞŸĞ»Ğ¾Ñ…Ğ¸Ğµ Ğ½Ğ¾Ğ²Ğ¾ÑÑ‚Ğ¸ Ğ¿Ğ¾ÑĞ²Ğ»ÑÑÑ‚ÑÑ Ğ¿Ğ¾Ğ·Ğ´Ğ½Ğ¾; Ğ¾Ğ±ÑÑƒĞ¶Ğ´ĞµĞ½Ğ¸Ğµ Ğ¸Ñ‰ĞµÑ‚ Ğ²Ğ¸Ğ½Ğ¾Ğ²Ğ½Ğ¾Ğ³Ğ¾.",
-    "Bad news arrives late; discussions seek blame.",
-    "Ğ›Ğ¸Ğ´ĞµÑ€ Ğ¿ĞµÑ€Ğ²Ñ‹Ğ¼ Ğ¿Ñ€Ğ¸Ğ·Ğ½Ğ°Ñ‘Ñ‚ uncertainty; Ñ€Ğ°Ğ·Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ ÑĞ¸ÑÑ‚ĞµĞ¼Ñƒ Ğ¸ Ğ·Ğ°Ñ‰Ğ¸Ñ‚Ğ¸Ñ‚Ğµ Ñ€Ğ°Ğ½Ğ½ÑÑ ÑÑĞºĞ°Ğ»Ğ°Ñ†Ğ¸Ñ.",
-    "Leader names uncertainty first; examine the system and protect early escalation.",
-    "Time-to-surface Ğ¸ anonymous safety pulse.",
-    "Time to surface and anonymous safety pulse.",
-  ),
-  pb(
-    "bad-status",
-    "Ğ¡Ñ‚Ğ°Ñ‚ÑƒÑ-Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚Ñ‹ Ğ±ĞµÑĞ¿Ğ¾Ğ»ĞµĞ·Ğ½Ñ‹",
-    "Status reports are useless",
-    "ĞÑ‚Ñ‡Ñ‘Ñ‚ Ğ¿ĞµÑ€ĞµÑ‡Ğ¸ÑĞ»ÑĞµÑ‚ activity, Ğ½Ğ¾ Ğ½Ğµ change, forecast Ğ¸Ğ»Ğ¸ decision.",
-    "The report lists activity but not change, forecast, or decisions.",
-    "ĞÑÑ‚Ğ°Ğ²ÑŒÑ‚Ğµ: Ñ‡Ñ‚Ğ¾ Ğ¸Ğ·Ğ¼ĞµĞ½Ğ¸Ğ»Ğ¾ÑÑŒ, Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·, top risks, decisions/help needed.",
-    "Keep only: what changed, forecast, top risks, decisions/help needed.",
-    "Decision yield Ğ¸ report freshness.",
-    "Decision yield and report freshness.",
-  ),
-  pb(
-    "heavy-governance",
-    "Governance ÑĞ»Ğ¸ÑˆĞºĞ¾Ğ¼ Ñ‚ÑĞ¶Ñ‘Ğ»Ñ‹Ğ¹",
-    "Governance too heavy",
-    "Approval latency Ğ²Ñ‹ÑˆĞµ risk reduction; Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ´ÑƒĞ±Ğ»Ğ¸Ñ€ÑƒÑÑ‚ÑÑ.",
-    "Approval latency exceeds risk reduction; data is duplicated.",
-    "ĞšĞ°Ñ€Ñ‚Ğ¸Ñ€ÑƒĞ¹Ñ‚Ğµ ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ gate Ğº Ñ€Ğ¸ÑĞºÑƒ/Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ; ÑƒĞ´Ğ°Ğ»Ğ¸Ñ‚Ğµ Ğ°Ñ€Ñ‚ĞµÑ„Ğ°ĞºÑ‚Ñ‹ Ğ±ĞµĞ· consumer.",
-    "Map every gate to a risk/decision; remove artifacts without a consumer.",
-    "Approval lead time.",
-    "Approval lead time.",
-  ),
-  pb(
-    "no-governance",
-    "Governance Ğ¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ğ²ÑƒĞµÑ‚",
-    "Governance nonexistent",
-    "ĞĞµÑ‚ tolerances, decision rights Ğ¸Ğ»Ğ¸ escalation.",
-    "There are no tolerances, decision rights, or escalation paths.",
-    "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»Ğ¸Ñ‚Ğµ sponsor, three key decisions, thresholds Ğ¸ cadence review.",
-    "Define sponsor, three key decisions, thresholds, and review cadence.",
-    "Unresolved exceptions.",
-    "Unresolved exceptions.",
-  ),
-  pb(
-    "agile-no-plan",
-    "Agile Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒÑÑ‚ ĞºĞ°Ğº Ğ¾Ñ‚ĞºĞ°Ğ· Ğ¾Ñ‚ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ",
-    "Agile is used as excuse for no planning",
-    "ĞĞµÑ‚ product goal, forecast, dependencies Ğ¸Ğ»Ğ¸ readiness.",
-    "There is no product goal, forecast, dependencies, or readiness view.",
-    "Ğ¡Ğ¾Ğ·Ğ´Ğ°Ğ¹Ñ‚Ğµ adaptive plan: goal, ordered backlog, near-term commitment, forecast range.",
-    "Create an adaptive plan: goal, ordered backlog, near-term commitment, forecast range.",
-    "Goal progress Ğ¸ forecast range.",
-    "Goal progress and forecast range.",
-  ),
-  pb(
-    "waterfall-change",
-    "Waterfall Ğ¿Ñ€Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½Ñ‡Ğ¸Ğ²Ñ‹Ñ… Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸ÑÑ…",
-    "Waterfall where requirements change",
-    "Change rate Ğ²Ñ‹ÑˆĞµ capacity formal control; feedback Ğ¿Ñ€Ğ¸Ñ…Ğ¾Ğ´Ğ¸Ñ‚ Ğ¿Ğ¾Ğ·Ğ´Ğ½Ğ¾.",
-    "Change rate exceeds formal control capacity; feedback arrives late.",
-    "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚Ğµ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ğµ gates, Ğ½Ğ¾ Ğ¿ĞµÑ€ĞµĞ½ĞµÑĞ¸Ñ‚Ğµ solution discovery Ğ² ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğµ validation loops.",
-    "Keep necessary gates but move solution discovery into short validation loops.",
-    "Change lead time Ğ¸ rework.",
-    "Change lead time and rework.",
-  ),
-  pb(
-    "framework-soup",
-    "Hybrid ÑÑ‚Ğ°Ğ» framework soup",
-    "Hybrid became framework soup",
-    "ĞŸÑ€Ğ°ĞºÑ‚Ğ¸ĞºĞ¸ ĞºĞ¾Ğ½Ñ„Ğ»Ğ¸ĞºÑ‚ÑƒÑÑ‚, roles Ğ´ÑƒĞ±Ğ»Ğ¸Ñ€ÑƒÑÑ‚ÑÑ, cadence Ğ¿ĞµÑ€ĞµĞ³Ñ€ÑƒĞ¶ĞµĞ½Ğ°.",
-    "Practices conflict, roles duplicate, and cadence is overloaded.",
-    "Ğ Ğ°Ğ·Ğ´ĞµĞ»Ğ¸Ñ‚Ğµ governance/planning/delivery; Ğ´Ğ»Ñ ĞºĞ°Ğ¶Ğ´Ğ¾Ğ¹ Ğ¿Ñ€Ğ°ĞºÑ‚Ğ¸ĞºĞ¸ Ğ½Ğ°Ğ·Ğ¾Ğ²Ğ¸Ñ‚Ğµ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ñƒ, owner Ğ¸ stop rule.",
-    "Separate governance/planning/delivery; name the problem, owner, and stop rule for each practice.",
-    "Process load Ğ¸ conflicting policies.",
-    "Process load and conflicting policies.",
-  ),
-  pb(
-    "rescue",
-    "Ğ¡Ğ¿Ğ°ÑÑ‚Ğ¸ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚",
-    "Project needs rescue",
-    "Objective, scope, ownership, schedule Ğ¸ confidence Ñ€Ğ°ÑÑ…Ğ¾Ğ´ÑÑ‚ÑÑ.",
-    "Objective, scope, ownership, schedule, and confidence diverge.",
-    "Stop: Ğ½Ğ¾Ğ²Ñ‹Ğµ commitments. Stabilize: Ñ„Ğ°ĞºÑ‚Ñ‹ Ğ¸ Ğ±ĞµĞ·Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ÑÑ‚ÑŒ. Replan: options. Align: decision. Deliver: ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğ¹ proof cycle.",
-    "Stop new commitments. Stabilize facts and safety. Replan options. Align a decision. Deliver a short proof cycle.",
-    "Critical blockers, decision age, forecast confidence.",
-    "Critical blockers, decision age, forecast confidence.",
-  ),
-  pb(
-    "handover",
-    "ĞŸĞµÑ€ĞµĞ´Ğ°Ñ‚ÑŒ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚",
-    "Project handover",
-    "Tacit knowledge, access Ğ¸ unresolved work Ğ½Ğµ Ğ¸Ğ¼ĞµÑÑ‚ Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ owner.",
-    "Tacit knowledge, access, and unresolved work lack a new owner.",
-    "Ğ¡Ğ¾ÑÑ‚Ğ°Ğ²ÑŒÑ‚Ğµ handover map: decisions, risks, contacts, artifacts, access, next 30 days.",
-    "Build a handover map: decisions, risks, contacts, artifacts, access, next 30 days.",
-    "Accepted handover items.",
-    "Accepted handover items.",
-  ),
-  pb(
-    "join-midway",
-    "PM Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ÑÑ Ğ² ÑĞµÑ€ĞµĞ´Ğ¸Ğ½Ğµ",
-    "PM joins project midway",
-    "Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ñ‹ Ñ€Ğ°ÑÑ…Ğ¾Ğ´ÑÑ‚ÑÑ Ñ Ñ€ĞµĞ°Ğ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒÑ, Ğ¸ÑÑ‚Ğ¾Ñ€Ğ¸Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹ ÑĞºÑ€Ñ‹Ñ‚Ğ°.",
-    "Documents differ from reality and decision history is hidden.",
-    "ĞŸÑ€Ğ¾Ğ²ĞµĞ´Ğ¸Ñ‚Ğµ evidence tour: sponsor, team, customer, plan, flow, risks, decisions.",
-    "Run an evidence tour: sponsor, team, customer, plan, flow, risks, decisions.",
-    "Unknowns retired per week.",
-    "Unknowns retired per week.",
-  ),
-  pb(
-    "close-failing",
-    "Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚ÑŒ Ğ½ĞµÑƒÑĞ¿ĞµÑˆĞ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚",
-    "Closing a failing project",
-    "Continuation cost Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞ°ĞµÑ‚ expected value, Ğ½Ğ¾ sunk cost Ğ²Ğ»Ğ¸ÑĞµÑ‚ Ğ½Ğ° Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ.",
-    "Continuation cost exceeds expected value but sunk cost biases the decision.",
-    "ĞŸĞ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²ÑŒÑ‚Ğµ stop case, protect people/data, define handover and lessons, name residual obligations.",
-    "Prepare a stop case, protect people/data, define handover and lessons, and name residual obligations.",
-    "Residual obligations closed.",
-    "Residual obligations closed.",
-  ),
-  pb(
-    "start-zero",
-    "ĞĞ°Ñ‡Ğ°Ñ‚ÑŒ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚ Ñ Ğ½ÑƒĞ»Ñ",
-    "Starting project from zero",
-    "Ğ•ÑÑ‚ÑŒ Ğ¸Ğ´ĞµÑ, Ğ½Ğ¾ Ğ½ĞµÑ‚ problem owner, outcome Ğ¸Ğ»Ğ¸ constraints.",
-    "There is an idea but no problem owner, outcome, or constraints.",
-    "Ğ¡Ğ¾Ğ³Ğ»Ğ°ÑÑƒĞ¹Ñ‚Ğµ problem, sponsor, outcome measure, boundaries Ğ¸ Ğ¿ĞµÑ€Ğ²Ñ‹Ğ¹ uncertainty test.",
-    "Align problem, sponsor, outcome measure, boundaries, and the first uncertainty test.",
-    "Time to first validated learning.",
-    "Time to first validated learning.",
-  ),
-];
-
-export const knowledgeDomains: Bi[] = [
-  { ru: "ĞÑĞ½Ğ¾Ğ²Ñ‹", en: "Fundamentals" },
-  { ru: "Governance", en: "Governance" },
-  { ru: "Ğ¦ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ", en: "Value" },
-  { ru: "Scope", en: "Scope" },
-  { ru: "Ğ¢Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ", en: "Requirements" },
-  { ru: "Ğ¡Ñ€Ğ¾ĞºĞ¸", en: "Schedule" },
-  { ru: "Ğ¡Ñ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ", en: "Cost" },
-  { ru: "Ğ Ğ¸ÑĞºĞ¸", en: "Risk" },
-  { ru: "ĞšĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ¾", en: "Quality" },
-  { ru: "Ğ ĞµÑÑƒÑ€ÑÑ‹", en: "Resources" },
-  { ru: "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ°", en: "Team" },
-  { ru: "Ğ›Ğ¸Ğ´ĞµÑ€ÑÑ‚Ğ²Ğ¾", en: "Leadership" },
-  { ru: "Stakeholders", en: "Stakeholders" },
-  { ru: "ĞšĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ğ¸", en: "Communication" },
-  { ru: "Ğ—Ğ°ĞºÑƒĞ¿ĞºĞ¸", en: "Procurement" },
-  { ru: "Ğ˜Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ", en: "Change" },
-  { ru: "Delivery", en: "Delivery" },
-  { ru: "Agile", en: "Agile" },
-  { ru: "ĞŸĞ¾Ñ‚Ğ¾Ğº", en: "Flow" },
-  { ru: "Ğ˜Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ğµ", en: "Measurement" },
-  { ru: "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ·Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ", en: "Forecasting" },
-  { ru: "Ğ’Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°", en: "Project Recovery" },
-  { ru: "Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ğµ", en: "Closure" },
-  { ru: "PMO", en: "PMO" },
-  { ru: "ĞÑĞ½Ğ¾Ğ²Ñ‹ Ğ¿Ñ€Ğ¾Ğ³Ñ€Ğ°Ğ¼Ğ¼", en: "Program basics" },
-  { ru: "ĞÑĞ½Ğ¾Ğ²Ñ‹ Ğ¿Ğ¾Ñ€Ñ‚Ñ„ĞµĞ»ĞµĞ¹", en: "Portfolio basics" },
-];
-
-export type Glossary = {
-  term: string;
-  ru: string;
-  definition: Bi;
-  example: Bi;
-  related: string[];
-};
-const glossarySeed: [string, string, string, string, string, string][] = [
-  [
-    "Acceptance Criteria",
-    "ĞšÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¸ Ğ¿Ñ€Ğ¸Ñ‘Ğ¼ĞºĞ¸",
-    "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğµ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğ¼ Ğ´Ğ¾Ğ»Ğ¶ĞµĞ½ ÑĞ¾Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚.",
-    "Testable conditions an outcome must meet.",
-    "Ğ¤Ğ¾Ñ€Ğ¼Ğ° Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ÑĞµÑ‚ Ğ²Ğ°Ğ»Ğ¸Ğ´Ğ½Ñ‹Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¸ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¾ÑˆĞ¸Ğ±ĞºÑƒ Ğ¿Ñ€Ğ¸ Ğ½ĞµĞ²ĞµÑ€Ğ½Ñ‹Ñ….",
-    "The form submits valid data and shows an error for invalid input.",
-  ],
-  [
-    "Accountable",
-    "ĞÑ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ·Ğ° Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚",
-    "Ğ•Ğ´Ğ¸Ğ½ÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¸Ğ»Ğ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ² RACI.",
-    "The single owner of the final decision or outcome in RACI.",
-    "Sponsor ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ğ°ĞµÑ‚ baseline.",
-    "The sponsor approves the baseline.",
-  ],
-  [
-    "Assumption",
-    "Ğ”Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ğµ",
-    "Ğ¡Ñ‡Ğ¸Ñ‚Ğ°ĞµĞ¼Ğ¾Ğµ Ğ¸ÑÑ‚Ğ¸Ğ½Ğ½Ñ‹Ğ¼ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğµ, ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğµ ĞµÑ‰Ñ‘ Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸.",
-    "A statement treated as true but still requiring validation.",
-    "ĞŸĞ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸Ğº Ğ¿Ñ€ĞµĞ´Ğ¾ÑÑ‚Ğ°Ğ²Ğ¸Ñ‚ API Ğº Ğ¼Ğ°Ñ.",
-    "The vendor will provide the API by May.",
-  ],
-  [
-    "BAC",
-    "Ğ‘ÑĞ´Ğ¶ĞµÑ‚ Ğ¿Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğ¸",
-    "Ğ£Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ñ‹Ğ¹ Ğ±ÑĞ´Ğ¶ĞµÑ‚ Ğ²ÑĞµĞ³Ğ¾ scope Ğ² EVM.",
-    "The approved budget for all scope in EVM.",
-    "BAC Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° â€” 500 000.",
-    "Project BAC is 500,000.",
-  ],
-  [
-    "Backlog",
-    "Ğ‘ÑĞºĞ»Ğ¾Ğ³",
-    "Ğ£Ğ¿Ğ¾Ñ€ÑĞ´Ğ¾Ñ‡ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ½Ğ°Ğ±Ğ¾Ñ€ Ğ¿Ğ¾Ñ‚ĞµĞ½Ñ†Ğ¸Ğ°Ğ»ÑŒĞ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
-    "An ordered set of potential work.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ±ĞµÑ€Ñ‘Ñ‚ ÑĞ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğ¹ ready item Ğ¸Ğ· backlog.",
-    "The team takes the next ready item from the backlog.",
-  ],
-  [
-    "Baseline",
-    "Ğ‘Ğ°Ğ·Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ğ»Ğ°Ğ½",
-    "Ğ£Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ğ°Ñ Ğ²ĞµÑ€ÑĞ¸Ñ scope, schedule Ğ¸Ğ»Ğ¸ cost Ğ´Ğ»Ñ ÑÑ€Ğ°Ğ²Ğ½ĞµĞ½Ğ¸Ñ.",
-    "Approved scope, schedule, or cost version used for comparison.",
-    "ĞĞ¾Ğ²Ñ‹Ğ¹ forecast ÑÑ€Ğ°Ğ²Ğ½Ğ¸Ğ²Ğ°ÑÑ‚ Ñ schedule baseline.",
-    "The new forecast is compared to the schedule baseline.",
-  ],
-  [
-    "Benefit",
-    "Ğ’Ñ‹Ğ³Ğ¾Ğ´Ğ°",
-    "Ğ˜Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ğ¾Ğµ Ğ¿Ğ¾Ğ»Ğ¾Ğ¶Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ, Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ°ĞµĞ¼Ğ¾Ğµ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ outcome.",
-    "A measurable positive change realized from an outcome.",
-    "Ğ¡Ğ¾ĞºÑ€Ğ°Ñ‰ĞµĞ½Ğ¸Ğµ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸ Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ¸ Ğ·Ğ°ÑĞ²ĞºĞ¸ Ğ½Ğ° 30%.",
-    "Reducing request handling time by 30%.",
-  ],
-  [
-    "Blocker",
-    "Ğ‘Ğ»Ğ¾ĞºĞµÑ€",
-    "Ğ£ÑĞ»Ğ¾Ğ²Ğ¸Ğµ, Ğ½Ğµ Ğ¿Ğ¾Ğ·Ğ²Ğ¾Ğ»ÑÑÑ‰ĞµĞµ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğµ Ğ¿Ñ€Ğ¾Ğ´Ğ¾Ğ»Ğ¶Ğ°Ñ‚ÑŒÑÑ.",
-    "A condition preventing work from progressing.",
-    "ĞĞµÑ‚ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ±ĞµĞ·Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ÑÑ‚Ğ¸ Ğ´Ğ»Ñ Ñ€ĞµĞ»Ğ¸Ğ·Ğ°.",
-    "A security decision is missing for release.",
-  ],
-  [
-    "Business Case",
-    "Ğ‘Ğ¸Ğ·Ğ½ĞµÑ-ĞºĞµĞ¹Ñ",
-    "ĞĞ±Ğ¾ÑĞ½Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¸Ğ½Ğ²ĞµÑÑ‚Ğ¸Ñ†Ğ¸Ğ¹ Ñ‡ĞµÑ€ĞµĞ· Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ñ‹, Ğ²Ñ‹Ğ³Ğ¾Ğ´Ñ‹, Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚Ñ‹ Ğ¸ Ñ€Ğ¸ÑĞºĞ¸.",
-    "Investment rationale comparing options, benefits, costs, and risks.",
-    "Steering committee Ğ²Ñ‹Ğ±Ğ¸Ñ€Ğ°ĞµÑ‚ build Ğ¿Ñ€Ğ¾Ñ‚Ğ¸Ğ² buy.",
-    "The steering committee chooses build versus buy.",
-  ],
-  [
-    "Capacity",
-    "Ğ”Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ°Ñ capacity",
-    "Ğ ĞµĞ°Ğ»ÑŒĞ½Ğ¾ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼ ÑƒÑĞ¸Ğ»Ğ¸Ğ¹ Ğ·Ğ° Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ğ¹.",
-    "Real effort available in a period after constraints.",
-    "Ğ˜Ğ· 200 Ñ‡Ğ°ÑĞ¾Ğ² 160 Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ñƒ.",
-    "Of 200 hours, 160 are available to the project.",
-  ],
-  [
-    "Change Control",
-    "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸ÑĞ¼Ğ¸",
-    "Ğ¡Ğ¿Ğ¾ÑĞ¾Ğ± Ğ¾Ñ†ĞµĞ½Ğ¸Ñ‚ÑŒ, Ñ€ĞµÑˆĞ¸Ñ‚ÑŒ Ğ¸ Ğ·Ğ°Ñ„Ğ¸ĞºÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ baseline.",
-    "A way to assess, decide, and record a baseline change.",
-    "Change request Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµÑ‚ Ğ½ĞµĞ´ĞµĞ»Ñ Ğ¿Ğ¾ÑĞ»Ğµ impact analysis.",
-    "A change request adds one week after impact analysis.",
-  ],
-  [
-    "Constraint",
-    "ĞĞ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ğµ",
-    "Ğ£ÑĞ»Ğ¾Ğ²Ğ¸Ğµ, ÑÑƒĞ¶Ğ°ÑÑ‰ĞµĞµ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹Ğµ Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ñ‹ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
-    "A condition limiting available solution options.",
-    "Ğ—Ğ°Ğ¿ÑƒÑĞº Ğ´Ğ¾Ğ»Ğ¶ĞµĞ½ Ğ¿Ñ€Ğ¾Ğ¹Ñ‚Ğ¸ Ğ´Ğ¾ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ Ğ·Ğ°ĞºĞ¾Ğ½Ğ°.",
-    "Launch must occur before a legal change.",
-  ],
-  [
-    "Cost of Delay",
-    "Ğ¡Ñ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ¸",
-    "ĞŸĞ¾Ñ‚ĞµÑ€Ñ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸Ğ·-Ğ·Ğ° Ğ¿ĞµÑ€ĞµĞ½Ğ¾ÑĞ° delivery Ğ½Ğ° ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ñƒ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
-    "Value lost by delaying delivery per unit of time.",
-    "ĞĞµĞ´ĞµĞ»Ñ Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ¸ ÑĞµĞ·Ğ¾Ğ½Ğ½Ğ¾Ğ¹ ĞºĞ°Ğ¼Ğ¿Ğ°Ğ½Ğ¸Ğ¸ Ñ‚ĞµÑ€ÑĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ´Ğ°Ğ¶Ğ¸.",
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíçO9ñ:-jZ.¶›­–)Ş³V–×÷'BG—R²Æö6ÆRÒg&öÒ$öFöÖ–â÷66†VÖ2#° ¦W‡÷'BG—R&’Ò²'S¢7G&–æs²Vã¢7G&–ærÓ°¦W‡÷'B6öç7B–6²Ò‡fÇVS¢&’ÂÆö6ÆS¢Æö6ÆR’ÓâfÇVU¶Æö6ÆUÓ°¦W‡÷'BG—R6÷W&6RÒ°¢–C¢7G&–æs°¢F—FÆS¢7G&–æs°¢÷&væ—¦F–öã¢7G&–æs°¢fW'6–öã¢7G&–æs°¢V&Æ—6†VC¢7G&–æs°¢6†V6¶VC¢7G&–æs°¢W&Ã¢7G&–æs°¢WF†÷&—G“¢%7FæF&B"Â$öff–6–ÂwV–FR"Â%&7F–6R#°¢æ÷FW3¢&“°§Ó° ¦W‡÷'B6öç7B6÷W&6W3¢6÷W&6UµÒÒ°¢°¢–C¢'Ö&ö³‚"À¢F—FÆS¢%Ô$ô¼*âwV–FRæBF†R7FæF&Bf÷"&ö¦V7BÖævVÖVçB"À¢÷&væ—¦F–öã¢%&ö¦V7BÖævVÖVçB–ç7F—GWFR"À¢fW'6–öã¢#‡F‚VF—F–öâ"À¢V&Æ—6†VC¢###R"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢ò÷wwrçÖ’æ÷&r÷7FæF&G2÷Ö&ö²"À¢WF†÷&—G“¢%7FæF&B"À¢æ÷FW3¢°¢'S¢-	íMm½Íİ½’-İM"Ô“²}½ím]İRÕtõ$²í=İ½Íİââ"À¢Vã¢$öff–6–ÂÔ’7FæF&C²Õtõ$²W6W2÷&–v–æÂW‡ÆæF–öç2â"À¢ÒÀ¢ÒÀ¢°¢–C¢&v–ÆS""À¢F—FÆS¢$v–ÆR&7F–6RwV–FR"À¢÷&væ—¦F–öã¢%&ö¦V7BÖævVÖVçB–ç7F—GWFR"À¢fW'6–öã¢#&æBVF—F–öâ"À¢V&Æ—6†VC¢###R"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢ò÷wwrçÖ’æ÷&r÷7FæF&G2öv–ÆR"À¢WF†÷&—G“¢$öff–6–ÂwV–FR"À¢æ÷FW3¢°¢'S¢-	íMm½ÍİíR=­í-íM--âıâ­íİ-]­-İíÍ2ıÍ]İ]İâMı--İ½Rı­-¢â"À¢Vã¢$öff–6–ÂwV–Fæ6Rf÷"6öçFW‡GVÂW6RöbFF—fR&7F–6W2â"À¢ÒÀ¢ÒÀ¢°¢–C¢'67'VÓ##"À¢F—FÆS¢%F†R67'VÒwV–FR"À¢÷&væ—¦F–öã¢%67'VÒæ÷&rò67'VÒ–æ2â"À¢fW'6–öã¢$æ÷fVÖ&W"##"À¢V&Æ—6†VC¢###Ó"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢ò÷67'VÖwV–FW2æ÷&r÷67'VÒÖwV–FRæ‡FÖÂ"À¢WF†÷&—G“¢$öff–6–ÂwV–FR"À¢æ÷FW3¢°¢'S¢-	­-=½Íİòıí-]]İİò-]ò=­í-íM--ıâ67'VÒâ"À¢Vã¢$7W'&VçBfW&–f–VB67'VÒwV–FRfW'6–öââ"À¢ÒÀ¢ÒÀ¢°¢–C¢&¶æ&ã##R"À¢F—FÆS¢%F†R¶æ&âwV–FR"À¢÷&væ—¦F–öã¢$¶æ&âwV–FW2"À¢fW'6–öã¢$Ö’##R"À¢V&Æ—6†VC¢###RÓR"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢òö¶æ&æwV–FW2æ÷&r÷F†RÖ¶æ&âÖwV–FRó##RãRò"À¢WF†÷&—G“¢$öff–6–ÂwV–FR"À¢æ÷FW3¢°¢'S¢-	íı]M]½ı]"í}’ıím]Ât•Âıíı=­İ=âıííİí-ÂÂ-í}"í}Rİ½]Í]İ-í"‚-]Íòm­½â"À¢Vã¢$FVf–æW2v÷&¶fÆ÷rÂt•ÂF‡&÷Vv‡WBÂv÷&²—FVÒvRÂæB7–6ÆRF–ÖRâ"À¢ÒÀ¢ÒÀ¢°¢–C¢'&–æ6S'cr"À¢F—FÆS¢%$”ä4S"&ö¦V7BÖævVÖVçB"À¢÷&væ—¦F–öã¢%V÷ÆT6W'B"À¢fW'6–öã¢%fW'6–öâr"À¢V&Æ—6†VC¢###2"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢ò÷wwrçV÷ÆV6W'Bæ÷&rö'&÷w6RÖ6W'F–f–6F–öç2÷&ö¦V7B×&öw&ÖÖRÖæB×÷'FföÆ–òÖÖævVÖVçBõ$”ä4S"Ó""À¢WF†÷&—G“¢$öff–6–ÂwV–FR"À¢æ÷FW3¢°¢'S¢-	íMm½Íİò-İm-½M]½ÍmÍ]-íM­‚â"À¢Vã¢$öff–6–Âg&ÖWv÷&²÷væW"vRâ"À¢ÒÀ¢ÒÀ¢°¢–C¢&—6ó#S""À¢F—FÆS ¢$•4ò#S#£##&ö¦V7BÂ&öw&ÖÖRæB÷'FföÆ–òÖævVÖVçB(	BwV–Fæ6Röâ&ö¦V7BÖævVÖVçB"À¢÷&væ—¦F–öã¢$•4ò"À¢fW'6–öã¢$•4ò#S#£##"À¢V&Æ—6†VC¢###"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢ò÷wwræ—6òæ÷&r÷7FæF&BósC“Cræ‡FÖÂ"À¢WF†÷&—G“¢%7FæF&B"À¢æ÷FW3¢°¢'S¢-	Í]mM=İíMİ½’-İM#²ıí½İ½’-]­"İR-íıí}-íM-òâ"À¢Vã¢$–çFW&æF–öæÂ7FæF&C²gVÆÂFW‡B—2æ÷B&W&öGV6VBâ"À¢ÒÀ¢ÒÀ¢°¢–C¢&v–ÆVÖæ–fW7Fò"À¢F—FÆS¢$Öæ–fW7Fòf÷"v–ÆR6ögGv&RFWfVÆ÷ÖVçB"À¢÷&væ—¦F–öã¢$v–ÆRÖæ–fW7FòWF†÷'2"À¢fW'6–öã¢##"À¢V&Æ—6†VC¢##"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢òöv–ÆVÖæ–fW7Fòæ÷&rò"À¢WF†÷&—G“¢$öff–6–ÂwV–FR"À¢æ÷FW3¢°¢'S¢-	ı]-}İ½’-í}İ¢m]İİí-]’‚ıİmıí"v–ÆRâ"À¢Vã¢%&–Ö'’6÷W&6Rf÷"v–ÆRfÇVW2æB&–æ6—ÆW2â"À¢ÒÀ¢ÒÀ¢°¢–C¢'v6s#""À¢F—FÆS¢%vV"6öçFVçB66W76–&–Æ—G’wV–FVÆ–æW2"À¢÷&væ—¦F–öã¢%s42"À¢fW'6–öã¢%t4r"ã""À¢V&Æ—6†VC¢###2"À¢6†V6¶VC¢###bÓ’ÓR"À¢W&Ã¢&‡GG3¢ò÷wwrçs2æ÷&rõE"õt4s#"ò"À¢WF†÷&—G“¢%7FæF&B"À¢æ÷FW3¢°¢'S¢-
+m]½]-òı½İ­İ-]M](	B=í-]İÂâ"À¢Vã¢%F†R–çFW&f6RF&vWG2ÆWfVÂâ"À¢ÒÀ¢ÒÀ¥Ó° ¦W‡÷'BG—RÖWF†öBÒ°¢6ÇVs¢7G&–æs°¢F—FÆS¢&“°¢7VÖÖ'“¢&“°¢÷&–v–ã¢&“°¢&–æ6—ÆW3¢&•µÓ°¢fÆ÷s¢&“°¢&öÆW3¢&“°¢'F–f7G3¢&“°¢6FVæ6S¢&“°¢ÖWG&–73¢&“°¢7G&VæwF‡3¢&“°¢Æ–Ö—FF–öç3¢&“°¢&W&WV—6—FW3¢&“°¢&W7Df—C¢&“°¢ö÷$f—C¢&“°¢çF•GFW&ç3¢&“°¢F–Æ÷&–æs¢&“°¢6öÖ&–æF–öç3¢&“°¢6†V6¶Æ—7C¢&•µÓ°¢6÷W&6T–G3¢7G&–æuµÓ°¢fW'6–öã¢7G&–æs°¢WFFVDC¢7G&–æs°§Ó°¦6öç7BÒÒ€¢6ÇVs¢7G&–ærÀ¢'S¢7G&–ærÀ¢Vã¢7G&–ærÀ¢7VÖÖ'•'S¢7G&–ærÀ¢7VÖÖ'”Vã¢7G&–ærÀ¢fÆ÷u'S¢7G&–ærÀ¢fÆ÷tVã¢7G&–ærÀ¢&W7E'S¢7G&–ærÀ¢&W7DVã¢7G&–ærÀ¢Æ–Ö—G5'S¢7G&–ærÀ¢Æ–Ö—G4Vã¢7G&–ærÀ¢6÷W&6T–G3¢7G&–æuµÒÀ¢fW'6–öâÒ%&7F–6R"À¢“¢ÖWF†öBÓâ‡°¢6ÇVrÀ¢F—FÆS¢²'RÂVâÒÀ¢7VÖÖ'“¢²'S¢7VÖÖ'•'RÂVã¢7VÖÖ'”VâÒÀ¢÷&–v–ã¢°¢'S¢-	-í}İ¢­¢í--]"İíı]M]½İİ½’­íİ-]­"=ı-½]İó²ıí½Í}=-Rıí]ímM]İRM½òıíİÍİòMíı=]İ’ÂİR­¢}İ¢=İ-]½Íİí-‚â"À¢Vã¢$VÖW&vVBf÷"7V6–f–2ÖævVÖVçB6öçFW‡C²W6R—G2÷&–v–âFòVæFW'7FæB77V×F–öç2Âæ÷B2&ööböbVæ—fW'6Æ—G’â"À¢ÒÀ¢&–æ6—ÆW3¢°¢°¢'S¢-
+ı-İâíı]M]½-Âıííıİı-ò]]İ’‚ıí-í¢í-²â"À¢Vã¢$Ö¶RFV6—6–öâ&–v‡G2æBv÷&²fÆ÷rW‡Æ–6—Bâ"À¢ÒÀ¢°¢'S¢-	ıíM-Â­íİ-í½Âıíıímíİ½Íİâ­2‚İ]íı]M]½İİí-‚â"À¢Vã¢%F–Æ÷"6öçG&öÂFò&—6²æBVæ6W'F–çG’â"À¢ÒÀ¢°¢'S¢-	}Í½­-Âm­²ı½Ò(i"í-(i"í-İò-ı}Â(i"Mı-mòâ"À¢Vã¢$6Æ÷6RF†RÆâ(i"v÷&²(i"fVVF&6²(i"FFF–öâÆö÷â"À¢ÒÀ¢ÒÀ¢fÆ÷s¢²'S¢fÆ÷u'RÂVã¢fÆ÷tVâÒÀ¢&öÆW3¢°¢'S¢-
+í½‚íı]M]½ıí-ò-½İİ½ÂıíM]íMíÃ²-½M]½]b]}=½Í--Â=­í-íM-]½Âıí]­-‚ıí½İ-]½‚Mí½mİ²Í]-Âıİ½Rıí½İíÍí}òâ"À¢Vã¢%&öÆW2föÆÆ÷rF†R6†÷6Vâ&ö6ƒ²÷WF6öÖR÷væW"Â&ö¦V7BÆVBÂæBFVÆ—fW'’FVÒæVVB6ÆV"FV6—6–öâ&–v‡G2â"À¢ÒÀ¢'F–f7G3¢°¢'S¢-	ıí½Í}=-R-í½Í­â-R-]M­-²Â­í-í½RıíMM]m-í"]]İRÂ­ííMİmâÂıí-]­2½‚í--]---]İİí-Ââ"À¢Vã¢%W6RöæÇ’'F–f7G2F†B7W÷'BFV6—6–öâÂ6ö÷&F–æF–öâÂfW&–f–6F–öâÂ÷"66÷VçF&–Æ—G’â"À¢ÒÀ¢6FVæ6S¢°¢'S¢-	­M]İmò}-"í"­íí-‚í-İí’-ı}‚Â-íÍí-‚­ííMİm‚‚­}M]m­‚â"À¢Vã¢$6FVæ6RFWVæG2öâfVVF&6²7VVBÂ6ö÷&F–æF–öâ6÷7BÂæBFVÆ’&—6²â"À¢ÒÀ¢ÖWG&–73¢°¢'S¢-
+Íí--Rİ]}=½Í-"Âı]M­}=]Íí-ÂÂıí-í¢Â­}]--â‚¢(	BİRİí­Â­--İí-‚â"À¢Vã¢%G&6²÷WF6öÖW2Â&VF–7F&–Æ—G’ÂfÆ÷rÂVÆ—G’ÂæB&—6¾(	Fæ÷B7F—f—G’föÇVÖRâ"À¢ÒÀ¢7G&VæwF‡3¢°¢'S¢-	M"í=âíı]míİİ=âÍíM]½Â‚ı}½¢­ííMİm‚Â]½‚í-ıM]"­íİ-]­-íÂâ"À¢Vã¢%&÷f–FW26†&VB÷W&F–ærÖöFVÂæB6ö÷&F–æF–öâÆæwVvRv†Vâ6öçFW‡Bf—G2â"À¢ÒÀ¢Æ–Ö—FF–öç3¢²'S¢Æ–Ö—G5'RÂVã¢Æ–Ö—G4VâÒÀ¢&W&WV—6—FW3¢°¢'S¢-	íòm]½ÂÂı-İ½R-½M]½Ím²ÂMí-=ò¢í-İí’-ı}‚‚Mmı½İíİí-½]İòí}RMİİ½Râ"À¢Vã¢%6†&VBvöÂÂW‡Æ–6—B÷væW'6†—Â66W72FòfVVF&6²ÂæBF—66—Æ–æR–âWFF–ærv÷&²FFâ"À¢ÒÀ¢&W7Df—C¢²'S¢&W7E'RÂVã¢&W7DVâÒÀ¢ö÷$f—C¢°¢'S¢-
+]MÂ=MR­½í}]-½RMíı=]İòıíM]íMí-=---=í"½‚­íİM½­-=í"ÍíM]½Íâ=ı-½]İòâ"À¢Vã¢$Vçf—&öæÖVçG2v†W&R6÷&R77V×F–öç2&R'6VçB÷"6öæfÆ–7Bv—F‚v÷fW&ææ6Râ"À¢ÒÀ¢çF•GFW&ç3¢°¢'S¢-	Í]]İ}]­íR-½ıí½İ]İRm]]Ííİ“²ıí­}-]½‚­¢m]½Ã²Mí-½]İR½í"]r=M½]İò½İRâ"À¢Vã¢$ÖV6†æ–6Â6W&VÖöæ–W3²ÖWG&–722F&vWG3²FF–ærÆ–W'2v—F†÷WB&VÖ÷f–ærv7FRâ"À¢ÒÀ¢F–Æ÷&–æs¢°¢'S¢-	İ}İ-RÍİÍ½ÍİâMí--í}İí’-=­-=²‚=½--R­íİ-í½Â-í½Í­âıâİ½íM]Íí’ıí-]İí-‚â"À¢Vã¢%7F'Bv—F‚Ö–æ–×VÒ7Vff–6–VçB7G'V7GW&RæBFB6öçG&öÂöæÇ’f÷"âö'6W'fVBæVVBâ"À¢ÒÀ¢6öÖ&–æF–öç3¢°¢'S¢-	­íÍİ=-R=ı-½]İRÂı½İí-İR‚-½ıí½İ]İR­¢í-M]½Íİ½R½íƒ²ı-İâM­=-R­íİM½­-²Míı=]İ’â"À¢Vã¢$6öÖ&–æRv÷fW&ææ6RÂÆææ–ærÂæBW†V7WF–öâ26W&FRÆ–W'3²W‡÷6R6öæfÆ–7F–ær77V×F–öç2â"À¢ÒÀ¢6†V6¶Æ—7C¢°¢°¢'S¢-
+MíÍ=½í--ÂímM]Í½’]}=½Í-"‚í=İ}]İòâ"À¢Vã¢%7FFRF†RW‡V7FVB÷WF6öÖRæB6öç7G&–çG2â"À¢ÒÀ¢°¢'S¢-	íı]M]½-Â-½M]½Ím]"]]İ’‚-Â=ı-½]İòâ"À¢Vã¢$FVf–æRFV6—6–öâ÷væW'2æB6FVæ6Râ"À¢ÒÀ¢°¢'S¢-	-½-ÂÍİÍ=Â-]M­-í"‚Í]-¢â"À¢Vã¢%6VÆV7BF†RÖ–æ–×VÒ'F–f7G2æBÖWG&–72â"À¢ÒÀ¢°¢'S¢-	ıí-]-‚í}í}]]ríMÒí}’m­²â"À¢Vã¢%&Wf–WrgFW"öæRv÷&¶–ær7–6ÆRâ"À¢ÒÀ¢ÒÀ¢6÷W&6T–G2À¢fW'6–öâÀ¢WFFVDC¢###bÓ’ÓR"À§Ò“° ¦W‡÷'B6öç7BÖWF†öG3¢ÖWF†öEµÒÒ°¢Ò€¢'&VF–7F—fR"À¢-	ı]M­--İíR=ı-½]İR"À¢%&VF–7F—fR&ö¦V7BÖævVÖVçB"À¢-	M]-½ÍİíRı]M--]½ÍİíRı½İí-İR‚­íİ-í½Âí-İí-]½Íİâ}í-í=âı½İâ"À¢%Æâ7V'7FçF–Â66÷R–âGfæ6RæB6öçG&öÂFVÆ—fW'’v–ç7B&6VÆ–æRâ"À¢-	İmmò(i"ı½İí-İR(i"ıí½İ]İR(i"­íİ-í½Â(i"}­½-Râ"À¢$–æ—F–FR(i"Æâ(i"W†V7WFR(i"6öçG&öÂ(i"6Æ÷6Râ"À¢-
+-½Íİ½R=İm²ıí]­-ÂMíÍ½Íİ½Rí=½í-İòÂ-½í­ò-íÍí-Â}Í]İ]İ’â"À¢%7F&ÆR66÷RÂf÷&ÖÂ&÷fÇ2Â†–v‚6†ævR6÷7Bâ"À¢-	ı½í]âı]]İí"}-=âÍ]İ2-]í-İ’‚ıí}Mİíâí-İ=â-ı}Ââ"À¢$†æFÆW2g&WVVçB&WV—&VÖVçB6†ævRæBÆFRfVVF&6²ö÷&Ç’â"À¢²'Ö&ö³‚"Â&—6ó#S"%ÒÀ¢’À¢Ò€¢'vFW&fÆÂ"À¢%vFW&fÆÂ"À¢%vFW&fÆÂ"À¢-	ıí½]Mí--]½ÍİòÍíM]½ÂMrMíÍ½}í-İİ½Í‚ı]]]íMÍ‚â"À¢%6WVVçF–Â†6RÖöFVÂv—F‚f÷&ÖÂG&ç6—F–öç2â"À¢-
+-]í-İò(i"ıí]­-í-İR(i"í}MİR(i"ıí-]­(i"ı]]]íBâ"À¢%&WV—&VÖVçG2(i"FW6–vâ(i"'V–ÆB(i"fW&–g’(i"G&ç6—F–öââ"À¢-	ıí--íı]Íòí-ı]M­}=]Í½Í‚İ-]M]Í‚‚­íİ-í½Íİ½Í‚-í}­Í‚â"À¢%&WVF&ÆRv÷&²v—F‚&VF–7F&ÆR–çFW&f6W2æBvFW2â"À¢-	í­‚ı]Mıí½ím]İ’íİ=m-í-òıí}Mİââ"À¢%w&öær77V×F–öç2Ö’7W&f6RÆFRâ"À¢²&—6ó#S"%ÒÀ¢’À¢Ò€¢&v–ÆR"À¢$v–ÆR"À¢$v–ÆR"À¢-
+-]Ím]İİí-]’M½òMı--İí’}í-­‚}]]r}-=âıí--­2‚í=}]İRâ"À¢$fÇVR7—7FVÒf÷"FF—fRFVÆ—fW'’F‡&÷Vv‚g&WVVçBfÇVRæBÆV&æ–ærâ"À¢-	­íí-­Rm­½³¢-½-Âm]İİí-Â(i"M]½-Â(i"ıí-]-Â(i"Mı-í--Ââ"À¢%6†÷'BÆö÷3¢6†ö÷6RfÇVR(i"FVÆ—fW"(i"–ç7V7B(i"FBâ"À¢-	-½í­òİ]íı]M]½İİí-Â‚Mí-=ıİò}-òí-İò-ı}Ââ"À¢$†–v‚Væ6W'F–çG’v—F‚g&WVVçB66W76–&ÆRfVVF&6²â"À¢-	]rıİí’m]½‚‚Íí-íı-]½Íİí’­íÍİM²ı]-]-ò"]­--İí-Ââ"À¢%v—F†÷WB6ÆV"vöÂæBV×÷vW&VBFVÒ—B&V6öÖW2&V7F—fRâ"À¢²&v–ÆVÖæ–fW7Fò"Â&v–ÆS"%ÒÀ¢’À¢Ò€¢&‡–'&–B"À¢-	=Mİ½’ıíM]íB"À¢$‡–'&–B"À¢-	íÍ½½]İİíRí}]-İRÍíM]½‚=ı-½]İò‚Mı--İí’ıí--­‚]}=½Í--â"À¢%W'÷6VgVÂ6öÖ&–æF–öâöbv÷fW&ææ6RæBFF—fRFVÆ—fW'’â"À¢-
+MíÍ½Íİ½R­íİ-í½Íİ½R-í}­‚í­=mí"­íí-­Rm­½²ıí--­‚]}=½Í--â"À¢$f÷&ÖÂ6öçG&öÂö–çG27W'&÷VæB6†÷'BFVÆ—fW'’7–6ÆW2â"À¢-	m-­R-İ]İRí=İ}]İòı‚}Í]İ}-íÂıííRMí-m]İò]}=½Í--â"À¢$†&BW‡FW&æÂ6öç7G&–çG2v—F‚âWföÇf–ær6öÇWF–öâF‚â"À¢-	]rı-İ½R=İbı]-]-ò"½=}İ=âÍ]ÂÍ]-íM¢â"À¢%v—F†÷WBW‡Æ–6—B&÷VæF&–W2—B&V6öÖW2&æFöÒg&ÖWv÷&²6÷Wâ"À¢²'Ö&ö³‚"Â&v–ÆS"%ÒÀ¢’À¢Ò€¢'67'VÒ"À¢%67'VÒ"À¢%67'VÒ"À¢-	½=­òÍ]-íM­M½ò½ímİ½RıíM=­-í"İíİí-RİÍı}]­í=âıíM]íMâ"À¢$Æ–v‡GvV–v‡Bg&ÖWv÷&²f÷"6ö×ÆW‚&öGV7G2&6VBöâV×—&–6—6Òâ"À¢%&öGV7B&6¶Æör(i"7&–çBÆææ–ær(i"7&–çB(i"&Wf–Wr²&WG&÷7V7F—fR(i"FFF–öââ"À¢%&öGV7B&6¶Æör(i"7&–çBÆææ–ær(i"7&–çB(i"&Wf–Wr²&WG&÷7V7F—fR(i"FFF–öââ"À¢-	­íİM=İ­míİ½Íİò­íÍİMÍím]"í}M--Âı=íMİ½’İ­]Í]İ""­mMíÂıİ-Râ"À¢$7&÷72ÖgVæ7F–öæÂFVÒ6â7&VFRW6&ÆR–æ7&VÖVçBWfW'’7&–çBâ"À¢-	İR]]"}M}‚ıí-M]½òÂMí=í-íí"‚=ı-½]İò--íÍ-}]­‚â"À¢$FöW2æ÷BWFöÖF–6ÆÇ’6öÇfR÷'FföÆ–òÂ6öçG&7G2Â÷"v÷fW&ææ6Râ"À¢²'67'VÓ##%ÒÀ¢%67'VÒwV–FR##"À¢’À¢Ò€¢&¶æ&â"À¢$¶æ&â"À¢$¶æ&â"À¢-	íı-Í}mòıí-í­}]]rı-İ½’í}’ıím]Â­íİ-í½Ât•‚í-İ=â-ı}Ââ"À¢$fÆ÷r÷F–Ö—¦F–öâF‡&÷Vv‚âW‡Æ–6—Bv÷&¶fÆ÷rÂt•6öçG&öÂÂæBfVVF&6²â"À¢-	íı]M]½-Âí}’ıím](i"=ı-½ı-Ât•(i"İ½íM-Âıí­}-]½‚ıí-í­(i"=½=}-Ââ"À¢$FVf–æRv÷&¶fÆ÷r(i"6öçG&öÂt•(i"ö'6W'fRfÆ÷rÖWG&–72(i"–×&÷fRâ"À¢-	İ]ı]½-İ½’ıí-í¢}İííMİí’í-²‚ıí-]İí-Âí­--Â}M]m­‚â"À¢$6öçF–çV÷W2†WFW&övVæV÷W2v÷&²v†W&R&VGV6–ærFVÆ’ÖGFW'2â"À¢-	Mí­]rt•‚]==½ıİí=â}íıí-í­M"-í½Í­â-}=½}mâ}Mrâ"À¢$&ö&Bv—F†÷WBt•6öçG&öÂæBfÆ÷r&Wf–Ww2öæÇ’f—7VÆ—¦W2F6·2â"À¢²&¶æ&ã##R%ÒÀ¢$¶æ&âwV–FRÖ’##R"À¢’À¢Ò€¢'67'VÖ&â"À¢%67'VÖ&â"À¢%67'VÖ&â"À¢-
+-Â67'VÒı­-­Í‚ıí-í­¶æ&â‚İ-í½ímíİİ½Â=½=}]İ]Ââ"À¢%67'VÒ6FVæ6R6öÖ&–æVBv—F‚¶æ&âfÆ÷r&7F–6W2æBWföÇWF–öæ'’–×&÷fVÖVçBâ"À¢-
+m]½Âıİ-‚í}í²í]İıí-ó²t•Â-½-ı=-İR‚ıí­}-]½‚ıí-í­=ı-½ıí"ıí½İ]İ]Ââ"À¢%7&–çBvöÂæB&Wf–Ww2&VÖ–ã²t•ÂVÆÂÂæBfÆ÷rÖWG&–72v÷fW&âW†V7WF–öââ"À¢-	­íÍİM67'VÒı½-½-]"ı]]==}­2Âı]]İíİ]}-]İİí’½‚-İ]ı½İí-=âí-2â"À¢$67'VÒFVÒf6W2÷fW&ÆöBÂ6''’Ö÷fW"Â÷"–çFW''WBv÷&²â"À¢-	İ}-İRİR}Í]İı]"ı-İí=âíı]M]½]İòí}]=âıím]â"À¢%F†RÆ&VÂFöW2æ÷B&WÆ6RâW‡Æ–6—BFVf–æ—F–öâöbv÷&¶fÆ÷râ"À¢²'67'VÓ##"Â&¶æ&ã##R%ÒÀ¢’À¢Ò€¢&ÆVâ"À¢$ÆVâ"À¢$ÆVâ"À¢-
+=ı-½]İRm]İİí-ÍâÂıí-í­íÂÂ­}]--íÂ‚=-İ]İ]Âıí-]Ââ"À¢$ÖævRfÇVRÂfÆ÷rÂVÆ—G’ÂæBv7FRVÆ–Ö–æF–öââ"À¢-	íı]M]½-Âm]İİí-Â(i"íı-Âıí-í¢(i"=-İ-Âí=İ}]İò(i"İ]ı]½-İâ=½=}-Ââ"À¢$FVf–æRfÇVR(i"ÖfÆ÷r(i"&VÖ÷fR6öç7G&–çG2(i"–×&÷fR6öçF–çV÷W6Ç’â"À¢-	ıí--íı]Í½Rıí-í­‚í}Mİòm]İİí-‚‚}Í]Í½R}M]m­‚â"À¢%&WVF&ÆRfÇVR7G&V×2v—F‚ö'6W'f&ÆRFVÆ—2â"À¢-	½í­½Íİòİ­íİíÍòÍím]"ıí-]M-Â-]ÍİíÍ2]}=½Í--2â"À¢$Æö6Â÷F–Ö—¦F–öâ6â†&ÒF†R7—7FVÒ÷WF6öÖRâ"À¢²&¶æ&ã##R%ÒÀ¢’À¢Ò€¢'‡"À¢-
+İ­-]Í½ÍİíRıí=ÍÍí-İR"À¢$W‡G&VÖR&öw&ÖÖ–ær"À¢-	İm]İ]İ½Rı­-­‚M½ò½-í’‚=-í}-í’ıí--­‚ıí=ÍÍİí=âí]ı]}]İòâ"À¢$Væv–æVW&–ær&7F–6W2f÷"&–BÂ7W7F–æ&ÆR6ögGv&RFVÆ—fW'’â"À¢-	Í½½R-½ı=­‚Â-]-²Âİ]ı]½-İòİ-]=mòÂıİòí-‚]M­-íİ2â"À¢%6ÖÆÂ&VÆV6W2ÂFW7G2Â6öçF–çV÷W2–çFVw&F–öâÂ—"v÷&²Â&Vf7F÷&–ærâ"À¢-	­íÍİM²}í-­‚}-½Í‚}Í]İ]İıÍ‚‚½Íİí’İm]İ]İí’Mmı½İí’â"À¢%6ögGv&RFV×2v—F‚g&WVVçB6†ævRæB7G&öærVæv–æVW&–ærF—66—Æ–æRâ"À¢-	ı­-­‚-]=í"­-½M­m‚‚İR}Í]İıí"ıíM=­-í-í=âİı-½]İòâ"À¢%&7F–6W2&WV—&R6¶–ÆÂæBFòæ÷B&WÆ6R&öGV7BF—&V7F–öââ"À¢²&v–ÆVÖæ–fW7Fò%ÒÀ¢’À¢Ò€¢'&–æ6S""À¢%$”ä4S""À¢%$”ä4S""À¢-
+-=­-=í-İİ½’Í]-íB=ı-½]İò}]]rıİmı²Âı­-­‚Âıím]²‚Mı-mâ¢­íİ-]­-2â"À¢%7G'V7GW&VB&ö¦V7BÖævVÖVçBF‡&÷Vv‚&–æ6—ÆW2Â&7F–6W2Â&ö6W76W2ÂæBF–Æ÷&–ærâ"À¢-
+İ­íİíÍ}]­íRííİí-İR‚=ı-½]İRıâ-MıÂíı]M]½İİ½Í‚]]İıÍ‚â"À¢$6öçF–çVVB'W6–æW72§W7F–f–6F–öâæBÖævVÖVçB'’7FvW2v—F‚FVf–æVBFV6—6–öç2â"À¢-	í=İ}m‚MíÍ½Íİí’ÍíM]½Íâ=ı-½]İò‚ıİí’í--]---]İİí-Íââ"À¢$÷&væ—¦F–öç2æVVF–ærf÷&ÖÂv÷fW&ææ6RæB6ÆV"66÷VçF&–Æ—G’â"À¢-	ı½í]òMı-mòí}M"Mí­=Í]İ-İ=âİ==}­2]r=½=}]İò­íİ-í½òâ"À¢%ö÷"F–Æ÷&–ær7&VFW2Fö7VÖVçBÆöBv—F†÷WB&WGFW"6öçG&öÂâ"À¢²'&–æ6S'cr%ÒÀ¢%$”ä4S"r"À¢’À¢Ò€¢&7Ò"À¢-	Í]-íB­-}]­í=âı=-‚"À¢$7&—F–6ÂF‚ÖWF†öB"À¢-
+]-]-òÍíM]½Â=M­Âıí­}½-íòm]ıí}­2]rí]=â-]Í]İİí=â]}]-â"À¢$66†VGVÆRæWGv÷&²ÖöFVÂ–FVçF–g––ærF†R6†–âv—F‚æòF÷FÂfÆöBâ"À¢$FWVæFVæ6–W2²GW&F–öç2(i"f÷'v&B72(i"&6·v&B72(i"fÆöBâ"À¢$FWVæFVæ6–W2²GW&F–öç2(i"f÷'v&B72(i"&6·v&B72(i"fÆöBâ"À¢-	ıí]­-²}-Í½Í‚íı]mıÍ‚‚Mí--í}İâ-½Íİ½Í‚ím]İ­Í‚â"À¢%&ö¦V7G2v—F‚FWVæFVçB7F—f—F–W2æB&V6öæ&Ç’7F&ÆRW7F–ÖFW2â"À¢-
+]}=½Í-"}-"í"­}]--}-Íí-]’‚ím]İí¢â"À¢$÷WGWB—2öæÇ’2vööB2FWVæFVæ6–W2æBW7F–ÖFW2â"À¢²'Ö&ö³‚%ÒÀ¢’À¢Ò€¢&7&—F–6ÂÖ6†–â"À¢-	­-}]­òm]ıÂ"À¢$7&—F–6Â6†–â"À¢-	ı½İí-İR=}-íÂ]=İ½Rí=İ}]İ’‚íR]}]-í"â"À¢%Æææ–ærF†B6öç6–FW'2&W6÷W&6R6öç7G&–çG2æBvw&VvFR'VffW'2â"À¢%&W6÷W&6RÖÆWfVÂ66†VGVÆR(i"7&—F–6Â6†–â(i"&ö¦V7BöfVVF–ær'VffW'2(i"'VffW"6öçG&öÂâ"À¢%&W6÷W&6RÖÆWfVÂ66†VGVÆR(i"7&—F–6Â6†–â(i"&ö¦V7BöfVVF–ær'VffW'2(i"'VffW"6öçG&öÂâ"À¢-	Í=½Í-ıí]­-İò]M­íİ­=]İm]’}í=İ}]İİ½R]=²â"À¢$×VÇF’×&ö¦V7BVçf—&öæÖVçG26ö×WF–ærf÷"6öç7G&–æVB&W6÷W&6W2â"À¢-	İ]­í]­-İ½R]}]-²Í­=í"ı½í]R]íMİ½RMİİ½Râ"À¢%ö÷&Ç’FW6–væVB'VffW'26âÖ6²vV²–çWG2â"À¢²'Ö&ö³‚%ÒÀ¢’À¢Ò€¢'7FvRÖvFR"À¢%7FvRÔvFR"À¢%7FvRÔvFR"À¢-	İ-]-míİİ½R]]İòÍ]mM2-MıÍ‚}--òİm--²â"À¢$–çfW7FÖVçBFV6—6–öç2&WGvVVâ7FvW2öb–æ—F–F—fRFWfVÆ÷ÖVçBâ"À¢%7FvRv÷&²(i"Wf–FVæ6R6¶vR(i"vFRFV6—6–öã¢vòö†öÆB÷&V7–6ÆR÷7F÷â"À¢%7FvRv÷&²(i"Wf–FVæ6R6¶vR(i"vFRFV6—6–öã¢vòö†öÆB÷&V7–6ÆR÷7F÷â"À¢-	-½í­ò-íÍí-Â½]M=í]’-M‚‚İ]í]íMÍí-Â-½íİ=í-İRıí-M]½òâ"À¢$†–v‚æW‡B×7FvR6÷7BæB÷'FföÆ–ò6†ö–6W2â"À¢-	­íİ-í½Íİ½R-í}­‚-İí-ı-òMíÍ½Íİí-ÍâÂ]½‚]]İRíí-İí-­Rİ]-í}Íímİââ"À¢$vFW2&V6öÖRF†VFW"v†Vâ7F÷–ær—2–×÷76–&ÆRâ"À¢²'Ö&ö³‚%ÒÀ¢’À¢Ò€¢&ÆVâ×7F'GW"À¢$ÆVâ7F'GW"À¢$ÆVâ7F'GW"À¢-	ıí-]­}İ]İ=ıí-]r}]]rm­²*½í}M-Â(	B}Í]-Â(	B}=}-Ì+²â"À¢%FW7F–ær'W6–æW72‡—÷F†W6W2F‡&÷Vv‚'V–ÆN(	6ÖV7W&^(	6ÆV&ââ"À¢-	=ıí-]}(i"ÍİÍ½Íİ½’İ­ı]Í]İ"(i"ıíM--]mM]İò(i"Í]İ½‚í]İ]İR­=â"À¢$‡—÷F†W6—2(i"Ö–æ–×VÒW‡W&–ÖVçB(i"Wf–FVæ6R(i"—f÷B÷W'6WfW&Râ"À¢-	İí-½’ıíM=­"-½í­í’½İí}İí’İ]íı]M]½İİí-Íââ"À¢$æWr&öGV7G2v—F‚†–v‚Ö&¶WBVæ6W'F–çG’â"À¢-	ÍİÍ½Íİâm}İ]ıííİ½’ıíM=­"„Õe’Íí=="ıİı-Â}İ}­í­}]--]İİ½’­íİ]}İ½’ıíM=­"â"À¢$âÕe6â&RÖ—7F¶Vâf÷"Æ÷r×VÆ—G’f–æÂ&öGV7Bâ"À¢²&v–ÆS"%ÒÀ¢’À¢Ò€¢&FW6–vâ×F†–æ¶–ær"À¢-	M}ÒİÍ½½]İR"À¢$FW6–vâF†–æ¶–ær"À¢$‡VÖâÖ6VçFW&VBW‡Æ÷&F–öâæB6öÇWF–öâg&Ö–ærâ"À¢$‡VÖâÖ6VçFW&VBW‡Æ÷&F–öâæB6öÇWF–öâg&Ö–ærâ"À¢$V×F†—¦R(i"FVf–æR(i"–FVFR(i"&÷F÷G—R(i"FW7C²Æö÷2&RW‡V7FVBâ"À¢$V×F†—¦R(i"FVf–æR(i"–FVFR(i"&÷F÷G—R(i"FW7C²Æö÷2&RW‡V7FVBâ"À¢-	İ]}-­òıí½]Í‚İ]í]íMÍí-Âıíİı-Âıí-]M]İRıí½Í}í--]½òâ"À¢$Ö&–wV÷W2&ö&ÆVÒ&WV—&–ærW6W"VæFW'7FæF–ærâ"À¢-	=]İ]mòM]’]rıí--­‚]}=½Í--‚ıíM--]mM]İ’İRí}M"m]İİí-Ââ"À¢$–FVF–öâv—F†÷WBFVÆ—fW'’æBWf–FVæ6R7&VFW2æò÷WF6öÖRâ"À¢²&v–ÆS"%ÒÀ¢’À¢Ò€¢'66Æ–ær"À¢-	Í-í-İS¢4fRÂÆU52ÂD"À¢%66Æ–æs¢4fRÂÆU52ÂD"À¢-	İ]-½Íİò­-ıíM]íMí"­ííMİm‚İ]­í½Í­R­íÍİBâ"À¢$æWWG&ÂÖöb&ö6†W2f÷"6ö÷&F–æF–ær×VÇF—ÆRFV×2â"À¢-
+İ]íİ}mò--]=‚Â]-]­-=²Âıí--­‚]}=½Í--‚í-İí’-ı}‚}½}]-òıâÍ]-íM­Râ"À¢%7G&FVw’Â&6†—FV7GW&RÂFVÆ—fW'’ÂæBfVVF&6²7–æ6‡&öæ—¦F–öâf&–W2'’g&ÖWv÷&²â"À¢-
+]½ÍİòÍ]m­íÍİMİò-ı}İİí-ÂÂ­í-í=âİ]½Í}ò=-İ-ÂıíRâ"À¢%&VÂ7&÷72×FVÒ6÷WÆ–ærF†B6ææ÷B&R&VÖ÷fVBÖ÷&R6–×Ç’â"À¢-	Í-İòÍ]-íM­=½-]"=]--=í=â½ímİí-Â‚İRı-½ı]"½½R­íÍİM²â"À¢$66Æ–ærg&ÖWv÷&²×Æ–f–W26ö×ÆW†—G’æBFöW2æ÷B&W—"vV²FV×2â"À¢²&v–ÆS"%ÒÀ¢’À¥Ó° ¦W‡÷'BG—RFV×ÆFRÒ°¢6ÇVs¢7G&–æs°¢F—FÆS¢&“°¢6FVv÷'“¢7G&–æs°¢W'÷6S¢&“°¢v†Vã¢&“°¢f–VÆG3¢&•µÓ°¢wV–Fæ6S¢&“°¢çF•GFW&ã¢&“°§Ó°¦6öç7BFbÒ°¢7G&FVw“¢°¢²'S¢-	­íİ-]­"‚]]İR"ÂVã¢$6öçFW‡BæBFV6—6–öâ"ÒÀ¢²'S¢-	ímM]Í½’]}=½Í-""ÂVã¢$W‡V7FVB÷WF6öÖR"ÒÀ¢²'S¢-	­-]’=ı]]"ÂVã¢%7V66W72ÖV7W&R"ÒÀ¢²'S¢-	-½M]½]b"ÂVã¢$÷væW""ÒÀ¢ÒÀ¢Æã¢°¢²'S¢-	=İm²ıí]­-"ÂVã¢%66÷Rò&÷VæF&–W2"ÒÀ¢²'S¢-	­íİ-í½Íİ½R-í}­‚‚M-²"ÂVã¢$Ö–ÆW7FöæW2æBFFW2"ÒÀ¢²'S¢-	}-Íí-‚"ÂVã¢$FWVæFVæ6–W2"ÒÀ¢²'S¢-
+­‚‚Míı=]İò"ÂVã¢%&—6·2æB77V×F–öç2"ÒÀ¢ÒÀ¢Æös¢°¢²'S¢$”B‚M-"ÂVã¢$”BæBFFR"ÒÀ¢²'S¢-	íıİR"ÂVã¢$FW67&—F–öâ"ÒÀ¢²'S¢-	-½M]½]b"ÂVã¢$÷væW""ÒÀ¢²'S¢-
+--=‚½]M=í]RM]--R"ÂVã¢%7FGW2æBæW‡B7F–öâ"ÒÀ¢ÒÀ¢ÖVWF–æs¢°¢²'S¢-
+m]½Â--]}‚"ÂVã¢$ÖVWF–ærW'÷6R"ÒÀ¢²'S¢-	ıíM=í-í-­"ÂVã¢%&W&F–öâ"ÒÀ¢²'S¢-	ıí-]-­‚-]Í]İİ½RÍ­‚"ÂVã¢$vVæFæBF–ÖV&÷†W2"ÒÀ¢²'S¢-
+]]İò‚M]--ò"ÂVã¢$FV6—6–öç2æB7F–öç2"ÒÀ¢ÒÀ¢6öçG&öÃ¢°¢²'S¢-	}í-½’ı½ÒòímMİR"ÂVã¢$&6VÆ–æRòW‡V7FF–öâ"ÒÀ¢²'S¢-
+M­""ÂVã¢$7GVÂ"ÒÀ¢²'S¢-	í-­½íİ]İR"ÂVã¢%f&–æ6R"ÒÀ¢²'S¢-
+]]İR‚-½M]½]b"ÂVã¢$FV6—6–öâæB÷væW""ÒÀ¢ÒÀ§Ó°¦6öç7BFV×ÆFRÒ€¢6ÇVs¢7G&–ærÀ¢'S¢7G&–ærÀ¢Vã¢7G&–ærÀ¢6FVv÷'“¢¶W–öbG—VöbFbÀ¢W'÷6U'S¢7G&–ærÀ¢W'÷6TVã¢7G&–ærÀ¢W‡G&¢&•µÒÒµÒÀ¢“¢FV×ÆFRÓâ‡°¢6ÇVrÀ¢F—FÆS¢²'RÂVâÒÀ¢6FVv÷'’À¢W'÷6S¢²'S¢W'÷6U'RÂVã¢W'÷6TVâÒÀ¢v†Vã¢°¢'S¢-	ıí½Í}=-RÂ­í=M-]M­"ıíÍí=]"ıİı-Â]]İRÂİ]íİ}í--Â=}-İ­í"½‚ıíM--]M-Â]}=½Í-"â"À¢Vã¢%W6Rv†VâF†R'F–f7B7W÷'G2FV6—6–öâÂÆ–vç2'F–6—çG2Â÷"fW&–f–W2â÷WF6öÖRâ"À¢ÒÀ¢f–VÆG3¢²ââçFe¶6FVv÷'•ÒÂââæW‡G&ÒÀ¢wV–Fæ6S¢°¢'S¢-	}ıí½İı-RMâ=í-İòÂMí--í}İí=âM½ò½]M=í]=â=ı-½]İ}]­í=âM]--òâ
+=M½-R]­m‚Â­í-í½Rİ}]=âİRÍ]İıí"â"À¢Vã¢$6ö×ÆWFRöæÇ’FòF†RFWF‚æVVFVBf÷"F†RæW‡BÖævVÖVçB7F–öââ&VÖ÷fR6V7F–öç2F†B6†ævRæ÷F†–ærâ"À¢ÒÀ¢çF•GFW&ã¢°¢'S¢-	Mí­=Í]İ"íİí-½ı]-òM‚í-}-İí-‚ÂİâİRıí½Í}=]-ò"]]İıRâ"À¢Vã¢%F†RFö7VÖVçB—2Ö–çF–æVBf÷"&W÷'F–ær'WBæWfW"W6VB–âFV6—6–öç2â"À¢ÒÀ§Ò“° ¦W‡÷'B6öç7BFV×ÆFW3¢FV×ÆFUµÒÒ°¢FV×ÆFR€¢'&ö¦V7BÖ6†'FW""À¢-
+=-"ıí]­-"À¢%&ö¦V7B6†'FW""À¢'7G&FVw’"À¢-
+í=½í--Âıí½İíÍí}òÂm]½Â‚=İm²ıí]­-â"À¢$Æ–vâWF†÷&—G’ÂW'÷6RÂæB&ö¦V7B&÷VæF&–W2â"À¢°¢²'S¢%66÷R–âò÷WB"ÂVã¢%66÷R–âò÷WB"ÒÀ¢²'S¢-	íMm]-İ½’Mı}íÒ"ÂVã¢$'VFvWBVçfVÆ÷R"ÒÀ¢ÒÀ¢’À¢FV×ÆFR€¢&'W6–æW72Ö66RÖÆ—FR"À¢$'W6–æW7266RÆ—FR"À¢$'W6–æW7266RÆ—FR"À¢'7G&FVw’"À¢-	ıí-]-ÂÂ-í"½‚İm--İ-]-m’â"À¢$6†V6²v†WF†W"F†R–æ—F–F—fRFW6W'fW2–çfW7FÖVçBâ"À¢’À¢FV×ÆFR€¢&'W6–æW72Ö66R"À¢-	}İ]İ­]"À¢$'W6–æW7266R"À¢'7G&FVw’"À¢-
+-İ-Â-İ-²Â-½=íM²Â}--²‚­‚â"À¢$6ö×&R÷F–öç2Â&VæVf—G2Â6÷7G2ÂæB&—6·2â"À¢°¢°¢'S¢-	íım‚‚åbõ$ô’ı‚=Í]-İí-‚"À¢Vã¢$÷F–öç2æBåbõ$ô’v†W&RÆ–6&ÆR"À¢ÒÀ¢ÒÀ¢’À¢FV×ÆFR€¢'&ö¦V7BÖ'&–Vb"À¢-	Bıí]­-"À¢%&ö¦V7B'&–Vb"À¢'7G&FVw’"À¢-	M-Â­íÍİMR­-­’í’­íİ-]­"â"À¢$v—fRF†RFVÒ6öæ6—6R6†&VB6öçFW‡Bâ"À¢’À¢FV×ÆFR€¢'&ö¦V7B×Æâ"À¢-	ı½Òıí]­-"À¢%&ö¦V7BÆâ"À¢'Æâ"À¢-	í­]Mİ-Âıííıí½İ]İò‚­íİ-í½òâ"À¢%Væ–g’F†RFVÆ—fW'’æB6öçG&öÂ&ö6‚â"À¢’À¢FV×ÆFR€¢'66÷R×7FFVÖVçB"À¢-	íıİR=İbıí]­-"À¢%66÷R7FFVÖVçB"À¢'Æâ"À¢-
+M]½-Â=İm²‚­½í}]İòı-İ½Í‚â"À¢$Ö¶R&÷VæF&–W2æBW†6ÇW6–öç2W‡Æ–6—Bâ"À¢’À¢FV×ÆFR€¢'v'2"À¢%t%2"À¢%v÷&²'&V¶F÷vâ7G'V7GW&R"À¢'Æâ"À¢-	M]­íÍıí}í--ÂRí=½í-İİí=âí­Íí"İ]}=½Í--²ıí--­‚‚í}Rı­]-²â"À¢$FV6ö×÷6RRöbw&VVB66÷R–çFòFVÆ—fW&&ÆW2æBv÷&²6¶vW2â"À¢’À¢FV×ÆFR€¢'&WV—&VÖVçG2×&Vv—7FW""À¢-
+]]--]í-İ’"À¢%&WV—&VÖVçG2&Vv—7FW""À¢&Æör"À¢-
+-ı}-Â-]í-İò-í}İ­íÂÂıí-]-íÂ‚ıí-]­í’â"À¢$6öææV7B&WV—&VÖVçG2Fò6÷W&6RÂ&–÷&—G’ÂæBfÆ–FF–öââ"À¢’À¢FV×ÆFR€¢&&6¶ÆörÖ—FVÒ"À¢$&6¶Æör—FVÒ"À¢$&6¶Æör—FVÒ"À¢&Æör"À¢-
+MíÍ=½í--Â]Mİm2í-²Mí--í}İâıİâM½ò]]İòâ"À¢$FVf–æRv÷&²—FVÒ6ÆV&Ç’Væ÷Vv‚f÷"FV6—6–öââ"À¢’À¢FV×ÆFR€¢'W6W"×7F÷'’"À¢%W6W"7F÷'’"À¢%W6W"7F÷'’"À¢'7G&FVw’"À¢-	}M­í--Âıí½Í}í--]½òÂıí-]İí-Â‚m]İİí-Â]rıíMÍ]İ²-]í-İòMíÍ-íÂâ"À¢$6GW&RW6W"ÂæVVBÂæBfÇVRv—F†÷WBÆWGF–ærF†Rf÷&ÖB&WÆ6RF†R&WV—&VÖVçBâ"À¢’À¢FV×ÆFR€¢&66WFæ6RÖ7&—FW&–"À¢-	­-]‚ıÍ­‚"À¢$66WFæ6R7&—FW&–"À¢&6öçG&öÂ"À¢-
+M]½-Âıí-]­2]}=½Í--íMİí}İ}İí’â"À¢$Ö¶R÷WF6öÖRfW&–f–6F–öâVæÖ&–wV÷W2â"À¢’À¢FV×ÆFR€¢&FVf–æ—F–öâ×&VG’"À¢$FVf–æ—F–öâöb&VG’"À¢$FVf–æ—F–öâöb&VG’"À¢&6öçG&öÂ"À¢-
+=-İí--ÂÍİÍ½Íİ½R=½í-òM½òİ}½í-²â"À¢%6WBÖ–æ–×VÒ6öæF—F–öç2f÷"7F'F–ærv÷&²â"À¢’À¢FV×ÆFR€¢&FVf–æ—F–öâÖFöæR"À¢$FVf–æ—F–öâöbFöæR"À¢$FVf–æ—F–öâöbFöæR"À¢&6öçG&öÂ"À¢-
+=-İí--Âí’=í-]İÂ­}]--}-]İİí’í-²â"À¢%6WB6†&VBVÆ—G’&"f÷"6ö×ÆWFVBv÷&²â"À¢’À¢FV×ÆFR€¢&Ö–ÆW7FöæR×Æâ"À¢-	ı½Ò­íİ-í½Íİ½R-í}]¢"À¢$Ö–ÆW7FöæRÆâ"À¢'Æâ"À¢-	ıí­}-Â}İ}Í½R-í}­‚]}=½Í--‚]]İ’â"À¢%6†÷rÖVæ–ævgVÂ÷WF6öÖRæBFV6—6–öâö–çG2â"À¢’À¢FV×ÆFR€¢'&öFÖ"À¢%&öFÖ"À¢%&ö¦V7B&öFÖ"À¢'Æâ"À¢-
+-ı}-Â-]Í²Â}Í]Í½R]}=½Í--²‚-½ı=­‚-â-]Í]İ‚â"À¢$6öææV7BF†VÖW2Â÷WF6öÖW2ÂæB&VÆV6W2÷fW"F–ÖRâ"À¢’À¢FV×ÆFR€¢'&VÆV6R×Æâ"À¢-	ı½Ò]½}"À¢%&VÆV6RÆâ"À¢'Æâ"À¢-
+í=½í--Â=İm²-½ı=­Â=í-í-İí-Â‚]]İRâ}ı=­Râ"À¢$Æ–vâ&VÆV6R66÷RÂ&VF–æW72ÂæBvòöæòÖvòâ"À¢’À¢FV×ÆFR€¢'7&–çBÖvöÂ"À¢-
+m]½Âıİ-"À¢%7&–çBvöÂ"À¢'7G&FVw’"À¢-	M-Âıİ-2]Mİ=âm]½Â-Í]-âİíİ]-ı}İİ½Rí}Rİ½]Í]İ-í"â"À¢$v—fR7&–çBöæRvöÂ&F†W"F†âVç&VÆFVB—FV×2â"À¢’À¢FV×ÆFR€¢'&—6²×&Vv—7FW""À¢-
+]]-­í""À¢%&—6²&Vv—7FW""À¢&Æör"À¢-
+=ı-½ı-Âİ]íı]M]½İİí-ıÍ‚Mâ-í=âÂ­¢íİ‚-İ="ıí½]ÍÍ‚â"À¢$ÖævRVæ6W'F–çF–W2&Vf÷&RF†W’&V6öÖR—77VW2â"À¢’À¢FV×ÆFR€¢'&–BÖÆör"À¢%$”BÆör"À¢%$”BÆör"À¢&Æör"À¢-	-]-‚­‚ÂMíı=]İòÂıí½]Í²‚}-Íí-‚"]Mİí’­íİ-í½Íİí’-í}­Râ"À¢$Ö–çF–â&—6·2Â77V×F–öç2Â—77VW2ÂæBFWVæFVæ6–W2–âöæR6öçG&öÂö–çBâ"À¢’À¢FV×ÆFR€¢&—77VRÖÆör"À¢-	m=İ²ıí½]Â"À¢$—77VRÆör"À¢&Æör"À¢-	İ}İ}-ÂM]--òıâ=mR-í}İ­Âıí½]ÍÂâ"À¢$76–vâ7F–öâf÷"&ö&ÆV×2Ç&VG’ö67W'&–ærâ"À¢’À¢FV×ÆFR€¢&77V×F–öâÖÆör"À¢-	m=İ²Míı=]İ’"À¢$77V×F–öâÆör"À¢&Æör"À¢-	ıí-]ı-Â=--]mM]İòÂİ­í-í½RM]m-òı½Òâ"À¢%FW7BF†R77V×F–öç2F†RÆâ&VÆ–W2öââ"À¢’À¢FV×ÆFR€¢&FWVæFVæ7’ÖÆör"À¢-	m=İ²}-Íí-]’"À¢$FWVæFVæ7’Æör"À¢&Æör"À¢-
+=ı-½ı-Â-İ]İÍ‚‚-İ=-]İİÍ‚½í­=íÍ‚-ı}ıÍ‚â"À¢$ÖævRW‡FW&æÂæB–çFW&æÂ&Æö6¶–ær&VÆF–öç6†—2â"À¢’À¢FV×ÆFR€¢&FV6—6–öâÖÆör"À¢-	m=İ²]]İ’"À¢$FV6—6–öâÆör"À¢&Æör"À¢-
+í]İ-Â­íİ-]­"‚ıí½]M--ò­½í}]-½R]]İ’â"À¢%&W6W'fR6öçFW‡BæB6öç6WVVæ6W2öb¶W’FV6—6–öç2â"À¢’À¢FV×ÆFR€¢'7F¶V†öÆFW"×&Vv—7FW""À¢-
+]]-}İ-]]í-İİ½R-ííÒ"À¢%7F¶V†öÆFW"&Vv—7FW""À¢&Æör"À¢-	ıíİı-ÂímMİò‚İ=mİ=â-í-½]}İİí-Â=}-İ­í"â"À¢%VæFW'7FæB7F¶V†öÆFW"W‡V7FF–öç2æBæVVFVBVævvVÖVçBâ"À¢’À¢FV×ÆFR€¢'7F¶V†öÆFW"ÖÖG&—‚"À¢-	Í-m}İ-]]í-İİ½R-ííÒ"À¢%7F¶V†öÆFW"ÖG&—‚"À¢'7G&FVw’"À¢-
+ı½İí--Â­íÍÍ=İ­mâ=}-íÂ-½ıİò‚}İ-]]í-İİí-‚â"À¢%Æâ&÷÷'F–öæFR6öÖ×Væ–6F–öâ'’–æfÇVVæ6RæB–çFW&W7Bâ"À¢’À¢FV×ÆFR€¢'&6’"À¢%$4’"À¢%$4’"À¢&6öçG&öÂ"À¢-
+İı-Âİ]íMİí}İ}İí-Âí--]---]İİí-‚}]}=½Í--²ıí--­‚‚]]İòâ"À¢%&VÖ÷fRÖ&–wV—G’–â66÷VçF&–Æ—G’f÷"FVÆ—fW&&ÆW2æBFV6—6–öç2â"À¢’À¢FV×ÆFR€¢&6öÖ×Væ–6F–öâ×Æâ"À¢-	ı½Ò­íÍÍ=İ­m’"À¢$6öÖ×Væ–6F–öâÆâ"À¢'Æâ"À¢-	íı]M]½-Â­íÍ2Â}}]ÂÂ}-âÂ­í=M‚­]Âíí]-òâ"À¢$FVf–æRv†òæVVG2v†B–æf÷&ÖF–öâÂv‡’Âv†VâÂæBg&öÒv†öÒâ"À¢’À¢FV×ÆFR€¢&ÖVWF–ærÖvVæF"À¢-	ıí-]-­--]}‚"À¢$ÖVWF–ærvVæF"À¢&ÖVWF–ær"À¢-	ıíM=í-í--Â]]İR½‚İ]íİ}mâıİ½Â]}=½Í--íÂâ"À¢%&W&RFV6—6–öâ÷"Æ–væÖVçB6W76–öâv—F‚6ÆV"÷WGWBâ"À¢’À¢FV×ÆFR€¢&ÖVWF–ærÖÖ–çWFW2"À¢-	ıí-í­í²--]}‚"À¢$ÖVWF–ærÖ–çWFW2"À¢&ÖVWF–ær"À¢-	}M­í--Â]]İòÂM]--ò‚-½M]½Ím]"â"À¢%&V6÷&BFV6—6–öç2Â7F–öç2ÂæB÷væW'2â"À¢’À¢FV×ÆFR€¢&¶–6¶öfb"À¢$¶–6¶öfb"À¢$¶–6¶öfb"À¢&ÖVWF–ær"À¢-
+İ]íİ}í--Âm]½ÂÂí½‚Âıííí-²‚½m’2â"À¢$Æ–vâW'÷6RÂ&öÆW2Âv’öbv÷&¶–ærÂæBæW‡B7FWâ"À¢’À¢FV×ÆFR€¢'7FGW2×&W÷'B"À¢-
+--=İí-}""À¢%7FGW2&W÷'B"À¢&6öçG&öÂ"À¢-
+Mí­=í--Â}İ-]]í-İİ½R-ííİ²İ}Í]İ]İıR‚]]İıRâ"À¢$fö7W27F¶V†öÆFW'2öâ6†ævW2æBFV6—6–öç2â"À¢’À¢FV×ÆFR€¢'7FVW&–ær×6²"À¢-	ı­]"M½ò=­í-íMı]=â­íÍ-]-"À¢%7FVW&–ær6öÖÖ—GFVR6²"À¢&6öçG&öÂ"À¢-	ıíM=í-í--Â=ı-½]İ}]­R]]İò]ríı]míİİí=â=Íâ"À¢%&W&Rv÷fW&ææ6RFV6—6–öç2v—F†÷WB÷W&F–öæÂæö—6Râ"À¢’À¢FV×ÆFR€¢&6†ævR×&WVW7B"À¢-	}ıíİ}Í]İ]İR"À¢$6†ævR&WVW7B"À¢&6öçG&öÂ"À¢-	ím]İ-Âıí½]M--ò}Í]İ]İòMâí=½í-İòâ"À¢$76W726†ævR–×7B&Vf÷&R&÷fÂâ"À¢’À¢FV×ÆFR€¢&6†ævRÖÆör"À¢-	m=İ²}Í]İ]İ’"À¢$6†ævRÆör"À¢&Æör"À¢-
+í]İ-Â-íâ}Í]İ]İ’=İbıí]­-‚}í-í=âı½İâ"À¢%&W6W'fR66÷RæB&6VÆ–æR6†ævR†—7F÷'’â"À¢’À¢FV×ÆFR€¢'VÆ—G’×Æâ"À¢-	ı½Ò­}]--"À¢%VÆ—G’Æâ"À¢'Æâ"À¢-	íı]M]½-Âm]½‚­}]--Âıí-]­‚‚=½í-òıÍ­‚â"À¢$FVf–æRVÆ—G’vöÇ2Â6†V6·2ÂæB66WFæ6Râ"À¢’À¢FV×ÆFR€¢&66WFæ6RÖ6†V6¶Æ—7B"À¢-
+}]¢İ½"ıÍ­‚"À¢%FW7Bò66WFæ6R6†V6¶Æ—7B"À¢&6öçG&öÂ"À¢-	İRıíı=--Âıí-]ı]Í½R=½í-ò=í-í-İí-‚â"À¢$fö–BÖ—76–ærfW&–f–&ÆR&VF–æW726öæF—F–öç2â"À¢’À¢FV×ÆFR€¢&66—G’×Æâ"À¢-	ı½ÒMí-=ıİí’Ííİí-‚"À¢$66—G’Æâ"À¢'Æâ"À¢-
+íıí---ÂMí-=ıİ=âÍíİí-Âı½İí-í’í-í’â"À¢$ÖF6‚f–Æ&ÆR66—G’FòÆææVBv÷&²â"À¢’À¢FV×ÆFR€¢'&W6÷W&6R×Æâ"À¢-
+]=İ½’ı½Ò"À¢%&W6÷W&6RÆâ"À¢'Æâ"À¢-	-½ı--Âı]]==}­2Âıí]½²‚­íİM½­-²ı]M]½]İò]=í"â"À¢$W‡÷6R÷fW&ÆöBÂv2ÂæBÆÆö6F–öâ6öæfÆ–7G2â"À¢’À¢FV×ÆFR€¢&'VFvWB×G&6¶W""À¢-
+-]­]íMm]-"À¢$'VFvWBG&6¶W""À¢&6öçG&öÂ"À¢-
+-İ--Âı½ÒÂM­"Âíı}-]½Í--‚ıí=İírâ"À¢$6ö×&R&6VÆ–æRÂ7GVÂÂ6öÖÖ—GFVBÂæBf÷&V67Bâ"À¢’À¢FV×ÆFR€¢'fVæF÷"ÖWfÇVF–öâ"À¢-	ím]İ­ıí--­"À¢%fVæF÷"WfÇVF–öâ"À¢&6öçG&öÂ"À¢-
+-İ-Âıí--­í"ıâı-İ½Â­-]ıÂ‚­Ââ"À¢$6ö×&RfVæF÷'2v–ç7BW‡Æ–6—B7&—FW&–æB&—6·2â"À¢’À¢FV×ÆFR€¢'&ö7W&VÖVçB×G&6¶W""À¢-
+-]­]}­=ıí¢"À¢%&ö7W&VÖVçBG&6¶W""À¢&Æör"À¢-
+=ı-½ı-Â]}=½Í--Í‚ıí--­‚Âí­Í‚‚}-Íí-ıÍ‚ıí--­í"â"À¢$ÖævRfVæF÷"FVÆ—fW&&ÆW2ÂFFW2ÂæBFWVæFVæ6–W2â"À¢’À¢FV×ÆFR€¢'&WG&÷7V7F—fR"À¢-
+]-íı]­--"À¢%&WG&÷7V7F—fR"À¢&ÖVWF–ær"À¢-	-½-ÂíMİâİM-ıí-]ı]Í½R=½=}]İòıííí-²â"À¢$6†ö÷6RöæR÷"GvòFW7F&ÆR–×&÷fVÖVçG2FòF†Rv’öbv÷&¶–ærâ"À¢’À¢FV×ÆFR€¢&ÆW76öç2ÖÆV&æVB"À¢-	}-½]}İİ½R=í­‚"À¢$ÆW76öç2ÆV&æVB"À¢'7G&FVw’"À¢-	ı]---Âíı½""]­íÍ]İMmâM½ò½]M=í]=â­íİ-]­-â"À¢%GW&âW‡W&–Væ6R–çFò&V6öÖÖVæFF–öâf÷"F†RæW‡B6öçFW‡Bâ"À¢’À¢FV×ÆFR€¢'÷7FÖ÷'FVÒ"À¢%÷7FÖ÷'FVÒ"À¢%÷7FÖ÷'FVÒ"À¢&ÖVWF–ær"À¢-	]rí-İ]İ’}í-Âıí½]M--òÂı}İ²‚ı]Mí--]İRıí--í]İòâ"À¢%&Wf–Wr–×7BÂ6W6W2ÂæB&WfVçF–öâv—F†÷WB&ÆÖRâ"À¢’À¢FV×ÆFR€¢&†æF÷fW""À¢-
+}]¢İ½"ı]]M}‚"À¢$†æF÷fW"6†V6¶Æ—7B"À¢&6öçG&öÂ"À¢-	ı]]M-Âí--]---]İİí-ÂÂ}İİòÂMí-=ı²‚İ]}-]İİ½R-íıí²â"À¢%G&ç6fW"÷væW'6†—Â¶æ÷vÆVFvRÂ66W72ÂæBVç&W6öÇfVB—FV×2â"À¢’À¢FV×ÆFR€¢&6Æ÷7W&R×&W÷'B"À¢-	í-}"â}­½-‚"À¢$6Æ÷7W&R&W÷'B"À¢&6öçG&öÂ"À¢-	}M­í--ÂıÍ­2Âıí­}-]½‚‚M½Íİ]]R}Í]]İR-½=íBâ"À¢%&V6÷&B66WFæ6RÂW&f÷&Öæ6RÂæBgWGW&R&VæVf—G2ÖV7W&VÖVçBâ"À¢’À¢FV×ÆFR€¢&6Æ÷7W&RÖ6†V6¶Æ—7B"À¢-
+}]¢İ½"}­½-ò"À¢%&ö¦V7B6Æ÷7W&R6†V6¶Æ—7B"À¢&6öçG&öÂ"À¢-	}­½-ÂMí=í-í²ÂMİİ²Â]-²Âı]]M}2í--]---]İİí-‚‚}-½]}İİ½R=í­‚â"À¢$6Æ÷6R6öçG&7G2Âf–ææ6RÂ&6†—fW2Â†æF÷fW"ÂæBÆW76öç2â"À¢’À¥Ó° ¦W‡÷'BG—RÆ–&öö²Ò°¢6ÇVs¢7G&–æs°¢F—FÆS¢&“°¢F–væ÷6S¢&•µÓ°¢–ÖÖVF–FS¢&•µÓ°¢æW‡C¢&•µÓ°¢7F&–Æ—¦S¢&•µÓ°¢&WfVçC¢&•µÓ°¢ÖWG&–73¢&•µÓ°¢çF•GFW&ç3¢&•µÓ°§Ó°¦6öç7B"Ò€¢6ÇVs¢7G&–ærÀ¢'S¢7G&–ærÀ¢Vã¢7G&–ærÀ¢6–væÅ'S¢7G&–ærÀ¢6–væÄVã¢7G&–ærÀ¢7F–öå'S¢7G&–ærÀ¢7F–öäVã¢7G&–ærÀ¢ÖWG&–5'S¢7G&–ærÀ¢ÖWG&–4Vã¢7G&–ærÀ¢“¢Æ–&öö²Óâ‡°¢6ÇVrÀ¢F—FÆS¢²'RÂVâÒÀ¢F–væ÷6S¢°¢²'S¢6–væÅ'RÂVã¢6–væÄVâÒÀ¢°¢'S¢-	í-M]½-Rİ½íM]Í½’M­"í"İ-]ı]-m‚‚İM-Rí=İ}]İR-]Í²â"À¢Vã¢%6W&FRö'6W'fVBf7Bg&öÒ–çFW'&WFF–öâæB–FVçF–g’F†R7—7FVÒ6öç7G&–çBâ"À¢ÒÀ¢ÒÀ¢–ÖÖVF–FS¢°¢²'S¢7F–öå'RÂVã¢7F–öäVâÒÀ¢°¢'S¢-	İ}İ}Í-RíMİí=â-½M]½Ím½]M=í]=â]]İò‚í¢ıí-]­‚â"À¢Vã¢$76–vâöæR÷væW"f÷"F†RæW‡BFV6—6–öâæB&Wf–WrFFRâ"À¢ÒÀ¢ÒÀ¢æW‡C¢°¢°¢'S¢-	"½]M=í’í}’m­²í]-RÍİÍ½Íİ½RMİİ½RÂı]]ı½İ=-R}-íİ=-=âí-2‚íí-Rıí½]M--òâ"À¢Vã¢$–âF†RæW‡Bv÷&¶–ær7–6ÆRÂ6öÆÆV7BÖ–æ–×VÒWf–FVæ6RÂ&WÆâffV7FVBv÷&²ÂæB6öÖ×Væ–6FR–×7Bâ"À¢ÒÀ¢ÒÀ¢7F&–Æ—¦S¢°¢°¢'S¢-
+í­--R­--İ=âí-2ÂM]½-Rıí-]-²‚}-Íí-‚ı-İ½Í‚Â-í-İí--R-Â­íİ-í½òâ"À¢Vã¢%&VGV6R7F—fRv÷&²ÂW‡÷6R&–÷&—F–W2æBFWVæFVæ6–W2ÂæB&W7F÷&R6öçG&öÂ6FVæ6Râ"À¢ÒÀ¢ÒÀ¢&WfVçC¢°¢°¢'S¢-	Mí-Í-Rİİ]R=½í-R-½-İòÂ-½M]½Ím‚]==½ıİ½’í}í(	BİRİí-½’í-}"M‚í-}-â"À¢Vã¢$FBâV&Ç’G&–vvW"Â÷væW"ÂæB&VwVÆ"&Wf–W~(	Fæ÷Bæ÷F†W"&W÷'Bf÷"—G2÷vâ6¶Râ"À¢ÒÀ¢ÒÀ¢ÖWG&–73¢°¢²'S¢ÖWG&–5'RÂVã¢ÖWG&–4VâÒÀ¢°¢'S¢-	-í}"½í­í-í¢‚-]ÍòMâ]]İòâ"À¢Vã¢$&Æö6¶W"vRæBF–ÖRFòFV6—6–öââ"À¢ÒÀ¢ÒÀ¢çF•GFW&ç3¢°¢°¢'S¢-	í]-Âİí-=âM-2Mâİ½}ı}Ò‚­íÍıíÍí"â"À¢Vã¢%&öÖ—6RæWrFFR&Vf÷&RæÇ—¦–ær6W6W2æBG&FRÖöfg2â"À¢ÒÀ¢°¢'S¢-
+=-]½}--Âı½½]½Íİ=âí-2Â}-í²í}M-Â-MÍí-Â­íí-‚â"À¢Vã¢$–æ7&V6R&ÆÆVÂv÷&²Fò7&VFRâV&æ6Röb7VVBâ"À¢ÒÀ¢ÒÀ§Ò“° ¦W‡÷'B6öç7BÆ–&öö·3¢Æ–&ööµµÒÒ°¢"€¢'&ö¦V7BÖÆFR"À¢-	ıí]­"íı}M½-]""À¢%&ö¦V7B—2ÆFR"À¢-	­íİ-í½Íİ½R-í}­‚-]ÍİâM-=í-ó²­-}]­òm]ıí}­İRıİâ"À¢$Ö–ÆW7FöæW2Ö÷fR&WVFVFÇ“²F†R7&—F–6Â6†–â—2Væ6ÆV"â"À¢-	}Ííí}Í-Rİí-½Ríı}-]½Í--Âı]]}--R­-}]­’ı=-Â‚í-M]½-R=-İÍ=â}M]m­2í"=mRıíİ]İİí’â"À¢$g&VW¦RæWr6öÖÖ—FÖVçG2Â&V6Æ7VÆFRF†R7&—F–6ÂF‚ÂæB6W&FR&V6÷fW&&ÆRg&öÒ7Væ²FVÆ’â"À¢-	ıí=İír­íİ-í½Íİí’-í}­‚‚í’-]Í]İİí’]}]"â"À¢$Ö–ÆW7FöæRf÷&V67BæBF÷FÂfÆöBâ"À¢’À¢"€¢&f—†VBÖFVFÆ–æR"À¢-	M]M½Òİ]½Í}òM-İ=-Â"À¢$FVFÆ–æR6ææ÷BÖ÷fR"À¢-	M--İ]İRM­í-İÂİâ=İm²ıí]­-‚Míı=]İòâ­}]--RİRı]]Íí-]İ²â"À¢%F†RFFR—2W‡FW&æÆÇ’f—†VB'WB66÷RæBVÆ—G’77V×F–öç2&VÖ–âVæ6†ævVBâ"À¢-	}M­=-RM-2­¢í=İ}]İS²ı]M½ím-R-İ-²ıâí­Í2í"Âıí½]Mí--]½Íİí-‚Â]=Â‚ıİı-â­â"À¢%G&VBF†RFFR26öç7G&–çC²öffW"÷F–öç27&÷7266÷RÂ6WVVæ6RÂ&W6÷W&6W2ÂæB&—6²66WFæ6Râ"À¢-	M=ÍÍıí-í­Íí"‚­-]‚=í-í-İí-‚â"À¢%66÷R'W&â×WæB&VF–æW727&—FW&–â"À¢’À¢"€¢'66÷RÖw&÷wF‚"À¢-	=İm²ıí]­-ıí-íıİİâıí-ò"À¢%66÷R¶VW2w&÷v–ær"À¢-	İí-½R}ıí²ıí-=ıí"]rím]İ­‚-½ıİò‚]]İòí­½í}]İ‚M==í’í-²â"À¢%&WVW7G2VçFW"v—F†÷WB–×7B76W76ÖVçB÷"&VÖ÷fÂFV6—6–öç2â"À¢-
+í}M-R=İm2}Í]İ]İ“¢­mMíRMí-½]İRıí½=}]"ím]İ­2-½ıİò‚­íÍı]İ=í’­íÍıíÍâ"À¢$7&VFR6†ævR&÷VæF'“¢WfW'’FF—F–öâvWG2–×7BæÇ—6—2æB6ö×Vç6F–ærG&FRÖöfbâ"À¢-	Mí-½]İİ½’‚­½í}İİ½’í­Âí"Âí-­½íİ]İRí­í"â"À¢%66÷RFFVB÷&VÖ÷fVBæB66†VGVÆRf&–æ6Râ"À¢’À¢"€¢'Væ6ÆV"×&WV—&VÖVçG2"À¢-
+-]í-İòİ]ıİ²"À¢%&WV—&VÖVçG2&RVæ6ÆV""À¢-	­íÍİMıí"â]]İ‚ÂİRıíİÍòıí½Í}í--]½òÂ}Í]Íí=â]}=½Í--½‚=½í-’ıÍ­‚â"À¢%F†RFVÒFV&FW26öÇWF–öç2v—F†÷WB6†&VBW6W"Â÷WF6öÖRÂ÷"66WFæ6Rf–Wrâ"À¢-	-½]-RÍ½’­í-İİ½’-íıí‚ıí-]M-R­íí-­’m­²½]Mí-İò‚ıí-]­‚â"À¢$6†ö÷6RF†R&—6¶–W7BVW7F–öâæB'Vâ6†÷'BF—66÷fW'’÷fÆ–FF–öâÆö÷â"À¢$77V×F–öâfÆ–FF–öâ&FRâ"À¢$77V×F–öâfÆ–FF–öâ&FRâ"À¢’À¢"€¢&6†æv–ær×&–÷&—F–W2"À¢-	}İ-]]í-İİò-ííİÍ]İı]"ıí-]-²"À¢%7F¶V†öÆFW"6†ævW2&–÷&—F–W2"À¢-	ıí-]"Í]İı]-ò}RÂ}]Â­íÍİMÍím]"}-]-Âí-2â"À¢%&–÷&—G’6†ævW2f7FW"F†âF†RFVÒ6âf–æ—6‚v÷&²â"À¢-
+í=½=-R-Âıİı-ò]]İ’‚m]İ2ı]]­½í}]İó²İí-½Rí}İ½Rİ½]Í]İ-²Mí½mİ²ı-İâ-½-]İı-Â-]­=Râ"À¢$w&VRFV6—6–öâ6FVæ6RæB7v—F6†–ær6÷7C²æWrW&vVçB—FV×2W‡Æ–6—FÇ’F—7Æ6R7W'&VçBv÷&²â"À¢-	Mí½òı]½-İ’‚í­Âí]İİí’í-²â"À¢$–çFW''WB&FRæB&æFöæVBv÷&²â"À¢’À¢"€¢'7öç6÷"×Væf–Æ&ÆR"À¢-
+ıíİíİ]Mí-=ı]Ò"À¢%7öç6÷"Væf–Æ&ÆR"À¢-
+]]İò-½]íMı"}Míı=-Í½Rí-­½íİ]İò‚í-í-ò]rí--]---]İİí=â-½M]½Ímâ"À¢$FV6—6–öç2W†6VVBFöÆW&æ6RæBÆ6²â66÷VçF&ÆR÷væW"â"À¢-
+í]-Rı­]"]]İó¢-íıíÂ-İ-²Â]­íÍ]İMmòÂí¢‚ıí½]M--R]}M]--òâ"À¢%&W&RFV6—6–öâ6³¢VW7F–öâÂ÷F–öç2Â&V6öÖÖVæFF–öâÂFVFÆ–æRÂ6öç6WVVæ6RöbæòFV6—6–öââ"À¢$FV6—6–öâÆFVæ7’â"À¢$FV6—6–öâÆFVæ7’â"À¢’À¢"€¢'FVÒÖ÷fW&ÆöFVB"À¢-	­íÍİMı]]==m]İ"À¢%FVÒ÷fW&ÆöFVB"À¢-
+ı]M]½İİòİ==}­ı]-½]"Mí-=ıİ=âÍíİí-ÂÂt•-"Â-]Íòm­½=]=M]-òâ"À¢$ÆÆö6F–öâW†6VVG266—G’Ât•w&÷w2ÂæB7–6ÆRF–ÖRFWFW&–÷&FW2â"À¢-	í-İí--R-"İí-í’í-²‚}-]-RıİÍ-R}-Ât•â"À¢%7F÷7F'F–ærv÷&²æBf–æ—6‚÷"&VÖ÷fR'Böbt•â"À¢%t•Âv÷&²—FVÒvRÂ÷fW'F–ÖRG&VæBâ"À¢%t•Âv÷&²—FVÒvRÂ÷fW'F–ÖRG&VæBâ"À¢’À¢"€¢&¶W’×W'6öâ"À¢-	­½í}]-í’}]½í-]¢İ]Mí-=ı]Ò"À¢$¶W’W'6öâVæf–Æ&ÆR"À¢-	}İİò½‚ıí½İíÍí}òí=½í-İòí]Mí-í}]İ²"íMİí’-í}­Râ"À¢$¶æ÷vÆVFvR÷"&÷fÂ—26öæ6VçG&FVB–âöæRW'6öââ"À¢-
+}M]½-R½í­=í=â‚İ]½í­=í=âí-3²İ}İ}Í-R-]Í]İİí=â-½M]½Ím]]İòâ"À¢%6W&FR&Æö6¶–ærg&öÒæöâÖ&Æö6¶–ærv÷&³²76–vâFV×÷&'’FV6—6–öâ÷væW"â"À¢-
+M­-íİ]}Í]İÍí-‚‚-í}"½í­í-­‚â"À¢$'W2f7F÷"æB&Æö6¶VBvRâ"À¢’À¢"€¢&Ö—76VBÖ6öÖÖ—FÖVçG2"À¢-	­íÍİMİR-½ıí½İı]"íı}-]½Í--"À¢%FVÒÖ—76W26öÖÖ—FÖVçG2"À¢-	ı]]İíİ]}-]İİí’í-²ıí--íı]-òÂİâı½İí-İRİRÍ]İı]-òâ"À¢$6''’Ö÷fW"&WVG2v†–ÆRÆææ–ær&VÖ–ç2Væ6†ævVBâ"À¢-
+-İ-RıíÂMí-=ıİ=âÍíİí-ÂÂí}İ½R}M}‚‚}Í]İ½]Í]İ-í#²=Í]İÍ-Rı­]"‚í­Âíı}-]½Í-"â"À¢$6ö×&RFVÖæBÂ66—G’Â–çFW''WG2ÂæB—FVÒ6—¦S²&VGV6R&F6‚æB6öÖÖ—FÖVçBâ"À¢-	İMmİí-Âíı}-]½Í-"‚}Í]í}]=âİ½]Í]İ-â"À¢$6öÖÖ—FÖVçB&VÆ–&–Æ—G’æB—FVÒ6—¦Râ"À¢’À¢"€¢'FöòÖ×V6‚×v—"À¢-
+½­íÂÍİí=ât•"À¢%Föò×V6‚t•"À¢-	Íİí=âİ}-âÂÍ½â}-]]İã²-í}"İ]}-]İİí’í-²-"â"À¢$×V6‚—27F'FVBÂÆ—GFÆR—2f–æ—6†VC²v–ær&—6W2â"À¢-	-]Í]İİâİ}Í-R½Í-²t•Âí­]Mİ-R­íÍİM2-í­=2-]Rİ½]Í]İ-í"‚}ı]--R­½-½Rí}]]M‚â"À¢%FV×÷&&–Ç’Æ÷vW"t•Æ–Ö—G2Â7v&ÒöâöÆFW7B—FV×2ÂæBW‡÷6R†–FFVâVWVW2â"À¢%t•ÂF‡&÷Vv‡WBÂ7–6ÆRF–ÖRÂvRâ"À¢%t•ÂF‡&÷Vv‡WBÂ7–6ÆRF–ÖRÂvRâ"À¢’À¢"€¢&ÆÂÖ†–v‚×&–÷&—G’"À¢-	-Í]]"-½í­’ıí-]""À¢$WfW'—F†–ær—2†–v‚&–÷&—G’"À¢-	Í]-­ıí-]-İRÍ]İı]"ıí½]Mí--]½Íİí-Â]]İ’â"À¢%&–÷&—G’Æ&VÇ2Fòæ÷B6†ævRFV6—6–öâ6WVVæ6Râ"À¢-	ıíıí-Rİmí-İİ½’ıíıMí¢‚-½]-R­-]’-íÍí-‚}M]m­‚â"À¢%&WV—&R&æ²÷&FW"æB6†ö÷6R6÷7BÖöbÖFVÆ’7&—FW&–öââ"À¢-	­í½}]--âíMİí-]Í]İİ½Rıí-]-í"â"À¢$çVÖ&W"öb6öæ7W'&VçB&–÷&—F–W2â"À¢’À¢"€¢&&6¶ÆörÖ6†÷2"À¢-	İ­½í2ı]--½ò"]í"À¢$&6¶Æör—26†÷2"À¢-
+İ½]Í]İ-²M=½=í-òÂ=-]½‚‚İRÍ]í"}Í]Íí=â]}=½Í--½‚-½M]½Ímâ"À¢$—FV×2&RGWÆ–6FVBÂ7FÆRÂæBÆ6²÷WF6öÖR÷"÷væW"â"À¢-	]-=-R=-]-Rİ½]Í]İ-²Âí­]Mİ-RM=½­-²‚-½M]½-R=í}íİ"=í-í-İí-‚İ(	3"m­½â"À¢$&6†—fR7FÆR—FV×2ÂÖW&vRGWÆ–6FW2ÂæBFVf–æR&VG’†÷&—¦öâöb(	3"7–6ÆW2â"À¢-	-í}"İ­½í=‚Mí½ò=í-í-½Rİ½]Í]İ-í"â"À¢$&6¶ÆörvRæB&VG’&F–òâ"À¢’À¢"€¢&W7F–ÖF–öâ×w&öær"À¢-	ím]İ­‚-]Íİâíí}İ²"À¢$W7F–ÖF–öâ—26öç6—7FVçFÇ’w&öær"À¢-	í­İı-½]İ"íMİ2-ííİ2‚İR=}-½-]-ò"ıí=İí}Râ"À¢$W'&÷"—2F—&V7F–öæÂæB–væ÷&VB–âf÷&V67G2â"À¢-
+]=Í]İ-=-R-ı²í"Â-İ-Rıí=İírM­-íÂÂıí½Í}=-RMı}íİ²â"À¢%6VvÖVçBv÷&²G—W2Â6ö×&Rf÷&V67BFò7GVÂÂæBW6R&ævW2â"À¢$f÷&V67BW'&÷"F—7G&–'WF–öââ"À¢$f÷&V67BW'&÷"F—7G&–'WF–öââ"À¢’À¢"€¢&æòÖvöÂ"À¢-
+2ıí]­-İ]"ıİí’m]½‚"À¢%&ö¦V7B†2æò6ÆV"vöÂ"À¢-	]-Âıí¢]}=½Í--í"Âİâİ]}-]-İâÂ­­íR}Í]İ]İR}-]-ò=ı]]íÂâ"À¢%F†W&R—2â÷WGWBÆ—7B'WBæòFVf–æVB7V66W76gVÂ6†ævRâ"À¢-	í-İí--RM]-½ÍİíRı½İí-İR‚í=½=-Rıí½]Í2Â}Í]Í½’]}=½Í-"ÂÍ]-­2‚-½M]½Ímâ"À¢%W6RFWF–ÆVBÆææ–æræBÆ–vâ&ö&ÆVÒÂ÷WF6öÖRÂÖV7W&RÂæB÷væW"â"À¢-	Í]-­]}=½Í--‚í=½í-İİí-Â]]İòâ"À¢$÷WF6öÖRÖV7W&RæBFV6—6–öâÆ–væÖVçBâ"À¢’À¢"€¢&æòÖ÷væW""À¢-
+2ıí]­-İ]"-½M]½Ím"À¢%&ö¦V7B†2æò÷væW""À¢-	İ­-âİRÍím]"í=½í--Â­íÍıíÍ½‚ıíM--]M-Â]}=½Í-"â"À¢$æòöæR6âÖ¶RG&FRÖöfg2÷"66WBF†R÷WF6öÖRâ"À¢-
+İ­½=-Rıí]²"=ı-½]İƒ²İ}İ}Í-Rí--]---]İİí=âıíİíMâıİı-òİí-½Ríı}-]½Í-"â"À¢$W66ÆFRF†Rv÷fW&ææ6Rv²76–vââ66÷VçF&ÆR7öç6÷"&Vf÷&RæWr6öÖÖ—FÖVçG2â"À¢%Væ÷væVBFV6—6–öç2â"À¢%Væ÷væVBFV6—6–öç2â"À¢’À¢"€¢&6Æ–VçB×Væ†’"À¢-	­½]İ"İ]Mí-í½]Ò"À¢$6Æ–VçBF—76F—6f7F–öâ"À¢-
+İÍímíİ½Íİòím]İ­İR}½ím]İİ}½-²"ímMİıRÂ­}]--RÂí­R½‚­íÍÍ=İ­m‚â"À¢$VÖ÷F–öæÂfVVF&6²—2æ÷BFV6ö×÷6VB–çFòW‡V7FF–öâÂVÆ—G’ÂF–Ö–ærÂ÷"6öÖ×Væ–6F–öâv2â"À¢-	ı}İ-Rıí½]M--òÂ=-í}İ-Rİ½íM]Í½R}½-²Âí=½=-R-í-İí--]½Íİ½RM]--ò‚­íİ-í½Íİ=â--]}2â"À¢$6¶æ÷vÆVFvR–×7BÂ6Æ&–g’ö'6W'f&ÆRv2Âw&VR&V6÷fW'’7F–öç2æB6†V6²Ö–ââ"À¢-	í-­½-½R}½-²‚ıí-]­=-]]İİí-‚â"À¢$÷Vâv2æB6öæf–FVæ6R6†V6²â"À¢’À¢"€¢'7F¶V†öÆFW"Ö6öæfÆ–7B"À¢-	­íİM½­"}İ-]]í-İİ½R-ííÒ"À¢%7F¶V†öÆFW"6öæfÆ–7B"À¢-
+2-ííÒ}İ½Rİ-]]²Â­-]‚½‚ı-ıİı-ò]]İ’â"À¢%'F–W2†fRF–ffW&VçB–çFW&W7G2Â7&—FW&–Â÷"FV6—6–öâ&–v‡G2â"À¢-	í-M]½-Rıí}m‚í"İ-]]í#²í=½=-R­-]‚‚-½M]½Ím]]İòâ"À¢%6W&FR÷6—F–öç2g&öÒ–çFW&W7G3²w&VR7&—FW&–æBFV6—6–öâ÷væW"â"À¢-	}M]m­]]İ’‚}½âıí--íİâí-­½-½R]]İ’â"À¢$FV6—6–öâÆFVæ7’æB&V÷VæVBFV6—6–öç2â"À¢’À¢"€¢&æòÖWF†÷&—G’"À¢-
+2=­í-íM-]½òıí]­-İ]"ıí½İíÍí}’"À¢%Ò†2æòWF†÷&—G’"À¢-	ímMİòí--]---]İİí-‚-½Rı]Mí--½]İİ½Rı"ıİı-ò]]İ’â"À¢$66÷VçF&–Æ—G’W‡V7FF–öç2W†6VVBw&çFVBFV6—6–öâ&–v‡G2â"À¢-
+M]½-R}½"ı-İ½Ã¢­­R]]İòİ=mİ²Â­-âRıİÍ]"‚­­í"Í="İ­½m‚â"À¢$W‡÷6RF†Rv¢FV6—6–öç2æVVFVBÂFV6—6–öâ÷væW'2ÂæBW66ÆF–öâF‚â"À¢-
+}½âİ­½m’‚-]ÍòímMİòâ"À¢$W66ÆF–öç2æBv—F–ærF–ÖRâ"À¢’À¢"€¢&7&÷72×FVÒÖ&Æö6²"À¢-	Í]m­íÍİMİò}-Íí-Â½í­=]""À¢$7&÷72×FVÒFWVæFVæ7’&Æö6·2FVÆ—fW'’"À¢-
+2}-Íí-‚İ]"-½M]½Ím]"í]R-ííÒÂM-²½‚=½í-’ıÍ­‚â"À¢%F†RFWVæFVæ7’Æ6·2&–ÆFW&Â÷væW"ÂFFRÂ÷"66WFæ6Râ"À¢-
+í=½=-R-ı}Ã¢]}=½Í-"ı]M]--]İİ­Âıí-]İí-Âı]]Íİ­Â-½M]½Ím]"í]R-ííÒÂM-2‚}ıİí’-İ"â"À¢$7&VFR†æG6†¶S¢&VFV6W76÷"÷WGWBÂ7V66W76÷"æVVBÂ÷væW'2öâ&÷F‚6–FW2ÂFFRÂfÆÆ&6²â"À¢-	-í}"}-Íí-‚‚Mí½òİ=]İ’â"À¢$FWVæFVæ7’vRæB'&V6‚&FRâ"À¢’À¢"€¢'fVæF÷"ÖÆFR"À¢-	ıí--¢íı}M½-]""À¢$W‡FW&æÂfVæF÷"—2ÆFR"À¢-	Mí=í-íİò­íİ-í½Íİò-í}­İ=]İÂİâ-½ıİR‚½Í-]İ--²İRıí}-İ²â"À¢$6öçG&7BÖ–ÆW7FöæR6Æ—VBv—F†÷WBVçF–f–VB–×7B÷"ÇFW&æF—fW2â"À¢-	ıíM--]M-RM­-²Â-½ıİRİ­-}]­’ı=-ÂÂı½Ò-í-İí-½]İò‚Mí=í-íİ=âİ­½mââ"À¢$6öæf—&Òf7G2Â7&—F–6Â×F‚–×7BÂ&V6÷fW'’ÆâÂæB6öçG&7GVÂW66ÆF–öââ"À¢%fVæF÷"Ö–ÆW7FöæRf&–æ6Râ"À¢%fVæF÷"Ö–ÆW7FöæRf&–æ6Râ"À¢’À¢"€¢&†–v‚×&—6²×&VÆV6R"À¢-
+]½r-½í­í=â­"À¢$†–v‚×&—6²&VÆV6R"À¢-	Í--í}Íímİ½Rıí½]M--’-½í¢Â=í-í-İí-Â‚í-­"İRıíM--]mM]İ²â"À¢$&Æ7B&F—W2—2†–v‚æB&öÆÆ&6²÷&VF–æW72&RVç&÷fVââ"À¢-	íı]M]½-R­-]‚}ı=­½‚í-İí-­‚Â-½M]½Ímí-­-ÂÍíİ-íİ2‚ıíİ-ıİíR]İRâ"À¢$FVf–æRvòöæòÖvò7&—FW&–Â&öÆÆ&6²÷væW"ÂÖöæ—F÷&–ærÂæB7FvVBW‡÷7W&Râ"À¢-	ıí]½²=í-í-İí-‚‚-]Íò-í-İí-½]İòâ"À¢%&VF–æW72v2æB&V6÷fW'’F–ÖRâ"À¢’À¢"€¢&'VFvWBÖ÷fW''Vâ"À¢-	íMm]"ı]-½]Ò"À¢$'VFvWB÷fW''Vâ"À¢-
+M­"‚íı}-]½Í---½R}í-í=âı½İ]rİí-í=âıí=İí}â"À¢$7GVÂö6öÖÖ—GFVB6÷7G2W†6VVB&6VÆ–æRv—F†÷WBæWrf÷&V67Bâ"À¢-
+}M]½-Rí-­½íİ]İRİ--­2Âí­ÂÂ=İm²í"‚í­ƒ²ı]]}--RT2‚-İ-²â"À¢%7Æ—Bf&–æ6R–çFò&FRÂföÇVÖRÂ66÷RÂæBF–Ö–æs²&V6Æ7VÆFRT2æB÷F–öç2â"À¢$5’ÂT2Âd2â"À¢$5’ÂT2Âd2â"À¢’À¢"€¢'Væ¶æ÷vâÖ'VFvWB"À¢-	íMm]"İ]}-]-]Ò"À¢%Væ¶æ÷vâ'VFvWB"À¢-	İ]"-½M]½Ím}-"Â}í-í=âı½İ½‚Mí-=ıİí=âMı}íİ]]İ’â"À¢%F†W&R—2æò6÷7B÷væW"Â&6VÆ–æRÂ÷"FV6—6–öâ&ævRâ"À¢-
+í]-R­-]=í‚}-"Âíı}-]½Í--‚Mı}íÓ²İ}İ}Í-R-½M]½ÍmMİİí-½RMİİ½Râ"À¢$6öÆÆV7B6÷7B6FVv÷&–W2Â6öÖÖ—FÖVçG2ÂæB&ævS²76–vâf–ææ6–ÂFF÷væW'6†—â"À¢$f÷&V67B6÷fW&vRâ"À¢$f÷&V67B6÷fW&vRâ"À¢’À¢"€¢&†VÇF‚×Væ6ÆV""À¢-
+í-íıİRıí]­-İ]ıİâ"À¢%&ö¦V7B†VÇF‚—2Væ6ÆV""À¢-	íMİ=­]­--İòím]İ­­½-]"}İ½R}Í]]İòâ"À¢$öæR7V&¦V7F—fR66÷&R†–FW2F–ffW&VçBF–ÖVç6–öç2â"À¢-	ím]İ-Rí­‚Âí­Âí"ÂíMm]"Â­‚Â½í­í-­‚ÂMí-=ıİ=âÍíİí-Â‚í=½í-İİí-Âí-M]½Íİâıâı-İ½Âı-½Ââ"À¢$76W7266†VGVÆRÂ66÷RÂ'VFvWBÂ&—6²Â&Æö6¶W'2Â66—G’ÂæBÆ–væÖVçB6W&FVÇ’v—F‚'VÆW2â"À¢%Væ¶æ÷vâ†VÇF‚F–ÖVç6–öç2â"À¢%Væ¶æ÷vâ†VÇF‚F–ÖVç6–öç2â"À¢’À¢"€¢'FöòÖÖç’ÖÖVWF–æw2"À¢-
+½­íÂÍİí=â--]r"À¢%FöòÖç’ÖVWF–æw2"À¢$ÖVWF–æw26öç7VÖR66—G’v—F†÷WBVæ—VRFV6—6–öç2÷"÷WGWG2â"À¢$ÖVWF–æw26öç7VÖR66—G’v—F†÷WBVæ—VRFV6—6–öç2÷"÷WGWG2â"À¢-	í-Í]İ-R--]}‚]r-½M]½Ím‚]}=½Í--²í­]Mİ-R-]M]İòâí-íıİ‚"İ]íİİíÂMí­=Í]İ-Râ"À¢$6æ6VÂÖVWF–æw2v—F†÷WBâ÷væW"ö÷WGWC²6öç6öÆ–FFR7FGW2–ââ7–æ2'F–f7Bâ"À¢-
+}²--]r‚]}=½Í---İí-Â]]İ’â"À¢$ÖVWF–ær†÷W'2æBFV6—6–öâ––VÆBâ"À¢’À¢"€¢'W6VÆW72ÖÖVWF–æw2"À¢-	--]}‚]ıí½]}İ²"À¢$æòW6VgVÂÖVWF–æw2"À¢-	ıí-]-­íı½-]"-]Í²ÂİR]]İó²M]--òİRí-½]m-í-òâ"À¢%F†RvVæFÆ—7G2F÷–72Âæ÷BFV6—6–öç3²7F–öç2&Ræ÷BG&6¶VBâ"À¢-	ı]]ı-Rıí-]-­2­¢-íıí²‚]]İòÂMí-Í-RÍ-]½²M½òı]M--]½Íİí=â}-]İò‚-½M]½Ímıí-í­í½â"À¢%&Ww&—FRF†RvVæF2VW7F–öç2öFV6—6–öç3²FB&R×&VBæBÖ–çWFW2÷væW"â"À¢-	}­½-½RM]--ò‚]]İòİ--]}2â"À¢$7F–öç26Æ÷6VBæBFV6—6–öç2W"ÖVWF–ærâ"À¢’À¢"€¢'&WG&òÖæòÖ6†ævR"À¢-
+]-âİ}]=âİRÍ]İı]""À¢%&WG&÷7V7F—fR6†ævW2æ÷F†–ær"À¢-	M]--ò½­íÂíRÂ]r-½M]½Ím‚ıí½]M=í]’ıí-]­‚â"À¢$7F–öç2&RfwVRÂVæ÷væVBÂæBæWfW"&Wf–WvVBâ"À¢-	-½]-RíMÒİ½íM]Í½’İ­ı]Í]İ"Â-½M]½ÍmÂí¢‚ímM]Í½’=İ²â"À¢$6†ö÷6RöæRö'6W'f&ÆRW‡W&–ÖVçBÂ÷væW"ÂFFRÂæBW‡V7FVB6–væÂâ"À¢$–×&÷fVÖVçB7F–öâ6ö×ÆWF–öââ"À¢$–×&÷fVÖVçB7F–öâ6ö×ÆWF–öââ"À¢’À¢"€¢&fV""À¢-	­íÍİM­½-]"ıí½]Í²"À¢%FVÒ—2g&–BFò7W&f6R&ö&ÆV×2"À¢-	ı½í]Rİí-í-‚ıíı-½ıí-òıí}Mİã²í=mM]İR]"-İí-İí=ââ"À¢$&BæWw2'&—fW2ÆFS²F—67W76–öç26VV²&ÆÖRâ"À¢-	½M]ı]-½Âı}İ"İ]íı]M]½İİí-Ã²}]-R-]Í2‚}--Rİİíâİ­½mââ"À¢$ÆVFW"æÖW2Væ6W'F–çG’f—'7C²W†Ö–æRF†R7—7FVÒæB&÷FV7BV&Ç’W66ÆF–öââ"À¢-	-]ÍòMâ-½ı-½]İòıí½]Í²‚İíİÍİòıí-]­ı]í½í=}]­í’]}íıİí-‚â"À¢%F–ÖRFò7W&f6RæBæöç–Ö÷W26fWG’VÇ6Râ"À¢’À¢"€¢&&B×7FGW2"À¢-
+--=İí-}-²]ıí½]}İ²"À¢%7FGW2&W÷'G2&RW6VÆW72"À¢-	í-}"ı]]}½ı]"M]--òÂİâİR}Í]İ]İòÂıí=İír½‚]]İòâ"À¢%F†R&W÷'BÆ—7G27F—f—G’'WBæ÷B6†ævRÂf÷&V67BÂ÷"FV6—6–öç2â"À¢-	í--Í-S¢}-â}Í]İ½íÂÂıí=İírÂ=½-İ½R­‚Â-]=]Í½R]]İò‚ıíÍíÂâ"À¢$¶VWöæÇ“¢v†B6†ævVBÂf÷&V67BÂF÷&—6·2ÂFV6—6–öç2ö†VÇæVVFVBâ"À¢-
+]}=½Í---İí-Â]]İ’‚­-=½Íİí-Âí-}-â"À¢$FV6—6–öâ––VÆBæB&W÷'Bg&W6†æW72â"À¢’À¢"€¢&†Vg’Öv÷fW&ææ6R"À¢-	ÍíM]½Â=ı-½]İò½­íÂ-ım½ò"À¢$v÷fW&ææ6RFöò†Vg’"À¢-	}M]m­í=½í-İò-½Rİm]İò­²Mİİ½RM=½=í-òâ"À¢$&÷fÂÆFVæ7’W†6VVG2&—6²&VGV7F–öã²FF—2GWÆ–6FVBâ"À¢-
+-ım-R­mM=â­íİ-í½Íİ=â-í}­2­íÂ½‚]]İ]Ã²=M½-R-]M­-²]rıí-]-]½òâ"À¢$ÖWfW'’vFRFò&—6²öFV6—6–öã²&VÖ÷fR'F–f7G2v—F†÷WB6öç7VÖW"â"À¢$&÷fÂÆVBF–ÖRâ"À¢$&÷fÂÆVBF–ÖRâ"À¢’À¢"€¢&æòÖv÷fW&ææ6R"À¢-	ÍíM]½Â=ı-½]İòí-=---=]""À¢$v÷fW&ææ6RæöæW†—7FVçB"À¢-	İ]"Míı=-Í½Rí-­½íİ]İ’Âı"ıİı-ò]]İ’½‚İ­½m‚â"À¢%F†W&R&RæòFöÆW&æ6W2ÂFV6—6–öâ&–v‡G2Â÷"W66ÆF–öâF‡2â"À¢-	íı]M]½-RıíİíÂ-‚­½í}]-½R]]İòÂıíí=í-½R}İ}]İò‚-Âí}íâ"À¢$FVf–æR7öç6÷"ÂF‡&VR¶W’FV6—6–öç2ÂF‡&W6†öÆG2ÂæB&Wf–Wr6FVæ6Râ"À¢%Vç&W6öÇfVBW†6WF–öç2â"À¢%Vç&W6öÇfVBW†6WF–öç2â"À¢’À¢"€¢&v–ÆRÖæò×Æâ"À¢$v–ÆRıí½Í}=í"­¢í-­rí"ı½İí-İò"À¢$v–ÆR—2W6VB2W†7W6Rf÷"æòÆææ–ær"À¢-	İ]"m]½‚ıíM=­-Âıí=İí}Â}-Íí-]’½‚­-]]"=í-í-İí-‚â"À¢%F†W&R—2æò&öGV7BvöÂÂf÷&V67BÂFWVæFVæ6–W2Â÷"&VF–æW72f–Wrâ"À¢-
+í}M-RMı--İ½’ı½Ó¢m]½ÂÂ=ıíıMí}]İİ½’İ­½í2Â½m]Ríı}-]½Í--â‚Mı}íÒıí=İí}â"À¢$7&VFRâFF—fRÆã¢vöÂÂ÷&FW&VB&6¶ÆörÂæV"×FW&Ò6öÖÖ—FÖVçBÂf÷&V67B&ævRâ"À¢-	ıí=]m]½‚‚Mı}íÒıí=İí}â"À¢$vöÂ&öw&W72æBf÷&V67B&ævRâ"À¢’À¢"€¢'vFW&fÆÂÖ6†ævR"À¢-	­­MİòÍíM]½Âı‚}Í]İ}-½R-]í-İıR"À¢%vFW&fÆÂv†W&R&WV—&VÖVçG26†ævR"À¢-
+-]Íò}Í]İ]İ’-½RÍíİí-‚MíÍ½Íİí=â­íİ-í½ó²í-İò-ı}Âı]íM"ıí}Mİââ"À¢$6†ævR&FRW†6VVG2f÷&ÖÂ6öçG&öÂ66—G“²fVVF&6²'&—fW2ÆFRâ"À¢-
+í]İ-Rİ]í]íMÍ½R­íİ-í½Íİ½R-í}­‚Âİâı]]İ]-R½]Mí-İR]]İò"­íí-­Rm­½²ıí-]­‚â"À¢$¶VWæV6W76'’vFW2'WBÖ÷fR6öÇWF–öâF—66÷fW'’–çFò6†÷'BfÆ–FF–öâÆö÷2â"À¢-
+í¢ıí]ímM]İò}Í]İ]İò‚í­Âı]]M]½í¢â"À¢$6†ævRÆVBF–ÖRæB&Wv÷&²â"À¢’À¢"€¢&g&ÖWv÷&²×6÷W"À¢-	=Mİ½’ıíM]íB-²Í]ÍâÍ]-íM¢"À¢$‡–'&–B&V6ÖRg&ÖWv÷&²6÷W"À¢-	ı­-­‚­íİM½­-=í"Âí½‚M=½=í-òÂ-Â=ı-½]İòı]]==m]Òâ"À¢%&7F–6W26öæfÆ–7BÂ&öÆW2GWÆ–6FRÂæB6FVæ6R—2÷fW&ÆöFVBâ"À¢-
+}M]½-R=ı-½]İRÂı½İí-İR‚ıí--­2]}=½Í--²M½ò­mMí’ı­-­‚İ}í--Rıí½]Í2Â-½M]½Ím‚ı-½âí-İí-­‚â"À¢%6W&FRv÷fW&ææ6R÷Æææ–æröFVÆ—fW'“²æÖRF†R&ö&ÆVÒÂ÷væW"ÂæB7F÷'VÆRf÷"V6‚&7F–6Râ"À¢-	ıím]İòİ==}­‚­íİM½­-=íRı-½â"À¢%&ö6W72ÆöBæB6öæfÆ–7F–æröÆ–6–W2â"À¢’À¢"€¢'&W67VR"À¢-
+ı-‚ıí]­""À¢%&ö¦V7BæVVG2&W67VR"À¢-
+m]½ÂÂí­Âí"Âí--]---]İİí-ÂÂí­‚‚=-]]İİí-Â]íMı-òâ"À¢$ö&¦V7F—fRÂ66÷RÂ÷væW'6†—Â66†VGVÆRÂæB6öæf–FVæ6RF—fW&vRâ"À¢-	í-İí--Âİí-½Ríı}-]½Í--â
+-½}í--ÂM­-²‚]}íıİí-Ââ	ı]]ı½İí--Â-İ-²â
+í=½í--Â]]İRâ	ıí-]-‚­íí-­’m­²ıíM--]mM]İòâ"À¢%7F÷æWr6öÖÖ—FÖVçG2â7F&–Æ—¦Rf7G2æB6fWG’â&WÆâ÷F–öç2âÆ–vâFV6—6–öââFVÆ—fW"6†÷'B&ööb7–6ÆRâ"À¢$7&—F–6Â&Æö6¶W'2ÂFV6—6–öâvRÂf÷&V67B6öæf–FVæ6Râ"À¢$7&—F–6Â&Æö6¶W'2ÂFV6—6–öâvRÂf÷&V67B6öæf–FVæ6Râ"À¢’À¢"€¢&†æF÷fW""À¢-	ı]]M-Âıí]­""À¢%&ö¦V7B†æF÷fW""À¢-	İ]ı-İ½R}İİòÂMí-=ı²‚İ]}-]İİòí-İRÍ]í"İí-í=â-½M]½Ímâ"À¢%F6—B¶æ÷vÆVFvRÂ66W72ÂæBVç&W6öÇfVBv÷&²Æ6²æWr÷væW"â"À¢-
+í--Í-R­-2ı]]M}ƒ¢]]İòÂ­‚Â­íİ-­-²Â-]M­-²ÂMí-=ı²‚½mR3Mİ]’â"À¢$'V–ÆB†æF÷fW"Ö¢FV6—6–öç2Â&—6·2Â6öçF7G2Â'F–f7G2Â66W72ÂæW‡B3F—2â"À¢$66WFVB†æF÷fW"—FV×2â"À¢$66WFVB†æF÷fW"—FV×2â"À¢’À¢"€¢&¦ö–âÖÖ–Gv’"À¢-
+=­í-íM-]½Âıí]­-ıíM­½í}]-ò"]]MİR"À¢%Ò¦ö–ç2&ö¦V7BÖ–Gv’"À¢-	Mí­=Í]İ-²]íMı-ò]½Íİí-ÍâÂ-íò]]İ’­½-â"À¢$Fö7VÖVçG2F–ffW"g&öÒ&VÆ—G’æBFV6—6–öâ†—7F÷'’—2†–FFVââ"À¢-	ıí-]M-Rí}íıíM--]mM]İ“¢ıíİíÂ­íÍİMÂ}­}}¢Âı½ÒÂıí-í¢Â­‚‚]]İòâ"À¢%'VââWf–FVæ6RF÷W#¢7öç6÷"ÂFVÒÂ7W7FöÖW"ÂÆâÂfÆ÷rÂ&—6·2ÂFV6—6–öç2â"À¢%Væ¶æ÷vç2&WF—&VBW"vVV²â"À¢%Væ¶æ÷vç2&WF—&VBW"vVV²â"À¢’À¢"€¢&6Æ÷6RÖf–Æ–ær"À¢-	}­½-Âİ]=ı]İ½’ıí]­""À¢$6Æ÷6–ærf–Æ–ær&ö¦V7B"À¢-
+-íÍí-ÂıíMí½m]İòı]-½]"ímM]Í=âm]İİí-ÂÂİâ=mRıíİ]İİ½R}--²-½ıí"İ]]İRâ"À¢$6öçF–çVF–öâ6÷7BW†6VVG2W‡V7FVBfÇVR'WB7Væ²6÷7B&–6W2F†RFV6—6–öââ"À¢-	ıíM=í-í-Í-Rííİí-İRí-İí-­‚Â}--R½íM]’‚Mİİ½RÂíı]M]½-Rı]]M}2Â=í­‚‚í--í}İ½Ríı}-]½Í--â"À¢%&W&R7F÷66RÂ&÷FV7BV÷ÆRöFFÂFVf–æR†æF÷fW"æBÆW76öç2ÂæBæÖR&W6–GVÂö&Æ–vF–öç2â"À¢%&W6–GVÂö&Æ–vF–öç26Æ÷6VBâ"À¢%&W6–GVÂö&Æ–vF–öç26Æ÷6VBâ"À¢’À¢"€¢'7F'B×¦W&ò"À¢-	İ}-Âıí]­"İ=½ò"À¢%7F'F–ær&ö¦V7Bg&öÒ¦W&ò"À¢-	]-ÂM]òÂİâİ]"-½M]½Ímıí½]Í²Â}Í]Íí=â]}=½Í--½‚í=İ}]İ’â"À¢%F†W&R—2â–FV'WBæò&ö&ÆVÒ÷væW"Â÷WF6öÖRÂ÷"6öç7G&–çG2â"À¢-
+í=½=-Rıí½]Í2ÂıíİíÂÍ]-­2]}=½Í--Â=İm²‚ı]-=âıí-]­2İ]íı]M]½İİí-‚â"À¢$Æ–vâ&ö&ÆVÒÂ7öç6÷"Â÷WF6öÖRÖV7W&RÂ&÷VæF&–W2ÂæBF†Rf—'7BVæ6W'F–çG’FW7Bâ"À¢%F–ÖRFòf—'7BfÆ–FFVBÆV&æ–ærâ"À¢%F–ÖRFòf—'7BfÆ–FFVBÆV&æ–ærâ"À¢’À¥Ó° ¦W‡÷'B6öç7B¶æ÷vÆVFvTFöÖ–ç3¢&•µÒÒ°¢²'S¢-	íİí-²"ÂVã¢$gVæFÖVçFÇ2"ÒÀ¢²'S¢$v÷fW&ææ6R"ÂVã¢$v÷fW&ææ6R"ÒÀ¢²'S¢-
+m]İİí-Â"ÂVã¢%fÇVR"ÒÀ¢²'S¢%66÷R"ÂVã¢%66÷R"ÒÀ¢²'S¢-
+-]í-İò"ÂVã¢%&WV—&VÖVçG2"ÒÀ¢²'S¢-
+í­‚"ÂVã¢%66†VGVÆR"ÒÀ¢²'S¢-
+-íÍí-Â"ÂVã¢$6÷7B"ÒÀ¢²'S¢-
+­‚"ÂVã¢%&—6²"ÒÀ¢²'S¢-	­}]--â"ÂVã¢%VÆ—G’"ÒÀ¢²'S¢-
+]=²"ÂVã¢%&W6÷W&6W2"ÒÀ¢²'S¢-	­íÍİM"ÂVã¢%FVÒ"ÒÀ¢²'S¢-	½M]--â"ÂVã¢$ÆVFW'6†—"ÒÀ¢²'S¢%7F¶V†öÆFW'2"ÂVã¢%7F¶V†öÆFW'2"ÒÀ¢²'S¢-	­íÍÍ=İ­m‚"ÂVã¢$6öÖ×Væ–6F–öâ"ÒÀ¢²'S¢-	}­=ı­‚"ÂVã¢%&ö7W&VÖVçB"ÒÀ¢²'S¢-	}Í]İ]İò"ÂVã¢$6†ævR"ÒÀ¢²'S¢$FVÆ—fW'’"ÂVã¢$FVÆ—fW'’"ÒÀ¢²'S¢$v–ÆR"ÂVã¢$v–ÆR"ÒÀ¢²'S¢-	ıí-í¢"ÂVã¢$fÆ÷r"ÒÀ¢²'S¢-	}Í]]İR"ÂVã¢$ÖV7W&VÖVçB"ÒÀ¢²'S¢-	ıí=İí}í-İR"ÂVã¢$f÷&V67F–ær"ÒÀ¢²'S¢-	-í-İí-½]İRıí]­-"ÂVã¢%&ö¦V7B&V6÷fW'’"ÒÀ¢²'S¢-	}­½-R"ÂVã¢$6Æ÷7W&R"ÒÀ¢²'S¢%Ôò"ÂVã¢%Ôò"ÒÀ¢²'S¢-	íİí-²ıí=ÍÂ"ÂVã¢%&öw&Ò&6–72"ÒÀ¢²'S¢-	íİí-²ıí-M]½]’"ÂVã¢%÷'FföÆ–ò&6–72"ÒÀ¥Ó° ¦W‡÷'BG—RvÆ÷76'’Ò°¢FW&Ó¢7G&–æs°¢'S¢7G&–æs°¢FVf–æ—F–öã¢&“°¢W†×ÆS¢&“°¢&VÆFVC¢7G&–æuµÓ°§Ó°¦6öç7BvÆ÷76'•6VVC¢·7G&–ærÂ7G&–ærÂ7G&–ærÂ7G&–ærÂ7G&–ærÂ7G&–æuÕµÒÒ°¢°¢$66WFæ6R7&—FW&–"À¢-	­-]‚ıÍ­‚"À¢-	ıí-]ı]Í½R=½í-òÂ­í-í½ÂMí½m]Òíí--]---í--Â]}=½Í-"â"À¢%FW7F&ÆR6öæF—F–öç2â÷WF6öÖR×W7BÖVWBâ"À¢-
+MíÍí-ı-½ı]"-½Mİ½RMİİ½R‚ıí­}½-]"í­2ı‚İ]-]İ½Râ"À¢%F†Rf÷&Ò7V&Ö—G2fÆ–BFFæB6†÷w2âW'&÷"f÷"–çfÆ–B–çWBâ"À¢ÒÀ¢°¢$66÷VçF&ÆR"À¢-	í--]---]İİ½’}]}=½Í-""À¢-	]Mİ--]İİ½’-½M]½]b­íİ]}İí=â]]İò½‚]}=½Í--"$4’â"À¢%F†R6–ævÆR÷væW"öbF†Rf–æÂFV6—6–öâ÷"÷WF6öÖR–â$4’â"À¢-
+ıíİí=--]mM]"}í-½’ı½Òâ"À¢%F†R7öç6÷"&÷fW2F†R&6VÆ–æRâ"À¢ÒÀ¢°¢$77V×F–öâ"À¢-	Míı=]İR"À¢-
+}-]ÍíR-İİ½Â=--]mM]İRÂ­í-ííR]-]=]"ıí-]­‚â"À¢$7FFVÖVçBG&VFVB2G'VR'WB7F–ÆÂ&WV—&–ærfÆ–FF–öââ"À¢-	ıí--¢ı]Mí--"’¢Íââ"À¢%F†RfVæF÷"v–ÆÂ&÷f–FRF†R’'’Ö’â"À¢ÒÀ¢°¢$$2"À¢-	íMm]"ıâ}-]]İ‚"À¢-
+=--]mMİİ½’íMm]"-]=âí­Íí""UdÒâ"À¢%F†R&÷fVB'VFvWBf÷"ÆÂ66÷R–âUdÒâ"À¢$$2ıí]­-(	BSâ"À¢%&ö¦V7B$2—2SÃâ"À¢ÒÀ¢°¢$&6¶Æör"À¢-	İ­½í2"À¢-
+=ıíıMí}]İİ½’İíıí-]İm½Íİí’í-²â"À¢$â÷&FW&VB6WBöb÷FVçF–Âv÷&²â"À¢-	­íÍİM]"½]M=í’=í-í-½’İ½]Í]İ"rİ­½í=â"À¢%F†RFVÒF¶W2F†RæW‡B&VG’—FVÒg&öÒF†R&6¶Æörâ"À¢ÒÀ¢°¢$&6VÆ–æR"À¢-	}í-½’ı½Ò"À¢-
+=--]mMİİò-]òí­Íí"Âí­í"½‚-íÍí-‚M½ò-İ]İòâ"À¢$&÷fVB66÷RÂ66†VGVÆRÂ÷"6÷7BfW'6–öâW6VBf÷"6ö×&—6öââ"À¢-	İí-½’ıí=İír-İ-í"}í-½Âı½İíÂí­í"â"À¢%F†RæWrf÷&V67B—26ö×&VBFòF†R66†VGVÆR&6VÆ–æRâ"À¢ÒÀ¢°¢$&VæVf—B"À¢-	-½=íM"À¢-	}Í]9òÚ$z{-®éÜj× Ñ‚ĞµÑ€ÑĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ´Ğ°Ğ¶Ğ¸.",
     "A week of seasonal campaign delay loses sales.",
   ],
   [
@@ -1598,7 +129,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "ĞšÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ğ¹ Ğ¿ÑƒÑ‚ÑŒ",
     "Ğ¡Ğ°Ğ¼Ğ°Ñ Ğ´Ğ»Ğ¸Ğ½Ğ½Ğ°Ñ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ°Ñ Ñ†ĞµĞ¿Ğ¾Ñ‡ĞºĞ°, Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»ÑÑÑ‰Ğ°Ñ Ñ€Ğ°Ğ½Ğ½ÑÑ Ğ´Ğ°Ñ‚Ñƒ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ.",
     "The longest dependent chain determining earliest completion.",
-    "Ğ—Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ° activity Ñ Ğ½ÑƒĞ»ĞµĞ²Ñ‹Ğ¼ float ÑĞ´Ğ²Ğ¸Ğ³Ğ°ĞµÑ‚ finish.",
+    "Ğ—Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ° Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ Ñ Ğ½ÑƒĞ»ĞµĞ²Ñ‹Ğ¼ Ñ€ĞµĞ·ĞµÑ€Ğ²Ğ¾Ğ¼ ÑĞ´Ğ²Ğ¸Ğ³Ğ°ĞµÑ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğµ.",
     "Delaying a zero-float activity moves the finish.",
   ],
   [
@@ -1606,29 +137,29 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Ğ˜Ğ½Ğ´ĞµĞºÑ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸",
     "EV / AC; ÑÑ„Ñ„ĞµĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚ Ğ² EVM.",
     "EV / AC; cost efficiency in EVM.",
-    "CPI 0.9 Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ°ĞµÑ‚, Ñ‡Ñ‚Ğ¾ earned value Ğ½Ğ¸Ğ¶Ğµ Ñ„Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ñ… Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚.",
+    "CPI 0,9 Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ°ĞµÑ‚, Ñ‡Ñ‚Ğ¾ Ğ¾ÑĞ²Ğ¾ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼ Ğ½Ğ¸Ğ¶Ğµ Ñ„Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ñ… Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚.",
     "CPI 0.9 means earned value is below actual cost.",
   ],
   [
     "Cycle Time",
     "Ğ’Ñ€ĞµĞ¼Ñ Ñ†Ğ¸ĞºĞ»Ğ°",
-    "Ğ’Ñ€ĞµĞ¼Ñ Ğ¾Ñ‚ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ work item Ğ² Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ğ¾Ğ¼ workflow.",
+    "Ğ’Ñ€ĞµĞ¼Ñ Ğ¾Ñ‚ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‡ĞµĞ³Ğ¾ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ° Ğ² Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ğ¾Ğ¼ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑĞµ.",
     "Elapsed time from work start to completion in a defined workflow.",
-    "Item Ğ±Ñ‹Ğ» In Progress 6 Ğ´Ğ½ĞµĞ¹ Ğ´Ğ¾ Done.",
+    "Ğ­Ğ»ĞµĞ¼ĞµĞ½Ñ‚ Ğ½Ğ°Ñ…Ğ¾Ğ´Ğ¸Ğ»ÑÑ Ğ² Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğµ 6 Ğ´Ğ½ĞµĞ¹ Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ.",
     "The item spent six days from In Progress to Done.",
   ],
   [
     "Definition of Done",
     "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»ĞµĞ½Ğ¸Ğµ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸",
-    "ĞĞ±Ñ‰ĞµĞµ Ñ„Ğ¾Ñ€Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ğ¾Ğ³Ğ¾ Increment/work.",
+    "ĞĞ±Ñ‰ĞµĞµ Ñ„Ğ¾Ñ€Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ğ¾Ğ³Ğ¾ Ğ¸Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚Ğ° Ğ¸Ğ»Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
     "Shared formal description of the quality of completed work.",
-    "ĞšĞ¾Ğ´ reviewed, tested Ğ¸ deployed Ğ² staging.",
+    "ĞšĞ¾Ğ´ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞµĞ½, Ğ¿Ñ€Ğ¾Ñ‚ĞµÑÑ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½ Ğ¸ Ñ€Ğ°Ğ·Ğ²Ñ‘Ñ€Ğ½ÑƒÑ‚ Ğ² Ñ‚ĞµÑÑ‚Ğ¾Ğ²Ğ¾Ğ¹ ÑÑ€ĞµĞ´Ğµ.",
     "Code is reviewed, tested, and deployed to staging.",
   ],
   [
     "Deliverable",
     "ĞŸĞ¾ÑÑ‚Ğ°Ğ²Ğ»ÑĞµĞ¼Ñ‹Ğ¹ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚",
-    "Ğ£Ğ½Ğ¸ĞºĞ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚, Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ¸Ğ»Ğ¸ capability Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
+    "Ğ£Ğ½Ğ¸ĞºĞ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚, Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ¸Ğ»Ğ¸ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
     "A unique, verifiable product, result, or capability produced by a project.",
     "Ğ£Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ñ‹Ğ¹ Ğ´Ğ¸Ğ·Ğ°Ğ¹Ğ½ ÑĞ¸ÑÑ‚ĞµĞ¼Ñ‹.",
     "An approved system design.",
@@ -1644,9 +175,9 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "EAC",
     "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ· ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ¿Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğ¸",
-    "ĞÑ†ĞµĞ½ĞºĞ° Ğ¸Ñ‚Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ğ¹ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ performance.",
+    "ĞÑ†ĞµĞ½ĞºĞ° Ğ¸Ñ‚Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ğ¹ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ¹ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "Forecast total project cost considering current performance.",
-    "BAC / CPI Ğ¿Ñ€Ğ¸ Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸Ñ cost performance.",
+    "BAC / CPI Ğ¿Ñ€Ğ¸ Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸Ñ ÑÑ„Ñ„ĞµĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚.",
     "BAC / CPI when cost performance is expected to continue.",
   ],
   [
@@ -1654,7 +185,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Ğ­Ğ¿Ğ¸Ğº",
     "ĞšÑ€ÑƒĞ¿Ğ½Ğ°Ñ ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ğ° Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸, Ñ‚Ñ€ĞµĞ±ÑƒÑÑ‰Ğ°Ñ Ğ´ĞµĞºĞ¾Ğ¼Ğ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ğ¸.",
     "A large unit of value requiring decomposition.",
-    "Self-service onboarding Ñ€Ğ°Ğ·Ğ±Ğ¸Ñ‚ Ğ½Ğ° features.",
+    "Ğ¡Ğ°Ğ¼Ğ¾ÑÑ‚Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ Ñ€Ğ°Ğ·Ğ±Ğ¸Ñ‚Ğ¾ Ğ½Ğ° Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "Self-service onboarding is split into features.",
   ],
   [
@@ -1668,7 +199,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "Estimate",
     "ĞÑ†ĞµĞ½ĞºĞ°",
-    "ĞœĞ¾Ğ´ĞµĞ»ÑŒ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾Ğ³Ğ¾ effort, duration Ğ¸Ğ»Ğ¸ cost Ğ½Ğ° Ğ¾ÑĞ½Ğ¾Ğ²Ğµ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹Ñ… Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….",
+    "ĞœĞ¾Ğ´ĞµĞ»ÑŒ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ñ‹Ñ… Ñ‚Ñ€ÑƒĞ´Ğ¾Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚, Ğ´Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸ Ğ¸Ğ»Ğ¸ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ½Ğ° Ğ¾ÑĞ½Ğ¾Ğ²Ğµ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹Ñ… Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….",
     "A model of likely effort, duration, or cost based on available evidence.",
     "Ğ—Ğ°Ğ´Ğ°Ñ‡Ğ° Ğ·Ğ°Ğ¹Ğ¼Ñ‘Ñ‚ 3â€“5 Ğ´Ğ½ĞµĞ¹, Ğ° Ğ½Ğµ Ñ€Ğ¾Ğ²Ğ½Ğ¾ 4.",
     "The task will take 3â€“5 days, not exactly four.",
@@ -1678,21 +209,21 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "ĞÑĞ²Ğ¾ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼",
     "Ğ‘ÑĞ´Ğ¶ĞµÑ‚Ğ½Ğ°Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ñ„Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¸ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
     "Budgeted value of work actually completed.",
-    "50% work package Ñ Ğ±ÑĞ´Ğ¶ĞµÑ‚Ğ¾Ğ¼ 100 Ğ´Ğ°Ñ‘Ñ‚ EV 50.",
+    "Ğ’Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ 50% Ğ¿Ğ°ĞºĞµÑ‚Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚ Ñ Ğ±ÑĞ´Ğ¶ĞµÑ‚Ğ¾Ğ¼ 100 Ğ´Ğ°Ñ‘Ñ‚ EV 50.",
     "A 50% complete work package budgeted at 100 gives EV 50.",
   ],
   [
     "Float",
     "Ğ’Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾Ğ¹ Ñ€ĞµĞ·ĞµÑ€Ğ²",
-    "Ğ”Ğ¾Ğ¿ÑƒÑÑ‚Ğ¸Ğ¼Ğ°Ñ Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ° activity Ğ±ĞµĞ· Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ñ Ğ´Ğ»Ñ schedule.",
+    "Ğ”Ğ¾Ğ¿ÑƒÑÑ‚Ğ¸Ğ¼Ğ°Ñ Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ° Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ Ğ±ĞµĞ· Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ñ Ğ´Ğ»Ñ Ğ³Ñ€Ğ°Ñ„Ğ¸ĞºĞ°.",
     "Allowable activity delay without a defined schedule consequence.",
-    "Total float 2 Ğ´Ğ½Ñ Ğ´Ğ¾ ÑĞ´Ğ²Ğ¸Ğ³Ğ° project finish.",
+    "ĞĞ±Ñ‰Ğ¸Ğ¹ Ñ€ĞµĞ·ĞµÑ€Ğ² ÑĞ¾ÑÑ‚Ğ°Ğ²Ğ»ÑĞµÑ‚ 2 Ğ´Ğ½Ñ Ğ´Ğ¾ ÑĞ´Ğ²Ğ¸Ğ³Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
     "Two days of total float before project finish moves.",
   ],
   [
     "Governance",
     "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‡ĞµÑĞºĞ¸Ğ¹ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ",
-    "Ğ¡Ğ¸ÑÑ‚ĞµĞ¼Ğ° decision rights, oversight Ğ¸ accountability Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
+    "Ğ¡Ğ¸ÑÑ‚ĞµĞ¼Ğ° Ğ¿Ñ€Ğ°Ğ² Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¸Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹, Ğ½Ğ°Ğ´Ğ·Ğ¾Ñ€Ğ° Ğ¸ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ² Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğµ.",
     "The system of decision rights, oversight, and project accountability.",
     "Sponsor approves exceptions above tolerance.",
     "The sponsor approves exceptions above tolerance.",
@@ -1708,7 +239,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "Lag",
     "Ğ—Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ° ÑĞ²ÑĞ·Ğ¸",
-    "ĞĞ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ¼ĞµĞ¶Ğ´Ñƒ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ñ‹Ğ¼Ğ¸ activity.",
+    "ĞĞ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ¼ĞµĞ¶Ğ´Ñƒ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ñ‹Ğ¼Ğ¸ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸ÑĞ¼Ğ¸.",
     "Waiting time inserted between dependent activities.",
     "Ğ¢ĞµÑÑ‚ Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ñ‡ĞµÑ€ĞµĞ· 2 Ğ´Ğ½Ñ Ğ¿Ğ¾ÑĞ»Ğµ ÑƒÑÑ‚Ğ°Ğ½Ğ¾Ğ²ĞºĞ¸.",
     "Testing starts two days after installation.",
@@ -1716,9 +247,9 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "Lead",
     "ĞĞ¿ĞµÑ€ĞµĞ¶ĞµĞ½Ğ¸Ğµ ÑĞ²ÑĞ·Ğ¸",
-    "Ğ Ğ°Ğ·Ñ€ĞµÑˆÑ‘Ğ½Ğ½Ğ¾Ğµ Ğ¿ĞµÑ€ĞµĞºÑ€Ñ‹Ñ‚Ğ¸Ğµ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ñ‹Ñ… activity.",
+    "Ğ Ğ°Ğ·Ñ€ĞµÑˆÑ‘Ğ½Ğ½Ğ¾Ğµ Ğ¿ĞµÑ€ĞµĞºÑ€Ñ‹Ñ‚Ğ¸Ğµ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ñ‹Ñ… Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¹.",
     "Allowed overlap between dependent activities.",
-    "Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ°Ñ†Ğ¸Ñ Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ·Ğ° Ğ´ĞµĞ½ÑŒ Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ build.",
+    "Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ°Ñ†Ğ¸Ñ Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ·Ğ° Ğ´ĞµĞ½ÑŒ Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ¸.",
     "Documentation starts one day before build completes.",
   ],
   [
@@ -1732,7 +263,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "Outcome",
     "Ğ˜Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°",
-    "Ğ˜Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ñ Ğ¸Ğ»Ğ¸ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ñ, ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸ĞµĞ¼ output.",
+    "Ğ˜Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ñ Ğ¸Ğ»Ğ¸ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ñ, ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸ĞµĞ¼ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "A change in behavior or state enabled by using an output.",
     "ĞšĞ»Ğ¸ĞµĞ½Ñ‚ Ğ¾Ñ„Ğ¾Ñ€Ğ¼Ğ»ÑĞµÑ‚ Ğ·Ğ°ĞºĞ°Ğ· Ğ±ĞµĞ· Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºĞ¸.",
     "A customer completes an order without support.",
@@ -1750,13 +281,13 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "ĞŸĞ»Ğ°Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼",
     "Ğ‘ÑĞ´Ğ¶ĞµÑ‚Ğ½Ğ°Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹, Ğ·Ğ°Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ¹ Ğº Ğ¼Ğ¾Ğ¼ĞµĞ½Ñ‚Ñƒ Ğ¸Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ñ.",
     "Budgeted value of work planned by the measurement date.",
-    "Ğš Ğ¿ÑÑ‚Ğ½Ğ¸Ñ†Ğµ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ»Ğ¸ EV-equivalent 80.",
+    "Ğš Ğ¿ÑÑ‚Ğ½Ğ¸Ñ†Ğµ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ»Ğ¸ Ğ¾ÑĞ²Ğ¾ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼, ÑĞºĞ²Ğ¸Ğ²Ğ°Ğ»ĞµĞ½Ñ‚Ğ½Ñ‹Ğ¹ 80.",
     "By Friday, work budgeted at 80 was planned.",
   ],
   [
     "RAID",
     "RAID",
-    "Ğ¡Ğ²ÑĞ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¾Ğ±Ğ·Ğ¾Ñ€ risks, assumptions, issues Ğ¸ dependencies.",
+    "Ğ¡Ğ²ÑĞ·Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¾Ğ±Ğ·Ğ¾Ñ€ Ñ€Ğ¸ÑĞºĞ¾Ğ², Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸Ğ¹, Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼ Ğ¸ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ĞµĞ¹.",
     "A connected view of risks, assumptions, issues, and dependencies.",
     "Weekly RAID review focuses on changed items.",
     "Weekly RAID review focuses on changed items.",
@@ -1764,9 +295,9 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "RACI",
     "RACI",
-    "ĞœĞ°Ñ‚Ñ€Ğ¸Ñ†Ğ° Responsible, Accountable, Consulted, Informed.",
+    "ĞœĞ°Ñ‚Ñ€Ğ¸Ñ†Ğ° Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ĞµĞ»ĞµĞ¹, Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ñ… Ğ·Ğ° Ğ¸Ñ‚Ğ¾Ğ³, ĞºĞ¾Ğ½ÑÑƒĞ»ÑŒÑ‚Ğ°Ğ½Ñ‚Ğ¾Ğ² Ğ¸ Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµĞ¼Ñ‹Ñ… ÑƒÑ‡Ğ°ÑÑ‚Ğ½Ğ¸ĞºĞ¾Ğ².",
     "A matrix of Responsible, Accountable, Consulted, and Informed roles.",
-    "ĞĞ´Ğ¸Ğ½ Accountable Ğ·Ğ° release decision.",
+    "Ğ—Ğ° Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¾ Ğ²Ñ‹Ğ¿ÑƒÑĞºĞµ Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ĞµÑ‚ Ğ¾Ğ´Ğ¸Ğ½ ÑƒÑ‡Ğ°ÑÑ‚Ğ½Ğ¸Ğº.",
     "One Accountable person for the release decision.",
   ],
   [
@@ -1782,15 +313,15 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "ĞĞ±ÑŠÑ‘Ğ¼ Ñ€Ğ°Ğ±Ğ¾Ñ‚",
     "Ğ“Ñ€Ğ°Ğ½Ğ¸Ñ†Ğ° Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ¾Ğ², Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ² Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹, Ğ²ĞºĞ»ÑÑ‡Ñ‘Ğ½Ğ½Ñ‹Ñ… Ğ² Ğ¿Ñ€Ğ¾ĞµĞºÑ‚.",
     "Boundary of products, outcomes, and work included in a project.",
-    "Mobile app Ğ²Ñ…Ğ¾Ğ´Ğ¸Ñ‚, admin redesign Ğ½Ğµ Ğ²Ñ…Ğ¾Ğ´Ğ¸Ñ‚.",
+    "ĞœĞ¾Ğ±Ğ¸Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ñ€Ğ¸Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğµ Ğ²Ñ…Ğ¾Ğ´Ğ¸Ñ‚, Ğ¿ĞµÑ€ĞµÑ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ° Ğ¿Ğ°Ğ½ĞµĞ»Ğ¸ Ğ°Ğ´Ğ¼Ğ¸Ğ½Ğ¸ÑÑ‚Ñ€Ğ°Ñ‚Ğ¾Ñ€Ğ° Ğ½Ğµ Ğ²Ñ…Ğ¾Ğ´Ğ¸Ñ‚.",
     "The mobile app is in; admin redesign is out.",
   ],
   [
     "SLE",
     "ĞĞ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ñ‹Ğ¹ ÑƒÑ€Ğ¾Ğ²ĞµĞ½ÑŒ ÑĞµÑ€Ğ²Ğ¸ÑĞ°",
-    "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ· Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸, Ğ·Ğ° ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğµ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµĞ½Ñ‚ items Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚ÑÑ.",
+    "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ· Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸, Ğ·Ğ° ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚ÑÑ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµĞ½Ñ‚ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ².",
     "A forecast of time within which a stated percentage of items completes.",
-    "85% standard items Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ÑÑ‚ÑÑ Ğ·Ğ° 8 Ğ´Ğ½ĞµĞ¹.",
+    "85% ÑÑ‚Ğ°Ğ½Ğ´Ğ°Ñ€Ñ‚Ğ½Ñ‹Ñ… ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ² Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ÑÑ‚ÑÑ Ğ·Ğ° 8 Ğ´Ğ½ĞµĞ¹.",
     "85% of standard items finish within eight days.",
   ],
   [
@@ -1798,7 +329,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Ğ˜Ğ½Ğ´ĞµĞºÑ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ ÑÑ€Ğ¾ĞºĞ¾Ğ²",
     "EV / PV; schedule performance indicator in EVM.",
     "EV / PV; schedule performance indicator in EVM.",
-    "SPI Ğ½Ğ¸Ğ¶Ğµ 1 Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ°ĞµÑ‚ Ğ¼ĞµĞ½ÑŒÑˆĞµ earned work, Ñ‡ĞµĞ¼ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ»Ğ¾ÑÑŒ.",
+    "SPI Ğ½Ğ¸Ğ¶Ğµ 1 Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ°ĞµÑ‚ Ğ¼ĞµĞ½ÑŒÑˆĞ¸Ğ¹ Ğ¾ÑĞ²Ğ¾ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼, Ñ‡ĞµĞ¼ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ»Ğ¾ÑÑŒ.",
     "SPI below 1 means less earned work than planned.",
   ],
   [
@@ -1812,15 +343,15 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "Throughput",
     "ĞŸÑ€Ğ¾Ğ¿ÑƒÑĞºĞ½Ğ°Ñ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ½Ğ¾ÑÑ‚ÑŒ",
-    "ĞšĞ¾Ğ»Ğ¸Ñ‡ĞµÑÑ‚Ğ²Ğ¾ work items, Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ñ‹Ñ… Ğ·Ğ° ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ñƒ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
+    "ĞšĞ¾Ğ»Ğ¸Ñ‡ĞµÑÑ‚Ğ²Ğ¾ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ñ… ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ², Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ñ‹Ñ… Ğ·Ğ° ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ñƒ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
     "Number of work items completed per unit of time.",
-    "12 items Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¾ Ğ·Ğ° Ğ½ĞµĞ´ĞµĞ»Ñ.",
+    "12 ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ² Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¾ Ğ·Ğ° Ğ½ĞµĞ´ĞµĞ»Ñ.",
     "Twelve items completed in a week.",
   ],
   [
     "VAC",
     "ĞÑ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğ¸",
-    "BAC âˆ’ EAC; Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ğ¾Ğµ Ğ±ÑĞ´Ğ¶ĞµÑ‚Ğ½Ğ¾Ğµ Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ Ğ½Ğ° finish.",
+    "BAC âˆ’ EAC; Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ğ¾Ğµ Ğ±ÑĞ´Ğ¶ĞµÑ‚Ğ½Ğ¾Ğµ Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¸ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğ¸.",
     "BAC âˆ’ EAC; expected budget variance at completion.",
     "VAC âˆ’20 000 ÑƒĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ· Ğ¿ĞµÑ€ĞµÑ€Ğ°ÑÑ…Ğ¾Ğ´Ğ°.",
     "VAC of âˆ’20,000 forecasts an overrun.",
@@ -1828,17 +359,17 @@ const glossarySeed: [string, string, string, string, string, string][] = [
   [
     "Velocity",
     "Ğ¡ĞºĞ¾Ñ€Ğ¾ÑÑ‚ÑŒ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹",
-    "ĞšĞ¾Ğ»Ğ¸Ñ‡ĞµÑÑ‚Ğ²Ğ¾ points Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ğ¾Ğ³Ğ¾ Increment Ğ·Ğ° Sprint Ğ² ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚Ğµ Ğ¾Ğ´Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹.",
+    "ĞšĞ¾Ğ»Ğ¸Ñ‡ĞµÑÑ‚Ğ²Ğ¾ Ğ±Ğ°Ğ»Ğ»Ğ¾Ğ² Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ğ¾Ğ³Ğ¾ Ğ¸Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚Ğ° Ğ·Ğ° ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚ Ğ² ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚Ğµ Ğ¾Ğ´Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹.",
     "Points completed per Sprint in the context of one team.",
-    "Ğ˜ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞµÑ‚ÑÑ Ğ´Ğ»Ñ team forecast, Ğ½Ğµ ÑÑ€Ğ°Ğ²Ğ½ĞµĞ½Ğ¸Ñ Ğ»ÑĞ´ĞµĞ¹.",
+    "Ğ˜ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞµÑ‚ÑÑ Ğ´Ğ»Ñ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ½Ğ¾Ğ³Ğ¾ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·Ğ°, Ğ° Ğ½Ğµ ÑÑ€Ğ°Ğ²Ğ½ĞµĞ½Ğ¸Ñ Ğ»ÑĞ´ĞµĞ¹.",
     "Used for team forecasting, not comparing individuals.",
   ],
   [
     "WIP",
     "ĞĞµĞ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ğ°Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°",
-    "Work items, Ğ½Ğ°Ñ‡Ğ°Ñ‚Ñ‹Ğµ, Ğ½Ğ¾ ĞµÑ‰Ñ‘ Ğ½Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ñ‹Ğµ.",
+    "Ğ Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğµ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ñ‹, Ğ½Ğ°Ñ‡Ğ°Ñ‚Ñ‹Ğµ, Ğ½Ğ¾ ĞµÑ‰Ñ‘ Ğ½Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ñ‹Ğµ.",
     "Work items started but not yet completed.",
-    "Ğ’ In Progress Ğ¸ Review ÑĞµĞ¹Ñ‡Ğ°Ñ 7 items.",
+    "Ğ’ ÑÑ‚Ğ°Ñ‚ÑƒÑĞ°Ñ… Â«Ğ’ Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞµÂ» Ğ¸ Â«ĞĞ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞµÂ» ÑĞµĞ¹Ñ‡Ğ°Ñ 7 ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ².",
     "Seven items are currently in In Progress and Review.",
   ],
   [
@@ -1846,7 +377,7 @@ const glossarySeed: [string, string, string, string, string, string][] = [
     "Weighted Shortest Job First",
     "ĞŸÑ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Cost of Delay Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Job Size.",
     "Prioritization of Cost of Delay relative to Job Size.",
-    "Ğ’Ñ‹ÑĞ¾ĞºĞ°Ñ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ğ¼Ğ°Ğ»Ñ‹Ğ¹ size Ğ¿Ğ¾Ğ²Ñ‹ÑˆĞ°ÑÑ‚ score.",
+    "Ğ’Ñ‹ÑĞ¾ĞºĞ°Ñ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ğ¼Ğ°Ğ»Ñ‹Ğ¹ Ñ€Ğ°Ğ·Ğ¼ĞµÑ€ Ğ¿Ğ¾Ğ²Ñ‹ÑˆĞ°ÑÑ‚ Ğ¾Ñ†ĞµĞ½ĞºÑƒ.",
     "High value and small size increase the score.",
   ],
 ];
@@ -1879,7 +410,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ¤Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ°Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ",
     "Ğ ĞµĞ°Ğ»ÑŒĞ½Ñ‹Ğµ Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚Ñ‹ Ğ½Ğ° Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ½ÑƒÑ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ Ğº Ğ´Ğ°Ñ‚Ğµ Ğ¸Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ñ.",
     "The real cost incurred for work performed by the measurement date.",
-    "AC Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ ÑÑ‡ĞµÑ‚Ğ° Ğ¿Ğ¾Ğ´Ñ€ÑĞ´Ñ‡Ğ¸ĞºĞ° Ğ¸ Ñ‡Ğ°ÑÑ‹ Ğ²Ğ½ÑƒÑ‚Ñ€ĞµĞ½Ğ½ĞµĞ¹ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹.",
+    "Ğ¤Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ°Ñ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ ÑÑ‡ĞµÑ‚Ğ° Ğ¿Ğ¾Ğ´Ñ€ÑĞ´Ñ‡Ğ¸ĞºĞ° Ğ¸ Ñ‡Ğ°ÑÑ‹ Ğ²Ğ½ÑƒÑ‚Ñ€ĞµĞ½Ğ½ĞµĞ¹ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹.",
     "AC includes contractor invoices and internal team hours.",
   ),
   g(
@@ -1887,7 +418,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸÑ€Ğ¸Ñ‘Ğ¼ĞºĞ°",
     "Ğ¤Ğ¾Ñ€Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğµ, Ñ‡Ñ‚Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ ÑĞ¾Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ÑƒĞµÑ‚ ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¼ ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ÑĞ¼.",
     "Formal confirmation that a deliverable meets agreed criteria.",
-    "Product Owner Ğ¿Ñ€Ğ¸Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚ Ğ¸Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸ ÑÑ†ĞµĞ½Ğ°Ñ€Ğ¸ĞµĞ².",
+    "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ° Ğ¿Ñ€Ğ¸Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚ Ğ¸Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸ ÑÑ†ĞµĞ½Ğ°Ñ€Ğ¸ĞµĞ².",
     "The Product Owner accepts the increment after scenario checks.",
   ),
   g(
@@ -1895,7 +426,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ",
     "Ğ§ĞµĞ»Ğ¾Ğ²ĞµĞº, Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ÑÑ‰Ğ¸Ğ¹ Ğ·Ğ° Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğ³Ğ¾ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ Ğº ÑÑ€Ğ¾ĞºÑƒ.",
     "The person accountable for completing a specific action by its due date.",
-    "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† recovery action ÑĞ¾Ğ¾Ğ±Ñ‰Ğ°ĞµÑ‚ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ² Ğ¿ÑÑ‚Ğ½Ğ¸Ñ†Ñƒ.",
+    "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ğ²Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ ÑĞ¾Ğ¾Ğ±Ñ‰Ğ°ĞµÑ‚ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ² Ğ¿ÑÑ‚Ğ½Ğ¸Ñ†Ñƒ.",
     "The recovery-action owner reports the result on Friday.",
   ),
   g(
@@ -1911,7 +442,7 @@ const extendedGlossary: Glossary[] = [
     "ĞÑ„Ñ„Ğ¸Ğ½Ğ¸Ñ‚Ğ¸-Ğ³Ñ€ÑƒĞ¿Ğ¿Ğ¸Ñ€Ğ¾Ğ²ĞºĞ°",
     "Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ¸Ñ€Ğ¾Ğ²ĞºĞ° Ğ¼Ğ½Ğ¾Ğ¶ĞµÑÑ‚Ğ²Ğ° Ğ½Ğ°Ğ±Ğ»ÑĞ´ĞµĞ½Ğ¸Ğ¹ Ğ¿Ğ¾ ĞµÑÑ‚ĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ Ğ²Ğ¾Ğ·Ğ½Ğ¸ĞºĞ°ÑÑ‰Ğ¸Ğ¼ Ñ‚ĞµĞ¼Ğ°Ğ¼.",
     "Grouping many observations into naturally emerging themes.",
-    "Ğ˜Ğ½Ñ‚ĞµÑ€Ğ²ÑŒÑ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹ ÑĞ¾Ğ±Ñ€Ğ°Ğ»Ğ¸ Ğ² Ñ‚ĞµĞ¼Ñ‹ onboarding Ğ¸ Ğ´Ğ¾Ğ²ĞµÑ€Ğ¸Ñ.",
+    "Ğ˜Ğ½Ñ‚ĞµÑ€Ğ²ÑŒÑ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹ ÑĞ¾Ğ±Ñ€Ğ°Ğ»Ğ¸ Ğ² Ñ‚ĞµĞ¼Ñ‹ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ Ğ¸ Ğ´Ğ¾Ğ²ĞµÑ€Ğ¸Ñ.",
     "User-interview notes were grouped into onboarding and trust themes.",
   ),
   g(
@@ -1919,7 +450,7 @@ const extendedGlossary: Glossary[] = [
     "Agile",
     "ĞĞ°Ğ±Ğ¾Ñ€ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹ Ğ¸ Ğ¿Ñ€Ğ¸Ğ½Ñ†Ğ¸Ğ¿Ğ¾Ğ² Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ¸Ğ²Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ¸, Ğ° Ğ½Ğµ ĞµĞ´Ğ¸Ğ½Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑ.",
     "A set of values and principles for adaptive development, not one process.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° ÑĞ¾ĞºÑ€Ğ°Ñ‰Ğ°ĞµÑ‚ feedback loop Ğ²Ğ¼ĞµÑÑ‚Ğ¾ Ğ¼ĞµÑ…Ğ°Ğ½Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ ĞºĞ¾Ğ¿Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ ceremonies.",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° ÑĞ¾ĞºÑ€Ğ°Ñ‰Ğ°ĞµÑ‚ Ñ†Ğ¸ĞºĞ» Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ğ¾Ğ¹ ÑĞ²ÑĞ·Ğ¸ Ğ²Ğ¼ĞµÑÑ‚Ğ¾ Ğ¼ĞµÑ…Ğ°Ğ½Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ ĞºĞ¾Ğ¿Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ñ†ĞµÑ€ĞµĞ¼Ğ¾Ğ½Ğ¸Ğ¹.",
     "The team shortens feedback loops instead of copying ceremonies mechanically.",
   ),
   g(
@@ -1927,13 +458,13 @@ const extendedGlossary: Glossary[] = [
     "ĞÑ€Ñ‚ĞµÑ„Ğ°ĞºÑ‚",
     "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¾Ğ±ÑŠĞµĞºÑ‚, Ñ„Ğ¸ĞºÑĞ¸Ñ€ÑƒÑÑ‰Ğ¸Ğ¹ Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ†Ğ¸Ñ, Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¸Ğ»Ğ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚.",
     "A verifiable work object that records information, a decision, or an outcome.",
-    "Decision log Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¾Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¸ rationale.",
+    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹ Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¾Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¸ ĞµĞ³Ğ¾ Ğ¾Ğ±Ğ¾ÑĞ½Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ.",
     "The decision log stores the decision and its rationale.",
   ),
   g(
     "Benefit Owner",
     "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ğ²Ñ‹Ğ³Ğ¾Ğ´Ñ‹",
-    "Ğ Ğ¾Ğ»ÑŒ, Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ÑÑ‰Ğ°Ñ Ğ·Ğ° Ğ´Ğ¾ÑÑ‚Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¸ Ğ¸Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ğµ Ğ²Ñ‹Ğ³Ğ¾Ğ´Ñ‹ Ğ¿Ğ¾ÑĞ»Ğµ delivery.",
+    "Ğ Ğ¾Ğ»ÑŒ, Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ÑÑ‰Ğ°Ñ Ğ·Ğ° Ğ´Ğ¾ÑÑ‚Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¸ Ğ¸Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ğµ Ğ²Ñ‹Ğ³Ğ¾Ğ´Ñ‹ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "The role accountable for realizing and measuring a benefit after delivery.",
     "Ğ”Ğ¸Ñ€ĞµĞºÑ‚Ğ¾Ñ€ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¹ Ğ¸Ğ·Ğ¼ĞµÑ€ÑĞµÑ‚ ÑĞ¾ĞºÑ€Ğ°Ñ‰ĞµĞ½Ğ¸Ğµ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸ Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ¸.",
     "The operations director measures the reduction in handling time.",
@@ -1943,7 +474,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ²Ñ‹Ğ³Ğ¾Ğ´Ğ°Ğ¼Ğ¸",
     "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»ĞµĞ½Ğ¸Ğµ, Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ, Ğ¸Ğ·Ğ¼ĞµÑ€ĞµĞ½Ğ¸Ğµ Ğ¸ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶Ğ°Ğ½Ğ¸Ğµ Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ñ‹Ñ… Ğ²Ñ‹Ğ³Ğ¾Ğ´.",
     "Identifying, planning, measuring, and sustaining expected benefits.",
-    "Benefits plan ÑĞ²ÑĞ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑ Ñ ÑĞºĞ¾Ğ½Ğ¾Ğ¼Ğ¸ĞµĞ¹ Ñ‡Ğ°ÑĞ¾Ğ².",
+    "ĞŸĞ»Ğ°Ğ½ Ğ²Ñ‹Ğ³Ğ¾Ğ´ ÑĞ²ÑĞ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑ Ñ ÑĞºĞ¾Ğ½Ğ¾Ğ¼Ğ¸ĞµĞ¹ Ñ‡Ğ°ÑĞ¾Ğ².",
     "The benefits plan links the new process to hours saved.",
   ),
   g(
@@ -1957,9 +488,9 @@ const extendedGlossary: Glossary[] = [
   g(
     "Buffer",
     "Ğ‘ÑƒÑ„ĞµÑ€",
-    "Ğ¯Ğ²Ğ½Ñ‹Ğ¹ Ğ·Ğ°Ğ¿Ğ°Ñ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸ Ğ¸Ğ»Ğ¸ capacity Ğ´Ğ»Ñ Ğ·Ğ°Ñ‰Ğ¸Ñ‚Ñ‹ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒÑÑ‚Ğ²Ğ° Ğ¾Ñ‚ Ğ²Ğ°Ñ€Ğ¸Ğ°Ñ†Ğ¸Ğ¸.",
+    "Ğ¯Ğ²Ğ½Ñ‹Ğ¹ Ğ·Ğ°Ğ¿Ğ°Ñ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸ Ğ¸Ğ»Ğ¸ Ğ¼Ğ¾Ñ‰Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ´Ğ»Ñ Ğ·Ğ°Ñ‰Ğ¸Ñ‚Ñ‹ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒÑÑ‚Ğ²Ğ° Ğ¾Ñ‚ Ğ²Ğ°Ñ€Ğ¸Ğ°Ñ†Ğ¸Ğ¸.",
     "Explicit time or capacity reserved to protect a commitment from variation.",
-    "Release buffer Ğ¿Ğ¾Ğ³Ğ»Ğ¾Ñ‰Ğ°ĞµÑ‚ Ğ²Ğ°Ñ€Ğ¸Ğ°Ñ†Ğ¸Ñ Ğ¸Ğ½Ñ‚ĞµĞ³Ñ€Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ñ… Ñ€Ğ°Ğ±Ğ¾Ñ‚.",
+    "Ğ ĞµĞ·ĞµÑ€Ğ² Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ° Ğ¿Ğ¾Ğ³Ğ»Ğ¾Ñ‰Ğ°ĞµÑ‚ Ğ²Ğ°Ñ€Ğ¸Ğ°Ñ†Ğ¸Ñ Ğ¸Ğ½Ñ‚ĞµĞ³Ñ€Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ñ… Ñ€Ğ°Ğ±Ğ¾Ñ‚.",
     "The release buffer absorbs integration-work variation.",
   ),
   g(
@@ -1967,29 +498,29 @@ const extendedGlossary: Glossary[] = [
     "Ğ”Ğ¸Ğ°Ğ³Ñ€Ğ°Ğ¼Ğ¼Ğ° ÑĞ³Ğ¾Ñ€Ğ°Ğ½Ğ¸Ñ",
     "Ğ“Ñ€Ğ°Ñ„Ğ¸Ğº Ğ¾ÑÑ‚Ğ°Ğ²ÑˆĞµĞ³Ğ¾ÑÑ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ²Ğ¾ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
     "A chart of remaining work over time.",
-    "Ğ›Ğ¸Ğ½Ğ¸Ñ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ 34 points, Ğ¾ÑÑ‚Ğ°Ğ²ÑˆĞ¸Ñ…ÑÑ Ğ² Sprint.",
+    "Ğ›Ğ¸Ğ½Ğ¸Ñ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ 34 Ğ±Ğ°Ğ»Ğ»Ğ°, Ğ¾ÑÑ‚Ğ°Ğ²ÑˆĞ¸Ñ…ÑÑ Ğ² ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğµ.",
     "The line shows 34 points remaining in the Sprint.",
   ),
   g(
     "Burn-up",
     "Ğ”Ğ¸Ğ°Ğ³Ñ€Ğ°Ğ¼Ğ¼Ğ° Ğ½Ğ°Ñ€Ğ°ÑÑ‚Ğ°Ğ½Ğ¸Ñ",
-    "Ğ“Ñ€Ğ°Ñ„Ğ¸Ğº Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ½Ğ¾Ğ³Ğ¾ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ğ¸ Ğ¾Ğ±Ñ‰ĞµĞ¹ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ scope Ğ²Ğ¾ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
+    "Ğ“Ñ€Ğ°Ñ„Ğ¸Ğº Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ½Ğ¾Ğ³Ğ¾ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ğ¸ Ğ¾Ğ±Ñ‰ĞµĞ¹ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ Ñ€Ğ°Ğ±Ğ¾Ñ‚ Ğ²Ğ¾ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸.",
     "A chart of completed work and total scope over time.",
-    "Ğ Ğ¾ÑÑ‚ Ğ²ĞµÑ€Ñ…Ğ½ĞµĞ¹ Ğ»Ğ¸Ğ½Ğ¸Ğ¸ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ scope.",
+    "Ğ Ğ¾ÑÑ‚ Ğ²ĞµÑ€Ñ…Ğ½ĞµĞ¹ Ğ»Ğ¸Ğ½Ğ¸Ğ¸ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚.",
     "A rising scope line reveals added scope.",
   ),
   g(
     "Cadence",
     "ĞšĞ°Ğ´ĞµĞ½Ñ†Ğ¸Ñ",
-    "Ğ ĞµĞ³ÑƒĞ»ÑÑ€Ğ½Ñ‹Ğ¹ Ñ€Ğ¸Ñ‚Ğ¼ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ, delivery, review Ğ¸Ğ»Ğ¸ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¸Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
+    "Ğ ĞµĞ³ÑƒĞ»ÑÑ€Ğ½Ñ‹Ğ¹ Ñ€Ğ¸Ñ‚Ğ¼ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ, Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°, Ğ¾Ğ±Ğ·Ğ¾Ñ€Ğ° Ğ¸Ğ»Ğ¸ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¸Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
     "A regular rhythm for planning, delivery, review, or decisions.",
-    "Steering review Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Ğ²Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ Ñ‡ĞµÑ‚Ğ²ĞµÑ€Ğ³.",
+    "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‡ĞµÑĞºĞ¸Ğ¹ Ğ¾Ğ±Ğ·Ğ¾Ñ€ Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Ğ²Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ Ñ‡ĞµÑ‚Ğ²ĞµÑ€Ğ³.",
     "The steering review occurs every second Thursday.",
   ),
   g(
     "Change Request",
     "Ğ—Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ½Ğ° Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ",
-    "Ğ¤Ğ¾Ñ€Ğ¼Ğ°Ğ»Ğ¸Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ¿Ñ€ĞµĞ´Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½ÑƒÑ baseline Ğ¿Ğ¾ÑĞ»Ğµ Ğ¾Ñ†ĞµĞ½ĞºĞ¸ impact.",
+    "Ğ¤Ğ¾Ñ€Ğ¼Ğ°Ğ»Ğ¸Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ¿Ñ€ĞµĞ´Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ñ‹Ğ¹ Ğ±Ğ°Ğ·Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ğ»Ğ°Ğ½ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¾Ñ†ĞµĞ½ĞºĞ¸ Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ñ.",
     "A formal proposal to change an approved baseline after impact assessment.",
     "Ğ—Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµÑ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ñ€Ñ‹Ğ½Ğ¾Ğº Ğ¸ Ğ´Ğ²Ğµ Ğ½ĞµĞ´ĞµĞ»Ğ¸ Ğº ÑÑ€Ğ¾ĞºÑƒ.",
     "The request adds a market and two weeks to the schedule.",
@@ -1999,7 +530,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ£ÑÑ‚Ğ°Ğ² Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°",
     "ĞšÑ€Ğ°Ñ‚ĞºĞ¾Ğµ Ñ€Ğ°Ğ·Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°: Ñ†ĞµĞ»ÑŒ, Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ñ, Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ Ğ¸ ĞºĞ»ÑÑ‡ĞµĞ²Ñ‹Ğµ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñ‹.",
     "A concise authorization defining purpose, authority, boundaries, and key parties.",
-    "Sponsor ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ğ°ĞµÑ‚ charter Ğ´Ğ¾ Ğ´ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ.",
+    "Ğ¡Ğ¿Ğ¾Ğ½ÑĞ¾Ñ€ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ğ°ĞµÑ‚ ÑƒÑÑ‚Ğ°Ğ² Ğ´Ğ¾ Ğ´ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ.",
     "The sponsor approves the charter before detailed planning.",
   ),
   g(
@@ -2007,7 +538,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ§ĞµĞº-Ğ»Ğ¸ÑÑ‚",
     "Ğ¡Ğ¿Ğ¸ÑĞ¾Ğº Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€Ğ¾Ğº Ğ´Ğ»Ñ ÑĞ½Ğ¸Ğ¶ĞµĞ½Ğ¸Ñ Ñ€Ğ¸ÑĞºĞ° Ğ¿Ñ€Ğ¾Ğ¿ÑƒÑĞºĞ° Ğ² Ğ¿Ğ¾Ğ²Ñ‚Ğ¾Ñ€ÑĞµĞ¼Ğ¾Ğ¼ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑĞµ.",
     "A list of checks that reduces omissions in a repeatable process.",
-    "Release checklist Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ rollback owner Ğ¸ monitoring.",
+    "ĞšĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ñ‹Ğ¹ ÑĞ¿Ğ¸ÑĞ¾Ğº Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ° Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ° Ğ¾Ñ‚ĞºĞ°Ñ‚Ğ° Ğ¸ Ğ¼Ğ¾Ğ½Ğ¸Ñ‚Ğ¾Ñ€Ğ¸Ğ½Ğ³Ğ°.",
     "The release checklist requires a rollback owner and monitoring.",
   ),
   g(
@@ -2015,7 +546,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸĞ»Ğ°Ğ½ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ğ¹",
     "ĞšĞ°Ñ€Ñ‚Ğ° Ğ°ÑƒĞ´Ğ¸Ñ‚Ğ¾Ñ€Ğ¸Ğ¹, Ñ†ĞµĞ»ĞµĞ¹, Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚Ğ¾Ğ², Ñ‡Ğ°ÑÑ‚Ğ¾Ñ‚Ñ‹, Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†ĞµĞ² Ğ¸ ÑĞ¸Ğ³Ğ½Ğ°Ğ»Ğ¾Ğ² ÑƒÑĞ¿ĞµÑ…Ğ°.",
     "A map of audiences, purposes, formats, cadence, owners, and success signals.",
-    "Sponsor Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ°ĞµÑ‚ decision brief ĞµĞ¶ĞµĞ¼ĞµÑÑÑ‡Ğ½Ğ¾, ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° â€” daily flow signals.",
+    "Ğ¡Ğ¿Ğ¾Ğ½ÑĞ¾Ñ€ ĞµĞ¶ĞµĞ¼ĞµÑÑÑ‡Ğ½Ğ¾ Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ°ĞµÑ‚ ĞºÑ€Ğ°Ñ‚ĞºÑƒÑ Ğ·Ğ°Ğ¿Ğ¸ÑĞºÑƒ Ğ´Ğ»Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° â€” ĞµĞ¶ĞµĞ´Ğ½ĞµĞ²Ğ½Ñ‹Ğµ ÑĞ¸Ğ³Ğ½Ğ°Ğ»Ñ‹ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ°.",
     "The sponsor gets a monthly decision brief; the team gets daily flow signals.",
   ),
   g(
@@ -2023,7 +554,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ¡Ğ¾Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²Ğ¸Ğµ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸ÑĞ¼",
     "Ğ’Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ñ… Ğ¿Ñ€Ğ°Ğ²Ğ¾Ğ²Ñ‹Ñ…, Ğ½Ğ¾Ñ€Ğ¼Ğ°Ñ‚Ğ¸Ğ²Ğ½Ñ‹Ñ…, Ğ´Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ñ€Ğ½Ñ‹Ñ… Ğ¸Ğ»Ğ¸ Ğ²Ğ½ÑƒÑ‚Ñ€ĞµĞ½Ğ½Ğ¸Ñ… Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹.",
     "Meeting mandatory legal, regulatory, contractual, or internal requirements.",
-    "Ğ ĞµĞ»Ğ¸Ğ· Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ evidence Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ¶Ğ´ĞµĞ½Ğ¸Ñ privacy review.",
+    "Ğ’Ñ‹Ğ¿ÑƒÑĞº Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ¶Ğ´ĞµĞ½Ğ¸Ñ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ´ĞµĞ½Ñ†Ğ¸Ğ°Ğ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸.",
     "The release retains evidence of privacy review.",
   ),
   g(
@@ -2031,31 +562,31 @@ const extendedGlossary: Glossary[] = [
     "ĞšĞ¾Ğ½ÑÑƒĞ»ÑŒÑ‚Ğ¸Ñ€ÑƒĞµĞ¼Ñ‹Ğ¹",
     "Ğ Ğ¾Ğ»ÑŒ RACI, Ñ‡ÑŒÑ‘ Ğ¼Ğ½ĞµĞ½Ğ¸Ğµ Ğ·Ğ°Ğ¿Ñ€Ğ°ÑˆĞ¸Ğ²Ğ°ÑÑ‚ Ğ´Ğ¾ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ Ğ¸Ğ»Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
     "The RACI role whose input is requested before work or a decision.",
-    "Security ĞºĞ¾Ğ½ÑÑƒĞ»ÑŒÑ‚Ğ¸Ñ€ÑƒÑÑ‚ Ğ´Ğ¾ Ğ²Ñ‹Ğ±Ğ¾Ñ€Ğ° Ğ°Ñ€Ñ…Ğ¸Ñ‚ĞµĞºÑ‚ÑƒÑ€Ñ‹.",
+    "Ğ¡Ğ¿ĞµÑ†Ğ¸Ğ°Ğ»Ğ¸ÑÑ‚Ğ¾Ğ² Ğ¿Ğ¾ Ğ±ĞµĞ·Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ÑÑ‚Ğ¸ ĞºĞ¾Ğ½ÑÑƒĞ»ÑŒÑ‚Ğ¸Ñ€ÑƒÑÑ‚ Ğ´Ğ¾ Ğ²Ñ‹Ğ±Ğ¾Ñ€Ğ° Ğ°Ñ€Ñ…Ğ¸Ñ‚ĞµĞºÑ‚ÑƒÑ€Ñ‹.",
     "Security is consulted before the architecture is selected.",
   ),
   g(
     "Contingency Reserve",
     "Ğ ĞµĞ·ĞµÑ€Ğ² Ğ½Ğ° Ğ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ğµ Ñ€Ğ¸ÑĞºĞ¸",
-    "Ğ’Ñ€ĞµĞ¼Ñ Ğ¸Ğ»Ğ¸ Ğ´ĞµĞ½ÑŒĞ³Ğ¸ Ğ² baseline Ğ´Ğ»Ñ Ğ¸Ğ´ĞµĞ½Ñ‚Ğ¸Ñ„Ğ¸Ñ†Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ñ… Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹.",
+    "Ğ’Ñ€ĞµĞ¼Ñ Ğ¸Ğ»Ğ¸ Ğ´ĞµĞ½ÑŒĞ³Ğ¸ Ğ² Ğ±Ğ°Ğ·Ğ¾Ğ²Ğ¾Ğ¼ Ğ¿Ğ»Ğ°Ğ½Ğµ Ğ´Ğ»Ñ Ğ¸Ğ´ĞµĞ½Ñ‚Ğ¸Ñ„Ğ¸Ñ†Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ñ… Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹.",
     "Time or money within the baseline for identified uncertainty.",
-    "Ğ’ cost baseline Ğ²ĞºĞ»ÑÑ‡Ñ‘Ğ½ Ñ€ĞµĞ·ĞµÑ€Ğ² Ğ½Ğ° Ğ¼Ğ¸Ğ³Ñ€Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğµ Ğ´ĞµÑ„ĞµĞºÑ‚Ñ‹.",
+    "Ğ’ Ğ±Ğ°Ğ·Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ğ»Ğ°Ğ½ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ²ĞºĞ»ÑÑ‡Ñ‘Ğ½ Ñ€ĞµĞ·ĞµÑ€Ğ² Ğ½Ğ° Ğ¼Ğ¸Ğ³Ñ€Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğµ Ğ´ĞµÑ„ĞµĞºÑ‚Ñ‹.",
     "The cost baseline includes reserve for migration defects.",
   ),
   g(
     "Contract",
     "Ğ”Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ñ€",
-    "Ğ®Ñ€Ğ¸Ğ´Ğ¸Ñ‡ĞµÑĞºĞ¸ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ ÑĞ¾Ğ³Ğ»Ğ°ÑˆĞµĞ½Ğ¸Ğµ Ğ¾ scope, Ñ†ĞµĞ½Ğµ, ÑÑ€Ğ¾ĞºĞ°Ñ…, Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸ÑÑ….",
+    "Ğ®Ñ€Ğ¸Ğ´Ğ¸Ñ‡ĞµÑĞºĞ¸ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ ÑĞ¾Ğ³Ğ»Ğ°ÑˆĞµĞ½Ğ¸Ğµ Ğ¾Ğ± Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‚, Ñ†ĞµĞ½Ğµ, ÑÑ€Ğ¾ĞºĞ°Ñ…, Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸ÑÑ….",
     "A legally binding agreement on scope, price, dates, responsibilities, and change.",
-    "Ğ”Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ñ€ Ñ„Ğ¸ĞºÑĞ¸Ñ€ÑƒĞµÑ‚ acceptance Ğ¸ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ·Ğ° Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºÑƒ.",
+    "Ğ”Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ñ€ Ñ„Ğ¸ĞºÑĞ¸Ñ€ÑƒĞµÑ‚ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ Ğ¿Ñ€Ğ¸Ñ‘Ğ¼ĞºĞ¸ Ğ¸ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ·Ğ° Ğ·Ğ°Ğ´ĞµÑ€Ğ¶ĞºÑƒ.",
     "The contract defines acceptance and delay responsibility.",
   ),
   g(
     "Corrective Action",
     "ĞšĞ¾Ñ€Ñ€ĞµĞºÑ‚Ğ¸Ñ€ÑƒÑÑ‰ĞµĞµ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ğµ",
-    "Ğ”ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ğµ, Ğ²Ğ¾Ğ·Ğ²Ñ€Ğ°Ñ‰Ğ°ÑÑ‰ĞµĞµ Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ñ‹Ğ¹ performance Ğº ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ¼Ñƒ Ğ¿Ğ»Ğ°Ğ½Ñƒ Ğ¸Ğ»Ğ¸ tolerance.",
+    "Ğ”ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ğµ, Ğ²Ğ¾Ğ·Ğ²Ñ€Ğ°Ñ‰Ğ°ÑÑ‰ĞµĞµ Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼ÑƒÑ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ Ğº ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ¼Ñƒ Ğ¿Ğ»Ğ°Ğ½Ñƒ Ğ¸Ğ»Ğ¸ Ğ´Ğ¾Ğ¿ÑƒÑÑ‚Ğ¸Ğ¼Ğ¾Ğ¼Ñƒ Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ñ.",
     "An action intended to return performance to the agreed plan or tolerance.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¿ĞµÑ€ĞµÑ€Ğ°ÑĞ¿Ñ€ĞµĞ´ĞµĞ»ÑĞµÑ‚ capacity Ğ´Ğ»Ñ Ğ²Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ñ milestone.",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¿ĞµÑ€ĞµÑ€Ğ°ÑĞ¿Ñ€ĞµĞ´ĞµĞ»ÑĞµÑ‚ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½ÑƒÑ Ğ¼Ğ¾Ñ‰Ğ½Ğ¾ÑÑ‚ÑŒ Ğ´Ğ»Ñ Ğ²Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ñ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ¾Ğ¹ Ñ‚Ğ¾Ñ‡ĞºĞ¸.",
     "The team reallocates capacity to recover the milestone.",
   ),
   g(
@@ -2063,7 +594,7 @@ const extendedGlossary: Glossary[] = [
     "ĞšÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ°Ñ Ñ†ĞµĞ¿ÑŒ",
     "ĞŸĞ¾Ğ´Ñ…Ğ¾Ğ´ Ğº Ñ€Ğ°ÑĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ñ, ÑƒÑ‡Ğ¸Ñ‚Ñ‹Ğ²Ğ°ÑÑ‰Ğ¸Ğ¹ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ñ€Ğ°Ğ±Ğ¾Ñ‚ Ğ¸ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡Ğ¸Ğ²Ğ°ÑÑ‰Ğ¸Ñ… Ñ€ĞµÑÑƒÑ€ÑĞ¾Ğ² Ñ Ğ±ÑƒÑ„ĞµÑ€Ğ°Ğ¼Ğ¸.",
     "A scheduling approach that considers task and constrained-resource dependencies using buffers.",
-    "ĞĞ´Ğ¸Ğ½ ÑĞ¿ĞµÑ†Ğ¸Ğ°Ğ»Ğ¸ÑÑ‚ ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ resource constraint Ğ´Ğ»Ñ Ğ´Ğ²ÑƒÑ… Ğ²ĞµÑ‚Ğ¾Ğº.",
+    "ĞĞ´Ğ¸Ğ½ ÑĞ¿ĞµÑ†Ğ¸Ğ°Ğ»Ğ¸ÑÑ‚ ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ñ€ĞµÑÑƒÑ€ÑĞ½Ğ¾Ğµ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ğµ Ğ´Ğ»Ñ Ğ´Ğ²ÑƒÑ… Ğ²ĞµÑ‚Ğ¾Ğº.",
     "One specialist creates a resource constraint across two branches.",
   ),
   g(
@@ -2071,23 +602,23 @@ const extendedGlossary: Glossary[] = [
     "Ğ”Ğ°ÑˆĞ±Ğ¾Ñ€Ğ´",
     "Ğ¡Ğ¶Ğ°Ñ‚Ğ¾Ğµ Ğ¿Ñ€ĞµĞ´ÑÑ‚Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ ÑĞ¸Ğ³Ğ½Ğ°Ğ»Ğ¾Ğ², Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ñ… ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğ¹ Ğ°ÑƒĞ´Ğ¸Ñ‚Ğ¾Ñ€Ğ¸Ğ¸ Ğ´Ğ»Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
     "A concise view of signals a specific audience needs to decide.",
-    "Sponsor dashboard Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ forecast, top risks Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
+    "ĞŸĞ°Ğ½ĞµĞ»ÑŒ ÑĞ¿Ğ¾Ğ½ÑĞ¾Ñ€Ğ° Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·, Ğ³Ğ»Ğ°Ğ²Ğ½Ñ‹Ğµ Ñ€Ğ¸ÑĞºĞ¸ Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
     "The sponsor dashboard shows forecast, top risks, and decisions.",
   ),
   g(
     "Decision Log",
     "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹",
-    "Ğ ĞµĞµÑÑ‚Ñ€ Ğ²Ğ¾Ğ¿Ñ€Ğ¾ÑĞ¾Ğ², Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ğ¾Ğ², ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ĞµĞ², Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹, rationale Ğ¸ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ğ¹.",
+    "Ğ ĞµĞµÑÑ‚Ñ€ Ğ²Ğ¾Ğ¿Ñ€Ğ¾ÑĞ¾Ğ², Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ğ¾Ğ², ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ĞµĞ², Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹, Ğ¾Ğ±Ğ¾ÑĞ½Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹ Ğ¸ Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ğ¹.",
     "A register of questions, options, criteria, decisions, rationale, and consequences.",
-    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ğ¾Ğ±ÑŠÑÑĞ½ÑĞµÑ‚, Ğ¿Ğ¾Ñ‡ĞµĞ¼Ñƒ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ»Ğ¸ build Ğ²Ğ¼ĞµÑÑ‚Ğ¾ buy.",
+    "Ğ–ÑƒÑ€Ğ½Ğ°Ğ» Ğ¾Ğ±ÑŠÑÑĞ½ÑĞµÑ‚, Ğ¿Ğ¾Ñ‡ĞµĞ¼Ñƒ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ»Ğ¸ ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ²Ğ¼ĞµÑÑ‚Ğ¾ Ğ¿Ğ¾ĞºÑƒĞ¿ĞºĞ¸.",
     "The log explains why build was chosen over buy.",
   ),
   g(
     "Definition of Ready",
     "ĞĞ¿Ñ€ĞµĞ´ĞµĞ»ĞµĞ½Ğ¸Ğµ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸ Ğº Ğ½Ğ°Ñ‡Ğ°Ğ»Ñƒ",
-    "Ğ›Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ°Ñ policy Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ñ… ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ğ¹, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ñ… item Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ Ğ¾ÑĞ¾Ğ·Ğ½Ğ°Ğ½Ğ½Ğ¾ Ğ½Ğ°Ñ‡Ğ°Ñ‚ÑŒ.",
+    "Ğ›Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ñ€Ğ°Ğ²Ğ¸Ğ»Ğ¾ Ğ¼Ğ¸Ğ½Ğ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ñ… ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ğ¹, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ñ… ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚ Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ Ğ¾ÑĞ¾Ğ·Ğ½Ğ°Ğ½Ğ½Ğ¾ Ğ½Ğ°Ñ‡Ğ°Ñ‚ÑŒ.",
     "A local policy defining minimum conditions for intentionally starting an item.",
-    "Ğ˜ÑÑ‚Ğ¾Ñ€Ğ¸Ñ ready, ĞºĞ¾Ğ³Ğ´Ğ° Ğ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹ Ñ†ĞµĞ»ÑŒ, ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¸ Ğ¸ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚Ğ¸.",
+    "Ğ˜ÑÑ‚Ğ¾Ñ€Ğ¸Ñ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ°, ĞºĞ¾Ğ³Ğ´Ğ° Ğ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹ Ñ†ĞµĞ»ÑŒ, ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¸ Ğ¸ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚Ğ¸.",
     "A story is ready when its goal, criteria, and dependencies are known.",
   ),
   g(
@@ -2095,7 +626,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸĞ»Ğ¾Ñ‚Ğ½Ğ¾ÑÑ‚ÑŒ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ĞµĞ¹",
     "Ğ¡Ñ‚ĞµĞ¿ĞµĞ½ÑŒ ÑĞ²ÑĞ·Ğ°Ğ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ Ğ²Ğ½ĞµÑˆĞ½Ğ¸Ğ¼Ğ¸ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ°Ğ¼Ğ¸, ÑĞ¸ÑÑ‚ĞµĞ¼Ğ°Ğ¼Ğ¸ Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸ÑĞ¼Ğ¸.",
     "The degree to which work depends on external teams, systems, and decisions.",
-    "ĞŸÑÑ‚ÑŒ Ğ¼ĞµĞ¶ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ½Ñ‹Ñ… handoffs Ğ´ĞµĞ»Ğ°ÑÑ‚ density Ğ²Ñ‹ÑĞ¾ĞºĞ¾Ğ¹.",
+    "ĞŸÑÑ‚ÑŒ Ğ¼ĞµĞ¶ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ½Ñ‹Ñ… Ğ¿ĞµÑ€ĞµĞ´Ğ°Ñ‡ Ğ´ĞµĞ»Ğ°ÑÑ‚ Ğ¿Ğ»Ğ¾Ñ‚Ğ½Ğ¾ÑÑ‚ÑŒ Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ĞµĞ¹ Ğ²Ñ‹ÑĞ¾ĞºĞ¾Ğ¹.",
     "Five cross-team handoffs make dependency density high.",
   ),
   g(
@@ -2103,39 +634,39 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜ÑÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ",
     "Ğ Ğ°Ğ±Ğ¾Ñ‚Ğ° Ğ¿Ğ¾ ÑĞ½Ğ¸Ğ¶ĞµĞ½Ğ¸Ñ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ñ‹, Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ğ¶Ğ¸Ğ·Ğ½ĞµÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
     "Work that reduces uncertainty about the problem, need, and viable solution.",
-    "ĞŸÑ€Ğ¾Ñ‚Ğ¾Ñ‚Ğ¸Ğ¿ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚, Ğ¿Ğ¾Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚ Ğ»Ğ¸ ĞºĞ»Ğ¸ĞµĞ½Ñ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ flow.",
+    "ĞŸÑ€Ğ¾Ñ‚Ğ¾Ñ‚Ğ¸Ğ¿ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚, Ğ¿Ğ¾Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚ Ğ»Ğ¸ ĞºĞ»Ğ¸ĞµĞ½Ñ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ğ¾Ñ‚Ğ¾Ğº Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
     "A prototype tests whether customers understand the new flow.",
   ),
   g(
     "Duration",
     "Ğ”Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ",
-    "ĞšĞ°Ğ»ĞµĞ½Ğ´Ğ°Ñ€Ğ½Ğ¾Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‡ĞµĞµ Ğ²Ñ€ĞµĞ¼Ñ Ğ¼ĞµĞ¶Ğ´Ñƒ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾Ğ¼ Ğ¸ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸ĞµĞ¼ activity.",
+    "ĞšĞ°Ğ»ĞµĞ½Ğ´Ğ°Ñ€Ğ½Ğ¾Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‡ĞµĞµ Ğ²Ñ€ĞµĞ¼Ñ Ğ¼ĞµĞ¶Ğ´Ñƒ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾Ğ¼ Ğ¸ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸ĞµĞ¼ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸.",
     "Working time between an activity's start and finish.",
-    "Duration Ñ‚ĞµÑÑ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ â€” Ñ‡ĞµÑ‚Ñ‹Ñ€Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ñ… Ğ´Ğ½Ñ.",
+    "Ğ”Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ Ñ‚ĞµÑÑ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ â€” Ñ‡ĞµÑ‚Ñ‹Ñ€Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ñ… Ğ´Ğ½Ñ.",
     "Testing duration is four working days.",
   ),
   g(
     "Early Finish",
     "Ğ Ğ°Ğ½Ğ½ĞµĞµ Ğ¾ĞºĞ¾Ğ½Ñ‡Ğ°Ğ½Ğ¸Ğµ",
-    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ñ€Ğ°Ğ½Ğ½ÑÑ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ°Ñ Ğ´Ğ°Ñ‚Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ activity Ğ¿Ğ¾ forward pass.",
+    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ñ€Ğ°Ğ½Ğ½ÑÑ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ°Ñ Ğ´Ğ°Ñ‚Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ Ğ¿Ğ¾ Ğ¿Ñ€ÑĞ¼Ğ¾Ğ¼Ñƒ Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ñƒ.",
     "The earliest possible activity finish calculated by the forward pass.",
-    "EF Ñ€Ğ°Ğ²ĞµĞ½ Early Start Ğ¿Ğ»ÑÑ duration.",
+    "Ğ Ğ°Ğ½Ğ½ĞµĞµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğµ Ñ€Ğ°Ğ²Ğ½Ğ¾ Ñ€Ğ°Ğ½Ğ½ĞµĞ¼Ñƒ Ğ½Ğ°Ñ‡Ğ°Ğ»Ñƒ Ğ¿Ğ»ÑÑ Ğ´Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ.",
     "EF equals Early Start plus duration.",
   ),
   g(
     "Early Start",
     "Ğ Ğ°Ğ½Ğ½ĞµĞµ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾",
-    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ñ€Ğ°Ğ½Ğ½ÑÑ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ°Ñ Ğ´Ğ°Ñ‚Ğ° Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° activity Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ predecessors.",
+    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ñ€Ğ°Ğ½Ğ½ÑÑ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ°Ñ Ğ´Ğ°Ñ‚Ğ° Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ Ğ¿Ñ€ĞµĞ´ÑˆĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¸ĞºĞ¾Ğ².",
     "The earliest possible activity start given predecessor constraints.",
-    "Ğ˜Ğ½Ñ‚ĞµĞ³Ñ€Ğ°Ñ†Ğ¸Ñ ÑÑ‚Ğ°Ñ€Ñ‚ÑƒĞµÑ‚ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¼Ğ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾ EF predecessors.",
+    "Ğ˜Ğ½Ñ‚ĞµĞ³Ñ€Ğ°Ñ†Ğ¸Ñ ÑÑ‚Ğ°Ñ€Ñ‚ÑƒĞµÑ‚ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¼Ğ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ñ€Ğ°Ğ½Ğ½ĞµĞ³Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¿Ñ€ĞµĞ´ÑˆĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¸ĞºĞ¾Ğ².",
     "Integration starts after the maximum predecessor EF.",
   ),
   g(
     "Escalation Path",
     "ĞœĞ°Ñ€ÑˆÑ€ÑƒÑ‚ ÑÑĞºĞ°Ğ»Ğ°Ñ†Ğ¸Ğ¸",
-    "Ğ—Ğ°Ñ€Ğ°Ğ½ĞµĞµ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ°Ñ Ğ¿Ğ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ ÑƒÑ€Ğ¾Ğ²Ğ½ĞµĞ¹ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¿Ñ€Ğ¸ Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞµĞ½Ğ¸Ğ¸ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¸Ğ»Ğ¸ tolerance.",
+    "Ğ—Ğ°Ñ€Ğ°Ğ½ĞµĞµ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ°Ñ Ğ¿Ğ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ ÑƒÑ€Ğ¾Ğ²Ğ½ĞµĞ¹ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¿Ñ€Ğ¸ Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞµĞ½Ğ¸Ğ¸ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¸Ğ»Ğ¸ Ğ´Ğ¾Ğ¿ÑƒÑÑ‚Ğ¸Ğ¼Ğ¾Ğ³Ğ¾ Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ñ.",
     "A predefined sequence of decision levels when authority or tolerance is exceeded.",
-    "Cost variance Ğ²Ñ‹ÑˆĞµ 10% Ğ¸Ğ´Ñ‘Ñ‚ Ğº steering committee.",
+    "ĞÑ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ²Ñ‹ÑˆĞµ 10% Ğ¿ĞµÑ€ĞµĞ´Ğ°Ñ‘Ñ‚ÑÑ Ñ€ÑƒĞºĞ¾Ğ²Ğ¾Ğ´ÑÑ‰ĞµĞ¼Ñƒ ĞºĞ¾Ğ¼Ğ¸Ñ‚ĞµÑ‚Ñƒ.",
     "Cost variance above 10% goes to the steering committee.",
   ),
   g(
@@ -2143,7 +674,7 @@ const extendedGlossary: Glossary[] = [
     "ĞÑ†ĞµĞ½ĞºĞ° Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ",
     "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ· Ğ´Ğ¾Ğ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ñ… Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚, Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ñ… Ğ´Ğ»Ñ Ğ¾ÑÑ‚Ğ°Ğ²ÑˆĞµĞ¹ÑÑ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
     "The forecast additional cost required to complete remaining work.",
-    "ETC Ğ¿ĞµÑ€ĞµÑÑ‡Ğ¸Ñ‚Ğ°Ğ½ ÑĞ½Ğ¸Ğ·Ñƒ Ğ²Ğ²ĞµÑ€Ñ… Ğ¿Ğ¾ÑĞ»Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ scope.",
+    "ĞÑ†ĞµĞ½ĞºĞ° Ğ´Ğ¾ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¿ĞµÑ€ĞµÑÑ‡Ğ¸Ñ‚Ğ°Ğ½Ğ° ÑĞ½Ğ¸Ğ·Ñƒ Ğ²Ğ²ĞµÑ€Ñ… Ğ¿Ğ¾ÑĞ»Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚.",
     "ETC is re-estimated bottom-up after the scope change.",
   ),
   g(
@@ -2151,15 +682,15 @@ const extendedGlossary: Glossary[] = [
     "Ğ­ĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚",
     "ĞĞ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ½Ğ°Ñ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ³Ğ¸Ğ¿Ğ¾Ñ‚ĞµĞ·Ñ‹ Ñ Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ñ‹Ğ¼ ÑĞ¸Ğ³Ğ½Ğ°Ğ»Ğ¾Ğ¼ Ğ¸ Ğ¿Ñ€Ğ°Ğ²Ğ¸Ğ»Ğ¾Ğ¼ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ.",
     "A bounded hypothesis test with an expected signal and decision rule.",
-    "ĞŸĞ¸Ğ»Ğ¾Ñ‚ Ğ½Ğ° 50 ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ğ°Ñ… Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚ adoption Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑĞ°.",
+    "ĞŸĞ¸Ğ»Ğ¾Ñ‚ Ğ½Ğ° 50 ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ğ°Ñ… Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚ Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¸Ğµ Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑĞ°.",
     "A 50-customer pilot tests adoption of the new process.",
   ),
   g(
     "Feature",
     "Ğ¤ÑƒĞ½ĞºÑ†Ğ¸Ñ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ°",
-    "Ğ¦ĞµĞ»Ğ¾ÑÑ‚Ğ½Ğ°Ñ capability, ÑĞ¾Ğ·Ğ´Ğ°ÑÑ‰Ğ°Ñ Ğ½Ğ°Ğ±Ğ»ÑĞ´Ğ°ĞµĞ¼ÑƒÑ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ Ğ¸Ğ»Ğ¸ Ğ±Ğ¸Ğ·Ğ½ĞµÑÑƒ.",
+    "Ğ¦ĞµĞ»Ğ¾ÑÑ‚Ğ½Ğ°Ñ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒ, ÑĞ¾Ğ·Ğ´Ğ°ÑÑ‰Ğ°Ñ Ğ½Ğ°Ğ±Ğ»ÑĞ´Ğ°ĞµĞ¼ÑƒÑ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ Ğ¸Ğ»Ğ¸ Ğ±Ğ¸Ğ·Ğ½ĞµÑÑƒ.",
     "A coherent capability that creates observable user or business value.",
-    "Ğ¡Ğ°Ğ¼Ğ¾ÑÑ‚Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ²Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¿Ğ°Ñ€Ğ¾Ğ»Ñ â€” feature.",
+    "Ğ¡Ğ°Ğ¼Ğ¾ÑÑ‚Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ²Ğ¾ÑÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¿Ğ°Ñ€Ğ¾Ğ»Ñ â€” Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½Ğ°Ñ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒ.",
     "Self-service password recovery is a feature.",
   ),
   g(
@@ -2167,13 +698,13 @@ const extendedGlossary: Glossary[] = [
     "ĞÑÑƒÑ‰ĞµÑÑ‚Ğ²Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ",
     "Ğ ĞµĞ°Ğ»Ğ¸ÑÑ‚Ğ¸Ñ‡Ğ½Ğ¾ÑÑ‚ÑŒ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ Ñ‚ĞµÑ…Ğ½Ğ¾Ğ»Ğ¾Ğ³Ğ¸Ğ¸, Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸, Ğ´ĞµĞ½ĞµĞ³, Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¹ Ğ¸ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ğ¹.",
     "The viability of a solution given technology, time, money, operations, and constraints.",
-    "Spike Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´Ğ°ĞµÑ‚, Ñ‡Ñ‚Ğ¾ API Ğ²Ñ‹Ğ´ĞµÑ€Ğ¶Ğ¸Ñ‚ Ñ‚Ñ€ĞµĞ±ÑƒĞµĞ¼ÑƒÑ Ğ½Ğ°Ğ³Ñ€ÑƒĞ·ĞºÑƒ.",
+    "Ğ˜ÑÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒÑĞºĞ°Ñ Ğ·Ğ°Ğ´Ğ°Ñ‡Ğ° Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´Ğ°ĞµÑ‚, Ñ‡Ñ‚Ğ¾ API Ğ²Ñ‹Ğ´ĞµÑ€Ğ¶Ğ¸Ñ‚ Ñ‚Ñ€ĞµĞ±ÑƒĞµĞ¼ÑƒÑ Ğ½Ğ°Ğ³Ñ€ÑƒĞ·ĞºÑƒ.",
     "A spike confirms the API can sustain required load.",
   ),
   g(
     "Finish-to-Finish",
     "ĞĞºĞ¾Ğ½Ñ‡Ğ°Ğ½Ğ¸Ğµâ€“Ğ¾ĞºĞ¾Ğ½Ñ‡Ğ°Ğ½Ğ¸Ğµ",
-    "Ğ¡Ğ²ÑĞ·ÑŒ, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ successor Ğ½Ğµ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚ÑŒÑÑ Ñ€Ğ°Ğ½ÑŒÑˆĞµ predecessor.",
+    "Ğ¡Ğ²ÑĞ·ÑŒ, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ Ğ¿Ñ€ĞµĞµĞ¼Ğ½Ğ¸Ğº Ğ½Ğµ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚ÑŒÑÑ Ñ€Ğ°Ğ½ÑŒÑˆĞµ Ğ¿Ñ€ĞµĞ´ÑˆĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¸ĞºĞ°.",
     "A relationship where the successor cannot finish before the predecessor.",
     "Ğ ĞµĞ´Ğ°ĞºÑ‚ÑƒÑ€Ğ° Ğ½Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚ÑÑ Ñ€Ğ°Ğ½ÑŒÑˆĞµ Ğ½Ğ°Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ñ Ñ‚ĞµĞºÑÑ‚Ğ°.",
     "Editing cannot finish before writing finishes.",
@@ -2181,7 +712,7 @@ const extendedGlossary: Glossary[] = [
   g(
     "Finish-to-Start",
     "ĞĞºĞ¾Ğ½Ñ‡Ğ°Ğ½Ğ¸Ğµâ€“Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾",
-    "Ğ¡Ğ²ÑĞ·ÑŒ, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ successor Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ predecessor.",
+    "Ğ¡Ğ²ÑĞ·ÑŒ, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ Ğ¿Ñ€ĞµĞµĞ¼Ğ½Ğ¸Ğº Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¿Ñ€ĞµĞ´ÑˆĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¸ĞºĞ°.",
     "A relationship where the successor starts after the predecessor finishes.",
     "ĞœĞ¸Ğ³Ñ€Ğ°Ñ†Ğ¸Ñ Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ñ ÑÑ…ĞµĞ¼Ñ‹.",
     "Migration starts after schema approval.",
@@ -2189,9 +720,9 @@ const extendedGlossary: Glossary[] = [
   g(
     "Forecast",
     "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ·",
-    "Ğ¢ĞµĞºÑƒÑ‰Ğ°Ñ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚Ğ½Ğ°Ñ Ğ¸Ğ»Ğ¸ ÑÑ†ĞµĞ½Ğ°Ñ€Ğ½Ğ°Ñ Ğ¾Ñ†ĞµĞ½ĞºĞ° Ğ±ÑƒĞ´ÑƒÑ‰ĞµĞ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ½Ğ° Ğ¾ÑĞ½Ğ¾Ğ²Ğµ evidence.",
+    "Ğ¢ĞµĞºÑƒÑ‰Ğ°Ñ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚Ğ½Ğ°Ñ Ğ¸Ğ»Ğ¸ ÑÑ†ĞµĞ½Ğ°Ñ€Ğ½Ğ°Ñ Ğ¾Ñ†ĞµĞ½ĞºĞ° Ğ±ÑƒĞ´ÑƒÑ‰ĞµĞ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ½Ğ° Ğ¾ÑĞ½Ğ¾Ğ²Ğµ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğ¹.",
     "A current probabilistic or scenario estimate of a future result based on evidence.",
-    "P85 forecast Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸ Ñ€ĞµĞ»Ğ¸Ğ·Ğ°.",
+    "ĞŸÑ€Ğ¾Ğ³Ğ½Ğ¾Ğ· P85 Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ°.",
     "A P85 forecast shows the release-completion range.",
   ),
   g(
@@ -2199,7 +730,7 @@ const extendedGlossary: Glossary[] = [
     "ĞšĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ñ‹Ğµ Ğ²Ğ¾Ñ€Ğ¾Ñ‚Ğ°",
     "Ğ¢Ğ¾Ñ‡ĞºĞ°, Ğ³Ğ´Ğµ ÑƒĞ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡ĞµĞ½Ğ½Ñ‹Ğµ Ğ»Ğ¸Ñ†Ğ° Ñ€ĞµÑˆĞ°ÑÑ‚ Ğ¿Ñ€Ğ¾Ğ´Ğ¾Ğ»Ğ¶Ğ¸Ñ‚ÑŒ, Ğ¸Ğ·Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ, Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ¸Ğ»Ğ¸ Ğ¾Ñ‚Ğ»Ğ¾Ğ¶Ğ¸Ñ‚ÑŒ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ.",
     "A point where authorized people decide to continue, change, stop, or defer work.",
-    "Go/no-go gate Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚ readiness Ğ¸ rollback.",
+    "ĞšĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ°Ñ Ñ‚Ğ¾Ñ‡ĞºĞ° Ğ·Ğ°Ğ¿ÑƒÑĞºĞ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¾Ñ‚ĞºĞ°Ñ‚Ğ°.",
     "The go/no-go gate checks readiness and rollback.",
   ),
   g(
@@ -2207,7 +738,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ¦ĞµĞ»ÑŒ",
     "Ğ–ĞµĞ»Ğ°ĞµĞ¼Ğ¾Ğµ Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¸Ğ»Ğ¸ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğµ, ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğµ Ñ„Ğ¾ĞºÑƒÑĞ¸Ñ€ÑƒĞµÑ‚ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ.",
     "A desired direction or state that focuses decisions and work.",
-    "Sprint Goal Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑĞµÑ‚ items Ğ²Ğ¾ĞºÑ€ÑƒĞ³ Ğ¾Ğ´Ğ½Ğ¾Ğ¹ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ğ¾Ğ¹ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸.",
+    "Ğ¦ĞµĞ»ÑŒ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ° Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑĞµÑ‚ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ñ‹ Ğ²Ğ¾ĞºÑ€ÑƒĞ³ Ğ¾Ğ´Ğ½Ğ¾Ğ¹ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ğ¾Ğ¹ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "The Sprint Goal unites items around one testable value.",
   ),
   g(
@@ -2215,7 +746,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ“Ğ¸Ğ±Ñ€Ğ¸Ğ´Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´",
     "ĞÑĞ¾Ğ·Ğ½Ğ°Ğ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ñ Ğ¿Ñ€Ğ°ĞºÑ‚Ğ¸Ğº Ñ ÑĞ¾Ğ²Ğ¼ĞµÑÑ‚Ğ¸Ğ¼Ñ‹Ğ¼Ğ¸ Ğ´Ğ¾Ğ¿ÑƒÑ‰ĞµĞ½Ğ¸ÑĞ¼Ğ¸ Ğ¸Ğ· Ñ€Ğ°Ğ·Ğ½Ñ‹Ñ… Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´Ğ¾Ğ².",
     "An intentional composition of practices with compatible assumptions from different approaches.",
-    "Stage governance ÑĞ¾Ñ‡ĞµÑ‚Ğ°ĞµÑ‚ÑÑ Ñ Kanban delivery Ğ²Ğ½ÑƒÑ‚Ñ€Ğ¸ ÑÑ‚Ğ°Ğ¿Ğ°.",
+    "ĞŸĞ¾ÑÑ‚Ğ°Ğ¿Ğ½Ğ¾Ğµ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ ÑĞ¾Ñ‡ĞµÑ‚Ğ°ĞµÑ‚ÑÑ Ñ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¾Ğ¹ Ğ¿Ğ¾ Kanban Ğ²Ğ½ÑƒÑ‚Ñ€Ğ¸ ÑÑ‚Ğ°Ğ¿Ğ°.",
     "Stage governance is combined with Kanban delivery within a stage.",
   ),
   g(
@@ -2223,29 +754,29 @@ const extendedGlossary: Glossary[] = [
     "Ğ’Ğ»Ğ¸ÑĞ½Ğ¸Ğµ",
     "ĞœĞ°ÑÑˆÑ‚Ğ°Ğ± Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸Ğ¹ ÑĞ¾Ğ±Ñ‹Ñ‚Ğ¸Ñ, Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, Ñ€Ğ¸ÑĞºĞ° Ğ¸Ğ»Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ Ğ´Ğ»Ñ Ñ†ĞµĞ»ĞµĞ¹.",
     "The magnitude of consequences an event, decision, risk, or change has on objectives.",
-    "ĞÑ‚ĞºĞ°Ğ· Ğ¾Ğ¿Ğ»Ğ°Ñ‚Ñ‹ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ²Ñ‹ÑĞ¾ĞºĞ¸Ğ¹ revenue impact.",
+    "ĞÑ‚ĞºĞ°Ğ· Ğ¾Ğ¿Ğ»Ğ°Ñ‚Ñ‹ ÑĞ¸Ğ»ÑŒĞ½Ğ¾ Ğ²Ğ»Ğ¸ÑĞµÑ‚ Ğ½Ğ° Ğ²Ñ‹Ñ€ÑƒÑ‡ĞºÑƒ.",
     "Payment failure has high revenue impact.",
   ),
   g(
     "Impact Mapping",
     "ĞšĞ°Ñ€Ñ‚Ğ° Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ñ",
-    "Ğ’Ğ¸Ğ·ÑƒĞ°Ğ»ÑŒĞ½Ğ°Ñ ÑĞ²ÑĞ·ÑŒ Ñ†ĞµĞ»Ğ¸, Ğ´ĞµĞ¹ÑÑ‚Ğ²ÑƒÑÑ‰Ğ¸Ñ… Ğ»Ğ¸Ñ†, Ğ½ÑƒĞ¶Ğ½Ñ‹Ñ… Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ñ Ğ¸ deliverables.",
+    "Ğ’Ğ¸Ğ·ÑƒĞ°Ğ»ÑŒĞ½Ğ°Ñ ÑĞ²ÑĞ·ÑŒ Ñ†ĞµĞ»Ğ¸, Ğ´ĞµĞ¹ÑÑ‚Ğ²ÑƒÑÑ‰Ğ¸Ñ… Ğ»Ğ¸Ñ†, Ğ½ÑƒĞ¶Ğ½Ñ‹Ñ… Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ñ Ğ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ² Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸.",
     "A visual link between a goal, actors, behavior changes, and deliverables.",
-    "Ğ¦ĞµĞ»ÑŒ retention ÑĞ²ÑĞ·Ñ‹Ğ²Ğ°ÑÑ‚ Ñ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸ĞµĞ¼ Ğ½Ğ¾Ğ²Ğ¸Ñ‡ĞºĞ° Ğ¸ onboarding experiments.",
+    "Ğ¦ĞµĞ»ÑŒ ÑƒĞ´ĞµÑ€Ğ¶Ğ°Ğ½Ğ¸Ñ ÑĞ²ÑĞ·Ñ‹Ğ²Ğ°ÑÑ‚ Ñ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸ĞµĞ¼ Ğ½Ğ¾Ğ²Ğ¸Ñ‡ĞºĞ° Ğ¸ ÑĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚Ğ°Ğ¼Ğ¸ Ğ¿Ğ¾ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ.",
     "A retention goal is linked to newcomer behavior and onboarding experiments.",
   ),
   g(
     "Increment",
     "Ğ˜Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚",
-    "Ğ˜Ğ½Ñ‚ĞµĞ³Ñ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ğ°Ñ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ğ°Ñ Ñ‡Ğ°ÑÑ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ°, ÑĞ¾Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ÑƒÑÑ‰Ğ°Ñ Definition of Done.",
+    "Ğ˜Ğ½Ñ‚ĞµĞ³Ñ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ğ°Ñ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ğ°Ñ Ñ‡Ğ°ÑÑ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ°, ÑĞ¾Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ÑƒÑÑ‰Ğ°Ñ ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ÑĞ¼ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "An integrated, verifiable piece of product meeting the Definition of Done.",
-    "Ğ˜Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½ Ğ½Ğ° staging Ğ¸ Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ acceptance tests.",
+    "Ğ˜Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½ Ğ² Ñ‚ĞµÑÑ‚Ğ¾Ğ²Ğ¾Ğ¹ ÑÑ€ĞµĞ´Ğµ Ğ¸ Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ Ğ¿Ñ€Ğ¸Ñ‘Ğ¼Ğ¾Ñ‡Ğ½Ñ‹Ğµ Ğ¸ÑĞ¿Ñ‹Ñ‚Ğ°Ğ½Ğ¸Ñ.",
     "The increment is available on staging and passes acceptance tests.",
   ),
   g(
     "Influence",
-    "Ğ’Ğ»Ğ¸ÑĞ½Ğ¸Ğµ stakeholder",
-    "Ğ¡Ğ¿Ğ¾ÑĞ¾Ğ±Ğ½Ğ¾ÑÑ‚ÑŒ stakeholder Ğ¼ĞµĞ½ÑÑ‚ÑŒ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, Ñ€ĞµÑÑƒÑ€ÑÑ‹ Ğ¸Ğ»Ğ¸ ÑƒÑĞ¿ĞµÑ… Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
+    "Ğ’Ğ»Ğ¸ÑĞ½Ğ¸Ğµ Ğ·Ğ°Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ¹ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñ‹",
+    "Ğ¡Ğ¿Ğ¾ÑĞ¾Ğ±Ğ½Ğ¾ÑÑ‚ÑŒ Ğ·Ğ°Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ¹ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñ‹ Ğ¼ĞµĞ½ÑÑ‚ÑŒ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, Ñ€ĞµÑÑƒÑ€ÑÑ‹ Ğ¸Ğ»Ğ¸ ÑƒÑĞ¿ĞµÑ… Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
     "A stakeholder's ability to affect decisions, resources, or project success.",
     "Ğ ĞµĞ³ÑƒĞ»ÑÑ‚Ğ¾Ñ€ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ²Ñ‹ÑĞ¾ĞºĞ¾Ğµ Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ğµ Ğ½ĞµĞ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ Ğ¾Ñ‚ ĞµĞ¶ĞµĞ´Ğ½ĞµĞ²Ğ½Ğ¾Ğ³Ğ¾ Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑĞ°.",
     "A regulator has high influence regardless of daily interest.",
@@ -2253,9 +784,9 @@ const extendedGlossary: Glossary[] = [
   g(
     "Initiative",
     "Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ğ°",
-    "ĞšÑ€ÑƒĞ¿Ğ½Ğ¾Ğµ ÑÑ‚Ñ€Ğ°Ñ‚ĞµĞ³Ğ¸Ñ‡ĞµÑĞºĞ¾Ğµ Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ, Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑÑÑ‰ĞµĞµ Ğ½ĞµÑĞºĞ¾Ğ»ÑŒĞºĞ¾ outcomes Ğ¸Ğ»Ğ¸ epics.",
+    "ĞšÑ€ÑƒĞ¿Ğ½Ğ¾Ğµ ÑÑ‚Ñ€Ğ°Ñ‚ĞµĞ³Ğ¸Ñ‡ĞµÑĞºĞ¾Ğµ Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ, Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑÑÑ‰ĞµĞµ Ğ½ĞµÑĞºĞ¾Ğ»ÑŒĞºĞ¾ Ğ¸Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ñ‹Ñ… Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ² Ğ¸Ğ»Ğ¸ ÑĞ¿Ğ¸ĞºĞ¾Ğ².",
     "A large strategic effort grouping multiple outcomes or epics.",
-    "Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ğ° self-service Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ onboarding, billing Ğ¸ support.",
+    "Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ğ° ÑĞ°Ğ¼Ğ¾Ğ¾Ğ±ÑĞ»ÑƒĞ¶Ğ¸Ğ²Ğ°Ğ½Ğ¸Ñ Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ, Ğ¾Ğ¿Ğ»Ğ°Ñ‚Ñƒ Ğ¸ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºÑƒ.",
     "The self-service initiative includes onboarding, billing, and support.",
   ),
   g(
@@ -2263,7 +794,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµĞ¼Ñ‹Ğ¹",
     "Ğ Ğ¾Ğ»ÑŒ RACI, ĞºĞ¾Ñ‚Ğ¾Ñ€ÑƒÑ ÑƒĞ²ĞµĞ´Ğ¾Ğ¼Ğ»ÑÑÑ‚ Ğ¾ Ñ…Ğ¾Ğ´Ğµ Ğ¸Ğ»Ğ¸ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¸ Ğ±ĞµĞ· Ğ·Ğ°Ğ¿Ñ€Ğ¾ÑĞ° ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ¸Ñ.",
     "The RACI role kept updated without being asked for approval.",
-    "Support Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒÑÑ‚ Ğ¾ Ğ´Ğ°Ñ‚Ğµ Ñ€ĞµĞ»Ğ¸Ğ·Ğ° Ğ¸ Ğ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ñ… Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸ÑÑ….",
+    "Ğ¡Ğ»ÑƒĞ¶Ğ±Ñƒ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºĞ¸ Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒÑÑ‚ Ğ¾ Ğ´Ğ°Ñ‚Ğµ Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ° Ğ¸ Ğ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ñ… Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸ÑÑ….",
     "Support is informed of the release date and known limitations.",
   ),
   g(
@@ -2271,15 +802,15 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜Ñ‚ĞµÑ€Ğ°Ñ†Ğ¸Ñ",
     "ĞĞ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´ Ğ¸Ğ»Ğ¸ Ñ†Ğ¸ĞºĞ», Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ÑÑ‰Ğ¸Ğ¹ÑÑ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğ¼ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ¼ Ğ¸ Ğ¾Ğ±ÑƒÑ‡ĞµĞ½Ğ¸ĞµĞ¼.",
     "A bounded period or cycle ending with a verifiable result and learning.",
-    "Ğ”Ğ²ÑƒÑ…Ğ½ĞµĞ´ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ¸Ñ‚ĞµÑ€Ğ°Ñ†Ğ¸Ñ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ĞµÑ‚ÑÑ demo Ğ¸ review Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….",
+    "Ğ”Ğ²ÑƒÑ…Ğ½ĞµĞ´ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ¸Ñ‚ĞµÑ€Ğ°Ñ†Ğ¸Ñ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ĞµÑ‚ÑÑ Ğ´ĞµĞ¼Ğ¾Ğ½ÑÑ‚Ñ€Ğ°Ñ†Ğ¸ĞµĞ¹ Ğ¸ Ğ¾Ğ±Ğ·Ğ¾Ñ€Ğ¾Ğ¼ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….",
     "A two-week iteration ends with a demo and data review.",
   ),
   g(
     "Kanban",
     "ĞšĞ°Ğ½Ğ±Ğ°Ğ½",
-    "ĞœĞµÑ‚Ğ¾Ğ´ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ¼ Ñ‡ĞµÑ€ĞµĞ· Ğ²Ğ¸Ğ·ÑƒĞ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ, explicit policies, WIP limits Ğ¸ feedback loops.",
+    "ĞœĞµÑ‚Ğ¾Ğ´ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ¼ Ñ‡ĞµÑ€ĞµĞ· Ğ²Ğ¸Ğ·ÑƒĞ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ, ÑĞ²Ğ½Ñ‹Ğµ Ğ¿Ñ€Ğ°Ğ²Ğ¸Ğ»Ğ°, Ğ»Ğ¸Ğ¼Ğ¸Ñ‚Ñ‹ WIP Ğ¸ Ñ†Ğ¸ĞºĞ»Ñ‹ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ğ¾Ğ¹ ÑĞ²ÑĞ·Ğ¸.",
     "A flow-management method using visualization, explicit policies, WIP limits, and feedback loops.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡Ğ¸Ğ²Ğ°ĞµÑ‚ Review Ğ´Ğ²ÑƒĞ¼Ñ items Ğ¸ Ğ¸Ğ·Ğ¼ĞµÑ€ÑĞµÑ‚ cycle time.",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡Ğ¸Ğ²Ğ°ĞµÑ‚ ÑÑ‚Ğ°Ñ‚ÑƒÑ Â«ĞĞ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞµÂ» Ğ´Ğ²ÑƒĞ¼Ñ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ°Ğ¼Ğ¸ Ğ¸ Ğ¸Ğ·Ğ¼ĞµÑ€ÑĞµÑ‚ Ğ²Ñ€ĞµĞ¼Ñ Ñ†Ğ¸ĞºĞ»Ğ°.",
     "The team limits Review to two items and measures cycle time.",
   ),
   g(
@@ -2287,23 +818,23 @@ const extendedGlossary: Glossary[] = [
     "ĞšĞ»ÑÑ‡ĞµĞ²Ğ¾Ğ¹ Ğ¿Ğ¾ĞºĞ°Ğ·Ğ°Ñ‚ĞµĞ»ÑŒ",
     "ĞœĞµÑ‚Ñ€Ğ¸ĞºĞ°, Ğ¾Ñ‚Ñ€Ğ°Ğ¶Ğ°ÑÑ‰Ğ°Ñ ĞºÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¸ Ğ²Ğ°Ğ¶Ğ½Ñ‹Ğ¹ Ğ°ÑĞ¿ĞµĞºÑ‚ Ğ´Ğ¾ÑÑ‚Ğ¸Ğ¶ĞµĞ½Ğ¸Ñ Ñ†ĞµĞ»Ğ¸, Ğ° Ğ½Ğµ Ğ»ÑĞ±ÑƒÑ Ğ°ĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ.",
     "A metric reflecting a critical aspect of goal achievement, not any activity.",
-    "KPI onboarding â€” Ğ´Ğ¾Ğ»Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹, Ğ´Ğ¾ÑÑ‚Ğ¸Ğ³ÑˆĞ¸Ñ… Ğ¿ĞµÑ€Ğ²Ğ¾Ğ¹ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸.",
+    "KPI Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ â€” Ğ´Ğ¾Ğ»Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹, Ğ´Ğ¾ÑÑ‚Ğ¸Ğ³ÑˆĞ¸Ñ… Ğ¿ĞµÑ€Ğ²Ğ¾Ğ¹ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "The onboarding KPI is the share of users reaching first value.",
   ),
   g(
     "Late Finish",
     "ĞŸĞ¾Ğ·Ğ´Ğ½ĞµĞµ Ğ¾ĞºĞ¾Ğ½Ñ‡Ğ°Ğ½Ğ¸Ğµ",
-    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ğ¿Ğ¾Ğ·Ğ´Ğ½ÑÑ Ğ´Ğ°Ñ‚Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ activity Ğ±ĞµĞ· Ğ½Ğ°Ñ€ÑƒÑˆĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ¹ Ğ´Ğ°Ñ‚Ñ‹.",
+    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ğ¿Ğ¾Ğ·Ğ´Ğ½ÑÑ Ğ´Ğ°Ñ‚Ğ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ Ğ±ĞµĞ· Ğ½Ğ°Ñ€ÑƒÑˆĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ¹ Ğ´Ğ°Ñ‚Ñ‹.",
     "The latest an activity may finish without violating the selected completion date.",
-    "LF Ğ²Ñ‹Ñ‡Ğ¸ÑĞ»ÑÑÑ‚ backward pass Ğ¾Ñ‚ finish milestone.",
+    "ĞŸĞ¾Ğ·Ğ´Ğ½ĞµĞµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğµ Ğ²Ñ‹Ñ‡Ğ¸ÑĞ»ÑÑÑ‚ Ğ¾Ğ±Ñ€Ğ°Ñ‚Ğ½Ñ‹Ğ¼ Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¾Ğ¼ Ğ¾Ñ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ÑÑ‰ĞµĞ¹ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ¾Ğ¹ Ñ‚Ğ¾Ñ‡ĞºĞ¸.",
     "LF is calculated backward from the finish milestone.",
   ),
   g(
     "Late Start",
     "ĞŸĞ¾Ğ·Ğ´Ğ½ĞµĞµ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾",
-    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ğ¿Ğ¾Ğ·Ğ´Ğ½ÑÑ Ğ´Ğ°Ñ‚Ğ° Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° activity Ğ±ĞµĞ· Ğ½Ğ°Ñ€ÑƒÑˆĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ¹ Ğ´Ğ°Ñ‚Ñ‹.",
+    "Ğ¡Ğ°Ğ¼Ğ°Ñ Ğ¿Ğ¾Ğ·Ğ´Ğ½ÑÑ Ğ´Ğ°Ñ‚Ğ° Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸ Ğ±ĞµĞ· Ğ½Ğ°Ñ€ÑƒÑˆĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ½ĞµÑ‡Ğ½Ğ¾Ğ¹ Ğ´Ğ°Ñ‚Ñ‹.",
     "The latest an activity may start without violating the selected completion date.",
-    "LS Ñ€Ğ°Ğ²ĞµĞ½ Late Finish Ğ¼Ğ¸Ğ½ÑƒÑ duration.",
+    "ĞŸĞ¾Ğ·Ğ´Ğ½ĞµĞµ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾ Ñ€Ğ°Ğ²Ğ½Ğ¾ Ğ¿Ğ¾Ğ·Ğ´Ğ½ĞµĞ¼Ñƒ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ Ğ¼Ğ¸Ğ½ÑƒÑ Ğ´Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ.",
     "LS equals Late Finish minus duration.",
   ),
   g(
@@ -2311,23 +842,23 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜Ğ·Ğ²Ğ»ĞµÑ‡Ñ‘Ğ½Ğ½Ñ‹Ğ¹ ÑƒÑ€Ğ¾Ğº",
     "ĞŸĞ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ñ‹Ğ¹ Ğ²Ñ‹Ğ²Ğ¾Ğ´ Ğ¸Ğ· Ğ¾Ğ¿Ñ‹Ñ‚Ğ° Ñ Ñ€ĞµĞºĞ¾Ğ¼ĞµĞ½Ğ´Ğ°Ñ†Ğ¸ĞµĞ¹ Ğ´Ğ»Ñ Ğ±ÑƒĞ´ÑƒÑ‰ĞµĞ³Ğ¾ Ğ¿Ğ¾Ğ²ĞµĞ´ĞµĞ½Ğ¸Ñ.",
     "An evidence-backed insight from experience with a recommendation for future behavior.",
-    "Ğ Ğ°Ğ½Ğ½Ğ¸Ğ¹ contract test ÑĞ½Ğ¸Ğ¶Ğ°ĞµÑ‚ rework Ğ¸Ğ½Ñ‚ĞµĞ³Ñ€Ğ°Ñ†Ğ¸Ğ¸.",
+    "Ğ Ğ°Ğ½Ğ½Ğ¸Ğ¹ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ°ĞºÑ‚Ğ½Ñ‹Ğ¹ Ñ‚ĞµÑÑ‚ ÑĞ½Ğ¸Ğ¶Ğ°ĞµÑ‚ Ğ¾Ğ±ÑŠÑ‘Ğ¼ Ğ¿ĞµÑ€ĞµĞ´ĞµĞ»Ğ¾Ğº Ğ¸Ğ½Ñ‚ĞµĞ³Ñ€Ğ°Ñ†Ğ¸Ğ¸.",
     "An early contract test reduces integration rework.",
   ),
   g(
     "Little's Law",
     "Ğ—Ğ°ĞºĞ¾Ğ½ Ğ›Ğ¸Ñ‚Ñ‚Ğ»Ğ°",
-    "Ğ”Ğ»Ñ ÑÑ‚Ğ°Ğ±Ğ¸Ğ»ÑŒĞ½Ğ¾Ğ¹ ÑĞ¸ÑÑ‚ĞµĞ¼Ñ‹ ÑÑ€ĞµĞ´Ğ½Ğ¸Ğ¹ WIP Ñ€Ğ°Ğ²ĞµĞ½ throughput, ÑƒĞ¼Ğ½Ğ¾Ğ¶ĞµĞ½Ğ½Ğ¾Ğ¼Ñƒ Ğ½Ğ° cycle time.",
+    "Ğ”Ğ»Ñ ÑÑ‚Ğ°Ğ±Ğ¸Ğ»ÑŒĞ½Ğ¾Ğ¹ ÑĞ¸ÑÑ‚ĞµĞ¼Ñ‹ ÑÑ€ĞµĞ´Ğ½Ğ¸Ğ¹ WIP Ñ€Ğ°Ğ²ĞµĞ½ Ğ¿Ñ€Ğ¾Ğ¿ÑƒÑĞºĞ½Ğ¾Ğ¹ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ½Ğ¾ÑÑ‚Ğ¸, ÑƒĞ¼Ğ½Ğ¾Ğ¶ĞµĞ½Ğ½Ğ¾Ğ¹ Ğ½Ğ° Ğ²Ñ€ĞµĞ¼Ñ Ñ†Ğ¸ĞºĞ»Ğ°.",
     "For a stable system, average WIP equals throughput multiplied by cycle time.",
-    "ĞŸÑ€Ğ¸ WIP 12 Ğ¸ throughput 3 cycle time Ğ¾ĞºĞ¾Ğ»Ğ¾ 4 Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´Ğ¾Ğ².",
+    "ĞŸÑ€Ğ¸ WIP 12 Ğ¸ Ğ¿Ñ€Ğ¾Ğ¿ÑƒÑĞºĞ½Ğ¾Ğ¹ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ½Ğ¾ÑÑ‚Ğ¸ 3 Ğ²Ñ€ĞµĞ¼Ñ Ñ†Ğ¸ĞºĞ»Ğ° ÑĞ¾ÑÑ‚Ğ°Ğ²Ğ»ÑĞµÑ‚ Ğ¾ĞºĞ¾Ğ»Ğ¾ 4 Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´Ğ¾Ğ².",
     "With WIP 12 and throughput 3, cycle time is about four periods.",
   ),
   g(
     "Management Reserve",
     "Ğ£Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‡ĞµÑĞºĞ¸Ğ¹ Ñ€ĞµĞ·ĞµÑ€Ğ²",
-    "Ğ‘ÑĞ´Ğ¶ĞµÑ‚ Ğ²Ğ½Ğµ cost baseline Ğ´Ğ»Ñ Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ñ… Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹ Ğ¿Ğ¾Ğ´ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‡ĞµÑĞºĞ¸Ğ¼ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ĞµĞ¼.",
+    "Ğ‘ÑĞ´Ğ¶ĞµÑ‚ Ğ²Ğ½Ğµ Ğ±Ğ°Ğ·Ğ¾Ğ²Ğ¾Ğ³Ğ¾ Ğ¿Ğ»Ğ°Ğ½Ğ° ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ´Ğ»Ñ Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ñ… Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ĞµĞ¹ Ğ¿Ğ¾Ğ´ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‡ĞµÑĞºĞ¸Ğ¼ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ĞµĞ¼.",
     "Budget outside the cost baseline for unknown uncertainty under management control.",
-    "Sponsor Ñ€Ğ°Ğ·Ñ€ĞµÑˆĞ°ĞµÑ‚ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ reserve Ğ¿Ğ¾ÑĞ»Ğµ Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ systemic risk.",
+    "Ğ¡Ğ¿Ğ¾Ğ½ÑĞ¾Ñ€ Ñ€Ğ°Ğ·Ñ€ĞµÑˆĞ°ĞµÑ‚ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ€ĞµĞ·ĞµÑ€Ğ²Ğ° Ğ¿Ğ¾ÑĞ»Ğµ Ğ²Ñ‹ÑĞ²Ğ»ĞµĞ½Ğ¸Ñ Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ ÑĞ¸ÑÑ‚ĞµĞ¼Ğ½Ğ¾Ğ³Ğ¾ Ñ€Ğ¸ÑĞºĞ°.",
     "The sponsor authorizes reserve use after a new systemic risk.",
   ),
   g(
@@ -2335,7 +866,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ¡Ğ½Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ñ€Ğ¸ÑĞºĞ°",
     "Ğ”ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ, ÑƒĞ¼ĞµĞ½ÑŒÑˆĞ°ÑÑ‰Ğ¸Ğµ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸Ğ»Ğ¸ Ğ½ĞµĞ³Ğ°Ñ‚Ğ¸Ğ²Ğ½Ğ¾Ğµ Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ğµ ÑƒĞ³Ñ€Ğ¾Ğ·Ñ‹ Ğ´Ğ¾ ĞµÑ‘ Ñ€ĞµĞ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸.",
     "Actions reducing the probability or negative impact of a threat before it occurs.",
-    "Load test ÑĞ½Ğ¸Ğ¶Ğ°ĞµÑ‚ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¾Ñ‚ĞºĞ°Ğ·Ğ° Ğ¿Ñ€Ğ¸ Ğ·Ğ°Ğ¿ÑƒÑĞºĞµ.",
+    "ĞĞ°Ğ³Ñ€ÑƒĞ·Ğ¾Ñ‡Ğ½Ñ‹Ğ¹ Ñ‚ĞµÑÑ‚ ÑĞ½Ğ¸Ğ¶Ğ°ĞµÑ‚ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¾Ñ‚ĞºĞ°Ğ·Ğ° Ğ¿Ñ€Ğ¸ Ğ·Ğ°Ğ¿ÑƒÑĞºĞµ.",
     "Load testing reduces launch-failure probability.",
   ),
   g(
@@ -2343,15 +874,15 @@ const extendedGlossary: Glossary[] = [
     "ĞœĞ¾Ğ´ĞµĞ»Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ ĞœĞ¾Ğ½Ñ‚Ğµ-ĞšĞ°Ñ€Ğ»Ğ¾",
     "ĞœĞ½Ğ¾Ğ³Ğ¾ĞºÑ€Ğ°Ñ‚Ğ½Ğ°Ñ Ğ²Ñ‹Ğ±Ğ¾Ñ€ĞºĞ° Ğ¸Ğ· Ğ¸ÑÑ‚Ğ¾Ñ€Ğ¸Ñ‡ĞµÑĞºĞ¸Ñ… Ğ¸Ğ»Ğ¸ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ… Ñ€Ğ°ÑĞ¿Ñ€ĞµĞ´ĞµĞ»ĞµĞ½Ğ¸Ğ¹ Ğ´Ğ»Ñ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½Ğ° Ğ¸ÑÑ…Ğ¾Ğ´Ğ¾Ğ².",
     "Repeated sampling from historical or specified distributions to estimate outcome ranges.",
-    "ĞŸÑÑ‚ÑŒ Ñ‚Ñ‹ÑÑÑ‡ Ğ¿Ñ€Ğ¾Ğ³Ğ¾Ğ½Ğ¾Ğ² Ğ´Ğ°ÑÑ‚ P50 Ğ¸ P85 completion forecasts.",
+    "ĞŸÑÑ‚ÑŒ Ñ‚Ñ‹ÑÑÑ‡ Ğ¿Ñ€Ğ¾Ğ³Ğ¾Ğ½Ğ¾Ğ² Ğ´Ğ°ÑÑ‚ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·Ñ‹ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ñ P50 Ğ¸ P85.",
     "Five thousand runs produce P50 and P85 completion forecasts.",
   ),
   g(
     "MoSCoW",
     "MoSCoW",
-    "ĞšĞ»Ğ°ÑÑĞ¸Ñ„Ğ¸ĞºĞ°Ñ†Ğ¸Ñ Must, Should, Could, Won't Ğ´Ğ»Ñ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğ³Ğ¾ Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´Ğ° Ğ¸Ğ»Ğ¸ Ñ€ĞµĞ»Ğ¸Ğ·Ğ°.",
+    "ĞšĞ»Ğ°ÑÑĞ¸Ñ„Ğ¸ĞºĞ°Ñ†Ğ¸Ñ Â«Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Â», Â«ÑĞ»ĞµĞ´ÑƒĞµÑ‚Â», Â«Ğ¼Ğ¾Ğ¶Ğ½Ğ¾Â» Ğ¸ Â«Ğ½Ğµ ÑĞµĞ¹Ñ‡Ğ°ÑÂ» Ğ´Ğ»Ñ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğ³Ğ¾ Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´Ğ° Ğ¸Ğ»Ğ¸ Ñ€ĞµĞ»Ğ¸Ğ·Ğ°.",
     "Must, Should, Could, and Won't classification for a specific period or release boundary.",
-    "Won't Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ°ĞµÑ‚ Ğ½Ğµ Ğ² ÑÑ‚Ğ¾Ğ¼ Ñ€ĞµĞ»Ğ¸Ğ·Ğµ, Ğ° Ğ½Ğµ Ğ½Ğ¸ĞºĞ¾Ğ³Ğ´Ğ°.",
+    "Â«ĞĞµ ÑĞµĞ¹Ñ‡Ğ°ÑÂ» Ğ¾Ğ·Ğ½Ğ°Ñ‡Ğ°ĞµÑ‚ Ğ½Ğµ Ğ² ÑÑ‚Ğ¾Ğ¼ Ñ€ĞµĞ»Ğ¸Ğ·Ğµ, Ğ° Ğ½Ğµ Ğ½Ğ¸ĞºĞ¾Ğ³Ğ´Ğ°.",
     "Won't means not in this release, not never.",
   ),
   g(
@@ -2359,7 +890,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ğ°Ñ Ñ†ĞµĞ»ÑŒ",
     "ĞšĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğµ Ğ¶ĞµĞ»Ğ°ĞµĞ¼Ğ¾Ğµ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğµ, Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ÑÑÑ‰ĞµĞµ Ğ²Ñ‹Ğ±Ğ¾Ñ€ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ² Ğ¸ Ğ¼ĞµÑ‚Ñ€Ğ¸Ğº.",
     "A specific desired state guiding deliverables and measures.",
-    "Ğ¡Ğ¾ĞºÑ€Ğ°Ñ‚Ğ¸Ñ‚ÑŒ median onboarding time Ñ 20 Ğ´Ğ¾ 10 Ğ¼Ğ¸Ğ½ÑƒÑ‚.",
+    "Ğ¡Ğ¾ĞºÑ€Ğ°Ñ‚Ğ¸Ñ‚ÑŒ Ğ¼ĞµĞ´Ğ¸Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ²Ñ€ĞµĞ¼Ñ Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ Ñ 20 Ğ´Ğ¾ 10 Ğ¼Ğ¸Ğ½ÑƒÑ‚.",
     "Reduce median onboarding time from 20 to 10 minutes.",
   ),
   g(
@@ -2367,7 +898,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸĞ¾Ğ»Ğ¾Ğ¶Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ Ñ€Ğ¸ÑĞº",
     "ĞĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾Ğµ ÑĞ¾Ğ±Ñ‹Ñ‚Ğ¸Ğµ, ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğµ Ğ¼Ğ¾Ğ¶ĞµÑ‚ ÑƒĞ»ÑƒÑ‡ÑˆĞ¸Ñ‚ÑŒ Ğ´Ğ¾ÑÑ‚Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ñ†ĞµĞ»ĞµĞ¹.",
     "An uncertain event that may improve achievement of objectives.",
-    "ĞŸĞ°Ñ€Ñ‚Ğ½Ñ‘Ñ€ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ´Ğ°Ñ‚ÑŒ Ğ±ĞµÑĞ¿Ğ»Ğ°Ñ‚Ğ½Ñ‹Ğ¹ ĞºĞ°Ğ½Ğ°Ğ» acquisition.",
+    "ĞŸĞ°Ñ€Ñ‚Ğ½Ñ‘Ñ€ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ´Ğ°Ñ‚ÑŒ Ğ±ĞµÑĞ¿Ğ»Ğ°Ñ‚Ğ½Ñ‹Ğ¹ ĞºĞ°Ğ½Ğ°Ğ» Ğ¿Ñ€Ğ¸Ğ²Ğ»ĞµÑ‡ĞµĞ½Ğ¸Ñ.",
     "A partner may provide a free acquisition channel.",
   ),
   g(
@@ -2375,23 +906,23 @@ const extendedGlossary: Glossary[] = [
     "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ†",
     "ĞĞ°Ğ·Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ñ‡ĞµĞ»Ğ¾Ğ²ĞµĞº Ñ ÑÑĞ½Ğ¾Ğ¹ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒÑ Ğ¸ Ğ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ñ‹Ğ¼Ğ¸ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸ÑĞ¼Ğ¸ Ğ´Ğ»Ñ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "A named person with clear accountability and sufficient authority for an outcome.",
-    "Risk owner Ğ¾Ñ‚ÑĞ»ĞµĞ¶Ğ¸Ğ²Ğ°ĞµÑ‚ trigger Ğ¸ Ğ·Ğ°Ğ¿ÑƒÑĞºĞ°ĞµÑ‚ response.",
+    "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ñ€Ğ¸ÑĞºĞ° Ğ¾Ñ‚ÑĞ»ĞµĞ¶Ğ¸Ğ²Ğ°ĞµÑ‚ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ğµ ÑÑ€Ğ°Ğ±Ğ°Ñ‚Ñ‹Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¸ Ğ·Ğ°Ğ¿ÑƒÑĞºĞ°ĞµÑ‚ Ñ€ĞµĞ°Ğ³Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ.",
     "The risk owner monitors the trigger and starts the response.",
   ),
   g(
     "PERT",
     "PERT",
-    "Ğ¢Ñ€Ñ‘Ñ…Ñ‚Ğ¾Ñ‡ĞµÑ‡Ğ½Ğ°Ñ Ğ¾Ñ†ĞµĞ½ĞºĞ° expected duration: (O + 4M + P) / 6.",
+    "Ğ¢Ñ€Ñ‘Ñ…Ñ‚Ğ¾Ñ‡ĞµÑ‡Ğ½Ğ°Ñ Ğ¾Ñ†ĞµĞ½ĞºĞ° Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ğ¾Ğ¹ Ğ´Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸: (O + 4M + P) / 6.",
     "A three-point expected-duration estimate: (O + 4M + P) / 6.",
-    "ĞÑ†ĞµĞ½ĞºĞ¸ 3, 5 Ğ¸ 10 Ğ´Ğ°ÑÑ‚ expected 5.5.",
+    "ĞÑ†ĞµĞ½ĞºĞ¸ 3, 5 Ğ¸ 10 Ğ´Ğ°ÑÑ‚ Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ğ¾Ğµ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ 5,5.",
     "Estimates of 3, 5, and 10 give an expected value of 5.5.",
   ),
   g(
     "PMO",
     "ĞŸÑ€Ğ¾ĞµĞºÑ‚Ğ½Ñ‹Ğ¹ Ğ¾Ñ„Ğ¸Ñ",
-    "Ğ¤ÑƒĞ½ĞºÑ†Ğ¸Ñ, Ñ€Ğ°Ğ·Ğ²Ğ¸Ğ²Ğ°ÑÑ‰Ğ°Ñ governance, capability, portfolio information Ğ¸ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºÑƒ delivery.",
+    "Ğ¤ÑƒĞ½ĞºÑ†Ğ¸Ñ, Ñ€Ğ°Ğ·Ğ²Ğ¸Ğ²Ğ°ÑÑ‰Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ, Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğµ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚Ğ¸, Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ†Ğ¸Ñ Ğ¾ Ğ¿Ğ¾Ñ€Ñ‚Ñ„ĞµĞ»Ğµ Ğ¸ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºÑƒ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "A function supporting governance, capability, portfolio information, and delivery.",
-    "PMO ÑÑ‚Ğ°Ğ½Ğ´Ğ°Ñ€Ñ‚Ğ¸Ğ·Ğ¸Ñ€ÑƒĞµÑ‚ decision data, Ğ° Ğ½Ğµ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ ÑˆĞ°Ğ±Ğ»Ğ¾Ğ½Ñ‹.",
+    "ĞŸÑ€Ğ¾ĞµĞºÑ‚Ğ½Ñ‹Ğ¹ Ğ¾Ñ„Ğ¸Ñ ÑÑ‚Ğ°Ğ½Ğ´Ğ°Ñ€Ñ‚Ğ¸Ğ·Ğ¸Ñ€ÑƒĞµÑ‚ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ´Ğ»Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹, Ğ° Ğ½Ğµ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ ÑˆĞ°Ğ±Ğ»Ğ¾Ğ½Ñ‹.",
     "The PMO standardizes decision data, not only templates.",
   ),
   g(
@@ -2405,9 +936,9 @@ const extendedGlossary: Glossary[] = [
   g(
     "Predictive",
     "ĞŸÑ€ĞµĞ´Ğ¸ĞºÑ‚Ğ¸Ğ²Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ´Ñ…Ğ¾Ğ´",
-    "ĞŸĞ¾Ğ´Ñ…Ğ¾Ğ´ Ñ Ğ¿Ñ€ĞµĞ´Ğ²Ğ°Ñ€Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»ÑĞµĞ¼Ğ¾Ğ¹ scope baseline Ğ¸ Ğ¿Ğ»Ğ°Ğ½Ğ¾Ğ²Ñ‹Ğ¼ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ĞµĞ¼ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹.",
+    "ĞŸĞ¾Ğ´Ñ…Ğ¾Ğ´ Ñ Ğ·Ğ°Ñ€Ğ°Ğ½ĞµĞµ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»ÑĞµĞ¼Ñ‹Ğ¼ Ğ±Ğ°Ğ·Ğ¾Ğ²Ñ‹Ğ¼ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ¾Ğ¼ Ñ€Ğ°Ğ±Ğ¾Ñ‚ Ğ¸ Ğ¿Ğ»Ğ°Ğ½Ğ¾Ğ²Ñ‹Ğ¼ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ĞµĞ¼ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹.",
     "An approach using an up-front scope baseline and planned change control.",
-    "Ğ¡Ñ‚Ñ€Ğ¾Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ ÑÑ‚Ğ°Ğ¿ Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½ÑĞµÑ‚ÑÑ Ğ¿Ğ¾ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ğ¾Ğ¼Ñƒ schedule baseline.",
+    "Ğ¡Ñ‚Ñ€Ğ¾Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ ÑÑ‚Ğ°Ğ¿ Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½ÑĞµÑ‚ÑÑ Ğ¿Ğ¾ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´Ñ‘Ğ½Ğ½Ğ¾Ğ¼Ñƒ Ğ±Ğ°Ğ·Ğ¾Ğ²Ğ¾Ğ¼Ñƒ Ğ¿Ğ»Ğ°Ğ½Ñƒ ÑÑ€Ğ¾ĞºĞ¾Ğ².",
     "The construction phase follows an approved schedule baseline.",
   ),
   g(
@@ -2415,7 +946,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸÑ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚ĞµÑ‚",
     "ĞÑ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ Ğ¿Ğ¾Ñ€ÑĞ´Ğ¾Ğº Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ¿Ğ¾ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸, ÑÑ€Ğ¾Ñ‡Ğ½Ğ¾ÑÑ‚Ğ¸, Ñ€Ğ¸ÑĞºÑƒ Ğ¸ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸ÑĞ¼.",
     "The relative order of work based on value, urgency, risk, and constraints.",
-    "Regulatory fix Ğ²Ñ‹ÑˆĞµ ĞºĞ¾ÑĞ¼ĞµÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ ÑƒĞ»ÑƒÑ‡ÑˆĞµĞ½Ğ¸Ñ.",
+    "ĞĞ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ½Ğ¾Ñ€Ğ¼Ğ°Ñ‚Ğ¸Ğ²Ğ½Ğ¾Ğµ Ğ¸ÑĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ²Ğ°Ğ¶Ğ½ĞµĞµ ĞºĞ¾ÑĞ¼ĞµÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ ÑƒĞ»ÑƒÑ‡ÑˆĞµĞ½Ğ¸Ñ.",
     "A regulatory fix ranks above a cosmetic improvement.",
   ),
   g(
@@ -2431,7 +962,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ—Ğ°ĞºÑƒĞ¿ĞºĞ¸",
     "ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ Ñ‚Ğ¾Ğ²Ğ°Ñ€Ğ¾Ğ² Ğ¸Ğ»Ğ¸ ÑƒÑĞ»ÑƒĞ³ Ğ¸Ğ·Ğ²Ğ½Ğµ Ñ‡ĞµÑ€ĞµĞ· Ğ²Ñ‹Ğ±Ğ¾Ñ€, Ğ´Ğ¾Ğ³Ğ¾Ğ²Ğ¾Ñ€ Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸ĞºĞ°.",
     "Obtaining external goods or services through selection, contracting, and supplier control.",
-    "RFP ÑÑ€Ğ°Ğ²Ğ½Ğ¸Ğ²Ğ°ĞµÑ‚ vendors Ğ¿Ğ¾ total cost Ğ¸ delivery risk.",
+    "Ğ—Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ¿Ñ€ĞµĞ´Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğ¹ ÑÑ€Ğ°Ğ²Ğ½Ğ¸Ğ²Ğ°ĞµÑ‚ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸ĞºĞ¾Ğ² Ğ¿Ğ¾ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¹ ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ñ€Ğ¸ÑĞºÑƒ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸.",
     "The RFP compares vendors on total cost and delivery risk.",
   ),
   g(
@@ -2439,7 +970,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ‘ÑĞºĞ»Ğ¾Ğ³ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ°",
     "Ğ£Ğ¿Ğ¾Ñ€ÑĞ´Ğ¾Ñ‡ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ¸Ğ·Ğ¼ĞµĞ½ÑĞµĞ¼Ñ‹Ğ¹ ÑĞ¿Ğ¸ÑĞ¾Ğº Ñ‚Ğ¾Ğ³Ğ¾, Ñ‡Ñ‚Ğ¾ Ğ¼Ğ¾Ğ¶ĞµÑ‚ ÑƒĞ»ÑƒÑ‡ÑˆĞ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚.",
     "An ordered, evolving list of what may improve a product.",
-    "Product Owner Ğ¼ĞµĞ½ÑĞµÑ‚ Ğ¿Ğ¾Ñ€ÑĞ´Ğ¾Ğº Ğ¿Ğ¾ÑĞ»Ğµ customer evidence.",
+    "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ° Ğ¼ĞµĞ½ÑĞµÑ‚ Ğ¿Ğ¾Ñ€ÑĞ´Ğ¾Ğº Ğ¿Ğ¾ÑĞ»Ğµ Ğ¿Ğ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ñ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğ¹ Ğ¾Ñ‚ Ğ·Ğ°ĞºĞ°Ğ·Ñ‡Ğ¸ĞºĞ°.",
     "The Product Owner reorders it after customer evidence.",
   ),
   g(
@@ -2447,7 +978,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸÑ€Ğ¾Ğ³Ñ€Ğ°Ğ¼Ğ¼Ğ°",
     "Ğ¡Ğ²ÑĞ·Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ñ‹ Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ, ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ¸Ñ€ÑƒĞµĞ¼Ñ‹Ğµ Ğ´Ğ»Ñ Ğ²Ñ‹Ğ³Ğ¾Ğ´, Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹Ñ… Ğ¿Ğ¾ Ğ¾Ñ‚Ğ´ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸.",
     "Related projects and change managed together for benefits unavailable separately.",
-    "CRM, training Ğ¸ process redesign Ğ¾Ğ±Ñ€Ğ°Ğ·ÑƒÑÑ‚ Ğ¿Ñ€Ğ¾Ğ³Ñ€Ğ°Ğ¼Ğ¼Ñƒ.",
+    "CRM, Ğ¾Ğ±ÑƒÑ‡ĞµĞ½Ğ¸Ğµ Ğ¸ Ğ¿ĞµÑ€ĞµÑ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ° Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑĞ° Ğ¾Ğ±Ñ€Ğ°Ğ·ÑƒÑÑ‚ Ğ¿Ñ€Ğ¾Ğ³Ñ€Ğ°Ğ¼Ğ¼Ñƒ.",
     "CRM, training, and process redesign form a program.",
   ),
   g(
@@ -2455,7 +986,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸÑ€Ğ¾ĞµĞºÑ‚",
     "Ğ’Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾Ğµ Ğ¿Ñ€ĞµĞ´Ğ¿Ñ€Ğ¸ÑÑ‚Ğ¸Ğµ Ğ´Ğ»Ñ ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ñ ÑƒĞ½Ğ¸ĞºĞ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ°, ÑƒÑĞ»ÑƒĞ³Ğ¸ Ğ¸Ğ»Ğ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "A temporary endeavor undertaken to create a unique product, service, or result.",
-    "ĞŸÑ€Ğ¾ĞµĞºÑ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ handover Ğ½Ğ¾Ğ²Ğ¾Ğ¹ Ğ¿Ğ»Ğ°Ñ‚Ñ„Ğ¾Ñ€Ğ¼Ñ‹.",
+    "ĞŸÑ€Ğ¾ĞµĞºÑ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ Ğ¿ĞµÑ€ĞµĞ´Ğ°Ñ‡Ğ¸ Ğ½Ğ¾Ğ²Ğ¾Ğ¹ Ğ¿Ğ»Ğ°Ñ‚Ñ„Ğ¾Ñ€Ğ¼Ñ‹ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ñƒ.",
     "The project closes after the new platform is handed over.",
   ),
   g(
@@ -2463,7 +994,7 @@ const extendedGlossary: Glossary[] = [
     "ĞšÑ€Ğ°Ñ‚ĞºĞ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°",
     "Ğ Ğ°Ğ½Ğ½Ğ¸Ğ¹ Ğ´Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚ Ğ¾ Ğ¿Ñ€Ğ¾Ğ±Ğ»ĞµĞ¼Ğµ, Ğ²Ğ°Ñ€Ğ¸Ğ°Ğ½Ñ‚Ğ°Ñ…, Ğ¾Ğ¶Ğ¸Ğ´Ğ°ĞµĞ¼Ğ¾Ğ¹ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚Ğ¸, Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ±Ğµ Ğ¸ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸ÑÑ….",
     "An early document outlining the problem, options, expected value, scale, and constraints.",
-    "Brief Ğ¿Ğ¾Ğ·Ğ²Ğ¾Ğ»ÑĞµÑ‚ Ñ€ĞµÑˆĞ¸Ñ‚ÑŒ, ÑÑ‚Ğ¾Ğ¸Ñ‚ Ğ»Ğ¸ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ¸Ñ‚ÑŒ business case.",
+    "ĞšÑ€Ğ°Ñ‚ĞºĞ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ Ğ¿Ğ¾Ğ·Ğ²Ğ¾Ğ»ÑĞµÑ‚ Ñ€ĞµÑˆĞ¸Ñ‚ÑŒ, ÑÑ‚Ğ¾Ğ¸Ñ‚ Ğ»Ğ¸ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ¸Ñ‚ÑŒ ÑĞºĞ¾Ğ½Ğ¾Ğ¼Ğ¸Ñ‡ĞµÑĞºĞ¾Ğµ Ğ¾Ğ±Ğ¾ÑĞ½Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ.",
     "The brief supports the decision to develop a business case.",
   ),
   g(
@@ -2471,7 +1002,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ–Ğ¸Ğ·Ğ½ĞµĞ½Ğ½Ñ‹Ğ¹ Ñ†Ğ¸ĞºĞ» Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°",
     "ĞŸĞ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒ Ñ„Ğ°Ğ· Ğ¾Ñ‚ Ğ²Ğ¾Ğ·Ğ½Ğ¸ĞºĞ½Ğ¾Ğ²ĞµĞ½Ğ¸Ñ Ğ¸Ğ´ĞµĞ¸ Ğ´Ğ¾ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ñ Ğ¸ Ğ¿ĞµÑ€ĞµĞ´Ğ°Ñ‡Ğ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "The sequence of phases from idea through closure and handover.",
-    "Lifecycle Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ initiation, planning, delivery Ğ¸ closure.",
+    "Ğ–Ğ¸Ğ·Ğ½ĞµĞ½Ğ½Ñ‹Ğ¹ Ñ†Ğ¸ĞºĞ» Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ†Ğ¸Ñ, Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ, Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºÑƒ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ¸ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ğµ.",
     "The lifecycle includes initiation, planning, delivery, and closure.",
   ),
   g(
@@ -2485,17 +1016,17 @@ const extendedGlossary: Glossary[] = [
   g(
     "Quality Gate",
     "ĞšĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒ ĞºĞ°Ñ‡ĞµÑÑ‚Ğ²Ğ°",
-    "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğ¹ Ğ½Ğ°Ğ±Ğ¾Ñ€ ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ĞµĞ² Ğ¸ evidence Ğ¿ĞµÑ€ĞµĞ´ Ğ¿ĞµÑ€ĞµÑ…Ğ¾Ğ´Ğ¾Ğ¼ Ğ¸Ğ»Ğ¸ Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ¾Ğ¼.",
+    "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼Ñ‹Ğ¹ Ğ½Ğ°Ğ±Ğ¾Ñ€ ĞºÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸ĞµĞ² Ğ¸ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğ¹ Ğ¿ĞµÑ€ĞµĞ´ Ğ¿ĞµÑ€ĞµÑ…Ğ¾Ğ´Ğ¾Ğ¼ Ğ¸Ğ»Ğ¸ Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ¾Ğ¼.",
     "A verifiable set of criteria and evidence required before progression or release.",
-    "Gate Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ passed tests, owner sign-off Ğ¸ rollback plan.",
+    "ĞšĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ°Ñ Ñ‚Ğ¾Ñ‡ĞºĞ° Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ Ğ¿Ñ€Ğ¾Ğ¹Ğ´ĞµĞ½Ğ½Ñ‹Ñ… Ñ‚ĞµÑÑ‚Ğ¾Ğ², Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ñ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ° Ğ¸ Ğ¿Ğ»Ğ°Ğ½Ğ° Ğ¾Ñ‚ĞºĞ°Ñ‚Ğ°.",
     "The gate requires passed tests, owner sign-off, and a rollback plan.",
   ),
   g(
     "RACI Matrix",
     "ĞœĞ°Ñ‚Ñ€Ğ¸Ñ†Ğ° RACI",
-    "Ğ¢Ğ°Ğ±Ğ»Ğ¸Ñ†Ğ° Ñ€Ğ°ÑĞ¿Ñ€ĞµĞ´ĞµĞ»ĞµĞ½Ğ¸Ñ Responsible, Accountable, Consulted Ğ¸ Informed Ğ¿Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°Ğ¼.",
+    "Ğ¢Ğ°Ğ±Ğ»Ğ¸Ñ†Ğ° Ñ€Ğ°ÑĞ¿Ñ€ĞµĞ´ĞµĞ»ĞµĞ½Ğ¸Ñ Ğ¸ÑĞ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ĞµĞ»ĞµĞ¹, Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ñ… Ğ·Ğ° Ğ¸Ñ‚Ğ¾Ğ³, ĞºĞ¾Ğ½ÑÑƒĞ»ÑŒÑ‚Ğ°Ğ½Ñ‚Ğ¾Ğ² Ğ¸ Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ¸Ñ€ÑƒĞµĞ¼Ñ‹Ñ… ÑƒÑ‡Ğ°ÑÑ‚Ğ½Ğ¸ĞºĞ¾Ğ² Ğ¿Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°Ğ¼.",
     "A table assigning Responsible, Accountable, Consulted, and Informed roles to outcomes.",
-    "Ğ£ ĞºĞ°Ğ¶Ğ´Ğ¾Ğ³Ğ¾ deliverable Ğ¾Ğ´Ğ¸Ğ½ Accountable.",
+    "Ğ£ ĞºĞ°Ğ¶Ğ´Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ Ğ¾Ğ´Ğ¸Ğ½ Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ğ¹ Ğ·Ğ° Ğ¸Ñ‚Ğ¾Ğ³.",
     "Each deliverable has one Accountable person.",
   ),
   g(
@@ -2503,7 +1034,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ ĞµĞ»Ğ¸Ğ·",
     "Ğ¡Ğ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ¿Ñ€ĞµĞ´Ğ¾ÑÑ‚Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ½Ğ°Ğ±Ğ¾Ñ€Ğ° Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑĞ¼ Ğ¸Ğ»Ğ¸ Ğ² ÑĞºÑĞ¿Ğ»ÑƒĞ°Ñ‚Ğ°Ñ†Ğ¸Ñ.",
     "The coordinated delivery of a set of changes to users or operations.",
-    "Release Ğ¸Ğ´Ñ‘Ñ‚ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ¿Ğ½Ğ¾ Ñ monitoring Ğ¸ rollback.",
+    "Ğ’Ñ‹Ğ¿ÑƒÑĞº Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ¿Ğ½Ğ¾ Ñ Ğ¼Ğ¾Ğ½Ğ¸Ñ‚Ğ¾Ñ€Ğ¸Ğ½Ğ³Ğ¾Ğ¼ Ğ¸ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒÑ Ğ¾Ñ‚ĞºĞ°Ñ‚Ğ°.",
     "The release is staged with monitoring and rollback.",
   ),
   g(
@@ -2511,21 +1042,21 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜Ğ·Ğ¼ĞµĞ½Ñ‡Ğ¸Ğ²Ğ¾ÑÑ‚ÑŒ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹",
     "Ğ§Ğ°ÑÑ‚Ğ¾Ñ‚Ğ° Ğ¸ Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ± Ğ·Ğ½Ğ°Ñ‡Ğ¸Ğ¼Ñ‹Ñ… Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹ Ğ·Ğ° Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´.",
     "The frequency and magnitude of material requirement changes over time.",
-    "Ğ’Ñ‹ÑĞ¾ĞºĞ°Ñ volatility Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ñ… validation loops.",
+    "Ğ’Ñ‹ÑĞ¾ĞºĞ°Ñ Ğ¸Ğ·Ğ¼ĞµĞ½Ñ‡Ğ¸Ğ²Ğ¾ÑÑ‚ÑŒ Ñ‚Ñ€ĞµĞ±ÑƒĞµÑ‚ ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ñ… Ñ†Ğ¸ĞºĞ»Ğ¾Ğ² Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸.",
     "High volatility calls for short validation loops.",
   ),
   g(
     "Residual Risk",
     "ĞÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ñ‹Ğ¹ Ñ€Ğ¸ÑĞº",
-    "Ğ Ğ¸ÑĞº, Ğ¾ÑÑ‚Ğ°ÑÑ‰Ğ¸Ğ¹ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ response.",
+    "Ğ Ğ¸ÑĞº, Ğ¾ÑÑ‚Ğ°ÑÑ‰Ğ¸Ğ¹ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ°Ğ³Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ.",
     "Risk remaining after the selected response is implemented.",
-    "ĞŸĞ¾ÑĞ»Ğµ failover Ğ¾ÑÑ‚Ğ°Ñ‘Ñ‚ÑÑ Ñ€Ğ¸ÑĞº Ğ´ĞµĞ³Ñ€Ğ°Ğ´Ğ°Ñ†Ğ¸Ğ¸ performance.",
+    "ĞŸĞ¾ÑĞ»Ğµ Ğ¿ĞµÑ€ĞµĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ñ Ğ½Ğ° Ñ€ĞµĞ·ĞµÑ€Ğ² Ğ¾ÑÑ‚Ğ°Ñ‘Ñ‚ÑÑ Ñ€Ğ¸ÑĞº ÑƒÑ…ÑƒĞ´ÑˆĞµĞ½Ğ¸Ñ Ğ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²Ğ¾Ğ´Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸.",
     "After failover, performance degradation risk remains.",
   ),
   g(
     "Resource",
     "Ğ ĞµÑÑƒÑ€Ñ",
-    "Ğ§ĞµĞ»Ğ¾Ğ²ĞµĞº, Ğ¾Ğ±Ğ¾Ñ€ÑƒĞ´Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ, Ğ¼Ğ°Ñ‚ĞµÑ€Ğ¸Ğ°Ğ», Ğ´ĞµĞ½ÑŒĞ³Ğ¸ Ğ¸Ğ»Ğ¸ capability, Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ğµ Ğ´Ğ»Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
+    "Ğ§ĞµĞ»Ğ¾Ğ²ĞµĞº, Ğ¾Ğ±Ğ¾Ñ€ÑƒĞ´Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ, Ğ¼Ğ°Ñ‚ĞµÑ€Ğ¸Ğ°Ğ», Ğ´ĞµĞ½ÑŒĞ³Ğ¸ Ğ¸Ğ»Ğ¸ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚ÑŒ, Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ğµ Ğ´Ğ»Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
     "A person, equipment, material, money, or capability required for work.",
     "Ğ¡Ñ€ĞµĞ´Ğ° Ñ‚ĞµÑÑ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ â€” Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡Ğ¸Ğ²Ğ°ÑÑ‰Ğ¸Ğ¹ Ñ€ĞµÑÑƒÑ€Ñ.",
     "The test environment is a constrained resource.",
@@ -2535,23 +1066,23 @@ const extendedGlossary: Glossary[] = [
     "Ğ˜ÑĞ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ĞµĞ»ÑŒ",
     "Ğ Ğ¾Ğ»ÑŒ RACI, Ğ½ĞµĞ¿Ğ¾ÑÑ€ĞµĞ´ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ÑÑÑ‰Ğ°Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ Ğ´Ğ»Ñ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "The RACI role that performs the work to produce an outcome.",
-    "Analyst Responsible Ğ·Ğ° Ğ¿Ğ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²ĞºÑƒ requirements model.",
+    "ĞĞ½Ğ°Ğ»Ğ¸Ñ‚Ğ¸Ğº Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ĞµÑ‚ Ğ·Ğ° Ğ¿Ğ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²ĞºÑƒ Ğ¼Ğ¾Ğ´ĞµĞ»Ğ¸ Ñ‚Ñ€ĞµĞ±Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğ¹.",
     "The analyst is Responsible for the requirements model.",
   ),
   g(
     "Retrospective",
     "Ğ ĞµÑ‚Ñ€Ğ¾ÑĞ¿ĞµĞºÑ‚Ğ¸Ğ²Ğ°",
-    "Ğ ĞµĞ³ÑƒĞ»ÑÑ€Ğ½Ñ‹Ğ¹ Ñ€Ğ°Ğ·Ğ±Ğ¾Ñ€ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ Ğ²Ñ‹Ğ±Ğ¾Ñ€Ğ¾Ğ¼ ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğ³Ğ¾ improvement experiment.",
+    "Ğ ĞµĞ³ÑƒĞ»ÑÑ€Ğ½Ñ‹Ğ¹ Ñ€Ğ°Ğ·Ğ±Ğ¾Ñ€ ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ Ğ²Ñ‹Ğ±Ğ¾Ñ€Ğ¾Ğ¼ ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ¾Ğ³Ğ¾ ÑĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚Ğ° Ğ¿Ğ¾ ÑƒĞ»ÑƒÑ‡ÑˆĞµĞ½Ğ¸Ñ.",
     "A regular review of how work is done that selects a concrete improvement experiment.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡Ğ¸Ğ²Ğ°ĞµÑ‚ Ğ¾Ğ´Ğ¸Ğ½ ÑĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚ Ğ´Ğ¾ ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞ³Ğ¾ Sprint.",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡Ğ¸Ğ²Ğ°ĞµÑ‚ Ğ¾Ğ´Ğ¸Ğ½ ÑĞºÑĞ¿ĞµÑ€Ğ¸Ğ¼ĞµĞ½Ñ‚ Ğ´Ğ¾ ÑĞ»ĞµĞ´ÑƒÑÑ‰ĞµĞ³Ğ¾ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°.",
     "The team limits itself to one experiment until the next Sprint.",
   ),
   g(
     "RICE",
     "RICE",
-    "ĞŸÑ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ñ‡ĞµÑ€ĞµĞ· Reach Ã— Impact Ã— Confidence / Effort.",
+    "ĞŸÑ€Ğ¸Ğ¾Ñ€Ğ¸Ñ‚Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ñ‡ĞµÑ€ĞµĞ· Ğ¾Ñ…Ğ²Ğ°Ñ‚ Ã— Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ğµ Ã— ÑƒĞ²ĞµÑ€ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ / Ñ‚Ñ€ÑƒĞ´Ğ¾Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚Ñ‹.",
     "Prioritization using Reach Ã— Impact Ã— Confidence / Effort.",
-    "ĞĞ¸Ğ·ĞºĞ°Ñ confidence ÑƒĞ¼ĞµĞ½ÑŒÑˆĞ°ĞµÑ‚ score ÑĞ¾Ğ¼Ğ½Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ¹ Ğ¸Ğ´ĞµĞ¸.",
+    "ĞĞ¸Ğ·ĞºĞ°Ñ ÑƒĞ²ĞµÑ€ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ ÑƒĞ¼ĞµĞ½ÑŒÑˆĞ°ĞµÑ‚ Ğ¾Ñ†ĞµĞ½ĞºÑƒ ÑĞ¾Ğ¼Ğ½Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ¹ Ğ¸Ğ´ĞµĞ¸.",
     "Low confidence reduces the score of a speculative idea.",
   ),
   g(
@@ -2559,7 +1090,7 @@ const extendedGlossary: Glossary[] = [
     "ĞĞ¿Ğ¿ĞµÑ‚Ğ¸Ñ‚ Ğº Ñ€Ğ¸ÑĞºÑƒ",
     "ĞĞ±Ñ‰Ğ¸Ğ¹ Ğ¾Ğ±ÑŠÑ‘Ğ¼ Ğ¸ Ñ‚Ğ¸Ğ¿ Ñ€Ğ¸ÑĞºĞ°, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğ¹ Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ° Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚ÑŒ Ñ€Ğ°Ğ´Ğ¸ Ñ†ĞµĞ»ĞµĞ¹.",
     "The amount and type of risk an organization is willing to pursue or retain.",
-    "ĞšĞ¾Ğ¼Ğ¿Ğ°Ğ½Ğ¸Ñ Ğ¿Ñ€Ğ¸Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚ discovery risk, Ğ½Ğ¾ Ğ½Ğµ privacy violations.",
+    "ĞšĞ¾Ğ¼Ğ¿Ğ°Ğ½Ğ¸Ñ Ğ¿Ñ€Ğ¸Ğ½Ğ¸Ğ¼Ğ°ĞµÑ‚ Ñ€Ğ¸ÑĞº Ğ¸ÑÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ, Ğ½Ğ¾ Ğ½Ğµ Ğ½Ğ°Ñ€ÑƒÑˆĞµĞ½Ğ¸Ñ ĞºĞ¾Ğ½Ñ„Ğ¸Ğ´ĞµĞ½Ñ†Ğ¸Ğ°Ğ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸.",
     "The company accepts discovery risk but not privacy violations.",
   ),
   g(
@@ -2567,31 +1098,31 @@ const extendedGlossary: Glossary[] = [
     "Ğ­ĞºÑĞ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ñ Ñ€Ğ¸ÑĞºĞ°",
     "Ğ¡Ğ¾Ñ‡ĞµÑ‚Ğ°Ğ½Ğ¸Ğµ Ğ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ñ, Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞµĞ¼Ğ¾Ğµ Ğ´Ğ»Ñ ÑÑ€Ğ°Ğ²Ğ½ĞµĞ½Ğ¸Ñ Ñ€Ğ¸ÑĞºĞ¾Ğ².",
     "A combination of probability and impact used to compare risks.",
-    "Ğ Ğ¸ÑĞº 4Ã—5 Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ°ĞµÑ‚ exposure 20.",
+    "Ğ Ğ¸ÑĞº 4Ã—5 Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ°ĞµÑ‚ ÑĞºÑĞ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ñ 20.",
     "A 4Ã—5 risk has exposure 20.",
   ),
   g(
     "Risk Owner",
     "Ğ’Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† Ñ€Ğ¸ÑĞºĞ°",
-    "Ğ§ĞµĞ»Ğ¾Ğ²ĞµĞº, Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ÑÑ‰Ğ¸Ğ¹ Ğ·Ğ° Ğ½Ğ°Ğ±Ğ»ÑĞ´ĞµĞ½Ğ¸Ğµ Ñ€Ğ¸ÑĞºĞ°, response Ğ¸ escalation.",
+    "Ğ§ĞµĞ»Ğ¾Ğ²ĞµĞº, Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ÑÑ‰Ğ¸Ğ¹ Ğ·Ğ° Ğ½Ğ°Ğ±Ğ»ÑĞ´ĞµĞ½Ğ¸Ğµ Ñ€Ğ¸ÑĞºĞ°, Ñ€ĞµĞ°Ğ³Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¸ ÑÑĞºĞ°Ğ»Ğ°Ñ†Ğ¸Ñ.",
     "The person accountable for monitoring a risk, its response, and escalation.",
-    "Tech lead ÑĞ»ĞµĞ´Ğ¸Ñ‚ Ğ·Ğ° capacity trigger API.",
+    "Ğ¢ĞµÑ…Ğ½Ğ¸Ñ‡ĞµÑĞºĞ¸Ğ¹ Ñ€ÑƒĞºĞ¾Ğ²Ğ¾Ğ´Ğ¸Ñ‚ĞµĞ»ÑŒ ÑĞ»ĞµĞ´Ğ¸Ñ‚ Ğ·Ğ° ÑƒÑĞ»Ğ¾Ğ²Ğ¸ĞµĞ¼ Ğ¿Ñ€ĞµĞ´ĞµĞ»ÑŒĞ½Ğ¾Ğ¹ Ğ½Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ¸ API.",
     "The tech lead monitors the API capacity trigger.",
   ),
   g(
     "Risk Register",
     "Ğ ĞµĞµÑÑ‚Ñ€ Ñ€Ğ¸ÑĞºĞ¾Ğ²",
-    "Ğ–Ğ¸Ğ²Ğ¾Ğ¹ ÑĞ¿Ğ¸ÑĞ¾Ğº Ñ€Ğ¸ÑĞºĞ¾Ğ² Ñ causes, effects, exposure, owner, response Ğ¸ review.",
+    "Ğ–Ğ¸Ğ²Ğ¾Ğ¹ ÑĞ¿Ğ¸ÑĞ¾Ğº Ñ€Ğ¸ÑĞºĞ¾Ğ² Ñ Ğ¿Ñ€Ğ¸Ñ‡Ğ¸Ğ½Ğ°Ğ¼Ğ¸, Ğ¿Ğ¾ÑĞ»ĞµĞ´ÑÑ‚Ğ²Ğ¸ÑĞ¼Ğ¸, ÑĞºÑĞ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸ĞµĞ¹, Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†ĞµĞ¼, Ğ¼ĞµÑ€Ğ°Ğ¼Ğ¸ Ğ¸ Ğ¾Ğ±Ğ·Ğ¾Ñ€Ğ¾Ğ¼.",
     "A living list of risks with causes, effects, exposure, owner, response, and review.",
-    "Weekly review Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑĞµÑ‚ triggers Ğ¸ residual exposure.",
+    "Ğ•Ğ¶ĞµĞ½ĞµĞ´ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ Ğ¾Ğ±Ğ·Ğ¾Ñ€ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑĞµÑ‚ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ ÑÑ€Ğ°Ğ±Ğ°Ñ‚Ñ‹Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¸ Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½ÑƒÑ ÑĞºÑĞ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ñ.",
     "The weekly review updates triggers and residual exposure.",
   ),
   g(
     "Roadmap",
     "Ğ”Ğ¾Ñ€Ğ¾Ğ¶Ğ½Ğ°Ñ ĞºĞ°Ñ€Ñ‚Ğ°",
-    "Ğ’Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ñ Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ, outcomes Ğ¸ ĞºÑ€ÑƒĞ¿Ğ½Ñ‹Ñ… ÑÑ‚Ğ°Ğ²Ğ¾Ğº Ñ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ÑŒÑ.",
+    "Ğ’Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ñ Ğ½Ğ°Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ, Ğ¸Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ñ‹Ñ… Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ² Ğ¸ ĞºÑ€ÑƒĞ¿Ğ½Ñ‹Ñ… ÑÑ‚Ğ°Ğ²Ğ¾Ğº Ñ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ÑŒÑ.",
     "A time-oriented communication of direction, outcomes, and major bets with uncertainty.",
-    "Roadmap Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Now, Next Ğ¸ Later, Ğ° Ğ½Ğµ Ğ»Ğ¾Ğ¶Ğ½Ñ‹Ğµ Ñ‚Ğ¾Ñ‡Ğ½Ñ‹Ğµ Ğ´Ğ°Ñ‚Ñ‹.",
+    "Ğ”Ğ¾Ñ€Ğ¾Ğ¶Ğ½Ğ°Ñ ĞºĞ°Ñ€Ñ‚Ğ° Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Â«ÑĞµĞ¹Ñ‡Ğ°ÑÂ», Â«Ğ´Ğ°Ğ»ĞµĞµÂ» Ğ¸ Â«Ğ¿Ğ¾Ğ·Ğ¶ĞµÂ», Ğ° Ğ½Ğµ Ğ»Ğ¾Ğ¶Ğ½Ñ‹Ğµ Ñ‚Ğ¾Ñ‡Ğ½Ñ‹Ğµ Ğ´Ğ°Ñ‚Ñ‹.",
     "The roadmap shows Now, Next, and Later rather than false precision.",
   ),
   g(
@@ -2599,15 +1130,15 @@ const extendedGlossary: Glossary[] = [
     "ĞŸĞ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ½Ğ°Ğ±ĞµĞ³Ğ°ÑÑ‰ĞµĞ¹ Ğ²Ğ¾Ğ»Ğ½Ğ¾Ğ¹",
     "Ğ”ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ğ±Ğ»Ğ¸Ğ¶Ğ½Ğ¸Ğ¹ Ğ¿Ğ»Ğ°Ğ½ Ğ¸ ÑƒĞºÑ€ÑƒĞ¿Ğ½Ñ‘Ğ½Ğ½Ñ‹Ğ¹ Ğ´Ğ°Ğ»ÑŒĞ½Ğ¸Ğ¹ Ğ¿Ğ»Ğ°Ğ½, ÑƒÑ‚Ğ¾Ñ‡Ğ½ÑĞµĞ¼Ñ‹Ğ¹ Ğ¿Ğ¾ Ğ¼ĞµÑ€Ğµ Ğ¾Ğ±ÑƒÑ‡ĞµĞ½Ğ¸Ñ.",
     "Detailed near-term planning with higher-level future planning refined as learning emerges.",
-    "Ğ¡Ğ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğµ Ğ´Ğ²Ğµ Ğ½ĞµĞ´ĞµĞ»Ğ¸ Ğ´ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ñ‹, ÑĞ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğ¹ ĞºĞ²Ğ°Ñ€Ñ‚Ğ°Ğ» â€” Ğ¿Ğ¾ milestones.",
+    "Ğ¡Ğ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğµ Ğ´Ğ²Ğµ Ğ½ĞµĞ´ĞµĞ»Ğ¸ Ğ´ĞµÑ‚Ğ°Ğ»ÑŒĞ½Ñ‹, ÑĞ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğ¹ ĞºĞ²Ğ°Ñ€Ñ‚Ğ°Ğ» â€” Ğ¿Ğ¾ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ñ‹Ğ¼ Ñ‚Ğ¾Ñ‡ĞºĞ°Ğ¼.",
     "The next two weeks are detailed; the next quarter is milestone-level.",
   ),
   g(
     "SAFe",
     "SAFe",
-    "ĞšĞ¾Ğ¼Ğ¼ĞµÑ€Ñ‡ĞµÑĞºĞ¸Ğ¹ Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ±Ğ½Ñ‹Ğ¹ framework Ğ´Ğ»Ñ ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ°Ñ†Ğ¸Ğ¸ Lean-Agile delivery Ğ² ĞºÑ€ÑƒĞ¿Ğ½Ñ‹Ñ… Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸ÑÑ….",
+    "ĞšĞ¾Ğ¼Ğ¼ĞµÑ€Ñ‡ĞµÑĞºĞ°Ñ Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ±Ğ½Ğ°Ñ Ğ¼ĞµÑ‚Ğ¾Ğ´Ğ¸ĞºĞ° Ğ´Ğ»Ñ ĞºĞ¾Ğ¾Ñ€Ğ´Ğ¸Ğ½Ğ°Ñ†Ğ¸Ğ¸ Ğ±ĞµÑ€ĞµĞ¶Ğ»Ğ¸Ğ²Ğ¾Ğ¹ Ğ¸ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ¸Ğ²Ğ½Ğ¾Ğ¹ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ Ğ² ĞºÑ€ÑƒĞ¿Ğ½Ñ‹Ñ… Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸ÑÑ….",
     "A commercial scaling framework for coordinating Lean-Agile delivery in large organizations.",
-    "ĞĞµÑĞºĞ¾Ğ»ÑŒĞºĞ¾ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´ ÑĞ¸Ğ½Ñ…Ñ€Ğ¾Ğ½Ğ¸Ğ·Ğ¸Ñ€ÑƒÑÑ‚ planning Ğ½Ğ° Ğ¾Ğ±Ñ‰ĞµĞ¼ cadence.",
+    "ĞĞµÑĞºĞ¾Ğ»ÑŒĞºĞ¾ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´ ÑĞ¸Ğ½Ñ…Ñ€Ğ¾Ğ½Ğ¸Ğ·Ğ¸Ñ€ÑƒÑÑ‚ Ğ¿Ğ»Ğ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ² Ğ¾Ğ±Ñ‰ĞµĞ¼ Ñ€Ğ¸Ñ‚Ğ¼Ğµ.",
     "Multiple teams synchronize planning on a common cadence.",
   ),
   g(
@@ -2615,39 +1146,39 @@ const extendedGlossary: Glossary[] = [
     "Ğ Ğ°ÑĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ",
     "ĞœĞ¾Ğ´ĞµĞ»ÑŒ Ğ´Ğ°Ñ‚, Ğ´Ğ»Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ĞµĞ¹, Ğ·Ğ°Ğ²Ğ¸ÑĞ¸Ğ¼Ğ¾ÑÑ‚ĞµĞ¹, Ñ€ĞµÑÑƒÑ€ÑĞ¾Ğ² Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ñ‹Ñ… Ñ‚Ğ¾Ñ‡ĞµĞº Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
     "A model of project dates, durations, dependencies, resources, and milestones.",
-    "Schedule Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ critical path Ğ¸ available float.",
+    "Ğ“Ñ€Ğ°Ñ„Ğ¸Ğº Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ ĞºÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ğ¹ Ğ¿ÑƒÑ‚ÑŒ Ğ¸ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹Ğ¹ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾Ğ¹ Ñ€ĞµĞ·ĞµÑ€Ğ².",
     "The schedule shows the critical path and available float.",
   ),
   g(
     "Scrum",
     "Scrum",
-    "Ğ›Ñ‘Ğ³ĞºĞ¸Ğ¹ framework, Ğ² ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¼ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ñ‡ĞµÑ€ĞµĞ· Sprints, inspection Ğ¸ adaptation.",
+    "Ğ›Ñ‘Ğ³ĞºĞ°Ñ Ğ¼ĞµÑ‚Ğ¾Ğ´Ğ¸ĞºĞ°, Ğ² ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Ñ‡ĞµÑ€ĞµĞ· ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ñ‹, Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºÑƒ Ğ¸ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ°Ñ†Ğ¸Ñ.",
     "A lightweight framework for creating value through Sprints, inspection, and adaptation.",
-    "ĞšĞ°Ğ¶Ğ´Ñ‹Ğ¹ Sprint ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ usable Increment Ğ¸ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑĞµÑ‚ backlog.",
+    "ĞšĞ°Ğ¶Ğ´Ñ‹Ğ¹ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚ ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ğ¿Ñ€Ğ¸Ğ³Ğ¾Ğ´Ğ½Ñ‹Ğ¹ Ğ¸Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚ Ğ¸ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑĞµÑ‚ Ğ±ÑĞºĞ»Ğ¾Ğ³.",
     "Each Sprint creates a usable Increment and updates the backlog.",
   ),
   g(
     "Scrum Master",
     "Scrum-Ğ¼Ğ°ÑÑ‚ĞµÑ€",
-    "Accountability Scrum Ğ·Ğ° ÑÑ„Ñ„ĞµĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹ Ğ¸ ĞºĞ¾Ñ€Ñ€ĞµĞºÑ‚Ğ½Ğ¾Ğµ Ğ¿Ñ€Ğ¸Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ framework.",
+    "Ğ Ğ¾Ğ»ÑŒ Scrum, Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ÑÑ‰Ğ°Ñ Ğ·Ğ° ÑÑ„Ñ„ĞµĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾ÑÑ‚ÑŒ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹ Ğ¸ ĞºĞ¾Ñ€Ñ€ĞµĞºÑ‚Ğ½Ğ¾Ğµ Ğ¿Ñ€Ğ¸Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ Ğ¼ĞµÑ‚Ğ¾Ğ´Ğ¸ĞºĞ¸.",
     "The Scrum accountability for team effectiveness and proper use of the framework.",
-    "Scrum Master Ğ¿Ğ¾Ğ¼Ğ¾Ğ³Ğ°ĞµÑ‚ ÑƒÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ ÑĞ¸ÑÑ‚ĞµĞ¼Ğ½Ñ‹Ğ¹ blocker flow.",
+    "Scrum-Ğ¼Ğ°ÑÑ‚ĞµÑ€ Ğ¿Ğ¾Ğ¼Ğ¾Ğ³Ğ°ĞµÑ‚ ÑƒÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ ÑĞ¸ÑÑ‚ĞµĞ¼Ğ½ÑƒÑ Ğ±Ğ»Ğ¾ĞºĞ¸Ñ€Ğ¾Ğ²ĞºÑƒ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ°.",
     "The Scrum Master helps remove a systemic flow blocker.",
   ),
   g(
     "Scope Creep",
-    "ĞĞµĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ğ¸Ñ€ÑƒĞµĞ¼Ğ¾Ğµ Ñ€Ğ°ÑÑˆĞ¸Ñ€ĞµĞ½Ğ¸Ğµ scope",
-    "Ğ”Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ±ĞµĞ· ÑĞ²Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, impact analysis Ğ¸ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒÑÑ‚Ğ².",
+    "ĞĞµĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ğ¸Ñ€ÑƒĞµĞ¼Ğ¾Ğµ Ñ€Ğ°ÑÑˆĞ¸Ñ€ĞµĞ½Ğ¸Ğµ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚",
+    "Ğ”Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ±ĞµĞ· ÑĞ²Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ, Ğ°Ğ½Ğ°Ğ»Ğ¸Ğ·Ğ° Ğ²Ğ»Ğ¸ÑĞ½Ğ¸Ñ Ğ¸ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒÑÑ‚Ğ².",
     "Work added without an explicit decision, impact analysis, or updated commitments.",
-    "ĞĞ¾Ğ²Ñ‹Ğ¹ report Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ»Ğ¸, Ğ½Ğµ Ğ¼ĞµĞ½ÑÑ ÑÑ€Ğ¾Ğº Ğ¸ capacity.",
+    "ĞĞ¾Ğ²Ñ‹Ğ¹ Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ğ»Ğ¸, Ğ½Ğµ Ğ¼ĞµĞ½ÑÑ ÑÑ€Ğ¾Ğº Ğ¸ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½ÑƒÑ Ğ¼Ğ¾Ñ‰Ğ½Ğ¾ÑÑ‚ÑŒ.",
     "A new report was added without changing date or capacity.",
   ),
   g(
     "Sponsor",
     "Ğ¡Ğ¿Ğ¾Ğ½ÑĞ¾Ñ€",
-    "Ğ¡Ñ‚Ğ°Ñ€ÑˆĞ¸Ğ¹ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† business case, Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¸ ĞºĞ»ÑÑ‡ĞµĞ²Ğ¾Ğ¹ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºĞ¸ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
+    "Ğ¡Ñ‚Ğ°Ñ€ÑˆĞ¸Ğ¹ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ĞµÑ† ÑĞºĞ¾Ğ½Ğ¾Ğ¼Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ Ğ¾Ğ±Ğ¾ÑĞ½Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ, Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ¼Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¸ ĞºĞ»ÑÑ‡ĞµĞ²Ğ¾Ğ¹ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºĞ¸ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
     "The senior owner of the business case, authority, and executive support.",
-    "Sponsor Ñ€ĞµÑˆĞ°ĞµÑ‚ exception Ğ²Ñ‹ÑˆĞµ tolerance Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
+    "Ğ¡Ğ¿Ğ¾Ğ½ÑĞ¾Ñ€ Ñ€ĞµÑˆĞ°ĞµÑ‚ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ, Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞ°ÑÑ‰ĞµĞµ Ğ´Ğ¾Ğ¿ÑƒÑÑ‚Ğ¸Ğ¼Ğ¾Ğµ Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°.",
     "The sponsor decides exceptions beyond project tolerance.",
   ),
   g(
@@ -2655,45 +1186,45 @@ const extendedGlossary: Glossary[] = [
     "Ğ¡Ğ¿Ñ€Ğ¸Ğ½Ñ‚",
     "Ğ¤Ğ¸ĞºÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾Ğ¹ ĞºĞ¾Ğ½Ñ‚ĞµĞ¹Ğ½ĞµÑ€ Scrum Ğ¿Ñ€Ğ¾Ğ´Ğ¾Ğ»Ğ¶Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚ÑŒÑ Ğ¼ĞµÑÑÑ† Ğ¸Ğ»Ğ¸ Ğ¼ĞµĞ½ÑŒÑˆĞµ.",
     "A fixed-length Scrum timebox of one month or less.",
-    "Ğ”Ğ²ÑƒÑ…Ğ½ĞµĞ´ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ Sprint Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ĞµÑ‚ÑÑ Ñ†ĞµĞ½Ğ½Ñ‹Ğ¼ Increment.",
+    "Ğ”Ğ²ÑƒÑ…Ğ½ĞµĞ´ĞµĞ»ÑŒĞ½Ñ‹Ğ¹ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ĞµÑ‚ÑÑ Ñ†ĞµĞ½Ğ½Ñ‹Ğ¼ Ğ¸Ğ½ĞºÑ€ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ¼.",
     "A two-week Sprint ends with a valuable Increment.",
   ),
   g(
     "Sprint Backlog",
-    "Ğ‘ÑĞºĞ»Ğ¾Ğ³ Ğ¡Ğ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°",
-    "Sprint Goal, Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ñ‹Ğµ Product Backlog items Ğ¸ Ğ¿Ğ»Ğ°Ğ½ Ğ¸Ñ… Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ°Ğ¼Ğ¸.",
+    "Ğ‘ÑĞºĞ»Ğ¾Ğ³ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°",
+    "Ğ¦ĞµĞ»ÑŒ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°, Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ñ‹Ğµ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ñ‹ Ğ±ÑĞºĞ»Ğ¾Ğ³Ğ° Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ° Ğ¸ Ğ¿Ğ»Ğ°Ğ½ Ğ¸Ñ… Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ°Ğ¼Ğ¸.",
     "The Sprint Goal, selected Product Backlog items, and developers' delivery plan.",
     "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑĞµÑ‚ Ğ¿Ğ»Ğ°Ğ½ ĞµĞ¶ĞµĞ´Ğ½ĞµĞ²Ğ½Ğ¾ Ğ¿Ğ¾ Ğ¼ĞµÑ€Ğµ Ğ¾Ğ±ÑƒÑ‡ĞµĞ½Ğ¸Ñ.",
     "Developers update the plan daily as they learn.",
   ),
   g(
     "Sprint Goal",
-    "Ğ¦ĞµĞ»ÑŒ Ğ¡Ğ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°",
-    "Ğ•Ğ´Ğ¸Ğ½Ğ°Ñ Ñ†ĞµĞ»ÑŒ, Ğ¾Ğ±ÑŠÑÑĞ½ÑÑÑ‰Ğ°Ñ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ Sprint Ğ¸ Ğ´Ğ¾Ğ¿ÑƒÑĞºĞ°ÑÑ‰Ğ°Ñ Ğ³Ğ¸Ğ±ĞºĞ¾ÑÑ‚ÑŒ ÑĞ¾ÑÑ‚Ğ°Ğ²Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
+    "Ğ¦ĞµĞ»ÑŒ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°",
+    "Ğ•Ğ´Ğ¸Ğ½Ğ°Ñ Ñ†ĞµĞ»ÑŒ, Ğ¾Ğ±ÑŠÑÑĞ½ÑÑÑ‰Ğ°Ñ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ° Ğ¸ Ğ´Ğ¾Ğ¿ÑƒÑĞºĞ°ÑÑ‰Ğ°Ñ Ğ³Ğ¸Ğ±ĞºĞ¾ÑÑ‚ÑŒ ÑĞ¾ÑÑ‚Ğ°Ğ²Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹.",
     "The single objective explaining Sprint value while allowing scope flexibility.",
-    "Ğ¦ĞµĞ»ÑŒ â€” Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ´Ğ¸Ñ‚ÑŒ self-service activation flow.",
+    "Ğ¦ĞµĞ»ÑŒ â€” Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ´Ğ¸Ñ‚ÑŒ Ğ¿Ğ¾Ñ‚Ğ¾Ğº ÑĞ°Ğ¼Ğ¾ÑÑ‚Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾Ğ¹ Ğ°ĞºÑ‚Ğ¸Ğ²Ğ°Ñ†Ğ¸Ğ¸.",
     "The goal is to validate the self-service activation flow.",
   ),
   g(
     "Sprint Review",
-    "ĞĞ±Ğ·Ğ¾Ñ€ Ğ¡Ğ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°",
-    "Ğ Ğ°Ğ±Ğ¾Ñ‡Ğ°Ñ ÑĞµÑÑĞ¸Ñ inspection Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ¸ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ°Ñ†Ğ¸Ğ¸ Product Backlog ÑĞ¾ stakeholders.",
+    "ĞĞ±Ğ·Ğ¾Ñ€ ÑĞ¿Ñ€Ğ¸Ğ½Ñ‚Ğ°",
+    "Ğ Ğ°Ğ±Ğ¾Ñ‡Ğ°Ñ ÑĞµÑÑĞ¸Ñ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ° Ğ¸ Ğ°Ğ´Ğ°Ğ¿Ñ‚Ğ°Ñ†Ğ¸Ğ¸ Ğ±ÑĞºĞ»Ğ¾Ğ³Ğ° Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚Ğ° Ñ Ğ·Ğ°Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑĞ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğ¼Ğ¸ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ğ°Ğ¼Ğ¸.",
     "A working session to inspect outcomes and adapt the Product Backlog with stakeholders.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ±ÑÑƒĞ¶Ğ´Ğ°ĞµÑ‚ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ, Ğ° Ğ½Ğµ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ´ĞµĞ¼Ğ¾Ğ½ÑÑ‚Ñ€Ğ¸Ñ€ÑƒĞµÑ‚ features.",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ğ±ÑÑƒĞ¶Ğ´Ğ°ĞµÑ‚ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ, Ğ° Ğ½Ğµ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ´ĞµĞ¼Ğ¾Ğ½ÑÑ‚Ñ€Ğ¸Ñ€ÑƒĞµÑ‚ Ğ²Ğ¾Ğ·Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "The team discusses usage evidence, not only feature demos.",
   ),
   g(
     "Stage-Gate",
     "Ğ­Ñ‚Ğ°Ğ¿Ğ½Ğ¾-ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ",
-    "Ğ Ğ°Ğ·Ğ´ĞµĞ»ĞµĞ½Ğ¸Ğµ Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ñ‹ Ğ½Ğ° ÑÑ‚Ğ°Ğ¿Ñ‹ Ñ Ğ¸Ğ½Ğ²ĞµÑÑ‚Ğ¸Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğ¼ Ñ€ĞµÑˆĞµĞ½Ğ¸ĞµĞ¼ Ğ½Ğ° ĞºĞ°Ğ¶Ğ´Ğ¾Ğ¼ gate.",
+    "Ğ Ğ°Ğ·Ğ´ĞµĞ»ĞµĞ½Ğ¸Ğµ Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ²Ñ‹ Ğ½Ğ° ÑÑ‚Ğ°Ğ¿Ñ‹ Ñ Ğ¸Ğ½Ğ²ĞµÑÑ‚Ğ¸Ñ†Ğ¸Ğ¾Ğ½Ğ½Ñ‹Ğ¼ Ñ€ĞµÑˆĞµĞ½Ğ¸ĞµĞ¼ Ğ² ĞºĞ°Ğ¶Ğ´Ğ¾Ğ¹ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½Ğ¾Ğ¹ Ñ‚Ğ¾Ñ‡ĞºĞµ.",
     "Dividing an initiative into stages with an investment decision at each gate.",
-    "ĞŸĞ¾ÑĞ»Ğµ prototype gate Ğ¿Ñ€Ğ¾ĞµĞºÑ‚ Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ±Ğ¸Ñ€ÑƒÑÑ‚, Ğ¿ĞµÑ€ĞµÑ€Ğ°Ğ±Ğ°Ñ‚Ñ‹Ğ²Ğ°ÑÑ‚ Ğ¸Ğ»Ğ¸ Ğ·Ğ°ĞºÑ€Ñ‹Ğ²Ğ°ÑÑ‚.",
+    "ĞŸĞ¾ÑĞ»Ğµ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ¸ Ğ¿Ñ€Ğ¾Ñ‚Ğ¾Ñ‚Ğ¸Ğ¿Ğ° Ğ¿Ñ€Ğ¾ĞµĞºÑ‚ Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ±Ğ¸Ñ€ÑƒÑÑ‚, Ğ¿ĞµÑ€ĞµÑ€Ğ°Ğ±Ğ°Ñ‚Ñ‹Ğ²Ğ°ÑÑ‚ Ğ¸Ğ»Ğ¸ Ğ·Ğ°ĞºÑ€Ñ‹Ğ²Ğ°ÑÑ‚.",
     "After the prototype gate, the project is scaled, revised, or stopped.",
   ),
   g(
     "Start-to-Start",
     "ĞĞ°Ñ‡Ğ°Ğ»Ğ¾â€“Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾",
-    "Ğ¡Ğ²ÑĞ·ÑŒ, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ successor Ğ½Ğµ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ½Ğ°Ñ‡Ğ°Ñ‚ÑŒÑÑ Ñ€Ğ°Ğ½ÑŒÑˆĞµ predecessor.",
+    "Ğ¡Ğ²ÑĞ·ÑŒ, Ğ¿Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ Ğ¿Ñ€ĞµĞµĞ¼Ğ½Ğ¸Ğº Ğ½Ğµ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ½Ğ°Ñ‡Ğ°Ñ‚ÑŒÑÑ Ñ€Ğ°Ğ½ÑŒÑˆĞµ Ğ¿Ñ€ĞµĞ´ÑˆĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¸ĞºĞ°.",
     "A relationship where the successor cannot start before the predecessor starts.",
     "Ğ ĞµĞ´Ğ°ĞºÑ‚ÑƒÑ€Ğ° Ğ³Ğ»Ğ°Ğ²Ñ‹ Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ¿Ğ¾ÑĞ»Ğµ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ½Ğ°Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ñ.",
     "Chapter editing starts after writing starts.",
@@ -2703,7 +1234,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ¡Ñ‚Ğ°Ñ‚ÑƒÑ-Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚",
     "Ğ¡Ğ¶Ğ°Ñ‚Ñ‹Ğ¹ Ğ¾Ñ‚Ñ‡Ñ‘Ñ‚ Ğ¾Ğ± Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸ÑÑ…, Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·Ğµ, Ñ€Ğ¸ÑĞºĞ°Ñ…, Ñ€ĞµÑˆĞµĞ½Ğ¸ÑÑ… Ğ¸ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ğ¾Ğ¹ Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰Ğ¸.",
     "A concise report of changes, forecast, risks, decisions, and help needed.",
-    "ĞÑ‚Ñ‡Ñ‘Ñ‚ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ forecast Ğ¸ Ğ´Ğ²Ğµ sponsor decisions.",
+    "ĞÑ‚Ñ‡Ñ‘Ñ‚ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ· Ğ¸ Ğ´Ğ²Ğ° Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ ÑĞ¿Ğ¾Ğ½ÑĞ¾Ñ€Ğ°.",
     "The report shows the new forecast and two sponsor decisions.",
   ),
   g(
@@ -2711,7 +1242,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ ÑƒĞºĞ¾Ğ²Ğ¾Ğ´ÑÑ‰Ğ¸Ğ¹ ĞºĞ¾Ğ¼Ğ¸Ñ‚ĞµÑ‚",
     "Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ°, Ğ¿Ñ€Ğ¸Ğ½Ğ¸Ğ¼Ğ°ÑÑ‰Ğ°Ñ Ğ¼ĞµĞ¶Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ğ¾Ğ½Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ñ Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ğ¸Ñ€ÑƒÑÑ‰Ğ°Ñ ÑÑ‚Ñ€Ğ°Ñ‚ĞµĞ³Ğ¸Ñ‡ĞµÑĞºĞ¾Ğµ ÑĞ¾Ğ¾Ñ‚Ğ²ĞµÑ‚ÑÑ‚Ğ²Ğ¸Ğµ.",
     "A group making cross-functional decisions and overseeing strategic alignment.",
-    "ĞšĞ¾Ğ¼Ğ¸Ñ‚ĞµÑ‚ Ñ€ĞµÑˆĞ°ĞµÑ‚ funding exception Ğ¸ scope trade-off.",
+    "ĞšĞ¾Ğ¼Ğ¸Ñ‚ĞµÑ‚ Ñ€ĞµÑˆĞ°ĞµÑ‚ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾ Ñ„Ğ¸Ğ½Ğ°Ğ½ÑĞ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¸ ĞºĞ¾Ğ¼Ğ¿Ñ€Ğ¾Ğ¼Ğ¸ÑÑ Ğ¿Ğ¾ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ñƒ Ñ€Ğ°Ğ±Ğ¾Ñ‚.",
     "The committee decides a funding exception and scope trade-off.",
   ),
   g(
@@ -2724,10 +1255,10 @@ const extendedGlossary: Glossary[] = [
   ),
   g(
     "Story Point",
-    "Story point",
+    "Ğ‘Ğ°Ğ»Ğ»Ñ‹ Ğ¸ÑÑ‚Ğ¾Ñ€Ğ¸Ğ¸",
     "ĞÑ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ°Ñ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ½Ğ°Ñ Ğ¾Ñ†ĞµĞ½ĞºĞ° Ñ€Ğ°Ğ·Ğ¼ĞµÑ€Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ ÑƒÑ‡Ñ‘Ñ‚Ğ¾Ğ¼ ÑĞ»Ğ¾Ğ¶Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ğ½ĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚Ğ¸.",
     "A team-relative estimate of work size considering complexity and uncertainty.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ñ†ĞµĞ½Ğ¸Ğ²Ğ°ĞµÑ‚ item Ğ² 5 points Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ ÑÑ‚Ğ°Ğ»Ğ¾Ğ½Ğ¾Ğ².",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ¾Ñ†ĞµĞ½Ğ¸Ğ²Ğ°ĞµÑ‚ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚ Ğ² 5 Ğ±Ğ°Ğ»Ğ»Ğ¾Ğ² Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ ÑÑ‚Ğ°Ğ»Ğ¾Ğ½Ğ¾Ğ².",
     "The team estimates an item at five points against references.",
   ),
   g(
@@ -2735,7 +1266,7 @@ const extendedGlossary: Glossary[] = [
     "ĞšÑ€Ğ¸Ñ‚ĞµÑ€Ğ¸Ğ¸ ÑƒÑĞ¿ĞµÑ…Ğ°",
     "Ğ—Ğ°Ñ€Ğ°Ğ½ĞµĞµ Ğ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ñ‹Ğµ Ğ¸Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ñ‹Ğµ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ, Ğ¿Ğ¾ ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğ¼ Ğ¾Ñ†ĞµĞ½Ğ¸Ğ²Ğ°ĞµÑ‚ÑÑ Ğ´Ğ¾ÑÑ‚Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ñ†ĞµĞ»Ğ¸.",
     "Predefined measurable conditions used to judge goal achievement.",
-    "Activation Ñ€Ğ°ÑÑ‚Ñ‘Ñ‚ Ğ´Ğ¾ 60% Ğ±ĞµĞ· ÑƒĞ²ĞµĞ»Ğ¸Ñ‡ĞµĞ½Ğ¸Ñ support contacts.",
+    "ĞĞºÑ‚Ğ¸Ğ²Ğ°Ñ†Ğ¸Ñ Ñ€Ğ°ÑÑ‚Ñ‘Ñ‚ Ğ´Ğ¾ 60% Ğ±ĞµĞ· ÑƒĞ²ĞµĞ»Ğ¸Ñ‡ĞµĞ½Ğ¸Ñ Ğ¾Ğ±Ñ€Ğ°Ñ‰ĞµĞ½Ğ¸Ğ¹ Ğ² Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºÑƒ.",
     "Activation reaches 60% without increasing support contacts.",
   ),
   g(
@@ -2743,7 +1274,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ”Ğ¾Ñ€Ğ¾Ğ¶ĞºĞ° Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑĞ°",
     "Ğ“Ğ¾Ñ€Ğ¸Ğ·Ğ¾Ğ½Ñ‚Ğ°Ğ»ÑŒĞ½Ğ°Ñ Ğ¸Ğ»Ğ¸ Ğ²ĞµÑ€Ñ‚Ğ¸ĞºĞ°Ğ»ÑŒĞ½Ğ°Ñ Ğ·Ğ¾Ğ½Ğ° Ğ´Ğ¾ÑĞºĞ¸ Ğ´Ğ»Ñ ĞºĞ»Ğ°ÑÑĞ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹, Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ° Ğ¸Ğ»Ğ¸ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ°.",
     "A horizontal or vertical board lane for a work class, owner, or flow.",
-    "Expedite lane Ğ¸Ğ¼ĞµĞµÑ‚ Ğ¾Ñ‚Ğ´ĞµĞ»ÑŒĞ½ÑƒÑ policy Ğ¸ WIP limit.",
+    "Ğ¡Ñ€Ğ¾Ñ‡Ğ½Ğ°Ñ Ğ´Ğ¾Ñ€Ğ¾Ğ¶ĞºĞ° Ğ¸Ğ¼ĞµĞµÑ‚ Ğ¾Ñ‚Ğ´ĞµĞ»ÑŒĞ½Ğ¾Ğµ Ğ¿Ñ€Ğ°Ğ²Ğ¸Ğ»Ğ¾ Ğ¸ Ğ»Ğ¸Ğ¼Ğ¸Ñ‚ WIP.",
     "The expedite lane has its own policy and WIP limit.",
   ),
   g(
@@ -2751,7 +1282,7 @@ const extendedGlossary: Glossary[] = [
     "ĞĞ´Ğ°Ğ¿Ñ‚Ğ°Ñ†Ğ¸Ñ Ğ¼ĞµÑ‚Ğ¾Ğ´Ğ°",
     "ĞÑĞ¾Ğ·Ğ½Ğ°Ğ½Ğ½Ğ¾Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ°ĞºÑ‚Ğ¸Ğº Ğ¿Ğ¾Ğ´ ĞºĞ¾Ğ½Ñ‚ĞµĞºÑÑ‚ Ñ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸ĞµĞ¼ Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ñ Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ñ.",
     "Intentional adaptation of practices to context while preserving purpose and control.",
-    "ĞœĞ°Ğ»Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚ Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑĞµÑ‚ Ğ´Ğ²Ğ° review, Ğ½Ğ¾ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ÑĞµÑ‚ decision rights.",
+    "ĞœĞ°Ğ»Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚ Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑĞµÑ‚ Ğ´Ğ²Ğ° Ğ¾Ğ±Ğ·Ğ¾Ñ€Ğ°, Ğ½Ğ¾ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ÑĞµÑ‚ Ğ¿Ñ€Ğ°Ğ²Ğ° Ğ¿Ñ€Ğ¸Ğ½ÑÑ‚Ğ¸Ñ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹.",
     "A small project combines two reviews while retaining decision rights.",
   ),
   g(
@@ -2759,7 +1290,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ—Ğ°Ğ´Ğ°Ñ‡Ğ°",
     "ĞšĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½Ğ°Ñ ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹, Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ğ°Ñ Ğ´Ğ»Ñ Ğ±Ğ¾Ğ»ĞµĞµ ĞºÑ€ÑƒĞ¿Ğ½Ğ¾Ğ³Ğ¾ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ°.",
     "A concrete unit of work needed for a larger outcome.",
-    "ĞĞ°ÑÑ‚Ñ€Ğ¾Ğ¸Ñ‚ÑŒ telemetry Ğ´Ğ»Ñ release gate â€” task.",
+    "ĞĞ°ÑÑ‚Ñ€Ğ¾Ğ¸Ñ‚ÑŒ Ñ‚ĞµĞ»ĞµĞ¼ĞµÑ‚Ñ€Ğ¸Ñ Ğ´Ğ»Ñ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ñ Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ° â€” Ğ¾Ñ‚Ğ´ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ·Ğ°Ğ´Ğ°Ñ‡Ğ°.",
     "Configure telemetry for the release gate is a task.",
   ),
   g(
@@ -2767,15 +1298,15 @@ const extendedGlossary: Glossary[] = [
     "ĞĞ²Ñ‚Ğ¾Ğ½Ğ¾Ğ¼Ğ½Ğ¾ÑÑ‚ÑŒ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹",
     "Ğ¡Ñ‚ĞµĞ¿ĞµĞ½ÑŒ ÑĞ°Ğ¼Ğ¾ÑÑ‚Ğ¾ÑÑ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹ Ğ² ÑĞ¿Ğ¾ÑĞ¾Ğ±Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ¸ Ğ»Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ñ‹Ñ… Ñ€ĞµÑˆĞµĞ½Ğ¸ÑÑ….",
     "The degree of team independence over how work is done and local decisions.",
-    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ²Ñ‹Ğ±Ğ¸Ñ€Ğ°ĞµÑ‚ solution Ğ²Ğ½ÑƒÑ‚Ñ€Ğ¸ ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ñ… constraints.",
+    "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ²Ñ‹Ğ±Ğ¸Ñ€Ğ°ĞµÑ‚ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ²Ğ½ÑƒÑ‚Ñ€Ğ¸ ÑĞ¾Ğ³Ğ»Ğ°ÑĞ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ñ… Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµĞ½Ğ¸Ğ¹.",
     "The team chooses the solution within agreed constraints.",
   ),
   g(
     "Theme",
     "Ğ¢ĞµĞ¼Ğ°",
-    "ĞšÑ€ÑƒĞ¿Ğ½Ğ°Ñ ÑĞ¼Ñ‹ÑĞ»Ğ¾Ğ²Ğ°Ñ Ğ³Ñ€ÑƒĞ¿Ğ¿Ğ° Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ² Ğ¸Ğ»Ğ¸ outcomes Ğ´Ğ»Ñ ÑÑ‚Ñ€Ğ°Ñ‚ĞµĞ³Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ¹ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ğ¸.",
+    "ĞšÑ€ÑƒĞ¿Ğ½Ğ°Ñ ÑĞ¼Ñ‹ÑĞ»Ğ¾Ğ²Ğ°Ñ Ğ³Ñ€ÑƒĞ¿Ğ¿Ğ° Ğ¸Ğ½Ğ¸Ñ†Ğ¸Ğ°Ñ‚Ğ¸Ğ² Ğ¸Ğ»Ğ¸ Ğ¸Ğ·Ğ¼ĞµÑ€Ğ¸Ğ¼Ñ‹Ñ… Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ² Ğ´Ğ»Ñ ÑÑ‚Ñ€Ğ°Ñ‚ĞµĞ³Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ¹ ĞºĞ¾Ğ¼Ğ¼ÑƒĞ½Ğ¸ĞºĞ°Ñ†Ğ¸Ğ¸.",
     "A broad grouping of initiatives or outcomes for strategic communication.",
-    "Ğ¢ĞµĞ¼Ğ° Ğ´Ğ¾Ğ²ĞµÑ€Ğ¸Ñ Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑĞµÑ‚ security, transparency Ğ¸ support work.",
+    "Ğ¢ĞµĞ¼Ğ° Ğ´Ğ¾Ğ²ĞµÑ€Ğ¸Ñ Ğ¾Ğ±ÑŠĞµĞ´Ğ¸Ğ½ÑĞµÑ‚ Ğ±ĞµĞ·Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ÑÑ‚ÑŒ, Ğ¿Ñ€Ğ¾Ğ·Ñ€Ğ°Ñ‡Ğ½Ğ¾ÑÑ‚ÑŒ Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñƒ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶ĞºĞ¸.",
     "The trust theme groups security, transparency, and support work.",
   ),
   g(
@@ -2783,7 +1314,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ”Ğ¾Ğ¿ÑƒÑĞº",
     "Ğ Ğ°Ğ·Ñ€ĞµÑˆÑ‘Ğ½Ğ½Ñ‹Ğ¹ Ğ´Ğ¸Ğ°Ğ¿Ğ°Ğ·Ğ¾Ğ½ Ğ¾Ñ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ñ, Ğ²Ğ½ÑƒÑ‚Ñ€Ğ¸ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ³Ğ¾ ÑƒÑ€Ğ¾Ğ²ĞµĞ½ÑŒ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ñ Ğ´ĞµĞ¹ÑÑ‚Ğ²ÑƒĞµÑ‚ Ğ°Ğ²Ñ‚Ğ¾Ğ½Ğ¾Ğ¼Ğ½Ğ¾.",
     "An allowed variance range within which a management level acts autonomously.",
-    "PM ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑĞµÑ‚ ÑÑ€Ğ¾ĞºĞ¾Ğ¼ Ğ² Ğ¿Ñ€ĞµĞ´ĞµĞ»Ğ°Ñ… Â±5 Ğ´Ğ½ĞµĞ¹ Ğ±ĞµĞ· escalation.",
+    "Ğ ÑƒĞºĞ¾Ğ²Ğ¾Ğ´Ğ¸Ñ‚ĞµĞ»ÑŒ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑĞµÑ‚ ÑÑ€Ğ¾ĞºĞ¾Ğ¼ Ğ² Ğ¿Ñ€ĞµĞ´ĞµĞ»Ğ°Ñ… Â±5 Ğ´Ğ½ĞµĞ¹ Ğ±ĞµĞ· ÑÑĞºĞ°Ğ»Ğ°Ñ†Ğ¸Ğ¸.",
     "The PM manages within a Â±5-day schedule tolerance without escalation.",
   ),
   g(
@@ -2791,7 +1322,7 @@ const extendedGlossary: Glossary[] = [
     "Ğ¢Ñ€Ğ¸Ğ³Ğ³ĞµÑ€ Ñ€Ğ¸ÑĞºĞ°",
     "ĞĞ°Ğ±Ğ»ÑĞ´Ğ°ĞµĞ¼Ñ‹Ğ¹ ÑĞ¸Ğ³Ğ½Ğ°Ğ», ÑƒĞºĞ°Ğ·Ñ‹Ğ²Ğ°ÑÑ‰Ğ¸Ğ¹ Ğ½Ğ° Ğ¿Ñ€Ğ¸Ğ±Ğ»Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¸Ğ»Ğ¸ Ğ½Ğ°ÑÑ‚ÑƒĞ¿Ğ»ĞµĞ½Ğ¸Ğµ Ñ€Ğ¸ÑĞºĞ°.",
     "An observable signal that a risk is approaching or occurring.",
-    "P95 latency Ğ²Ñ‹ÑˆĞµ 800 ms Ğ·Ğ°Ğ¿ÑƒÑĞºĞ°ĞµÑ‚ scaling plan.",
+    "Ğ—Ğ°Ğ´ĞµÑ€Ğ¶ĞºĞ° P95 Ğ²Ñ‹ÑˆĞµ 800 Ğ¼Ñ Ğ·Ğ°Ğ¿ÑƒÑĞºĞ°ĞµÑ‚ Ğ¿Ğ»Ğ°Ğ½ Ğ¼Ğ°ÑÑˆÑ‚Ğ°Ğ±Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ.",
     "P95 latency above 800 ms triggers the scaling plan.",
   ),
   g(
@@ -2799,7 +1330,7 @@ const extendedGlossary: Glossary[] = [
     "ĞĞµĞ¾Ğ¿Ñ€ĞµĞ´ĞµĞ»Ñ‘Ğ½Ğ½Ğ¾ÑÑ‚ÑŒ",
     "ĞĞµĞ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ğº Ğ·Ğ½Ğ°Ğ½Ğ¸Ñ Ğ¾ ÑĞ¾Ğ±Ñ‹Ñ‚Ğ¸ÑÑ…, Ğ¾Ñ†ĞµĞ½ĞºĞ°Ñ…, Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚ÑÑ… Ğ¸Ğ»Ğ¸ Ğ¿Ñ€Ğ¸Ñ‡Ğ¸Ğ½Ğ½Ñ‹Ñ… ÑĞ²ÑĞ·ÑÑ….",
     "Lack of knowledge about events, estimates, needs, or causal relationships.",
-    "ĞĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾, Ğ¿Ñ€Ğ¸Ğ¼ÑƒÑ‚ Ğ»Ğ¸ ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ñ‹ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ pricing flow.",
+    "ĞĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾, Ğ¿Ñ€Ğ¸Ğ¼ÑƒÑ‚ Ğ»Ğ¸ ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ñ‹ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑ Ñ†ĞµĞ½Ğ¾Ğ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ.",
     "It is unknown whether customers will adopt the new pricing flow.",
   ),
   g(
@@ -2813,15 +1344,15 @@ const extendedGlossary: Glossary[] = [
   g(
     "Validation",
     "Ğ’Ğ°Ğ»Ğ¸Ğ´Ğ°Ñ†Ğ¸Ñ",
-    "ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ evidence, Ñ‡Ñ‚Ğ¾ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ĞµÑ‚ Ñ€ĞµĞ°Ğ»ÑŒĞ½Ğ¾Ğ¹ Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ñ†ĞµĞ»Ğ¸.",
+    "ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ğ¹, Ñ‡Ñ‚Ğ¾ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ½Ğ¾Ğµ Ñ€ĞµÑˆĞµĞ½Ğ¸Ğµ Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ĞµÑ‚ Ñ€ĞµĞ°Ğ»ÑŒĞ½Ğ¾Ğ¹ Ğ¿Ğ¾Ñ‚Ñ€ĞµĞ±Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ¸ Ñ†ĞµĞ»Ğ¸.",
     "Gathering evidence that a chosen solution meets a real need and objective.",
-    "Pilot Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚, Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒÑÑ‚ Ğ»Ğ¸ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ‚Ğ¾Ñ€Ñ‹ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ workflow.",
+    "ĞŸĞ¸Ğ»Ğ¾Ñ‚ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚, Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒÑÑ‚ Ğ»Ğ¸ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ‚Ğ¾Ñ€Ñ‹ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑ.",
     "A pilot shows whether operators use the new workflow.",
   ),
   g(
     "Value",
     "Ğ¦ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ",
-    "ĞŸĞ¾Ğ»ĞµĞ·Ğ½Ñ‹Ğ¹ ÑÑ„Ñ„ĞµĞºÑ‚ Ğ´Ğ»Ñ stakeholder Ğ¸Ğ»Ğ¸ Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸ Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚, Ñ€Ğ¸ÑĞºĞ° Ğ¸ Ğ°Ğ»ÑŒÑ‚ĞµÑ€Ğ½Ğ°Ñ‚Ğ¸Ğ².",
+    "ĞŸĞ¾Ğ»ĞµĞ·Ğ½Ñ‹Ğ¹ ÑÑ„Ñ„ĞµĞºÑ‚ Ğ´Ğ»Ñ Ğ·Ğ°Ğ¸Ğ½Ñ‚ĞµÑ€ĞµÑĞ¾Ğ²Ğ°Ğ½Ğ½Ğ¾Ğ¹ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñ‹ Ğ¸Ğ»Ğ¸ Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸ Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Ğ·Ğ°Ñ‚Ñ€Ğ°Ñ‚, Ñ€Ğ¸ÑĞºĞ° Ğ¸ Ğ°Ğ»ÑŒÑ‚ĞµÑ€Ğ½Ğ°Ñ‚Ğ¸Ğ².",
     "A beneficial effect for a stakeholder or organization relative to cost, risk, and alternatives.",
     "Ğ¡Ğ½Ğ¸Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¾ÑˆĞ¸Ğ±Ğ¾Ğº ÑĞ¾Ğ·Ğ´Ğ°Ñ‘Ñ‚ Ñ†ĞµĞ½Ğ½Ğ¾ÑÑ‚ÑŒ ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ñƒ Ğ¸ Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸ÑĞ¼.",
     "Reducing errors creates value for customers and operations.",
@@ -2829,9 +1360,9 @@ const extendedGlossary: Glossary[] = [
   g(
     "Variance",
     "ĞÑ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ",
-    "Ğ Ğ°Ğ·Ğ½Ğ¸Ñ†Ğ° Ğ¼ĞµĞ¶Ğ´Ñƒ baseline Ğ¸Ğ»Ğ¸ Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸ĞµĞ¼ Ğ¸ Ñ„Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ğ¼ Ğ»Ğ¸Ğ±Ğ¾ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·Ğ½Ñ‹Ğ¼ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ¼.",
+    "Ğ Ğ°Ğ·Ğ½Ğ¸Ñ†Ğ° Ğ¼ĞµĞ¶Ğ´Ñƒ Ğ±Ğ°Ğ·Ğ¾Ğ²Ñ‹Ğ¼ Ğ¿Ğ»Ğ°Ğ½Ğ¾Ğ¼ Ğ¸Ğ»Ğ¸ Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ¸ĞµĞ¼ Ğ¸ Ñ„Ğ°ĞºÑ‚Ğ¸Ñ‡ĞµÑĞºĞ¸Ğ¼ Ğ»Ğ¸Ğ±Ğ¾ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·Ğ½Ñ‹Ğ¼ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚Ğ¾Ğ¼.",
     "The difference between a baseline or expectation and actual or forecast performance.",
-    "Schedule variance Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¾Ñ‚ÑÑ‚Ğ°Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Ğ¿Ğ»Ğ°Ğ½Ğ°.",
+    "ĞÑ‚ĞºĞ»Ğ¾Ğ½ĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾ ÑÑ€Ğ¾ĞºĞ°Ğ¼ Ğ¿Ğ¾ĞºĞ°Ğ·Ñ‹Ğ²Ğ°ĞµÑ‚ Ğ¾Ñ‚ÑÑ‚Ğ°Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¾Ñ‚Ğ½Ğ¾ÑĞ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ Ğ¿Ğ»Ğ°Ğ½Ğ°.",
     "Schedule variance shows delay against the plan.",
   ),
   g(
@@ -2839,39 +1370,39 @@ const extendedGlossary: Glossary[] = [
     "ĞŸĞ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸Ğº",
     "Ğ’Ğ½ĞµÑˆĞ½ÑÑ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ğ°, Ğ¿Ñ€ĞµĞ´Ğ¾ÑÑ‚Ğ°Ğ²Ğ»ÑÑÑ‰Ğ°Ñ Ğ¿Ñ€Ğ¾Ğ´ÑƒĞºÑ‚ Ğ¸Ğ»Ğ¸ ÑƒÑĞ»ÑƒĞ³Ñƒ Ğ¿Ğ¾ ÑĞ¾Ğ³Ğ»Ğ°ÑˆĞµĞ½Ğ¸Ñ.",
     "An external party providing a product or service under an agreement.",
-    "Vendor Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ĞµÑ‚ Ğ·Ğ° hosting milestone Ğ¸ service levels.",
+    "ĞŸĞ¾ÑÑ‚Ğ°Ğ²Ñ‰Ğ¸Ğº Ğ¾Ñ‚Ğ²ĞµÑ‡Ğ°ĞµÑ‚ Ğ·Ğ° ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»ÑŒĞ½ÑƒÑ Ñ‚Ğ¾Ñ‡ĞºÑƒ Ñ€Ğ°Ğ·Ğ¼ĞµÑ‰ĞµĞ½Ğ¸Ñ Ğ¸ ÑƒÑ€Ğ¾Ğ²Ğ½Ğ¸ Ğ¾Ğ±ÑĞ»ÑƒĞ¶Ğ¸Ğ²Ğ°Ğ½Ğ¸Ñ.",
     "The vendor owns the hosting milestone and service levels.",
   ),
   g(
     "Waterfall",
     "ĞšĞ°ÑĞºĞ°Ğ´Ğ½Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ",
-    "ĞŸĞ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ°Ñ lifecycle-Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Ñ Ğ¿Ñ€ĞµĞ¸Ğ¼ÑƒÑ‰ĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ¿Ğ½Ñ‹Ğ¼ Ğ¿ĞµÑ€ĞµÑ…Ğ¾Ğ´Ğ¾Ğ¼ Ğ¼ĞµĞ¶Ğ´Ñƒ Ñ„Ğ°Ğ·Ğ°Ğ¼Ğ¸.",
+    "ĞŸĞ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Ğ¶Ğ¸Ğ·Ğ½ĞµĞ½Ğ½Ğ¾Ğ³Ğ¾ Ñ†Ğ¸ĞºĞ»Ğ° Ñ Ğ¿Ñ€ĞµĞ¸Ğ¼ÑƒÑ‰ĞµÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ¿Ğ½Ñ‹Ğ¼ Ğ¿ĞµÑ€ĞµÑ…Ğ¾Ğ´Ğ¾Ğ¼ Ğ¼ĞµĞ¶Ğ´Ñƒ Ñ„Ğ°Ğ·Ğ°Ğ¼Ğ¸.",
     "A sequential lifecycle model with primarily phase-by-phase progression.",
-    "ĞŸĞ¾ÑĞ»Ğµ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ñ Ğ´Ğ¸Ğ·Ğ°Ğ¹Ğ½Ğ° Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ build phase.",
+    "ĞŸĞ¾ÑĞ»Ğµ ÑƒÑ‚Ğ²ĞµÑ€Ğ¶Ğ´ĞµĞ½Ğ¸Ñ Ğ´Ğ¸Ğ·Ğ°Ğ¹Ğ½Ğ° Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ ÑÑ‚Ğ°Ğ¿ Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ¸.",
     "The build phase begins after design approval.",
   ),
   g(
     "Work Breakdown Structure",
     "Ğ˜ĞµÑ€Ğ°Ñ€Ñ…Ğ¸Ñ‡ĞµÑĞºĞ°Ñ ÑÑ‚Ñ€ÑƒĞºÑ‚ÑƒÑ€Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚",
-    "Ğ˜ĞµÑ€Ğ°Ñ€Ñ…Ğ¸Ñ‡ĞµÑĞºĞ°Ñ Ğ´ĞµĞºĞ¾Ğ¼Ğ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ñ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ³Ğ¾ scope Ğ½Ğ° ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑĞµĞ¼Ñ‹Ğµ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ñ‹.",
+    "Ğ˜ĞµÑ€Ğ°Ñ€Ñ…Ğ¸Ñ‡ĞµÑĞºĞ°Ñ Ğ´ĞµĞºĞ¾Ğ¼Ğ¿Ğ¾Ğ·Ğ¸Ñ†Ğ¸Ñ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğ³Ğ¾ Ğ¾Ğ±ÑŠÑ‘Ğ¼Ğ° Ñ€Ğ°Ğ±Ğ¾Ñ‚ Ğ½Ğ° ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑĞµĞ¼Ñ‹Ğµ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ñ‹.",
     "A hierarchical decomposition of total scope into manageable components.",
-    "Deliverable Ñ€Ğ°Ğ·Ğ»Ğ¾Ğ¶ĞµĞ½ Ğ´Ğ¾ work packages Ñ ÑÑĞ½Ñ‹Ğ¼Ğ¸ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ğ°Ğ¼Ğ¸.",
+    "Ğ ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²ĞºĞ¸ Ñ€Ğ°Ğ·Ğ»Ğ¾Ğ¶ĞµĞ½ Ğ´Ğ¾ Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ñ… Ğ¿Ğ°ĞºĞµÑ‚Ğ¾Ğ² Ñ ÑÑĞ½Ñ‹Ğ¼Ğ¸ Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ†Ğ°Ğ¼Ğ¸.",
     "The deliverable is decomposed into bounded work packages.",
   ),
   g(
     "Work Item",
     "Ğ Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğ¹ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚",
-    "ĞÑ‚ÑĞ»ĞµĞ¶Ğ¸Ğ²Ğ°ĞµĞ¼Ğ°Ñ ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ğ° ÑĞ¿Ñ€Ğ¾ÑĞ° Ğ¸Ğ»Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹, Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´ÑÑ‰Ğ°Ñ Ñ‡ĞµÑ€ĞµĞ· workflow.",
+    "ĞÑ‚ÑĞ»ĞµĞ¶Ğ¸Ğ²Ğ°ĞµĞ¼Ğ°Ñ ĞµĞ´Ğ¸Ğ½Ğ¸Ñ†Ğ° ÑĞ¿Ñ€Ğ¾ÑĞ° Ğ¸Ğ»Ğ¸ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹, Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´ÑÑ‰Ğ°Ñ Ñ‡ĞµÑ€ĞµĞ· Ñ€Ğ°Ğ±Ğ¾Ñ‡Ğ¸Ğ¹ Ğ¿Ñ€Ğ¾Ñ†ĞµÑÑ.",
     "A trackable unit of demand or work moving through a workflow.",
-    "Bug Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ Ready, In Progress, Review Ğ¸ Done.",
+    "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€Ğ¾Ñ…Ğ¾Ğ´Ğ¸Ñ‚ ÑÑ‚Ğ°Ñ‚ÑƒÑÑ‹ Â«Ğ“Ğ¾Ñ‚Ğ¾Ğ²Ğ¾ Ğº Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞµÂ», Â«Ğ’ Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞµÂ», Â«ĞĞ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞµÂ» Ğ¸ Â«Ğ’Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¾Â».",
     "A bug moves through Ready, In Progress, Review, and Done.",
   ),
   g(
     "Work Item Age",
     "Ğ’Ğ¾Ğ·Ñ€Ğ°ÑÑ‚ Ñ€Ğ°Ğ±Ğ¾Ñ‡ĞµĞ³Ğ¾ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ°",
-    "Ğ’Ñ€ĞµĞ¼Ñ Ñ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ°ĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ½Ğ°Ğ´ Ğ½ĞµĞ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ñ‹Ğ¼ item Ğ´Ğ¾ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ Ğ¼Ğ¾Ğ¼ĞµĞ½Ñ‚Ğ°.",
+    "Ğ’Ñ€ĞµĞ¼Ñ Ñ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ°ĞºÑ‚Ğ¸Ğ²Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ½Ğ°Ğ´ Ğ½ĞµĞ·Ğ°Ğ²ĞµÑ€ÑˆÑ‘Ğ½Ğ½Ñ‹Ğ¼ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ¾Ğ¼ Ğ´Ğ¾ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ Ğ¼Ğ¾Ğ¼ĞµĞ½Ñ‚Ğ°.",
     "Elapsed time since an unfinished item entered active work.",
-    "Item age 14 Ğ´Ğ½ĞµĞ¹ Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞ°ĞµÑ‚ Ğ¾Ğ±Ñ‹Ñ‡Ğ½Ñ‹Ğ¹ SLE.",
+    "Ğ’Ğ¾Ğ·Ñ€Ğ°ÑÑ‚ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ° 14 Ğ´Ğ½ĞµĞ¹ Ğ¿Ñ€ĞµĞ²Ñ‹ÑˆĞ°ĞµÑ‚ Ğ¾Ğ±Ñ‹Ñ‡Ğ½Ñ‹Ğ¹ SLE.",
     "An item age of 14 days exceeds the usual SLE.",
   ),
   g(
@@ -2879,7 +1410,7 @@ const extendedGlossary: Glossary[] = [
     "ĞŸĞ°ĞºĞµÑ‚ Ñ€Ğ°Ğ±Ğ¾Ñ‚",
     "ĞĞ¸Ğ¶Ğ½Ğ¸Ğ¹ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ÑĞµĞ¼Ñ‹Ğ¹ ĞºĞ¾Ğ¼Ğ¿Ğ¾Ğ½ĞµĞ½Ñ‚ WBS, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğ¹ Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ Ğ¾Ñ†ĞµĞ½Ğ¸Ñ‚ÑŒ, Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡Ğ¸Ñ‚ÑŒ Ğ¸ ĞºĞ¾Ğ½Ñ‚Ñ€Ğ¾Ğ»Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ.",
     "The lowest manageable WBS component that can be estimated, assigned, and controlled.",
-    "ĞŸĞ°ĞºĞµÑ‚ Ğ¼Ğ¸Ğ³Ñ€Ğ°Ñ†Ğ¸Ğ¸ Ğ¸Ğ¼ĞµĞµÑ‚ owner, cost Ğ¸ acceptance.",
+    "ĞŸĞ°ĞºĞµÑ‚ Ğ¼Ğ¸Ğ³Ñ€Ğ°Ñ†Ğ¸Ğ¸ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ²Ğ»Ğ°Ğ´ĞµĞ»ÑŒÑ†Ğ°, ÑÑ‚Ğ¾Ğ¸Ğ¼Ğ¾ÑÑ‚ÑŒ Ğ¸ ÑƒÑĞ»Ğ¾Ğ²Ğ¸Ñ Ğ¿Ñ€Ğ¸Ñ‘Ğ¼ĞºĞ¸.",
     "The migration work package has an owner, cost, and acceptance.",
   ),
 ];
