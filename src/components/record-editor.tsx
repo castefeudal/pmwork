@@ -1,5 +1,6 @@
 "use client";
 import { useDialogFocus } from "./use-dialog-focus";
+import { updateWork } from "@/domain/workspace-commands";
 
 import { useId, useState } from "react";
 import { Trash2, X } from "lucide-react";
@@ -703,7 +704,12 @@ export function RecordEditor({
       setError(ru ? "Проверьте обязательные поля и допустимые значения." : "Check required fields and allowed values.");
       return;
     }
-    onChange(validation.data);
+    if(kind === "work") {
+      const updated=validation.data.workItems.find(item=>item.id===id)!;
+      const {ownerId: _ownerId, ...patch}=updated;
+      void _ownerId;
+      onChange(updateWork(workspace,id,patch));
+    } else onChange(validation.data);
     onClose();
   };
   const remove = () => {

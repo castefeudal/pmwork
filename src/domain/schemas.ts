@@ -36,6 +36,8 @@ export const workItemSchema = z.object({
   status: workStatusSchema,
   priority: z.enum(["critical", "high", "medium", "low"]),
   owner: z.string().default(""),
+  ownerId: z.string().optional(),
+  ownerLabel: z.string().optional(),
   contributors: z.array(z.string()).default([]),
   labels: z.array(z.string()).default([]),
   startDate: z.string().optional(),
@@ -350,6 +352,7 @@ export const activitySchema = z.object({
 });
 export const projectSettingsSchema = z.object({
   projectId: z.string(),
+  localMemberId: z.string().optional(),
   enabledTypes: z.array(workItemSchema.shape.type),
   wipLimits: z.record(z.string(), z.number().positive()),
   governance: z.enum(["lightweight", "standard", "controlled"]),
@@ -371,7 +374,8 @@ export const savedWorkViewSchema = z.object({
   id: z.string(), projectId: z.string(), name: z.string().min(1).max(80), config: workViewConfigSchema,
 });
 export const workspaceSchema = z.object({
-  schemaVersion: z.literal(3),
+  schemaVersion: z.literal(4),
+  density: z.enum(["comfortable", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
   workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),
   id: z.string(),

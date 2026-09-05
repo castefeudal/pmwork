@@ -1,3 +1,5 @@
+> Current branch note: refer to PRODUCT_SPEC.md, CONTENT_MODEL.md, QUALITY_GATE.md and RELEASE.md for current behavior and validation. Earlier measurements below are historical and are not evidence for the new branch.
+
 # Feature matrix
 
 Status meanings: **implemented** = changes validated persisted state or provides a complete deterministic tool; **partial** = useful but lacks a full record lifecycle; **excluded** = deliberate v2 boundary.

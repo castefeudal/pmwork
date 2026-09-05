@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const PublicSearch = dynamic(() => import("./public-search"), { ssr: false });
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -14,6 +16,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
     other = locale === "ru" ? "en" : "ru",
     switched = path.replace(`/${locale}`, `/${other}`),
     [open, setOpen] = useState(false),
+    [search, setSearch] = useState(false),
     firstLink = useRef<HTMLAnchorElement>(null);
   const links = [
     [t.nav.methods, "methods"],
@@ -27,6 +30,10 @@ export function PublicHeader({ locale }: { locale: Locale }) {
   const workspaceActive = isActive("workspace");
 
   useEffect(() => {
+    const key = (event: KeyboardEvent) => { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") { event.preventDefault(); setSearch(true); } };
+    addEventListener("keydown", key); return () => removeEventListener("keydown", key);
+  }, []);
+  useEffect(() => {
     if (!open) return;
     firstLink.current?.focus();
     const close = (event: KeyboardEvent) => {
@@ -39,6 +46,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
 
   return (
     <>
+      {search && <PublicSearch locale={locale} onClose={() => setSearch(false)} />}
       <a className="skip-link" href="#main">
         {locale === "ru" ? "К содержанию" : "Skip to content"}
       </a>
@@ -54,15 +62,8 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           aria-label={locale === "ru" ? "Основная навигация" : "Primary navigation"}
         >
           <div className="desktop-nav">
-            {links.map(([label, slug]) => (
-              <Link
-                key={slug}
-                href={`/${locale}/${slug}`}
-                aria-current={isActive(slug) ? "page" : undefined}
-              >
-                {label}
-              </Link>
-            ))}
+            {[[locale === "ru" ? "Изучить" : "Learn", ["knowledge", "methods", "glossary"]], [locale === "ru" ? "Практика" : "Practice", ["templates", "playbooks"]]].map(([title, slugs]) => <details className="public-nav-group" key={String(title)}><summary>{title}</summary><div>{links.filter(([,slug]) => (slugs as string[]).includes(slug)).map(([label,slug]) => <Link key={slug} href={`/${locale}/${slug}/`} aria-current={isActive(slug) ? "page" : undefined}>{label}</Link>)}</div></details>)}
+            <Link href={`/${locale}/tools/`}>{t.nav.tools}</Link>
           </div>
           <Link
             className="workspace-cta desktop-only"
@@ -78,6 +79,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           >
             {other.toUpperCase()}
           </Link>
+          <button className="button small" onClick={() => setSearch(true)} aria-haspopup="dialog">{locale === "ru" ? "Поиск" : "Search"}</button>
           <ThemeToggle locale={locale} />
           <button
             type="button"

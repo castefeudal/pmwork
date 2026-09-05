@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { readWorkspaceUrl, workspaceUrl } from "@/domain/workspace-url";
+import { WorkspaceMore } from "./workspace-more";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -8,6 +10,7 @@ import {
   ClipboardCheck,
   Download,
   FileText,
+  Home,
   KanbanSquare,
   LayoutDashboard,
   ListChecks,
@@ -22,7 +25,7 @@ import {
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
-import { demoWorkspace, localizeBundledDemo } from "@/data/demo";
+import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
 import { displayLabel, enumLabels } from "@/content/workspace-i18n";
 import {
   exportWorkspace,
@@ -32,6 +35,7 @@ import {
   restoreSnapshot,
   saveWorkspace,
 } from "@/data/storage";
+import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkspaceDialog } from "./workspace-dialog";
@@ -96,7 +100,7 @@ const navLabels = {
     setup: "Setup",
   },
 };
-const views = Object.keys(navIcons) as WorkspaceView[];
+
 export function WorkspaceApp({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [workspace, setWorkspace] = useState<Workspace>(() =>
@@ -106,11 +110,13 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [view, setView] = useState<WorkspaceView>("overview"),
     [ready, setReady] = useState(false),
     [recovery, setRecovery] = useState(false),
+    [firstRun, setFirstRun] = useState(true),
     [dialog, setDialog] = useState<CreateType | null>(null),
     [editor, setEditor] = useState<{ kind: EditableKind; id: string } | null>(
       null,
     ),
     [palette, setPalette] = useState(false),
+    [more, setMore] = useState(false),
     [toast, setToast] = useState(""),
     [lastSaved, setLastSaved] = useState(""),
     [snapshots, setSnapshots] = useState<
@@ -126,6 +132,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         if (value) {
           const normalized = localizeBundledDemo(value, locale);
           setWorkspace(normalized);
+          setFirstRun(false);
+          setView(normalized.experience === "foundation" ? "guide" : "overview");
           let remembered: string | null = null;
           try {
             remembered = sessionStorage.getItem("pmwork-project");
@@ -136,8 +144,10 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
               : (normalized.projects[0]?.id ?? ""),
           );
         }
-        const requestedView = new URLSearchParams(window.location.search).get("view");
-        if (views.includes(requestedView as WorkspaceView)) setView(requestedView as WorkspaceView);
+        if (value) {
+          const context = readWorkspaceUrl(window.location.search, value);
+          setProjectId(context.project); setView(context.view);
+        }
         setReady(true);
         listSnapshots()
           .then(setSnapshots)
@@ -145,6 +155,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       })
       .catch(() => {
         setRecovery(true);
+        setFirstRun(false);
         setReady(true);
         listSnapshots().then(setSnapshots).catch(() => undefined);
         setToast(
@@ -155,7 +166,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       });
   }, [locale, ru]);
   useEffect(() => {
-    if (!ready || recovery) return;
+    if (!ready || recovery || firstRun) return;
     const id = setTimeout(
       () =>
         saveWorkspace(workspace)
@@ -168,15 +179,15 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       350,
     );
     return () => clearTimeout(id);
-  }, [workspace, ready, ru, locale, recovery]);
+  }, [workspace, ready, ru, locale, recovery, firstRun]);
   useEffect(() => {
-    if (!ready || recovery) return;
+    if (!ready || recovery || firstRun) return;
     const flush = () => { void saveWorkspace(workspace).catch(() => undefined); };
     const hidden = () => { if (document.visibilityState === "hidden") flush(); };
     addEventListener("pagehide", flush);
     document.addEventListener("visibilitychange", hidden);
     return () => { removeEventListener("pagehide", flush); document.removeEventListener("visibilitychange", hidden); };
-  }, [workspace, ready, recovery]);
+  }, [workspace, ready, recovery, firstRun]);
   useEffect(() => {
     if (ready && view === "setup") listSnapshots().then(setSnapshots).catch(() => undefined);
   }, [ready, view]);
@@ -200,6 +211,17 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
   }, []);
+  useEffect(() => {
+    if (!ready || firstRun) return;
+    const restore = () => { const context = readWorkspaceUrl(window.location.search, workspace); setProjectId(context.project); setView(context.view); };
+    addEventListener("popstate", restore);
+    return () => removeEventListener("popstate", restore);
+  }, [ready, firstRun, workspace]);
+  useEffect(() => {
+    if (!ready || firstRun || !projectId) return;
+    const next = workspaceUrl(window.location.href, projectId, view);
+    if (next.href !== window.location.href) history.pushState(null, "", next);
+  }, [ready, firstRun, projectId, view]);
   if (!ready)
     return (
       <main className="language-gate" aria-busy="true">
@@ -209,6 +231,23 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         </p>
       </main>
     );
+  if (firstRun) return (
+    <main className="language-gate">
+      <Brand />
+      <h1>{ru ? "Начните работу в PMWORK" : "Start working in PMWORK"}</h1>
+      <p>{ru ? "Создайте своё пространство или изучите готовый проект." : "Create your own workspace or explore a completed example."}</p>
+      <button className="button primary" onClick={() => { setWorkspace(emptyWorkspace(locale)); setDialog("project"); }}>{ru ? "Создать первый проект" : "Create first project"}</button>
+      <button className="button" onClick={() => { setWorkspace(demoWorkspace(locale)); setProjectId("atlas"); setFirstRun(false); }}>{ru ? "Посмотреть готовый пример" : "Explore demo"}</button>
+      <button className="button" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить резервную копию" : "Restore backup"}</button>
+      <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {
+        const file = e.target.files?.[0]; if (!file) return;
+        try { const restored = await importWorkspace(file); setWorkspace({ ...restored, locale }); setProjectId(restored.projects[0]?.id ?? ""); setView(restored.experience === "foundation" ? "guide" : "overview"); setFirstRun(false); }
+        catch { setToast(ru ? "Файл не прошёл проверку" : "File did not pass validation"); }
+      }} />
+      {toast && <p role="alert">{toast}</p>}
+      {dialog && <WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={() => setDialog(null)} onCommit={(next, id) => { setWorkspace(workspaceSchema.parse(next)); setProjectId(id ?? ""); setView("guide"); setFirstRun(false); }} />}
+    </main>
+  );
   const project =
     workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
   if (!project)
@@ -335,7 +374,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     }
   };
   return (
-    <div className="workspace-shell">
+    <div className={`workspace-shell density-${workspace.density}`}>
       <aside className="sidebar">
         <Link
           href={`/${locale}`}
@@ -362,24 +401,19 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             ru ? "Разделы рабочего пространства" : "Workspace sections"
           }
         >
-          {views.map((id) => {
+          {([
+            [ru ? "УПРАВЛЕНИЕ" : "MANAGE", ["overview", "guide"]],
+            [ru ? "ВЫПОЛНЕНИЕ" : "DELIVER", ["work", "board", "planning"]],
+            [ru ? "КОНТРОЛЬ" : "CONTROL", ["raid", "control", "finance"]],
+            [ru ? "СОВМЕСТНАЯ РАБОТА" : "COLLABORATE", ["people", "documents"]],
+            [ru ? "СИСТЕМА" : "SYSTEM", ["portfolio", "setup"]],
+          ] as [string, WorkspaceView[]][]).map(([label, ids]) => <div className="nav-group" key={label}><small>{label}</small>{ids.map(id => {
             const Icon = navIcons[id];
-            return (
-              <button
-                key={id}
-                className={view === id ? "active" : ""}
-                onClick={() => setView(id)}
-                aria-current={view === id ? "page" : undefined}
-                title={navLabels[locale][id]}
-              >
-                <Icon size={19} />
-                <span>{navLabels[locale][id]}</span>
-              </button>
-            );
-          })}
+            return <button key={id} aria-label={id === "board" ? (ru ? "Работа · Доска" : "Work · Board") : navLabels[locale][id]} className={view === id ? "active" : ""} onClick={() => setView(id)} aria-current={view === id ? "page" : undefined}><Icon size={19}/><span>{id === "board" ? (ru ? "Работа · Доска" : "Work · Board") : navLabels[locale][id]}</span></button>;
+          })}</div>)}
         </nav>
         <div className="side-foot">
-          <Link className="button small" href={`/${locale}/methods`}>
+          <Link className="button small" href={`/${locale}/knowledge`}>
             <BookOpen size={16} />
             <span>{ru ? "База знаний" : "Knowledge"}</span>
           </Link>
@@ -389,8 +423,19 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           </button>
         </div>
       </aside>
+      <nav className="mobile-workspace-nav" aria-label={ru ? "Рабочее пространство" : "Workspace"}>
+        {(["overview", "work", "planning", "guide"] as WorkspaceView[]).map(id => <button key={id} aria-current={view === id || (id === "work" && view === "board") ? "page" : undefined} onClick={() => setView(id)}>{id === "planning" ? (ru ? "План" : "Planning") : id === "guide" ? (ru ? "Гид" : "Guide") : navLabels[locale][id]}</button>)}
+        <button onClick={() => setMore(true)} aria-haspopup="dialog">{ru ? "Ещё" : "More"}</button>
+      </nav>
+      {more && <WorkspaceMore title={ru ? "Ещё" : "More"} onClose={() => setMore(false)}>
+        {(["raid", "people", "finance", "control", "documents", "portfolio", "setup"] as WorkspaceView[]).map(id => <button className="button" key={id} onClick={() => { setView(id); setMore(false); }}>{navLabels[locale][id]}</button>)}
+        <Link className="button" href={`/${locale}/knowledge`}>{ru ? "База знаний" : "Knowledge"}</Link>
+      </WorkspaceMore>}
       <main className="workspace-main">
         <header className="workspace-top">
+          <Link className="button small workspace-home-mobile" href={`/${locale}/`} aria-label={ru ? "PMWORK — главная" : "PMWORK home"}>
+            <Home size={18} aria-hidden="true" />
+          </Link>
           <select
             className="input mobile-project-switch"
             value={project.id}
@@ -405,9 +450,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           </select>
           <h1>{project.name}</h1>
           <span
-            className={`status ${project.health.schedule === "green" ? "good" : project.health.schedule === "red" ? "bad" : project.health.schedule === "amber" ? "warn" : "info"}`}
+            className="status info"
           >
-            {displayLabel(locale, "projectStatus", project.status)}
+            <span className="sr-only">{ru ? "Статус проекта: " : "Project status: "}</span>{displayLabel(locale, "projectStatus", project.status)}
           </span>
           <div className="spacer" />
           <small className="muted desktop-only" title={lastSaved}>{recovery ? (ru ? "Сохранение приостановлено" : "Autosave paused") : lastSaved ? (ru ? "Сохранено" : "Saved") : (ru ? "Локально" : "Local")}</small>
@@ -420,6 +465,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             <span>{ru ? "Поиск" : "Search"}</span>
             <kbd>Ctrl K</kbd>
           </button>
+          <button className="button small" onClick={async () => {
+            if (!recovery) await saveWorkspace(workspace);
+            const next = workspaceUrl(window.location.href, project.id, view);
+            next.pathname = next.pathname.replace(`/${locale}/workspace`, `/${ru ? "en" : "ru"}/workspace`);
+            window.location.assign(next.href);
+          }}>{ru ? "EN" : "RU"}</button>
           <ThemeToggle locale={locale} />
           <button
             className="button small"
@@ -474,6 +525,11 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
               </div>
             </div>
           )}
+          {workspace.experience === "foundation" && (() => {
+            const domain = ({overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];
+            const help = knowledgeGuides[domain] ?? knowledgeGuides.Fundamentals;
+            return <details className="panel foundation-help" open><summary>{ru ? "Что сделать сейчас" : "What to do now"}</summary><h3>{ru ? "Зачем это нужно" : "Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru ? "Действие" : "Action"}</h3><p>{help.steps[locale]}</p><h3>{ru ? "Что получится" : "Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru ? "Типичная ошибка" : "Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru ? "Объяснения терминов" : "Term explanations"}</Link></details>;
+          })()}
           {render()}
         </div>
       </main>
@@ -585,6 +641,7 @@ function SetupView({
       });
   return (
     <div className="dashboard-grid">
+      <section className="panel span-6"><h3>{ru ? "Это я в этом проекте" : "This is me in this project"}</h3><select className="input" aria-label={ru ? "Это я в этом проекте" : "This is me in this project"} value={workspace.projectSettings.find(s=>s.projectId===project.id)?.localMemberId ?? ""} onChange={e=>{const existing=workspace.projectSettings.find(s=>s.projectId===project.id);onChange({...workspace,projectSettings:[...workspace.projectSettings.filter(s=>s.projectId!==project.id),{projectId:project.id,enabledTypes:["task"],wipLimits:{},governance:project.governance,probabilityScale:5,impactScale:5,...existing,localMemberId:e.target.value||undefined}]});}}><option value="">{ru ? "Не выбрано" : "Not selected"}</option>{workspace.teamMembers.filter(m=>m.projectId===project.id).map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select><p className="muted">{ru ? "Локальная настройка для представления «Моя работа»." : "A local preference for the My work view."}</p></section>
       <section className="panel span-6">
         <h3>{ru ? "Уровень подсказок" : "Guidance level"}</h3>
         <p className="muted">
@@ -594,8 +651,8 @@ function SetupView({
               : "Each area includes purpose, next action, and a common mistake."
             : workspace.experience === "advanced"
               ? ru
-                ? "Компактный режим: приоритет сигналам и контрольным данным."
-                : "Compact mode: signals and control data first."
+                ? "Приоритет сигналам и контрольным данным; меньше пояснений."
+                : "Signals and control data first, with fewer explanations."
               : ru
                 ? "Сбалансированные подсказки для регулярной проектной работы."
                 : "Balanced guidance for regular project delivery."}
@@ -618,6 +675,13 @@ function SetupView({
               </option>
             ),
           )}
+        </select>
+      </section>
+      <section className="panel span-6">
+        <h3>{ru ? "Плотность интерфейса" : "Interface density"}</h3>
+        <select className="input" aria-label={ru ? "Плотность интерфейса" : "Interface density"} value={workspace.density} onChange={e => onChange({ ...workspace, density: e.target.value as Workspace["density"] })}>
+          <option value="comfortable">{ru ? "Комфортная" : "Comfortable"}</option>
+          <option value="compact">{ru ? "Компактная" : "Compact"}</option>
         </select>
       </section>
       <section className="panel span-6">

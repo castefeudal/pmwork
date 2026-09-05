@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import ts from "typescript";
 
 const required = ["src/content/catalog.ts", "src/content/ui.ts"];
 for (const file of required) {
@@ -126,16 +125,7 @@ for (const file of userFacing) {
 
 // Catalog constructors keep some bilingual values as positional arguments, so
 // source-only checks cannot tell an English-only RU value from its EN pair.
-const catalogSource = fs.readFileSync("src/content/catalog.ts", "utf8");
-const catalogJavaScript = ts.transpileModule(catalogSource, {
-  compilerOptions: {
-    module: ts.ModuleKind.ESNext,
-    target: ts.ScriptTarget.ES2022,
-  },
-}).outputText;
-const catalog = await import(
-  `data:text/javascript;base64,${Buffer.from(catalogJavaScript).toString("base64")}`
-);
+const catalog = await import("../src/content/catalog.ts");
 const englishOnlyRuAllow = new Set([
   "Scrum",
   "Kanban",

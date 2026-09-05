@@ -1,3 +1,5 @@
+> Current branch note: refer to PRODUCT_SPEC.md, CONTENT_MODEL.md, QUALITY_GATE.md and RELEASE.md for current behavior and validation. Earlier measurements below are historical and are not evidence for the new branch.
+
 # Content completeness matrix
 
 Validated by `npm run content:validate` and `npm run i18n:check`.

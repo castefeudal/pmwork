@@ -755,8 +755,9 @@ input[type="range"] { min-height:44px; accent-color:var(--accent); }
  .side-nav button { flex:0 0 76px; min-width:76px; flex-direction:column; gap:.15rem; padding:.3rem .15rem; }
  .side-nav span { display:block; font-size:.625rem; line-height:1.2; }
  .workspace-content { padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
- .workspace-top { gap:.5rem; padding-inline:.75rem; }
- .workspace-top .mobile-project-switch { flex:1; min-width:0; max-width:none; width:90px; }
+ .workspace-top { gap:.5rem; padding-inline:.75rem; flex-wrap:wrap; }
+ .workspace-top .spacer { display:none; }
+ .workspace-top .mobile-project-switch { flex:1 0 calc(100% - 60px); min-width:0; max-width:none; width:90px; }
  .workspace-top > .status { display:none; }
  .project-card .card-foot > .muted { flex-basis:100%; }
  .section-line { flex-wrap:wrap; }

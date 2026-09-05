@@ -1,6 +1,11 @@
+import { demoWorkspace } from "../../src/data/demo";
+import { navigateWorkspace } from "./support";
 import { test, expect } from "@playwright/test";
 import { route } from "./support";
 import AxeBuilder from "@axe-core/playwright";
+test.beforeEach(async ({page}) => {
+ await page.addInitScript(workspace => { if(!localStorage.getItem("pmwork:workspace:v3")) localStorage.setItem("pmwork:workspace:v3",JSON.stringify(workspace)); },demoWorkspace("en"));
+});
 for (const locale of ["ru", "en"] as const) {
   test(`${locale} critical workspace journey`, async ({ page }) => {
     await page.goto(route(`/${locale}/workspace/`));
@@ -11,12 +16,7 @@ for (const locale of ["ru", "en"] as const) {
           : "Priority management actions",
       ),
     ).toBeVisible();
-    await page
-      .getByRole("button", {
-        name: locale === "ru" ? "Работа" : "Work",
-        exact: true,
-      })
-      .click();
+    await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
     await page
       .getByRole("button", {
         name: locale === "ru" ? "Добавить" : "Add",
@@ -29,13 +29,8 @@ for (const locale of ["ru", "en"] as const) {
     await page
       .getByRole("button", { name: locale === "ru" ? "Создать" : "Create" })
       .click();
-    await expect(page.getByText(`E2E ${locale}`)).toBeVisible();
-    await page
-      .getByRole("button", {
-        name: locale === "ru" ? "Доска" : "Board",
-        exact: true,
-      })
-      .click();
+    await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
+    await navigateWorkspace(page,locale === "ru" ? "Доска" : "Board");
     const card = page
       .locator(".work-card")
       .filter({ hasText: `E2E ${locale}` });
@@ -44,7 +39,7 @@ for (const locale of ["ru", "en"] as const) {
         name: locale === "ru" ? "Переместить вправо" : "Move right",
       })
       .click();
-    await page.getByRole("button", { name: "RAID", exact: true }).click();
+    await navigateWorkspace(page,"RAID");
     await page
       .getByRole("button", {
         name: locale === "ru" ? "Добавить запись" : "Add risk",
@@ -60,16 +55,11 @@ for (const locale of ["ru", "en"] as const) {
         exact: true,
       })
       .click();
-    await expect(page.getByText(`Risk ${locale}`)).toBeVisible();
+    await expect(page.getByText(`Risk ${locale}`, {exact:true})).toBeVisible();
     await page.waitForTimeout(600);
     await page.reload();
-    await page
-      .getByRole("button", {
-        name: locale === "ru" ? "Работа" : "Work",
-        exact: true,
-      })
-      .click();
-    await expect(page.getByText(`E2E ${locale}`)).toBeVisible();
+    await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
+    await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
   });
 }
 test("landing has no serious accessibility violations", async ({ page }) => {
@@ -92,7 +82,7 @@ test("responsive public navigation works", async ({ page }, testInfo) => {
       .getByRole("navigation", { name: "Мобильная навигация" })
       .getByRole("link", { name: "Методы", exact: true })
       .click();
-  } else await page.getByRole("link", { name: "Методы", exact: true }).click();
+  } else { await page.locator(".public-nav-group summary").first().click(); await page.getByRole("link", { name: "Методы", exact: true }).click(); }
   await expect(
     page.getByRole("heading", { name: "Библиотека методов" }),
   ).toBeVisible();

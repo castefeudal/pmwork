@@ -1,4 +1,5 @@
 "use client";
+import { useUrlChoice } from "./use-url-state";
 import { useId, useMemo, useState } from "react";
 import { displayLabel } from "@/content/workspace-i18n";
 import type { Locale } from "@/domain/schemas";
@@ -42,7 +43,7 @@ const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
 };
 export function ToolsLab({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
-    [tool, setTool] = useState<Tool>("fit");
+    [tool, setTool] = useUrlChoice<Tool>("tool",["fit","composer","cpm","pert","evm","forecast","priority","flow"],"fit");
   const titles: Record<Tool, string> = {
     fit: ru ? "Подбор подхода" : "Approach fit",
     composer: ru ? "Конструктор метода" : "Method composer",
@@ -160,12 +161,13 @@ function Fit({ locale }: { locale: Locale }) {
       <div className="result-box">
         <small>{ru ? "Лучшее соответствие" : "Best fit"}</small>
         <strong>
-          {displayLabel(locale, "approach", best.approach)} · {best.score}%
+          {scores.filter(x => best.score - x.score <= 3).map(x => displayLabel(locale, "approach", x.approach)).join(" / ")} · {best.score} / 100
         </strong>
         <p>
           {ru ? "Почему" : "Why"}:{" "}
           {best.reasons.map((k) => contextLabels[k][locale]).join(", ")}{" "}
           {ru ? "близки профилю подхода." : "match this approach profile."}
+          {ru ? " Эвристическая оценка соответствия контексту. Это не вероятность успеха проекта." : " Heuristic context-fit score. This is not a probability of project success."}
         </p>
         <p>
           {ru ? "Управление" : "Governance"}: <b>{displayLabel(locale,"governance",governanceLevel(c))}</b>
@@ -181,7 +183,7 @@ function Fit({ locale }: { locale: Locale }) {
             {scores.map((x) => (
               <tr key={x.approach}>
                 <td>{displayLabel(locale,"approach",x.approach)}</td>
-                <td>{x.score}%</td>
+                <td>{x.score} / 100</td>
               </tr>
             ))}
           </tbody>

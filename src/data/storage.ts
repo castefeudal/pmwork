@@ -61,9 +61,14 @@ function open() {
 export function migrateWorkspace(value: unknown): Workspace {
   if (!value || typeof value !== "object") throw new Error("Invalid workspace");
   const record = value as Record<string, unknown>;
-  if (record.schemaVersion === 1 || record.schemaVersion === 2)
-    return workspaceSchema.parse({ ...emptyV3, ...record, schemaVersion: 3 });
-  return workspaceSchema.parse(value);
+  const migrated = record.schemaVersion === 1 || record.schemaVersion === 2 || record.schemaVersion === 3
+    ? workspaceSchema.parse({ ...emptyV3, ...record, schemaVersion: 4 })
+    : workspaceSchema.parse(value);
+  if (record.schemaVersion === 4) return migrated;
+  return { ...migrated, workItems: migrated.workItems.map(item => {
+    const matches = migrated.teamMembers.filter(member => member.projectId === item.projectId && member.name === item.owner);
+    return matches.length === 1 ? { ...item, ownerId: matches[0].id, ownerLabel: item.owner } : item;
+  }) };
 }
 type Stored = { value: unknown; at: number };
 function unpack(value: unknown): Stored {

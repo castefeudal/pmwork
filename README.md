@@ -11,7 +11,7 @@ The practical operating system for project managers. PMWORK connects professiona
 - Deterministic setup and method-fit engine with explainable scoring.
 - CPM, PERT, EVM, Monte Carlo, RICE, WSJF, and Little's Law calculations.
 - Bilingual catalogs: 16 methods, 47 templates, 39 problem playbooks, 26 knowledge domains, 172 glossary records.
-- IndexedDB persistence with a timestamped localStorage mirror, v1/v2→v3 migration, rotating snapshots, validated JSON backup/restore, Markdown export and print/PDF views.
+- IndexedDB persistence with a timestamped localStorage mirror, v1/v2/v3→v4 migration, rotating snapshots, validated JSON backup/restore, Markdown export and print/PDF views.
 - RU/EN routes, light/dark/system behavior, responsive layout, versioned offline route/asset cache, SEO and WCAG 2.2 AA target.
 
 ## Architecture and stack
@@ -40,7 +40,7 @@ The main gate runs lint, strict typecheck, content quality validation, RU/EN par
 
 ## Data and privacy
 
-Workspace data is stored in browser IndexedDB and mirrored to localStorage. The newest valid copy is loaded; unreadable data pauses autosave and exposes recovery. A complete JSON backup can be downloaded and restored; v1/v2 backups migrate to schema v3 and up to five recovery snapshots are retained, including a forced checkpoint before replacement import or restore. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
+Workspace data is stored in browser IndexedDB and mirrored to localStorage. The newest valid copy is loaded; unreadable data pauses autosave and exposes recovery. A complete JSON backup can be downloaded and restored; v1/v2/v3 backups migrate to schema v4 and up to five recovery snapshots are retained, including a forced checkpoint before replacement import or restore. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
 
 ## Deployment
 
@@ -62,3 +62,10 @@ docs/             product, engineering, and governance docs
 ## Contribution basics
 
 Keep TypeScript strict, preserve RU/EN parity, add official sources for normative claims, label heuristics, avoid framework dogma, and run `npm run verify`. Do not add a license or imply affiliation with framework owners without repository-owner approval.
+
+
+## Current production completion branch
+
+The current product contract is [PRODUCT_SPEC](docs/PRODUCT_SPEC.md). Historical audits and prompts are in `docs/archive/` and are not active release specifications.
+
+Schema v4 separates guidance (`experience`) from `density`. New users explicitly create a project, select a demo, or restore a backup. URL state includes project, view, work layout and operational tabs. The glossary has 172 concepts, twelve categories and 344 bilingual static term pages. Public search loads on demand. Templates require a destination project and support undo. See [QUALITY_GATE](docs/QUALITY_GATE.md) and [RELEASE](docs/RELEASE.md) for verification status.

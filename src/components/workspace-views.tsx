@@ -1,8 +1,10 @@
 "use client";
+import { formatDate } from "@/domain/format-date";
 import { ProjectHealth } from "./project-health";
+import { convertRiskToIssue, generateStatusDraft } from "@/domain/workspace-commands";
+import { useUrlChoice } from "./use-url-state";
 import { PlanningTimeline } from "./planning-timeline";
 import { localDay } from "@/domain/work-views";
-import { useState } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -148,7 +150,7 @@ export function PortfolioView({
               <div className="card-foot">
                 <span className="muted">
                   {displayLabel(locale, "approach", p.approach)} ·{" "}
-                  {p.targetDate}
+                  {formatDate(p.targetDate,locale)}
                 </span>
                 <button
                   className="button small"
@@ -197,14 +199,14 @@ export function OverviewView({
     <>
       <div className="metric-cards">
         <Metric
-          name={ru ? "Контроль" : "Control quality"}
+          name={ru ? "Покрытие контура управления" : "Management coverage"}
           value={`${complete.score}%`}
           detail={
-            complete.gaps.length
+            (ru ? "Полнота заполнения, не вероятность успеха. " : "Completeness, not probability of success. ") + (complete.gaps.length
               ? `${complete.gaps.length} ${ru ? "пробелов" : "gaps"}`
               : ru
                 ? "контур полный"
-                : "complete"
+                : "complete")
           }
         />
         <Metric
@@ -323,7 +325,7 @@ export function OverviewView({
                   </span>
                 </div>
                 <span className="muted">
-                  {m.date} · {m.progress}%
+                  {formatDate(m.date,locale)} · {m.progress}%
                 </span>
                 <div className="progress">
                   <span style={{ width: `${m.progress}%` }} />
@@ -572,7 +574,7 @@ export function BoardView({
                     <span>{x.owner || (ru ? "Без владельца" : "Unowned")}</span>
                     <span>{displayLabel(locale, "priority", x.priority)}</span>
                   </div>
-                  {x.dueDate && <p className="card-date">{x.dueDate}</p>}
+                  {x.dueDate && <p className="card-date">{formatDate(x.dueDate,locale)}</p>}
                   <div
                     className="button-row"
                     aria-label={ru ? "Переместить карточку" : "Move card"}
@@ -613,7 +615,7 @@ export function PlanningView({
   onEdit,
 }: ViewProps) {
   const ru = locale === "ru",
-    [tab, setTab] = useState("timeline"),
+    [tab, setTab] = useUrlChoice("tab",["timeline","milestones","iterations","dependencies"],"timeline"),
     milestones = workspace.milestones.filter((x) => x.projectId === project.id),
     iterations = workspace.iterations.filter((x) => x.projectId === project.id),
     deps = workspace.dependencies.filter((x) => x.projectId === project.id);
@@ -651,7 +653,7 @@ export function PlanningView({
             {milestones.map((m) => (
               <article className="catalog-card" key={m.id}>
                 <CalendarDays />
-                <p className="eyebrow">{m.date}</p>
+                <p className="eyebrow">{formatDate(m.date,locale)}</p>
                 <h3>{m.title}</h3>
                 <strong>{m.progress}%</strong>
                 <span
@@ -699,7 +701,7 @@ export function PlanningView({
                     </td>
                     <td>{x.goal}</td>
                     <td>
-                      {x.startDate} → {x.endDate}
+                      {formatDate(x.startDate,locale)} → {formatDate(x.endDate,locale)}
                     </td>
                     <td>{x.capacity}</td>
                     <td>{displayLabel(locale, "iterationStatus", x.status)}</td>
@@ -794,7 +796,7 @@ export function RaidView({
   onEdit,
 }: ViewProps) {
   const ru = locale === "ru",
-    [tab, setTab] = useState<CreateType>("risk"),
+    [tab, setTab] = useUrlChoice<CreateType>("tab",["risk","issue","assumption","decision","dependency"],"risk"),
     map = {
       dependency: workspace.dependencies.filter((x) => x.projectId === project.id),
       risk: workspace.risks.filter((x) => x.projectId === project.id),
@@ -869,6 +871,7 @@ export function RaidView({
       {tab === "risk" && (
         <div className="dashboard-grid">
           <div className="panel span-8">
+            <details><summary>{ru ? "Риск наступил" : "Convert risk to issue"}</summary>{map.risk.filter(r=>r.status!=="closed").map(r=><button className="button small" key={r.id} onClick={()=>onChange(convertRiskToIssue(workspace,r.id))}>{r.title} → Issue</button>)}</details>
             <EntityTable
               rows={map.risk.map((r) => ({
                 id: r.id,
@@ -918,7 +921,7 @@ export function RaidView({
           rows={map.issue.map((x) => ({
             id: x.id,
             title: x.title,
-            meta: `${ru ? "Влияние" : "Impact"} ${x.impact} · ${ru ? "Срочность" : "Urgency"} ${x.urgency} · ${x.dueDate}`,
+            meta: `${ru ? "Влияние" : "Impact"} ${x.impact} · ${ru ? "Срочность" : "Urgency"} ${x.urgency} · ${formatDate(x.dueDate,locale)}`,
             owner: x.owner,
             status: displayLabel(locale, "issueStatus", x.status),
             detail: x.plan,
@@ -969,7 +972,7 @@ export function PeopleView({
   onEdit,
 }: ViewProps) {
   const ru = locale === "ru",
-    [tab, setTab] = useState("stakeholders"),
+    [tab, setTab] = useUrlChoice("tab",["stakeholders","team","communications","vendors","meetings"],"stakeholders"),
     stakeholders = workspace.stakeholders.filter(
       (x) => x.projectId === project.id,
     ),
@@ -1284,7 +1287,7 @@ export function ControlView({
   onEdit,
 }: ViewProps) {
   const ru = locale === "ru",
-    [tab, setTab] = useState("status"),
+    [tab, setTab] = useUrlChoice("tab",["status","charter","change","quality","closure"],"status"),
     items = workspace.workItems.filter(
       (x) => x.projectId === project.id && !x.archived,
     ),
@@ -1372,6 +1375,7 @@ export function ControlView({
               <p className="eyebrow">{new Date().toLocaleDateString(locale)}</p>
               <h2>{project.name}</h2>
             </div>
+            <button className="button primary" onClick={() => onChange(generateStatusDraft(workspace,project.id,locale))}>{ru ? "Сформировать черновик статуса" : "Generate status report draft"}</button>
             <button className="button" onClick={() => window.print()}>
               {ru ? "Печать / PDF" : "Print / PDF"}
             </button>
@@ -1521,7 +1525,7 @@ export function ControlView({
             rows={quality.map((x) => ({
               id: x.id,
               title: x.title,
-              meta: `${x.criteria.length} ${ru ? "критериев" : "criteria"} · ${x.dueDate}`,
+              meta: `${x.criteria.length} ${ru ? "критериев" : "criteria"} · ${formatDate(x.dueDate,locale)}`,
               owner: x.owner,
               status: displayLabel(locale, "qualityStatus", x.status),
               detail: x.evidence,

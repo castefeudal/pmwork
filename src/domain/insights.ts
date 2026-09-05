@@ -1,3 +1,4 @@
+import { formatDate } from "./format-date";
 import { dependencyConflicts } from "./planning";
 import type { Locale, Project, Workspace, WorkItem } from "./schemas";
 
@@ -92,7 +93,7 @@ export function projectActions(
         id: `milestone-${x.id}`,
         severity: "high",
         title: `${ru ? "Контрольная точка под риском" : "Milestone at risk"}: ${x.title}`,
-        why: `${x.progress}% · ${x.date}`,
+        why: `${x.progress}% · ${formatDate(x.date,locale)}`,
         action: ru
           ? "Пересчитать критическую цепочку и предложить допустимые компромиссы."
           : "Recalculate the critical chain and offer trade-offs.",

@@ -10,7 +10,7 @@ describe("workspace data", () => {
       expect(
         w.workItems.every((x) => w.projects.some((p) => p.id === x.projectId)),
       ).toBe(true);
-      expect(w.schemaVersion).toBe(3);
+      expect(w.schemaVersion).toBe(4);
     }
   });
   it("round trips JSON with persisted closure", () => {
@@ -18,8 +18,8 @@ describe("workspace data", () => {
     expect(workspaceSchema.parse(JSON.parse(JSON.stringify(w)))).toEqual(w);
     expect(w.closureRecords[0]?.benefitsOwner).toBeTruthy();
   });
-  it("migrates v1 and v2 workspaces without losing core records", () => {
-    for (const version of [1, 2]) {
+  it("migrates v1, v2 and v3 workspaces without losing core records", () => {
+    for (const version of [1, 2, 3]) {
       const current = demoWorkspace("en"),
         legacy = { ...current, schemaVersion: version };
       delete (legacy as Record<string, unknown>).closureRecords;
@@ -43,7 +43,7 @@ describe("workspace data", () => {
         ])
           delete (legacy as Record<string, unknown>)[key];
       const migrated = migrateWorkspace(legacy);
-      expect(migrated.schemaVersion).toBe(3);
+      expect(migrated.schemaVersion).toBe(4);
       expect(migrated.projects).toHaveLength(3);
       expect(migrated.closureRecords).toEqual([]);
     }

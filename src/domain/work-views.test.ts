@@ -16,6 +16,10 @@ describe("operational views",()=>{
     expect(selectWork(items,workViewConfigSchema.parse({preset:"my",owner:"Ada"}),now).map(x=>x.id)).toEqual(["late"]);
     expect(items[0]!.id).toBe("late");
   });
+  it("uses stable identity across renames and distinguishes equal display names",()=>{
+    const rows=[{...items[0],id:'mine',ownerId:'member-1',owner:'Former name'},{...items[0],id:'other',ownerId:'member-2',owner:'New name'}];
+    expect(selectWork(rows,workViewConfigSchema.parse({preset:'my',owner:'New name'}),now,'member-1').map(x=>x.id)).toEqual(['mine']);
+  });
   it("round trips saved view configuration and upgrades existing v3 backups",()=>{
     const workspace=demoWorkspace("en"),config=workViewConfigSchema.parse({preset:"blocked",sort:"due",group:"owner",type:"board",properties:["owner"]});
     workspace.savedWorkViews=[{id:"v1",projectId:"atlas",name:"Release blockers",config}];

@@ -23,6 +23,7 @@ jobs:
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - run: npm run performance:check
       - uses: actions/upload-artifact@v4
         if: always()
         with:
