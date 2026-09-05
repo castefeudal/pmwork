@@ -29,7 +29,7 @@ for (const locale of ["ru", "en"] as const) {
     await page
       .getByRole("button", { name: locale === "ru" ? "Создать" : "Create" })
       .click();
-    await expect(page.getByText(`E2E ${locale}`)).toBeVisible();
+    await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
     await navigateWorkspace(page,locale === "ru" ? "Доска" : "Board");
     const card = page
       .locator(".work-card")
@@ -55,11 +55,11 @@ for (const locale of ["ru", "en"] as const) {
         exact: true,
       })
       .click();
-    await expect(page.getByText(`Risk ${locale}`)).toBeVisible();
+    await expect(page.getByText(`Risk ${locale}`, {exact:true})).toBeVisible();
     await page.waitForTimeout(600);
     await page.reload();
     await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
-    await expect(page.getByText(`E2E ${locale}`)).toBeVisible();
+    await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
   });
 }
 test("landing has no serious accessibility violations", async ({ page }) => {
@@ -82,7 +82,7 @@ test("responsive public navigation works", async ({ page }, testInfo) => {
       .getByRole("navigation", { name: "Мобильная навигация" })
       .getByRole("link", { name: "Методы", exact: true })
       .click();
-  } else await page.getByRole("link", { name: "Методы", exact: true }).click();
+  } else { await page.locator(".public-nav-group summary").first().click(); await page.getByRole("link", { name: "Методы", exact: true }).click(); }
   await expect(
     page.getByRole("heading", { name: "Библиотека методов" }),
   ).toBeVisible();

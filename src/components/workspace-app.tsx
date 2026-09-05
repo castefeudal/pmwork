@@ -408,7 +408,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
             [ru ? "СИСТЕМА" : "SYSTEM", ["portfolio", "setup"]],
           ] as [string, WorkspaceView[]][]).map(([label, ids]) => <div className="nav-group" key={label}><small>{label}</small>{ids.map(id => {
             const Icon = navIcons[id];
-            return <button key={id} className={view === id ? "active" : ""} onClick={() => setView(id)} aria-current={view === id ? "page" : undefined}><Icon size={19}/><span>{id === "board" ? (ru ? "Работа · Доска" : "Work · Board") : navLabels[locale][id]}</span></button>;
+            return <button key={id} aria-label={id === "board" ? (ru ? "Работа · Доска" : "Work · Board") : navLabels[locale][id]} className={view === id ? "active" : ""} onClick={() => setView(id)} aria-current={view === id ? "page" : undefined}><Icon size={19}/><span>{id === "board" ? (ru ? "Работа · Доска" : "Work · Board") : navLabels[locale][id]}</span></button>;
           })}</div>)}
         </nav>
         <div className="side-foot">
@@ -448,7 +448,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           <span
             className="status info"
           >
-            {ru ? "Статус проекта: " : "Project status: "}{displayLabel(locale, "projectStatus", project.status)}
+            <span className="sr-only">{ru ? "Статус проекта: " : "Project status: "}</span>{displayLabel(locale, "projectStatus", project.status)}
           </span>
           <div className="spacer" />
           <small className="muted desktop-only" title={lastSaved}>{recovery ? (ru ? "Сохранение приостановлено" : "Autosave paused") : lastSaved ? (ru ? "Сохранено" : "Saved") : (ru ? "Локально" : "Local")}</small>

@@ -20,6 +20,13 @@ const pick = (value: Bi, locale: Locale) => value[locale];
 type CatalogData = { methods?: Method[]; templates?: Template[]; playbooks?: Playbook[]; knowledgeDomains?: Bi[]; glossary?: Glossary[]; sources?: Source[] };
 
 
+const templateCollection = (template: Template) => {
+  if (/closure|handover|lesson|benefit-review/.test(template.slug)) return "closure";
+  if (/stakeholder|communication|team|raci|meeting|vendor|procurement/.test(template.slug)) return "people";
+  if (/risk|issue|assumption|decision|change/.test(template.slug)) return "risk";
+  if (/backlog|sprint|iteration|kanban|release|quality|acceptance/.test(template.slug)) return "delivery";
+  return template.category === "strategy" ? "core" : template.category === "plan" ? "planning" : "control";
+};
 type Kind = "methods" | "templates" | "playbooks" | "knowledge" | "glossary";
 export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Locale; records: CatalogData }) {
   const { methods = [], templates = [], playbooks = [], knowledgeDomains = [], glossary = [], sources = [] } = records;
@@ -85,7 +92,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
       );
     if (kind === "templates")
       return templates.filter((x) =>
-        (collection === "all" || x.category === collection) && (pick(x.title, locale) + pick(x.purpose, locale))
+        (collection === "all" || templateCollection(x) === collection) && (pick(x.title, locale) + pick(x.purpose, locale))
           .toLowerCase()
           .includes(q),
       );
@@ -137,7 +144,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
         </div>
       </header>
       {kind === "methods" && <MethodCompare methods={methods} locale={locale} />}
-      {kind === "templates" && <nav className="public-container button-row" aria-label={ru ? "Коллекции" : "Collections"}>{[["all","Все","All"],["core","Запустить проект","Start a project"],["planning","Спланировать","Plan"],["control","Еженедельный контроль","Weekly control"],["people","Люди и коммуникации","People and communication"],["delivery","Выполнение","Delivery"],["closure","Закрытие","Close"]].map(([id,r,e]) => <button className="button" aria-pressed={collection === id} onClick={() => setCollection(id)} key={id}>{ru?r:e}</button>)}</nav>}
+      {kind === "templates" && <nav className="public-container button-row" aria-label={ru ? "Коллекции" : "Collections"}>{[["all","Все","All"],["core","Запустить проект","Start a project"],["planning","Спланировать","Plan"],["control","Еженедельный контроль","Weekly control"],["risk","Риски и решения","Risks and decisions"],["people","Люди и коммуникации","People and communication"],["delivery","Выполнение","Delivery"],["closure","Закрытие","Close"]].map(([id,r,e]) => <button className="button" aria-pressed={collection === id} onClick={() => setCollection(id)} key={id}>{ru?r:e}</button>)}</nav>}
       {kind === "knowledge" && <section className="public-container"><h2>{ru ? "Основы: путь от цели до закрытия" : "Foundation: from purpose to closure"}</h2><ol className="learning-path">{["Fundamentals","Value","Scope","Requirements","Schedule","Risk","Stakeholders","Governance","Closure"].map(domain => <li key={domain}><button className="button" onClick={() => setQuery(knowledgeDomains.find(d => d.en === domain)?.[locale] ?? domain)}>{knowledgeDomains.find(d => d.en === domain)?.[locale]}</button></li>)}</ol></section>}
       <section id="catalog-results" className="catalog-grid" aria-live="polite">
         {kind === "methods" &&

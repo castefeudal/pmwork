@@ -2,7 +2,10 @@ const CACHE = "pmwork-v3";
 const PRECACHE = /* PRECACHE */ [];
 const CORE = ["./", "./ru/", "./en/", "./ru/workspace/", "./en/workspace/", "./manifest-ru.webmanifest", "./manifest-en.webmanifest", "./icon.svg"];
 const scope = new URL(self.registration.scope);
-self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PRECACHE.length ? PRECACHE : CORE))));
+self.addEventListener("install", event => event.waitUntil((async () => {
+  const cache = await caches.open(CACHE), urls = PRECACHE.length ? PRECACHE : CORE;
+  for (let i = 0; i < urls.length; i += 8) await cache.addAll(urls.slice(i, i + 8));
+})()));
 // A new release activates after old tabs close, preventing mixed-version chunks.
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("pmwork-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener("fetch", event => {

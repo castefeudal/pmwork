@@ -1763,3 +1763,5 @@ blockquote {
  .board-column { scroll-snap-align: start; height: auto; min-height: 0; }
 }
 .pwa-notice { position: fixed; bottom: 80px; right: 16px; max-width: min(440px,calc(100vw - 32px)); padding: 12px 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; z-index: 100; display: flex; gap: 12px; align-items: center; }
+.foundation-help { margin-bottom: 20px; }
+.foundation-help h3 { font-size: 15px; margin-top: 12px; }

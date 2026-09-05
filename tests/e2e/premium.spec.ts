@@ -74,7 +74,7 @@ for(const [width,height] of [[360,800],[390,844],[768,1024],[1024,768],[1280,800
   test(`workspace reflow ${width}x${height}`,async({page},testInfo)=>{
     await page.setViewportSize({width,height});await page.goto(route("/ru/workspace/"));
     for(const name of ["Обзор","Портфель","Работа","Доска","Планирование","RAID","Люди","Финансы","Контроль","Документы","Настройка"]){
-      await page.getByRole("button",{name,exact:true}).click();
+      await navigateWorkspace(page,name);
       if(width===1440 || width===390) await page.screenshot({path:`test-results/visual-${testInfo.project.name}-${width}-${name}.png`,fullPage:true});
       const overflow=await page.evaluate(()=>({width:innerWidth,body:document.body.scrollWidth,elements:[...document.querySelectorAll(".workspace-top, .panel, .project-card, .section-line, .card-foot, .toolbar")].filter(el=>el.getBoundingClientRect().right>innerWidth+1).map(el=>({class:el.className,right:el.getBoundingClientRect().right}))}));
       expect(overflow.body,JSON.stringify({name,...overflow})).toBeLessThanOrEqual(width+1);
@@ -87,7 +87,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.addInitScript(theme=>localStorage.setItem("pmwork-theme",theme),theme);
     await page.goto(route(`/${locale}/workspace/`));
     for(const name of (locale==="ru"?["Обзор","Работа","Доска","Планирование","RAID"]:["Overview","Work","Board","Planning","RAID"])){
-      await page.getByRole("button",{name,exact:true}).click();
+      await navigateWorkspace(page,name);
       await page.screenshot({path:`test-results/theme-${testInfo.project.name}-${locale}-${theme}-${name}.png`,fullPage:true});
       const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
       expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),name).toEqual([]);

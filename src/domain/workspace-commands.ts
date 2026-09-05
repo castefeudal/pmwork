@@ -27,3 +27,27 @@ export function generateStatusDraft(w:Workspace,projectId:string,locale:'ru'|'en
  const body=[`# ${p.name} — ${ru?'Черновик статуса':'Status draft'}`,section(ru?'Завершено':'Completed',items.filter(x=>x.done).map(x=>x.title)),section(ru?'В работе':'Current work',items.filter(x=>['in-progress','review'].includes(x.status)).map(x=>x.title)),section(ru?'Следующий период':'Next period',items.filter(x=>x.status==='ready').map(x=>x.title)),section(ru?'Контрольные точки':'Milestones',w.milestones.filter(x=>x.projectId===projectId).map(x=>`${x.date}: ${x.title}`)),section(ru?'Критические риски':'Critical risks',w.risks.filter(x=>x.projectId===projectId&&x.status!=='closed'&&x.impact*x.probability>=15).map(x=>x.title)),section(ru?'Проблемы':'Issues',w.issues.filter(x=>x.projectId===projectId&&x.status!=='closed').map(x=>x.title)),section(ru?'Нужны решения':'Decisions needed',w.decisions.filter(x=>x.projectId===projectId&&x.status==='pending').map(x=>x.question)),section(ru?'Нужна помощь':'Help needed',items.filter(x=>x.blocked).map(x=>`${x.title}: ${x.blockerReason??''}`)),`${ru?'Сигнал сроков':'Schedule signal'}: ${p.health.schedule}\n${ru?'Сигнал бюджета':'Budget signal'}: ${p.health.cost??'unknown'}`].join('\n');
  return finish({...w,documents:[...w.documents,{id:`DOC-${crypto.randomUUID()}`,projectId,title:ru?'Черновик статуса':'Status report draft',type:'status-report',body,relatedIds:[],updatedAt:at}]},projectId,'status-draft',p.name);
 }
+export function createWork(w:Workspace,item:WorkItem){
+ if(!w.projects.some(p=>p.id===item.projectId)||w.workItems.some(x=>x.id===item.id))throw Error('Invalid work identity');
+ const at=new Date().toISOString();return finish({...w,workItems:[...w.workItems,{...item,createdAt:at,updatedAt:at}]},item.projectId,'work-created',item.title);
+}
+export function createRisk(w:Workspace,risk:Workspace['risks'][number]){
+ if(!w.projects.some(p=>p.id===risk.projectId)||w.risks.some(r=>r.id===risk.id))throw Error('Invalid risk identity');
+ return finish({...w,risks:[...w.risks,risk]},risk.projectId,'risk-created',risk.title);
+}
+export function createDecision(w:Workspace,decision:Workspace['decisions'][number]){
+ if(!w.projects.some(p=>p.id===decision.projectId)||w.decisions.some(d=>d.id===decision.id))throw Error('Invalid decision identity');
+ return finish({...w,decisions:[...w.decisions,decision]},decision.projectId,'decision-created',decision.question);
+}
+export function updateMilestone(w:Workspace,id:string,patch:Partial<Workspace['milestones'][number]>){
+ const item=w.milestones.find(m=>m.id===id);if(!item)throw Error('Milestone not found');
+ return finish({...w,milestones:w.milestones.map(m=>m.id===id?{...m,...patch,id:m.id,projectId:m.projectId}:m)},item.projectId,'milestone-updated',item.title);
+}
+export function applyTemplate(w:Workspace,document:Workspace['documents'][number]){
+ if(!w.projects.some(p=>p.id===document.projectId)||w.documents.some(d=>d.id===document.id))throw Error('Invalid document identity');
+ return finish({...w,documents:[...w.documents,{...document,updatedAt:new Date().toISOString()}]},document.projectId,'template-applied',document.title);
+}
+export function approveChange(w:Workspace,id:string,approver:string,decision:string){
+ const item=w.changes.find(c=>c.id===id);if(!item||!approver.trim()||!decision.trim())throw Error('Approval needs a change, approver and rationale');
+ return finish({...w,changes:w.changes.map(c=>c.id===id?{...c,status:'approved',approver,decision}:c)},item.projectId,'change-approved',item.change);
+}

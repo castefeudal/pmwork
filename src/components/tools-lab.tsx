@@ -1,4 +1,5 @@
 "use client";
+import { useUrlChoice } from "./use-url-state";
 import { useId, useMemo, useState } from "react";
 import { displayLabel } from "@/content/workspace-i18n";
 import type { Locale } from "@/domain/schemas";
@@ -42,7 +43,7 @@ const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
 };
 export function ToolsLab({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
-    [tool, setTool] = useState<Tool>("fit");
+    [tool, setTool] = useUrlChoice<Tool>("tool",["fit","composer","cpm","pert","evm","forecast","priority","flow"],"fit");
   const titles: Record<Tool, string> = {
     fit: ru ? "Подбор подхода" : "Approach fit",
     composer: ru ? "Конструктор метода" : "Method composer",
