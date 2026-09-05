@@ -32,6 +32,10 @@ jobs:
           path: ./out
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify live release and assets
+        run: node scripts/live-check.mjs
+        env:
+          PMWORK_LIVE_URL: https://castefeudal.github.io/pmwork/
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

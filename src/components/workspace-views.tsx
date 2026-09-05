@@ -1645,7 +1645,7 @@ export function DocumentsView({
         {rows.map((x) => (
           <article className="catalog-card" key={x.id}>
             <FileText size={22} />
-            <p className="eyebrow">{x.type}</p>
+            <p className="eyebrow">{x.type.startsWith("template:") ? (ru ? "Шаблон" : "Template") : ({charter: ru ? "Устав" : "Charter", note: ru ? "Заметка" : "Note"}[x.type] ?? x.type)}</p>
             <h3>{x.title}</h3>
             <p>
               {x.body.replaceAll("#", "").slice(0, 180) ||

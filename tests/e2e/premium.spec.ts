@@ -54,11 +54,15 @@ test("corrupt browser data is preserved while autosave is paused",async({page})=
   await page.goto(route("/en/workspace/"));await expect(page.locator(".recovery-banner").getByText("Autosave paused",{exact:true})).toBeVisible();await page.waitForTimeout(700);
   expect(await page.evaluate(()=>localStorage.getItem("pmwork:workspace:v3"))).toBe("{broken");
 });
-test("offline workspace includes its scripts and fonts",async({page,context})=>{
+test("offline workspace includes its scripts and fonts",async({page,context},testInfo)=>{
   await page.goto(route("/en/workspace/"));await expect(page.getByText("Priority management actions")).toBeVisible();
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
   await page.reload();await expect(page.getByRole("button",{name:"Work",exact:true})).toBeVisible();
-  await context.setOffline(true);await page.reload();await page.getByRole("button",{name:"Work",exact:true}).click();await expect(page.getByRole("button",{name:"Add",exact:true})).toBeVisible();await context.setOffline(false);
+  await context.setOffline(true);await page.reload();await page.getByRole("button",{name:"Work",exact:true}).click();await expect(page.getByRole("button",{name:"Add",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();
+  await page.getByRole("link",{name:"Tools",exact:true}).click();await expect(page.getByRole("slider").first()).toBeVisible();
+  await page.goto(route("/en/"));if(testInfo.project.name.includes("mobile")) await page.getByRole("button",{name:"Open menu"}).click();
+  await page.getByRole("link",{name:"Methods",exact:true}).filter({visible:true}).click();await expect(page.getByRole("heading",{name:"Methods library"})).toBeVisible();
+  await context.setOffline(false);
 });
 for(const [width,height] of [[360,800],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1920,1080]]){
   test(`workspace reflow ${width}x${height}`,async({page},testInfo)=>{
@@ -111,6 +115,12 @@ for(const locale of ["ru","en"]) test(`public and tool visual review ${locale}`,
  for(const path of ["","knowledge","methods","templates","tools"]){
   await page.goto(route(`/${locale}/${path?path+"/":""}`));await expect(page.locator("main")).toBeVisible();
   await page.screenshot({path:`test-results/public-${testInfo.project.name}-${locale}-${path||"landing"}.png`,fullPage:true});
+  if(path === "knowledge") {
+    const guide=page.locator("article").filter({has:page.getByRole("heading",{name:locale === "ru" ? "Основы" : "Fundamentals",exact:true})});
+    await guide.getByRole("link",{name:locale === "ru" ? "Открыть рабочий модуль" : "Open working module"}).click();
+    await expect(page.getByRole("heading",{name:locale === "ru" ? "Контроль" : "Control",exact:true})).toBeVisible();
+  }
+  if(path === "tools" && locale === "ru") await expect(page.locator(".result-box")).toContainText("Потоковый");
  }
  for(const name of (locale==="ru"?["Конструктор метода","Критический путь · CPM","PERT","Освоенный объём · EVM","Monte Carlo","Приоритизация","Закон Литтла"]:["Method composer","Critical Path","PERT","Earned Value","Monte Carlo","Prioritization","Little’s Law"])){
   await page.getByRole("button",{name,exact:true}).click();

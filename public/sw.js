@@ -10,7 +10,7 @@ self.addEventListener("fetch", event => {
   if(event.request.method !== "GET" || url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    const hit = await cache.match(event.request);
+    const hit = await cache.match(event.request, {ignoreSearch:true});
     if(hit && /\.(woff2|png|svg|css|js)$/.test(url.pathname)) return hit;
     try {
       const response = await fetch(event.request);

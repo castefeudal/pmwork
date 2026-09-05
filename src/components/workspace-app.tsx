@@ -136,6 +136,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
               : (normalized.projects[0]?.id ?? ""),
           );
         }
+        const requestedView = new URLSearchParams(window.location.search).get("view");
+        if (views.includes(requestedView as WorkspaceView)) setView(requestedView as WorkspaceView);
         setReady(true);
         listSnapshots()
           .then(setSnapshots)

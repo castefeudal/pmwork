@@ -2,6 +2,7 @@
 
 ## 2.2.0 — 2026-09-05
 
+- Replaced 26 generic knowledge cards with distinct bilingual operational guides and direct workspace actions.
 - Added project-scoped working presets and saved list/board views over existing records.
 - Added side editing with focus restoration and keyboard record/action search.
 - Replaced static health indicators with seven explained operational checks; surfaced dated dependency conflicts in attention and planning.

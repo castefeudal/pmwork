@@ -764,3 +764,13 @@ input[type="range"] { min-height:44px; accent-color:var(--accent); }
  .action-list li .button { grid-column:1; }
  .signal-rank { justify-self:start; }
 }
+
+.page-context { margin-bottom:1rem; }
+.page-context .eyebrow { margin:0 0 .5rem; }
+.page-context .muted { margin:.5rem 0 0; }
+@media (max-width:720px) {
+ .page-context .eyebrow { font-size:.625rem; letter-spacing:.09em; }
+ .page-context h2 { font-size:1.75rem; }
+ .page-context .muted { font-size:.8125rem; line-height:1.45; }
+ .workspace-content { padding-top:1rem; }
+}
