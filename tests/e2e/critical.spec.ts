@@ -1,7 +1,139 @@
-import{test,expect}from"@playwright/test";import AxeBuilder from"@axe-core/playwright";
-for(const locale of ["ru","en"] as const){test(`${locale} critical workspace journey`,async({page})=>{await page.goto(`/${locale}/workspace/`);await expect(page.getByText(locale==="ru"?"Приоритетные управленческие действия":"Priority management actions")).toBeVisible();await page.getByRole("button",{name:locale==="ru"?"Работа":"Work",exact:true}).click();await page.getByRole("button",{name:locale==="ru"?"Добавить":"Add",exact:true}).click();await page.getByLabel(locale==="ru"?"Название":"Title").fill(`E2E ${locale}`);await page.getByRole("button",{name:locale==="ru"?"Создать":"Create"}).click();await expect(page.getByText(`E2E ${locale}`)).toBeVisible();await page.getByRole("button",{name:locale==="ru"?"Доска":"Board",exact:true}).click();const card=page.locator(".work-card").filter({hasText:`E2E ${locale}`});await card.getByRole("button",{name:locale==="ru"?"Переместить вправо":"Move right"}).click();await page.getByRole("button",{name:"RAID",exact:true}).click();await page.getByRole("button",{name:`${locale==="ru"?"Добавить":"Add"} risk`,exact:true}).click();await page.getByLabel(locale==="ru"?"Название":"Title").fill(`Risk ${locale}`);await page.getByRole("button",{name:locale==="ru"?"Создать":"Create",exact:true}).click();await expect(page.getByText(`Risk ${locale}`)).toBeVisible();await page.waitForTimeout(600);await page.reload();await page.getByRole("button",{name:locale==="ru"?"Работа":"Work",exact:true}).click();await expect(page.getByText(`E2E ${locale}`)).toBeVisible();});}
-test("landing has no serious accessibility violations",async({page})=>{await page.goto("/ru/");const results=await new AxeBuilder({page:page as never}).analyze();expect(results.violations.filter(v=>["serious","critical"].includes(v.impact??""))).toEqual([]);});
-test("responsive public navigation works",async({page},testInfo)=>{await page.goto("/ru/");if(testInfo.project.name.includes("mobile")){await page.getByRole("button",{name:"Открыть меню"}).click();await expect(page.getByRole("navigation",{name:"Мобильная навигация"})).toBeVisible();await page.getByRole("navigation",{name:"Мобильная навигация"}).getByRole("link",{name:"Методы",exact:true}).click()}else await page.getByRole("link",{name:"Методы",exact:true}).click();await expect(page.getByRole("heading",{name:"Библиотека методов"})).toBeVisible();await expect(page.locator("html")).toHaveAttribute("lang","ru")});
-test("public routes reflow without page overflow",async({page})=>{for(const route of ["/ru/","/ru/methods/","/en/tools/","/ru/glossary/","/en/about/"]){await page.goto(route);await expect(page.locator("main")).toBeVisible();expect(await page.locator("html").evaluate(el=>el.scrollWidth<=el.clientWidth+1),route).toBe(true)}});
-test("workspace falls back when IndexedDB is unavailable",async({page})=>{await page.addInitScript(()=>Object.defineProperty(window,"indexedDB",{value:undefined,configurable:true}));await page.goto("/en/workspace/");await expect(page.getByText("Priority management actions")).toBeVisible({timeout:5000})});
-test("workspace has no serious accessibility violations",async({page})=>{await page.goto("/en/workspace/");await expect(page.getByText("Priority management actions")).toBeVisible();const results=await new AxeBuilder({page:page as never}).analyze();expect(results.violations.filter(v=>["serious","critical"].includes(v.impact??""))).toEqual([])});
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+for (const locale of ["ru", "en"] as const) {
+  test(`${locale} critical workspace journey`, async ({ page }) => {
+    await page.goto(`/${locale}/workspace/`);
+    await expect(
+      page.getByText(
+        locale === "ru"
+          ? "Приоритетные управленческие действия"
+          : "Priority management actions",
+      ),
+    ).toBeVisible();
+    await page
+      .getByRole("button", {
+        name: locale === "ru" ? "Работа" : "Work",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByRole("button", {
+        name: locale === "ru" ? "Добавить" : "Add",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByLabel(locale === "ru" ? "Название" : "Title")
+      .fill(`E2E ${locale}`);
+    await page
+      .getByRole("button", { name: locale === "ru" ? "Создать" : "Create" })
+      .click();
+    await expect(page.getByText(`E2E ${locale}`)).toBeVisible();
+    await page
+      .getByRole("button", {
+        name: locale === "ru" ? "Доска" : "Board",
+        exact: true,
+      })
+      .click();
+    const card = page
+      .locator(".work-card")
+      .filter({ hasText: `E2E ${locale}` });
+    await card
+      .getByRole("button", {
+        name: locale === "ru" ? "Переместить вправо" : "Move right",
+      })
+      .click();
+    await page.getByRole("button", { name: "RAID", exact: true }).click();
+    await page
+      .getByRole("button", {
+        name: locale === "ru" ? "Добавить риск" : "Add risk",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByLabel(locale === "ru" ? "Название" : "Title")
+      .fill(`Risk ${locale}`);
+    await page
+      .getByRole("button", {
+        name: locale === "ru" ? "Создать" : "Create",
+        exact: true,
+      })
+      .click();
+    await expect(page.getByText(`Risk ${locale}`)).toBeVisible();
+    await page.waitForTimeout(600);
+    await page.reload();
+    await page
+      .getByRole("button", {
+        name: locale === "ru" ? "Работа" : "Work",
+        exact: true,
+      })
+      .click();
+    await expect(page.getByText(`E2E ${locale}`)).toBeVisible();
+  });
+}
+test("landing has no serious accessibility violations", async ({ page }) => {
+  await page.goto("/ru/");
+  const results = await new AxeBuilder({ page: page as never }).analyze();
+  expect(
+    results.violations.filter((v) =>
+      ["serious", "critical"].includes(v.impact ?? ""),
+    ),
+  ).toEqual([]);
+});
+test("responsive public navigation works", async ({ page }, testInfo) => {
+  await page.goto("/ru/");
+  if (testInfo.project.name.includes("mobile")) {
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+    await expect(
+      page.getByRole("navigation", { name: "Мобильная навигация" }),
+    ).toBeVisible();
+    await page
+      .getByRole("navigation", { name: "Мобильная навигация" })
+      .getByRole("link", { name: "Методы", exact: true })
+      .click();
+  } else await page.getByRole("link", { name: "Методы", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Библиотека методов" }),
+  ).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+});
+test("public routes reflow without page overflow", async ({ page }) => {
+  for (const route of [
+    "/ru/",
+    "/ru/methods/",
+    "/en/tools/",
+    "/ru/glossary/",
+    "/en/about/",
+  ]) {
+    await page.goto(route);
+    await expect(page.locator("main")).toBeVisible();
+    expect(
+      await page
+        .locator("html")
+        .evaluate((el) => el.scrollWidth <= el.clientWidth + 1),
+      route,
+    ).toBe(true);
+  }
+});
+test("workspace falls back when IndexedDB is unavailable", async ({ page }) => {
+  await page.addInitScript(() =>
+    Object.defineProperty(window, "indexedDB", {
+      value: undefined,
+      configurable: true,
+    }),
+  );
+  await page.goto("/en/workspace/");
+  await expect(page.getByText("Priority management actions")).toBeVisible({
+    timeout: 5000,
+  });
+});
+test("workspace has no serious accessibility violations", async ({ page }) => {
+  await page.goto("/en/workspace/");
+  await expect(page.getByText("Priority management actions")).toBeVisible();
+  const results = await new AxeBuilder({ page: page as never }).analyze();
+  expect(
+    results.violations.filter((v) =>
+      ["serious", "critical"].includes(v.impact ?? ""),
+    ),
+  ).toEqual([]);
+});
