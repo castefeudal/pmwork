@@ -40,7 +40,7 @@ The main gate runs lint, strict typecheck, content quality validation, RU/EN par
 
 ## Data and privacy
 
-Workspace data is stored in browser IndexedDB and mirrored to localStorage. The newest valid copy is loaded; unreadable data pauses autosave and exposes recovery. A complete JSON backup can be downloaded and restored; v1/v2/v3 backups migrate to schema v4 and up to five recovery snapshots are retained, including a forced checkpoint before replacement import or restore. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
+Workspace data is stored in browser IndexedDB and mirrored to localStorage. The newest valid copy is loaded; unreadable data pauses autosave and exposes recovery. A complete JSON backup can be downloaded and restored; v1–v5 backups migrate non-destructively to schema v6 and up to five recovery snapshots are retained, including a forced checkpoint before replacement import or restore. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
 
 ## Deployment
 

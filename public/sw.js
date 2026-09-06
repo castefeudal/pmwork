@@ -14,7 +14,8 @@ self.addEventListener("fetch", event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const hit = await cache.match(event.request, {ignoreSearch:true});
-    if(hit && /\.(woff2|png|svg|css|js)$/.test(url.pathname)) return hit;
+    // Keep a cached document with its release assets until the waiting worker activates.
+    if(hit && (event.request.mode === "navigate" || /\.(woff2|png|svg|css|js)$/.test(url.pathname))) return hit;
     try {
       const response = await fetch(event.request);
       if(response.ok) event.waitUntil(cache.put(event.request,response.clone()));

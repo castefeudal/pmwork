@@ -137,8 +137,8 @@ export default async function Home({
                 LayoutDashboard,
                 ru ? "Центр управления проектом" : "Project cockpit",
                 ru
-                  ? "Цели, контрольные точки, блокеры, решения и показатели состояния без загадочной единой оценки."
-                  : "Objectives, milestones, blockers, decisions, and health dimensions without a mysterious score.",
+                  ? "Цели, контрольные точки, блокеры и решения показывают, где проекту нужно внимание."
+                  : "Objectives, milestones, blockers and decisions show where your project needs attention.",
               ],
               [
                 Workflow,
@@ -286,6 +286,7 @@ export default async function Home({
             </div>
           </div>
         </section>
+        <section className="section"><div className="section-head"><h2>{ru?'Ваши данные остаются у вас':'Your data stays yours'}</h2><div><p>{ru?'Проекты сохраняются в браузере и доступны без сети. Учётная запись не нужна. Скачивайте резервную копию: очистка данных сайта удаляет локальное пространство.':'Projects are saved in your browser and work offline. No account is needed. Download backups: clearing site storage removes the local workspace.'}</p><div className="button-row"><Link className="button primary" href={`/${locale}/workspace/`}>{ru?'Открыть рабочее пространство':'Open workspace'}<ArrowRight size={16}/></Link><Link className="button" href={`/${locale}/privacy/`}>{ru?'Как хранятся данные':'How data is stored'}</Link></div></div></div></section>
       </main>
       <Footer locale={locale} />
     </div>

@@ -2,6 +2,7 @@ import { publicMetadata } from "@/domain/public-metadata";
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import {templates} from '@/content/catalog';
+import {templateBoundaries} from '@/content/template-boundaries';
 import {templateExamples} from '@/content/template-examples';
 import {templatePractice} from '@/content/template-practice';
 import {PublicHeader} from '@/components/public-header';
@@ -20,6 +21,7 @@ export default async function Page({params}:{params:Promise<{locale:string;slug:
   <div className="public-container article-layout"><article className="article-body">
    <section><h2>{ru?'Что получится':'Expected output'}</h2><p>{t.purpose[l]}</p></section>
    <section><h2>{ru?'Когда использовать':'When to use'}</h2><p>{t.when[l]}</p></section>
+   <section><h2>{ru?'Когда не нужен':'When not to use'}</h2><p>{templateBoundaries[t.slug][ru?0:1]}</p></section>
    <section><h2>{ru?'Сколько времени':'Time guide'}</h2><p>{practice?.[4]} {ru?'минут — ориентир при подготовленных входных данных.':'minutes as a guide when inputs are ready.'}</p></section>
    <section><h2>{ru?'Что подготовить и заполнить':'Inputs and fields'}</h2><ol>{t.fields.map(f=><li key={f[l]}>{f[l]}</li>)}</ol></section>
    <section><h2>{ru?'Как заполнять':'Guidance'}</h2><p>{t.guidance[l]}</p></section>

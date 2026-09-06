@@ -62,7 +62,7 @@ const translations = {
     hero: {
       eyebrow: "Practical PM operating system",
       title: "Understand what is happening. Decide what to do next.",
-      lead: "Methods, backlog, Kanban, risks, stakeholders, schedule, budget, documents, and professional playbooks in one practical system.",
+      lead: "A project manager’s workspace for work, dates, risks and decisions, with clear reasons and next actions. Your project data stays on your device.",
       open: "Create / open project",
       choose: "Choose an approach",
     },

@@ -17,6 +17,7 @@ export default async function Page({params}:{params:Promise<{locale:string;slug:
    <section><h2>{ru?'Что решает':'What it solves'}</h2><p>{m.flow[l]}</p></section>
    <section><h2>{ru?'Подходит, если':'Good fit when'}</h2><p>{m.bestFit[l]}</p></section>
    <section><h2>{ru?'Не подходит / ограничения':'Poor fit / limitations'}</h2><p>{m.poorFit[l]}</p><p>{m.limitations[l]}</p></section>
+   <section><h2>{ru?'Что должно быть подготовлено':'Prerequisites'}</h2><p>{m.prerequisites[l]}</p></section>
    <section><h2>{ru?'Минимальная рабочая версия':'Minimum implementation'}</h2><ol>{m.checklist.map(x=><li key={x[l]}>{x[l]}</li>)}</ol><p className="muted">{ru?'Это практическая минимальная конфигурация PMWORK, а не дополнительное требование владельца метода.':'This is a PMWORK practical minimum, not an additional requirement from the method owner.'}</p></section>
    <section><h2>{ru?'Полная операционная модель':'Full operating model'}</h2><h3>{ru?'Роли':'Roles'}</h3><p>{m.roles[l]}</p><h3>{ru?'Артефакты':'Artifacts'}</h3><p>{m.artifacts[l]}</p><h3>{ru?'Каденция':'Cadence'}</h3><p>{m.cadence[l]}</p><h3>{ru?'Метрики':'Metrics'}</h3><p>{m.metrics[l]}</p></section>
    <section><h2>{ru?'Типичная ошибка':'Common mistake'}</h2><p>{m.antiPatterns[l]}</p></section>

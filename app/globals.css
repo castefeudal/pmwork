@@ -273,7 +273,7 @@ a {
 .section {
   max-width: var(--content);
   margin: auto;
-  padding: clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 4rem);
+  padding: clamp(2rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem);
 }
 .section-head {
   display: grid;
@@ -304,7 +304,7 @@ a {
   border-bottom: 1px solid var(--line);
 }
 .feature h3 {
-  margin: 2.5rem 0 0.5rem;
+  margin: 1rem 0 0.5rem;
 }
 .feature p {
   color: var(--muted);
@@ -1730,8 +1730,8 @@ summary {
 }
 .hero {
   max-width: 1380px;
-  min-height: calc(100svh - 72px);
-  padding-top: clamp(5rem, 9vw, 9rem);
+  min-height: min(760px, calc(100svh - 72px));
+  padding-top: clamp(3rem, 5vw, 5rem);
   position: relative;
 }
 .hero::before { content:none; }
@@ -2342,3 +2342,8 @@ input[type="range"] { min-height:44px; accent-color:var(--accent); }
 .workspace-content { max-width:var(--workspace-max); }
 
 @media(min-width:981px) { .guide-layout .stage-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; } }
+
+.baseline-marker,.actual-marker { position:absolute; top:20%; font-weight:700; line-height:1; }
+.baseline-marker { color:var(--muted); }.actual-marker { color:var(--good); }
+
+@media(max-width:600px) { .method-strip { grid-template-columns:repeat(2,minmax(0,1fr)); } }
