@@ -50,6 +50,20 @@ for (const file of html) {
       failures.push(`${path.relative(root, file)} -> ${ref}`);
   }
 }
+const base=process.env.PMWORK_BASE_PATH==='github'?'/pmwork':'';
+const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
+if(sitemap.includes('/workspace'))failures.push('Workspace must be excluded from sitemap');
+const robots=fs.readFileSync(path.join(root,'robots.txt'),'utf8');
+for(const locale of ['ru','en']){
+ if(!robots.includes(`Disallow: ${base}/${locale}/workspace/`))failures.push(`Missing workspace robots path: ${locale}`);
+ const application=fs.readFileSync(path.join(root,locale,'workspace/index.html'),'utf8');
+ if(!/<meta name="robots" content="[^"]*noindex/.test(application))failures.push(`Workspace noindex missing: ${locale}`);
+ for(const route of ['methods/scrum','templates/project-charter']){
+  const detail=fs.readFileSync(path.join(root,locale,route,'index.html'),'utf8');
+  if(!detail.includes(`rel="canonical" href="https://castefeudal.github.io${base}/${locale}/${route}/"`))failures.push(`Invalid canonical: ${locale}/${route}`);
+  if(!detail.includes('name="description"'))failures.push(`Missing description: ${locale}/${route}`);
+ }
+}
 if (html.length < 23) failures.push(`only ${html.length} HTML pages exported`);
 if (failures.length) {
   console.error([...new Set(failures)].join("\n"));

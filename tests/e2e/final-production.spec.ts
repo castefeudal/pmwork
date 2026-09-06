@@ -14,7 +14,8 @@ test('explicit first run, URL history, locale and independent preferences',async
  await page.goForward();await expect(page.getByRole('heading',{name:'Plan',exact:true})).toBeVisible();
  await page.reload();await expect(page.getByRole('heading',{name:'Plan',exact:true})).toBeVisible();
  await navigateWorkspace(page,'Settings');await page.getByLabel('Guidance level',{exact:true}).selectOption('advanced');await page.getByLabel('Interface density',{exact:true}).selectOption('comfortable');
- await page.getByRole('button',{name:'RU',exact:true}).click();await expect(page).toHaveURL(/ru\/workspace.*view=setup/);await expect(page.getByLabel('Уровень подсказок',{exact:true})).toHaveValue('advanced');await expect(page.getByLabel('Плотность интерфейса',{exact:true})).toHaveValue('comfortable');
+ if(!await page.getByRole('button',{name:'RU',exact:true}).isVisible())await page.getByRole('button',{name:'Workspace options',exact:true}).click();
+ await page.getByRole('button',{name:'RU',exact:true}).filter({visible:true}).click();await expect(page).toHaveURL(/ru\/workspace.*view=setup/);await expect(page.getByLabel('Уровень подсказок',{exact:true})).toHaveValue('advanced');await expect(page.getByLabel('Плотность интерфейса',{exact:true})).toHaveValue('comfortable');
 });
 test('glossary aliases, detail links, filter and accessibility',async({page})=>{
  await page.goto(route('/ru/glossary/'));await page.getByRole('searchbox').fill('ИСР');

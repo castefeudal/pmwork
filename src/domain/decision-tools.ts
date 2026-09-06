@@ -19,7 +19,7 @@ export function deadlineConfidence(samples:number[],remaining:number,start:strin
  const durations:number[]=[];const horizon=Math.floor((targetMs-startMs)/86400000);
  for(let i=0;i<iterations;i++){let done=0,days=0;while(done<remaining&&days<3650){done+=samples[Math.floor(random()*samples.length)];days++;}if(done<remaining)throw Error('Forecast exceeds ten-year simulation horizon');durations.push(days);}
  durations.sort((a,b)=>a-b);const date=(q:number)=>new Date(startMs+durations[Math.min(iterations-1,Math.ceil(q*iterations)-1)]*86400000).toISOString().slice(0,10);
- return {p50:date(.5),p80:date(.8),p90:date(.9),proportion:durations.filter(d=>d<=horizon).length/iterations,sampleSize:samples.length,iterations};
+ return {durations,p50:date(.5),p80:date(.8),p90:date(.9),proportion:durations.filter(d=>d<=horizon).length/iterations,sampleSize:samples.length,iterations};
 }
 export function dailyHistory(w:Workspace,projectId:string,asOf:string,days=28){
  const end=Date.parse(asOf+'T00:00:00Z');if(!Number.isFinite(end)||!Number.isInteger(days)||days<14||days>366)throw Error('Invalid history window');

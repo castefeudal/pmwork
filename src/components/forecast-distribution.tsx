@@ -1,0 +1,9 @@
+import type {Locale} from '@/domain/schemas';
+import type {deadlineConfidence} from '@/domain/decision-tools';
+export function ForecastDistribution({forecast,start,target,locale}:{forecast:ReturnType<typeof deadlineConfidence>;start:string;target:string;locale:Locale}){
+ const ru=locale==='ru',values=forecast.durations,min=values[0],max=values[values.length-1],step=Math.max(1,Math.ceil((max-min+1)/16));
+ const bins=Array.from({length:Math.ceil((max-min+1)/step)},(_,i)=>({from:min+i*step,to:Math.min(max,min+(i+1)*step-1),count:0}));
+ for(const value of values)bins[Math.floor((value-min)/step)].count++;
+ const peak=Math.max(...bins.map(b=>b.count)),deadline=Math.floor((Date.parse(target)-Date.parse(start))/86400000);
+ return <figure className="forecast-distribution"><figcaption>{ru?'Распределение срока завершения':'Completion-time distribution'}</figcaption><p>{forecast.iterations} {ru?'симуляций. Ось X: календарные дни от даты расчёта; высота: число сценариев.':'simulations. X: calendar days from calculation; height: scenario count.'}</p><div className="forecast-bars" role="img" aria-label={bins.map(b=>`${b.from}–${b.to}: ${b.count}`).join('; ')}>{bins.map(b=><div key={b.from}><span style={{height:`${Math.max(1,b.count/peak*100)}%`}}/><small>{b.from}</small></div>)}</div><p><strong>P50 {forecast.p50} · P80 {forecast.p80} · P90 {forecast.p90}</strong><br/>{ru?'Выбранная дата':'Selected deadline'}: {target} ({deadline} {ru?'дн.':'days'}) · {Math.round(forecast.proportion*100)}% {ru?'сценариев завершены':'scenarios complete'}</p><details><summary>{ru?'Таблица распределения':'Distribution table'}</summary><table><thead><tr><th>{ru?'Дни':'Days'}</th><th>{ru?'Сценарии':'Scenarios'}</th></tr></thead><tbody>{bins.map(b=><tr key={b.from}><td>{b.from}–{b.to}</td><td>{b.count}</td></tr>)}</tbody></table></details></figure>;
+}

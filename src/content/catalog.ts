@@ -1,3 +1,5 @@
+import {playbookFollowup} from './playbook-followup.ts';
+import {templateGuidance} from './template-guidance.ts';
 import {templatePractice} from "./template-practice.ts";
 import {playbookNext} from "./playbook-next.ts";
 import { methodPractice } from "./method-practice.ts";
@@ -546,10 +548,7 @@ const template = (
   purpose: { ru: purposeRu, en: purposeEn },
   when: {ru:templatePractice[slug][0],en:templatePractice[slug][1]},
   fields: [...tf[category], ...extra],
-  guidance: {
-    ru: "Заполняйте до уровня, достаточного для следующего управленческого действия. Удалите секции, которые ничего не меняют.",
-    en: "Complete only to the depth needed for the next management action. Remove sections that change nothing.",
-  },
+  guidance: {ru:templateGuidance[slug][0],en:templateGuidance[slug][1]},
   antiPattern: {ru:templatePractice[slug][2],en:templatePractice[slug][3]},
 });
 
@@ -981,18 +980,8 @@ const pb = (
     },
   ],
   next: [playbookNext[slug]],
-  stabilize: [
-    {
-      ru: "Сократите активную работу, сделайте приоритеты и зависимости явными, восстановите ритм контроля.",
-      en: "Reduce active work, expose priorities and dependencies, and restore a control cadence.",
-    },
-  ],
-  prevent: [
-    {
-      ru: "Добавьте раннее условие срабатывания, владельца и регулярный обзор — не новый отчёт ради отчёта.",
-      en: "Add an early trigger, owner, and regular review—not another report for its own sake.",
-    },
-  ],
+  stabilize: [{ru:playbookFollowup[slug][0],en:playbookFollowup[slug][1]}],
+  prevent: [{ru:playbookFollowup[slug][2],en:playbookFollowup[slug][3]}],
   metrics: [
     { ru: metricRu, en: metricEn },
     {
