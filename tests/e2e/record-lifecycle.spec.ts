@@ -25,3 +25,13 @@ test('v5 estimates remain observed history and new risk money round trips',async
  const stored=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return s.workspace??s;});
  expect(stored.schemaVersion).toBe(6);expect(stored.workItems[0].estimateHistory[0].kind).toBe('imported');expect(stored.workItems[0].originalEstimate).toBeUndefined();
 });
+
+test('legacy completed milestone can be edited without inventing an actual date',async({page})=>{
+ const w=demoWorkspace('en'),m=w.milestones[0];m.status='done';delete m.actualDate;
+ await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify({...w,schemaVersion:5})),w);
+ await page.goto(route(`/en/workspace/?project=${m.projectId}&view=planning&item=${m.id}`));
+ const d=page.getByRole('dialog');await d.getByLabel('Title',{exact:true}).fill('Historical milestone');
+ await d.getByRole('button',{name:'Save',exact:true}).click();await expect(d).toBeHidden();
+ await expect.poll(()=>page.evaluate(id=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (s.workspace??s).milestones.find((x:{id:string})=>x.id===id).title},m.id)).toBe('Historical milestone');
+ const actual=await page.evaluate(id=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (s.workspace??s).milestones.find((x:{id:string})=>x.id===id).actualDate},m.id);expect(actual||undefined).toBeUndefined();
+});

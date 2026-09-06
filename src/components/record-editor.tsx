@@ -709,7 +709,7 @@ export function RecordEditor({
     if (kind === "milestone") {
       if (!nextRecord.confidence) nextRecord.confidence=undefined;
       if (!nextRecord.ownerId) nextRecord.ownerId=undefined;
-      if (nextRecord.status === "done" && !nextRecord.actualDate) return setError(ru?"Укажите фактическую дату завершения.":"Enter the actual completion date.");
+      if (nextRecord.status === "done" && record.status !== "done" && !nextRecord.actualDate) return setError(ru?"Укажите фактическую дату завершения.":"Enter the actual completion date.");
     }
     if (kind === "risk" && !nextRecord.currency) nextRecord.currency=undefined;
     if (kind === "document") nextRecord.updatedAt = new Date().toISOString();

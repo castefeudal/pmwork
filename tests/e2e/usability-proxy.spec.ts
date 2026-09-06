@@ -4,7 +4,7 @@ import {route} from './support';
 test('U5 status template has an explicit destination and editable result',async({page},info)=>{
  await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),demoWorkspace('en'));
  await page.goto(route('/en/templates/?q=status'));
- await page.locator('a[href$="/templates/status-report/"]').click();
+ await page.getByRole('link',{name:'Status Report',exact:true}).click();
  await page.locator('.catalog-hero').getByRole('button',{name:'Use template',exact:true}).click();
  await expect(page.getByRole('dialog').getByLabel('Project',{exact:true})).toHaveValue('atlas');
  await page.getByRole('dialog').getByRole('button',{name:'Apply',exact:true}).click();
