@@ -809,6 +809,8 @@ td:is(:nth-last-child(-n + 5)) {
   border-radius: var(--radius);
   padding: 1.2rem;
 }
+.result-box .button, .result-box input, .result-box .table-wrap, .result-box .notice { color: var(--text); }
+.result-box > small:last-child { display:block; margin-top:1rem; }
 .result-box strong {
   font-size: 2.2rem;
   display: block;

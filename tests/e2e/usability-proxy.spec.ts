@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 import {demoWorkspace} from '../../src/data/demo';
 import {route} from './support';
 test('U5 status template has an explicit destination and editable result',async({page},info)=>{
@@ -29,4 +30,16 @@ test('U7 status draft opens with the critical issue and can be edited',async({pa
  const body=page.getByRole('dialog').locator('textarea[name="body"]');expect(await body.inputValue()).toContain(w.issues.find(x=>x.projectId==='atlas')!.title);
  await expect(body).toBeEditable();
  await info.attach('automated-usability-proxy',{body:JSON.stringify({task:'U7',actions:2,friction:'Draft opens directly; reporting period needs editorial selection. No human timing.'}),contentType:'application/json'});
+});
+
+for(const theme of ['light','dark'])test(`prioritization comparison is readable and exposes ties ${theme}`,async({page},info)=>{
+ await page.addInitScript(theme=>localStorage.setItem('pmwork-theme',theme),theme);
+ await page.goto(route('/en/tools/?tool=priority'));
+ for(const name of ['Pilot A','Pilot B']){await page.getByLabel('Candidate name',{exact:true}).fill(name);await page.getByRole('button',{name:'Add to comparison',exact:true}).click();}
+ const result=page.getByRole('region',{name:'Calculation result',exact:true});
+ await expect(result.getByText('Pilot A',{exact:true})).toBeVisible();
+ await expect(result.getByText('Pilot B',{exact:true})).toBeVisible();
+ await expect(result).toContainText('Some scores tie or differ by at most 5%');
+ const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(audit.violations).toEqual([]);
+ await page.screenshot({path:`test-results/priority-comparison-${theme}-${info.project.name}.png`,fullPage:true,animations:'disabled'});
 });
