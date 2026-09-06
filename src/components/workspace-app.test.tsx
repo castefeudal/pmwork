@@ -5,6 +5,7 @@ import { WorkspaceApp } from "./workspace-app";
 afterEach(() => { cleanup(); localStorage.clear(); sessionStorage.clear(); });
 
 const openDemo=async()=>fireEvent.click(await screen.findByRole("button",{name:/Explore a completed example/i}));
+const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы рабочего пространства|Workspace sections/});
 
 describe("workspace interactions", () => {
   it("does not persist demo before an explicit choice", async () => {
@@ -20,9 +21,11 @@ describe("workspace interactions", () => {
   it("opens global add and creates work", async () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
-    fireEvent.click((await screen.findAllByRole("button", { name: "Работа" }))[0]);
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: "Работа" }));
     expect(screen.getByRole("heading", { name: "Работа" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Добавить" }));
+    const addTrigger=screen.getAllByRole("button", { name: "Добавить" }).find(button=>button.getAttribute("aria-haspopup")==="dialog");
+    expect(addTrigger).toBeTruthy();
+    fireEvent.click(addTrigger!);
     const add=screen.getByRole("dialog",{name:"Добавить"});
     fireEvent.click(within(add).getByRole("button",{name:"Работа"}));
     fireEvent.change(screen.getByLabelText("Название"), {target: { value: "Component QA item" }});
@@ -33,8 +36,8 @@ describe("workspace interactions", () => {
   it("treats board as a Work mode rather than a top-level destination", async () => {
     render(<WorkspaceApp locale="en" />);
     await openDemo();
-    fireEvent.click((await screen.findAllByRole("button", { name: "Work" }))[0]);
-    expect(screen.queryByRole("button",{name:"Work · Board"})).toBeNull();
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: "Work" }));
+    expect(within(desktopNav()).queryByRole("button",{name:"Board"})).toBeNull();
     fireEvent.click(screen.getByRole("button",{name:"Board"}));
     const card = screen.getByText("Align first-release scope").closest("article");
     expect(card).toBeTruthy();
@@ -42,11 +45,15 @@ describe("workspace interactions", () => {
     expect(screen.getByText("Align first-release scope")).toBeTruthy();
   });
 
-  it("uses action-oriented mobile IA and keeps Guide outside primary expert navigation", async () => {
+  it("uses action-oriented mobile IA", async () => {
     render(<WorkspaceApp locale="en" />);
     await openDemo();
-    expect(screen.getByRole("navigation",{name:"Workspace"})).toBeTruthy();
-    expect(screen.getAllByRole("button",{name:"Control"}).length).toBeGreaterThan(0);
+    const mobile=screen.getByRole("navigation",{name:"Workspace"});
+    expect(within(mobile).getByRole("button",{name:"Today"})).toBeTruthy();
+    expect(within(mobile).getByRole("button",{name:"Work"})).toBeTruthy();
+    expect(within(mobile).getByRole("button",{name:"Plan"})).toBeTruthy();
+    expect(within(mobile).getByRole("button",{name:"Control"})).toBeTruthy();
+    expect(within(mobile).getByRole("button",{name:"More"})).toBeTruthy();
   });
 
   it("opens the command palette with a keyboard shortcut", async () => {
@@ -60,7 +67,7 @@ describe("workspace interactions", () => {
   it("keeps Settings focused on settings rather than operational record creation", async () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
-    fireEvent.click(screen.getByRole("button",{name:"Настройки"}));
+    fireEvent.click(within(desktopNav()).getByRole("button",{name:"Настройки"}));
     expect(screen.getByRole("heading",{name:"Уровень подсказок"})).toBeTruthy();
     expect(screen.queryByText("Создать связанную сущность")).toBeNull();
   });
@@ -68,7 +75,7 @@ describe("workspace interactions", () => {
   it("creates and edits a validated dependency", async () => {
     render(<WorkspaceApp locale="en" />);
     await openDemo();
-    fireEvent.click((await screen.findAllByRole("button", { name: "Plan" }))[0]);
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: "Plan" }));
     fireEvent.click(screen.getByRole("button", { name: "Dependencies" }));
     fireEvent.click(screen.getByRole("button", { name: "Add dependency" }));
     const successor = screen.getByLabelText("Successor") as HTMLSelectElement;
@@ -88,13 +95,13 @@ describe("workspace interactions", () => {
   it("keeps project closure state while navigating", async () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
-    fireEvent.click(await screen.findByRole("button", { name: "Контроль" }));
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: "Контроль" }));
     fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
     const acceptance = screen.getByLabelText("Финальная приёмка подтверждена") as HTMLInputElement;
     fireEvent.click(acceptance);
     expect(acceptance.checked).toBe(true);
-    fireEvent.click(screen.getAllByRole("button", { name: "Сейчас" })[0]);
-    fireEvent.click(screen.getByRole("button", { name: "Контроль" }));
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: "Сейчас" }));
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: "Контроль" }));
     fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
     expect((screen.getByLabelText("Финальная приёмка подтверждена") as HTMLInputElement).checked).toBe(true);
   });
