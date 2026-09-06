@@ -122,12 +122,7 @@ export function PortfolioView({
                   </span>
                   <h3>{p.name}</h3>
                 </div>
-                <strong
-                  className="score-ring"
-                  aria-label={`${s.completeness}%`}
-                >
-                  {s.completeness}
-                </strong>
+
               </div>
               <p>{p.objective}</p>
               <div className="project-metrics">
@@ -144,7 +139,7 @@ export function PortfolioView({
                   {ru ? "критично" : "critical"}
                 </span>
                 <span className={over ? "bad-text" : ""}>
-                  <b>{formatMoney(locale, p.currency, s.forecast)}</b>
+                  <b>{workspace.budgets.some(b => b.projectId === p.id) ? formatMoney(locale, p.currency, s.forecast) : (ru ? "Нет данных" : "No data")}</b>
                   {ru ? "прогноз" : "forecast"}
                 </span>
               </div>
@@ -1086,21 +1081,22 @@ export function FinanceView({
       <div className="metric-cards">
         <Metric
           name={ru ? "План" : "Baseline"}
-          value={formatMoney(locale, project.currency, planned)}
+          value={rows.length ? formatMoney(locale, project.currency, planned) : (ru ? "Нет данных" : "No data")}
         />
         <Metric
           name={ru ? "Факт" : "Actual"}
-          value={formatMoney(locale, project.currency, actual)}
+          value={rows.length ? formatMoney(locale, project.currency, actual) : (ru ? "Нет данных" : "No data")}
         />
         <Metric
           name={ru ? "Обязательства" : "Committed"}
-          value={formatMoney(locale, project.currency, committed)}
+          value={rows.length ? formatMoney(locale, project.currency, committed) : (ru ? "Нет данных" : "No data")}
         />
+        <Metric name={ru ? "Прогноз" : "Forecast"} value={rows.length ? formatMoney(locale, project.currency, forecast) : (ru ? "Нет данных" : "No data")} />
         <Metric
           name={ru ? "Отклонение прогноза" : "Forecast variance"}
-          value={formatMoney(locale, project.currency, variance)}
+          value={rows.length ? formatMoney(locale, project.currency, variance) : (ru ? "Нет данных" : "No data")}
           detail={
-            variance < 0
+            !rows.length ? (ru ? "Добавьте первую статью бюджета" : "Add the first budget line") : variance < 0
               ? ru
                 ? "прогноз перерасхода"
                 : "forecast overrun"
@@ -1621,7 +1617,7 @@ export function EntityTable({
         <tbody>
           {rows.map((x) => (
             <tr key={x.id}>
-              <td>{x.id}</td>
+              <td className="record-id">{x.id}</td>
               <td>
                 <strong>{x.title}</strong>
                 <br />

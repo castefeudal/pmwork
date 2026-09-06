@@ -30,7 +30,8 @@ test("side editor preserves context and keyboard focus",async({page},testInfo)=>
   await page.goto(route("/en/workspace/"));await navigateWorkspace(page,"Board");
   const title=page.getByRole("button",{name:"Align first-release scope",exact:true});await title.click();
   const dialog=page.getByRole("dialog");await expect(dialog).toBeVisible();
-  await page.screenshot({path:`test-results/drawer-${testInfo.project.name}.png`,fullPage:true});
+  if(testInfo.project.name.includes("mobile"))expect((await dialog.boundingBox())!.width).toBeGreaterThanOrEqual(page.viewportSize()!.width-1);
+  await page.screenshot({path:`test-results/drawer-${testInfo.project.name}.png`,fullPage:true,animations:"disabled"});
   await dialog.getByLabel("Title",{exact:true}).fill("Reviewed first-release scope");
   await dialog.getByRole("button",{name:"Save",exact:true}).click();
   await expect(page.getByRole("button",{name:"Reviewed first-release scope",exact:true})).toBeFocused();
@@ -40,7 +41,7 @@ test("side editor preserves context and keyboard focus",async({page},testInfo)=>
 test("palette keyboard search opens a record and creates an issue",async({page},testInfo)=>{
   await page.goto(route("/en/workspace/"));await page.getByRole("button",{name:"Open search"}).click();
   await page.getByRole("combobox",{name:"Find a record or action"}).fill("Align first-release scope");
-  await page.screenshot({path:`test-results/palette-${testInfo.project.name}.png`,fullPage:true});
+  await page.screenshot({path:`test-results/palette-${testInfo.project.name}.png`,fullPage:true,animations:"disabled"});
   await page.keyboard.press("Enter");await expect(page.getByRole("dialog",{name:"Edit work item"})).toBeVisible();
   await page.keyboard.press("Escape");await page.getByRole("button",{name:"Open search"}).click();
   await page.getByRole("combobox",{name:"Find a record or action"}).fill("Create issue");await page.keyboard.press("Enter");
@@ -54,10 +55,11 @@ test("calculators validate without crashing and sliders support keys",async({pag
   await page.getByRole("button",{name:"Earned Value",exact:true}).click();await page.getByLabel("AC",{exact:true}).fill("-1");await expect(page.locator("main").getByRole("alert")).toContainText("non-negative");
   await page.getByRole("button",{name:"Monte Carlo",exact:true}).click();await page.getByLabel("Historical weekly throughput").fill("5,wrong,7");await expect(page.locator("main").getByRole("alert")).toContainText("observations");
 });
-test("corrupt browser data is preserved while autosave is paused",async({page})=>{
+test("corrupt browser data is preserved while autosave is paused",async({page},testInfo)=>{
   await page.addInitScript(()=>{Object.defineProperty(window,"indexedDB",{value:undefined,configurable:true});localStorage.setItem("pmwork:workspace:v3","{broken");});
   await page.goto(route("/en/workspace/"));await expect(page.locator(".recovery-banner").getByText("Autosave paused",{exact:true})).toBeVisible();await page.reload();await expect(page.locator(".recovery-banner").getByText("Autosave paused",{exact:true})).toBeVisible();
   expect(await page.evaluate(()=>localStorage.getItem("pmwork:workspace:v3"))).toBe("{broken");
+  await page.screenshot({path:`test-results/recovery-${testInfo.project.name}.png`,fullPage:true,animations:"disabled"});
 });
 test("offline workspace includes its scripts and fonts",async({page,context},testInfo)=>{
   await page.goto(route("/en/workspace/"));await expect(page.getByText("Requires action")).toBeVisible();
@@ -75,7 +77,7 @@ for(const [width,height] of [[320,760],[360,800],[390,844],[430,932],[768,1024],
     await page.setViewportSize({width,height});await page.goto(route("/ru/workspace/"));
     for(const name of ["Сейчас","Портфель","Работа","Доска","Планирование","RAID","Люди","Финансы","Контроль","Документы","Настройка"]){
       await navigateWorkspace(page,name);
-      if(width===1440 || width===390) await page.screenshot({path:`test-results/visual-${testInfo.project.name}-${width}-${name}.png`,fullPage:true});
+      if(width===1440 || width===390) await page.screenshot({path:`test-results/visual-${testInfo.project.name}-${width}-${name}.png`,fullPage:true,animations:"disabled"});
       const overflow=await page.evaluate(()=>({width:innerWidth,body:document.body.scrollWidth,elements:[...document.querySelectorAll(".workspace-top, .panel, .project-card, .section-line, .card-foot, .toolbar")].filter(el=>el.getBoundingClientRect().right>innerWidth+1).map(el=>({class:el.className,right:el.getBoundingClientRect().right}))}));
       expect(overflow.body,JSON.stringify({name,...overflow})).toBeLessThanOrEqual(width+1);
       expect(await page.evaluate(()=>[...document.querySelectorAll('.workspace-content')].every(el=>el.getBoundingClientRect().right<=innerWidth+1)),name).toBe(true);
@@ -88,7 +90,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.goto(route(`/${locale}/workspace/`));
     for(const name of (locale==="ru"?["Сейчас","Работа","Доска","Планирование","RAID"]:["Today","Work","Board","Planning","RAID"])){
       await navigateWorkspace(page,name);
-      await page.screenshot({path:`test-results/theme-${testInfo.project.name}-${locale}-${theme}-${name}.png`,fullPage:true});
+      await page.screenshot({path:`test-results/theme-${testInfo.project.name}-${locale}-${theme}-${name}.png`,fullPage:true,animations:"disabled"});
       const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
       expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),name).toEqual([]);
     }
@@ -121,7 +123,7 @@ test("project switching and validated backup replacement",async({page})=>{
 for(const locale of ["ru","en"]) {
  for(const path of ["","knowledge","methods","templates","tools"]) test(`public visual review ${locale} ${path||"landing"}`,async({page},testInfo)=>{
   await page.goto(route(`/${locale}/${path?path+"/":""}`));await expect(page.locator("main")).toBeVisible();
-  await page.screenshot({path:`test-results/public-${testInfo.project.name}-${locale}-${path||"landing"}.png`,fullPage:true});
+  await page.screenshot({path:`test-results/public-${testInfo.project.name}-${locale}-${path||"landing"}.png`,fullPage:true,animations:"disabled"});
   if(path === "knowledge") {
     const guide=page.locator("article").filter({has:page.getByRole("heading",{name:locale === "ru" ? "Основы" : "Fundamentals",exact:true})});
     await guide.getByRole("link",{name:locale === "ru" ? "Открыть рабочий модуль" : "Open working module"}).click();
@@ -132,7 +134,7 @@ for(const locale of ["ru","en"]) {
  for(const name of (locale==="ru"?["Конструктор метода","Критический путь · CPM","PERT","Освоенный объём · EVM","Monte Carlo","Приоритизация","Закон Литтла"]:["Method composer","Critical Path","PERT","Earned Value","Monte Carlo","Prioritization","Little’s Law"])) test(`tool visual review ${locale} ${name}`,async({page},testInfo)=>{
   await page.goto(route(`/${locale}/tools/`));
   await page.getByRole("button",{name,exact:true}).click();
-  await page.screenshot({path:`test-results/tool-${testInfo.project.name}-${locale}-${name}.png`,fullPage:true});
+  await page.screenshot({path:`test-results/tool-${testInfo.project.name}-${locale}-${name}.png`,fullPage:true,animations:"disabled"});
   if(name === "Закон Литтла" || name === "Little’s Law") {
    const result=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(result.violations).toEqual([]);
   }

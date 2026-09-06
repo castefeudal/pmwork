@@ -25,3 +25,12 @@ test('dark glossary detail keeps readable controls and correct theme before hydr
  await expect(page.getByRole('heading',{name:'Critical Path',exact:true})).toBeVisible();
  const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(result.violations).toEqual([]);
 });
+
+test('portfolio distinguishes missing budget from a zero forecast',async({page})=>{
+ const workspace=demoWorkspace('en');workspace.budgets=[];
+ await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),workspace);
+ await page.goto(route('/en/workspace/'));await expect(page.locator('.workspace-shell')).toBeVisible();
+ await navigateWorkspace(page,'Portfolio');await expect(page.locator('.project-metrics').getByText('No data',{exact:true})).toHaveCount(workspace.projects.length);
+ await expect(page.locator('.score-ring')).toHaveCount(0);
+ await navigateWorkspace(page,'Finance');await expect(page.locator('.metric-cards').getByText('No data',{exact:true})).toHaveCount(5);
+});

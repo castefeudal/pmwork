@@ -1039,16 +1039,7 @@ blockquote {
   justify-content: space-between;
   gap: 1rem;
 }
-.score-ring {
-  width: 54px;
-  height: 54px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 5px solid var(--accent);
-  font-variant-numeric: tabular-nums;
-}
+.record-id { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .project-metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2129,10 +2120,12 @@ tbody tr:hover {
 .work-title-button { display:block; text-align:left; border:0; padding:.35rem 0; background:none; color:var(--ink); font-size:.9375rem; font-weight:600; line-height:1.45; cursor:pointer; overflow-wrap:anywhere; }
 .work-title-button:hover { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
 .work-title-cell .status { margin:.25rem .35rem .25rem 0; font-size:.8125rem; }
-.drawer-backdrop { justify-content:flex-end; padding:0; }
+.drawer-backdrop { grid-template-columns: minmax(0,1fr); justify-items:end; padding:0; }
 .record-drawer { height:100dvh; max-height:100dvh; width:min(660px,100%); max-width:100%; margin:0; border-radius:var(--radius-lg) 0 0 var(--radius-lg); animation:drawer-enter var(--motion-fast) ease-out; }
-.record-drawer .page-title { position:sticky; top:-1px; background:var(--surface-solid); z-index:2; padding-bottom:1rem; }
-.record-drawer .dialog-actions { position:sticky; bottom:-1px; background:var(--surface-solid); padding:1rem 0; border-top:1px solid var(--line); }
+.record-drawer .page-title { display:flex; flex-wrap:nowrap; align-items:flex-start; position:sticky; top:-1px; background:var(--surface-solid); z-index:2; padding-bottom:1rem; }
+.record-drawer .page-title h2 { font-size:var(--text-h2); }
+.record-drawer .page-title .icon-button { flex-shrink:0; }
+.record-drawer .dialog-actions { position:sticky; bottom:-1px; background:var(--surface-solid); padding:1rem; border-top:1px solid var(--line); }
 .recovery-banner { border:1px solid var(--warn); background:var(--surface-solid); border-radius:var(--radius); padding:1rem; margin-bottom:1rem; }
 .recovery-banner .button { margin:.25rem; }
 .command-results button[aria-selected="true"] { background:var(--accent-soft); outline:1px solid var(--accent); outline-offset:-1px; }
