@@ -1,3 +1,5 @@
+import { catalogMetadata } from "@/domain/public-metadata";
+export const generateMetadata = ({params}: {params: Promise<{locale:string}>}) => catalogMetadata(params, "privacy");
 import { notFound } from "next/navigation";
 import type { Locale } from "@/domain/schemas";
 import { PublicHeader } from "@/components/public-header";
@@ -26,8 +28,8 @@ export default async function Page({
         </h1>
         <p>
           {ru
-            ? "PMWORK хранит данные локально. Созданные проекты, рабочие элементы, риски, решения и документы сохраняются в IndexedDB браузера. Для работы не нужна учётная запись, а данные проекта не отправляются на сервер PMWORK."
-            : "PMWORK v1 is local-first. Projects, work items, risks, decisions, and documents are stored in browser IndexedDB. No account is required, and project data is not sent to a PMWORK server."}
+            ? "PMWORK хранит данные локально. Созданные проекты, рабочие элементы, риски, решения и документы сохраняются в IndexedDB браузера, с локальным зеркалом в localStorage и снимками восстановления. Для работы не нужна учётная запись, а данные проекта не отправляются на сервер PMWORK."
+            : "PMWORK is local-first. Projects, work items, risks, decisions, and documents are stored in browser IndexedDB, with a localStorage mirror and recovery snapshots. No account is required, and project data is not sent to a PMWORK server."}
         </p>
         <h2>{ru ? "Контроль данных" : "Data control"}</h2>
         <ul>

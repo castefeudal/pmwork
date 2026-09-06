@@ -29,9 +29,9 @@ export function dailyHistory(w:Workspace,projectId:string,asOf:string,days=28){
  return Array.from({length:days},(_,i)=>{const a=end-(days-i)*86400000,b=a+86400000;return complete.filter(x=>x.completedAt&&Date.parse(x.completedAt)>=a&&Date.parse(x.completedAt)<b).length;});
 }
 export function estimateCalibration(w:Workspace,projectId:string){
- const sample=w.workItems.filter(x=>x.projectId===projectId&&x.done&&!x.archived&&x.estimate!==undefined&&x.estimate>0&&x.actualEffort!==undefined&&Number.isFinite(x.actualEffort));
+ const sample=w.workItems.filter(x=>x.projectId===projectId&&x.done&&!x.archived&&x.originalEstimate!==undefined&&x.originalEstimate>0&&x.actualEffort!==undefined&&Number.isFinite(x.actualEffort));
  if(sample.length<10)return {count:sample.length,minimum:10,medianRatio:null,medianAbsoluteError:null};
- const ratios=sample.map(x=>x.actualEffort!/x.estimate!).sort((a,b)=>a-b),errors=ratios.map(v=>Math.abs(v-1)).sort((a,b)=>a-b);const median=(a:number[])=>a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;
+ const ratios=sample.map(x=>x.actualEffort!/x.originalEstimate!).sort((a,b)=>a-b),errors=ratios.map(v=>Math.abs(v-1)).sort((a,b)=>a-b);const median=(a:number[])=>a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;
  return {count:sample.length,minimum:10,medianRatio:median(ratios),medianAbsoluteError:median(errors)};
 }
 export function ownershipCoverage(w:Workspace,projectId:string){
@@ -39,6 +39,7 @@ export function ownershipCoverage(w:Workspace,projectId:string){
  const issues:{id:string;kind:string;title:string;reason:'unassigned'|'external'|'ambiguous'|'concentration'}[]=[];
  const inspect=(id:string,kind:string,title:string,owner:string,ownerId?:string)=>{if(!owner&&!ownerId)issues.push({id,kind,title,reason:'unassigned'});else if(!ownerId){const matches=members.filter(m=>m.name===owner);if(matches.length!==1)issues.push({id,kind,title,reason:matches.length?'ambiguous':'external'});}};
  active.forEach(x=>inspect(x.id,'work',x.title,x.owner,x.ownerId));
+ w.milestones.filter(x=>x.projectId===projectId&&x.status!=='done').forEach(x=>inspect(x.id,'milestone',x.title,x.ownerLabel??'',x.ownerId));
  w.risks.filter(x=>x.projectId===projectId&&x.status!=='closed').forEach(x=>inspect(x.id,'risk',x.title,x.owner));
  w.decisions.filter(x=>x.projectId===projectId&&x.status==='pending').forEach(x=>inspect(x.id,'decision',x.question,x.owner));
  const critical=active.filter(x=>x.priority==='critical');for(const m of members){const count=critical.filter(x=>x.ownerId===m.id||(!x.ownerId&&x.owner===m.name)).length;if(critical.length>=3&&count/critical.length>.5)issues.push({id:m.id,kind:'team',title:m.name,reason:'concentration'});}

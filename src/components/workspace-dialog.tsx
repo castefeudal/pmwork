@@ -1,4 +1,5 @@
 "use client";
+import {applyStarterBundle} from "@/domain/starter-bundle";
 import { ProjectSetup } from "./project-setup";
 import { useDialogFocus } from "./use-dialog-focus";
 import { useId } from "react";
@@ -202,7 +203,8 @@ export function WorkspaceDialog({
           },
         ],
       };
-      onCommit(next, id);
+      const pack=text(fd,"starterPack");
+      onCommit(pack?applyStarterBundle(next,id,pack,locale):next, id);
       onClose();
       return;
     }
@@ -226,6 +228,7 @@ export function WorkspaceDialog({
             startDate: text(fd, "startDate") || undefined,
             dueDate: due || undefined,
             estimate: number(fd, "estimate", 0) || undefined,
+            originalEstimate: number(fd, "estimate", 0) || undefined,
             dependencies: [],
             acceptanceCriteria: lines(text(fd, "acceptance")),
             done: false,
@@ -359,6 +362,9 @@ export function WorkspaceDialog({
             projectId,
             title,
             date: due,
+            baselineDate: due,
+            ownerLabel: owner,
+            confidence: "unknown",
             status: "planned",
             progress: 0,
           },

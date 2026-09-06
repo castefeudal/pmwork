@@ -1,3 +1,4 @@
+import { publicMetadata } from "@/domain/public-metadata";
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import {templates} from '@/content/catalog';
@@ -26,4 +27,9 @@ export default async function Page({params}:{params:Promise<{locale:string;slug:
    {example&&<section><h2>{ru?'Заполненный пример':'Completed example'}</h2><p>{example}</p><p className="muted">{ru?'Пример использует вымышленные данные.':'Example uses fictional data.'}</p></section>}
   </article><aside className="article-aside panel"><h2>{ru?'Следующий шаг':'Next step'}</h2><p>{ru?'Примените шаблон к конкретному проекту: PMWORK создаст документ, который можно открыть, изменить и экспортировать.':'Apply the template to a specific project. PMWORK creates an editable, exportable document.'}</p><TemplateApply template={t} locale={l}/></aside></div>
  </main><Footer locale={l}/></div>
+}
+
+export async function generateMetadata({params}:{params:Promise<{locale:string;slug:string}>}) {
+ const {locale,slug}=await params; const record=templates.find(x=>x.slug===slug); if(!record||(locale!=="ru"&&locale!=="en")) return {};
+ return publicMetadata(locale,`templates/${slug}`,record.title[locale],record.purpose[locale]);
 }

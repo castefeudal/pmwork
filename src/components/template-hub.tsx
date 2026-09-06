@@ -2,7 +2,7 @@
 import {useMemo,useState} from 'react';
 import Link from 'next/link';
 import {Search,ChevronDown} from 'lucide-react';
-import {templates,type Template} from '@/content/catalog';
+import type {Template} from '@/content/catalog';
 import {templatePractice} from '@/content/template-practice';
 import type {Locale} from '@/domain/schemas';
 
@@ -20,15 +20,15 @@ const groups=[
 ] as const;
 const featured=['project-charter','project-plan','risk-register','status-report','stakeholder-register','decision-log'];
 
-export function TemplateHub({locale}:{locale:Locale}){
+export function TemplateHub({locale,templates}:{locale:Locale;templates:Template[]}){
  const ru=locale==='ru',[query,setQuery]=useState(''),[group,setGroup]=useState('all'),[limit,setLimit]=useState(12);
- const counts=useMemo(()=>Object.fromEntries(groups.map(([id])=>[id,id==='all'?templates.length:templates.filter(t=>collection(t)===id).length])),[]);
+ const counts=useMemo(()=>Object.fromEntries(groups.map(([id])=>[id,id==='all'?templates.length:templates.filter(t=>collection(t)===id).length])),[templates]);
  const data=useMemo(()=>{
   const q=query.trim().toLowerCase();
   const filtered=templates.filter(t=>(group==='all'||collection(t)===group)&&(!q||`${t.title.ru} ${t.title.en} ${t.purpose.ru} ${t.purpose.en} ${t.slug}`.toLowerCase().includes(q)));
   if(!q&&group==='all')return [...filtered].sort((a,b)=>Number(featured.includes(b.slug))-Number(featured.includes(a.slug)));
   return filtered;
- },[query,group]);
+ },[query,group,templates]);
  const visible=data.slice(0,limit);
  const choose=(id:string)=>{setGroup(id);setLimit(12)};
  return <>

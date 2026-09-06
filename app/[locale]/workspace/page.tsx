@@ -1,3 +1,4 @@
+export const metadata = { robots: { index: false, follow: false } };
 import { notFound } from "next/navigation";
 import type { Locale } from "@/domain/schemas";
 import { WorkspaceApp } from "@/components/workspace-app";

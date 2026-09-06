@@ -23,7 +23,7 @@ export function ProjectSetup({locale,onClose,onSubmit}:{locale:Locale;onClose:()
    <fieldset hidden={step!==1} className="setup-fields"><legend>{ru?'Что должно измениться благодаря проекту?':'What should change because of this project?'}</legend><div className="form-grid">
     <label className="field">{ru?'Название проекта':'Project title'}<input name="title" required minLength={2}/></label>
     <label className="field">{ru?'Тип / пример (необязательно)':'Type / example (optional)'}<select value={pack} onChange={e=>{setPack(e.target.value);const p=starterText(e.target.value,locale);if(p)setObjective(p[1])}}><option value="">{ru?'Свой проект':'Custom project'}</option>{starterPacks.map(p=><option key={p.id} value={p.id}>{p[locale][0]}</option>)}</select></label>
-    <input type="hidden" name="projectType" value={starterPacks.find(p=>p.id===pack)?.type??'general'}/>
+    <input type="hidden" name="starterPack" value={pack}/><input type="hidden" name="projectType" value={starterPacks.find(p=>p.id===pack)?.type??'general'}/>
     <label className="field wide">{ru?'Измеримый результат':'Measurable outcome'}<textarea name="objective" value={objective} onChange={e=>setObjective(e.target.value)} required placeholder={ru?'Например: запустить новую версию к 30 сентября и перевести 80% активных пользователей':'Example: launch the new version by 30 September and migrate 80% of active users'}/></label>
     <label className="field">{ru?'Целевая дата (необязательно)':'Target date (optional)'}<input name="dueDate" type="date"/></label>
     <label className="field">{ru?'Моя роль / владелец':'My role / owner'}<input name="owner" placeholder={ru?'Например: Project Manager':'Example: Project Manager'}/></label>

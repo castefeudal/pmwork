@@ -1,12 +1,12 @@
+import {publicOrigin, publicBasePath} from "@/domain/public-metadata";
 import { glossaryTerms } from "@/content/glossary";
 import { methods, templates } from "@/content/catalog";
 import type { MetadataRoute } from "next";
 export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://castefeudal.github.io/pmwork";
+  const base = publicOrigin + publicBasePath;
   const paths = [
     "",
-    "workspace",
     "methods",
     "templates",
     "playbooks",
@@ -23,9 +23,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...templates.flatMap(template => ["ru", "en"].map(locale => ({url:`${base}/${locale}/templates/${template.slug}/`,changeFrequency:"monthly" as const,priority:.65}))),
     ...paths.flatMap((path) =>
       ["ru", "en"].map((locale) => ({
-        url: `${base}/${locale}/${path}`,
-        changeFrequency: path === "workspace" ? ("never" as const) : ("monthly" as const),
-        priority: path === "" ? 1 : path === "workspace" ? 0.4 : 0.7,
+        url: `${base}/${locale}/${path ? path + "/" : ""}`,
+        changeFrequency: "monthly" as const,
+        priority: path === "" ? 1 : 0.7,
       })),
     ),
     {url: `${base}/`, changeFrequency: "monthly", priority: 0.8},

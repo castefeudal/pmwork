@@ -1,4 +1,5 @@
 "use client";
+import {undoStarterBundle} from "@/domain/starter-bundle";
 import Link from "next/link";
 import {ContextFields} from "./context-fields";
 import {defaultContext} from "@/content/project-context";
@@ -129,6 +130,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [palette, setPalette] = useState(false),
     [more, setMore] = useState(false),
     [addMenu, setAddMenu] = useState(false),
+    [creationUndo,setCreationUndo] = useState<{before:Workspace;after:Workspace}|null>(null),
     [toast, setToast] = useState(""),
     [lastSaved, setLastSaved] = useState(""),
     [snapshots, setSnapshots] = useState<{key:string;at:string}[]>([]),
@@ -213,7 +215,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       <p className="muted compact">{ru?"Данные остаются на этом устройстве. Резервную копию можно скачать в любой момент.":"Data stays on this device. You can download a backup at any time."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {const file=e.target.files?.[0];if(!file)return;try{const restored=await importWorkspace(file);setWorkspace({...restored,locale});setProjectId(restored.projects[0]?.id??"");setView("overview");setFirstRun(false);}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}}}/>
       {toast&&<p role="alert">{toast}</p>}
-      {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}
+      {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{const parsed=workspaceSchema.parse(next);setCreationUndo({before:workspace,after:parsed});setWorkspace(parsed);setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}
     </main>
   );
 
@@ -280,6 +282,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           <input hidden ref={fileRef} type="file" accept="application/json" onChange={(e)=>onImport(e.target.files?.[0])}/>
         </header>
         <div className="workspace-content">
+          {creationUndo&&<div className="notice" role="status"><span>{ru?"Проект создан. Проверьте стартовые записи и уточните оценки рисков 3/5.":"Project created. Review the starter records and refine midpoint 3/5 risk assessments."}</span><button className="button small" onClick={async()=>{try{const previous=undoStarterBundle(workspace,creationUndo.before,creationUndo.after);await saveWorkspace(previous);setWorkspace(previous);setFirstRun(!previous.projects.length);setProjectId(previous.projects[0]?.id??'');setCreationUndo(null);}catch{setToast(ru?"После создания были изменения. Отмена остановлена, чтобы сохранить правки.":"The workspace changed after creation. Undo stopped to preserve edits.");}}}>{ru?"Отменить создание проекта":"Undo project creation"}</button><button className="button small" onClick={()=>setCreationUndo(null)}>{ru?"Готово":"Done"}</button></div>}
           {recovery&&<section className="recovery-banner" role="alert"><strong>{ru?"Автосохранение приостановлено":"Autosave paused"}</strong><p>{ru?"Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках.":"Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Settings."}</p><button className="button" onClick={()=>fileRef.current?.click()}>{ru?"Импортировать копию":"Import backup"}</button><button className="button" onClick={()=>setView("setup")}>{ru?"Снимки данных":"Recovery snapshots"}</button></section>}
           {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{displayLabel(locale,"approach",project.approach)} · {displayLabel(locale,"governance",project.governance)}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2><p className="muted">{project.objective}</p></div>{(view==="work"||view==="board")&&<div className="button-row work-mode-switch"><button className={`button small ${view==="work"?"primary":""}`} aria-pressed={view==="work"} onClick={()=>setView("work")}>{ru?"Список":"List"}</button><button className={`button small ${view==="board"?"primary":""}`} aria-pressed={view==="board"} onClick={()=>setView("board")}>{ru?"Доска":"Board"}</button></div>}</div>}
           {workspace.experience==="foundation"&&(()=>{const domain=({overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];const help=knowledgeGuides[domain]??knowledgeGuides.Fundamentals;return <details className="panel foundation-help"><summary>{ru?"Что сделать сейчас":"What to do now"}</summary><h3>{ru?"Зачем это нужно":"Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru?"Действие":"Action"}</h3><p>{help.steps[locale]}</p><h3>{ru?"Что получится":"Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru?"Типичная ошибка":"Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru?"Объяснения терминов":"Term explanations"}</Link></details>})()}

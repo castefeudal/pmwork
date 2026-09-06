@@ -61,14 +61,17 @@ function open() {
 export function migrateWorkspace(value: unknown): Workspace {
   if (!value || typeof value !== "object") throw new Error("Invalid workspace");
   const record = value as Record<string, unknown>;
-  const migrated = record.schemaVersion === 1 || record.schemaVersion === 2 || record.schemaVersion === 3 || record.schemaVersion === 4
-    ? workspaceSchema.parse({ ...emptyV3, ...record, schemaVersion: 5 })
-    : workspaceSchema.parse(value);
+  const legacy = [1,2,3,4,5].includes(Number(record.schemaVersion));
+  const migrated = workspaceSchema.parse(legacy ? { ...emptyV3, ...record, schemaVersion: 6 } : value);
+  if (legacy) {
+    // A saved estimate is an observation, not evidence of the original commitment.
+    migrated.workItems = migrated.workItems.map(item => item.estimateHistory || item.estimate === undefined ? item : {...item, estimateHistory:[{at:item.updatedAt,value:item.estimate,kind:"imported" as const}]});
+  }
   // Rename only the shipped demo title; preserve user names and stable project IDs.
   for (const project of migrated.projects) {
     if (project.demo && project.id === 'atlas' && ['Atlas Digital Product Launch','Запуск цифрового продукта Atlas'].includes(project.name)) project.name = project.name.replace('Atlas','MARKOVMADE');
   }
-  if (record.schemaVersion === 4 || record.schemaVersion === 5) return migrated;
+  if (record.schemaVersion === 4 || record.schemaVersion === 5 || record.schemaVersion === 6) return migrated;
   return { ...migrated, workItems: migrated.workItems.map(item => {
     const matches = migrated.teamMembers.filter(member => member.projectId === item.projectId && member.name === item.owner);
     return matches.length === 1 ? { ...item, ownerId: matches[0].id, ownerLabel: item.owner } : item;

@@ -1,4 +1,5 @@
 "use client";
+import {MilestoneSummary} from "./record-history";
 import { formatDate } from "@/domain/format-date";
 import { ProjectHealth } from "./project-health";
 import { convertRiskToIssue, generateStatusDraft } from "@/domain/workspace-commands";
@@ -355,125 +356,18 @@ export function OverviewView({
     </>
   );
 }
-export function GuideView({
-  workspace,
-  project,
-  locale,
-  onView,
-  onCreate,
-}: ViewProps) {
-  const ru = locale === "ru",
-    complete = projectCompleteness(workspace, project.id),
-    actions = projectActions(workspace, project.id, locale),
-    stages = [
-      {
-        name: ru ? "1. Инициировать" : "1. Initiate",
-        view: "control" as const,
-        done: Boolean(project.purpose && project.objective && project.sponsor),
-        copy: ru
-          ? "Цель, измеримый результат, спонсор, границы и ограничения."
-          : "Purpose, outcome, sponsor, boundaries, and constraints.",
-      },
-      {
-        name: ru ? "2. Спланировать" : "2. Plan",
-        view: "planning" as const,
-        done:
-          workspace.milestones.some((x) => x.projectId === project.id) &&
-          workspace.workItems.some((x) => x.projectId === project.id),
-        copy: ru
-          ? "Результаты, контрольные точки, зависимости, загрузка и риски."
-          : "Deliverables, milestones, dependencies, capacity, and risks.",
-      },
-      {
-        name: ru ? "3. Выполнять" : "3. Deliver",
-        view: "board" as const,
-        done: workspace.workItems.some(
-          (x) =>
-            x.projectId === project.id &&
-            ["in-progress", "review", "done"].includes(x.status),
-        ),
-        copy: ru
-          ? "Ограничить незавершённую работу, завершать ценность, собирать обратную связь."
-          : "Limit WIP, finish value, and collect feedback.",
-      },
-      {
-        name: ru ? "4. Контролировать" : "4. Control",
-        view: "overview" as const,
-        done: actions.filter((x) => x.severity === "critical").length === 0,
-        copy: ru
-          ? "Сигналы, решения, прогноз, изменения и качество."
-          : "Signals, decisions, forecast, change, and quality.",
-      },
-      {
-        name: ru ? "5. Закрыть" : "5. Close",
-        view: "control" as const,
-        done: project.status === "completed",
-        copy: ru
-          ? "Приёмка, передача, финансы, уроки и контроль выгод."
-          : "Acceptance, handover, finance, lessons, and benefits follow-up.",
-      },
-    ];
-  return (
-    <div className="guide-layout">
-      <section className="panel guide-score">
-        <p className="eyebrow">
-          {ru
-            ? "ПОНЯТЬ → РЕШИТЬ → СДЕЛАТЬ → КОНТРОЛИРОВАТЬ → НАУЧИТЬСЯ"
-            : "UNDERSTAND → DECIDE → DO → CONTROL → LEARN"}
-        </p>
-        <h2>{ru ? "Проведи меня" : "Guide me"}</h2>
-        <strong>{complete.score}%</strong>
-        <p>
-          {ru
-            ? "полнота управленческого контура"
-            : "management control completeness"}
-        </p>
-        <div className="progress">
-          <span style={{ width: `${complete.score}%` }} />
-        </div>
-        {complete.gaps.length > 0 && (
-          <p className="muted">
-            {ru ? "Пробелы" : "Gaps"}: {complete.gaps.join(", ")}
-          </p>
-        )}
-        <button
-          className="button primary"
-          onClick={() =>
-            actions[0] ? onView(actions[0].view) : onCreate("objective")
-          }
-        >
-          {actions[0]
-            ? ru
-              ? "Взять главное действие"
-              : "Take top action"
-            : ru
-              ? "Уточнить измеримый результат"
-              : "Define outcome"}
-        </button>
-      </section>
-      <div className="stage-list">
-        {stages.map((stage) => (
-          <article className="panel" key={stage.name}>
-            <span className={`status ${stage.done ? "good" : "info"}`}>
-              {stage.done
-                ? ru
-                  ? "готово"
-                  : "complete"
-                : ru
-                  ? "следующий шаг"
-                  : "next"}
-            </span>
-            <h3>{stage.name}</h3>
-            <p>{stage.copy}</p>
-            <button className="button small" onClick={() => onView(stage.view)}>
-              {ru ? "Открыть" : "Open"}
-              <ArrowRight size={15} />
-            </button>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
+export function GuideView({workspace,project,locale,onView,onCreate}:ViewProps) {
+ const ru=locale==='ru',inProject=(x:{projectId:string})=>x.projectId===project.id;
+ const contours: {name:string;done:boolean;why:string;action:string;run:()=>void}[]=[
+  {name:ru?'Цель':'Outcome',done:Boolean(project.objective&&project.successMeasures.length),why:ru?'Без критерия результата нельзя проверить пользу выполненной работы.':'A success measure makes the outcome verifiable.',action:ru?'Уточнить результат':'Define outcome',run:()=>onView('control')},
+  {name:ru?'Работа':'Work',done:workspace.workItems.some(x=>inProject(x)&&!x.archived),why:ru?'Ближайшее действие превращает цель в выполнимую работу.':'A next action turns the outcome into executable work.',action:ru?'Добавить работу':'Add work item',run:()=>onCreate('work')},
+  {name:ru?'Сроки':'Schedule',done:workspace.milestones.some(x=>inProject(x)&&Boolean(x.date)),why:ru?'Контрольная точка задаёт момент проверки результата.':'A milestone defines when to check the outcome.',action:ru?'Добавить контрольную точку':'Add milestone',run:()=>onCreate('milestone')},
+  {name:ru?'Риски':'Risks',done:workspace.risks.some(inProject),why:ru?'Запишите, что может помешать цели, и назначьте проверку.':'Record what could prevent delivery and arrange a review.',action:ru?'Добавить риск':'Add risk',run:()=>onCreate('risk')},
+  {name:ru?'Люди':'People',done:workspace.teamMembers.some(inProject)||workspace.stakeholders.some(inProject),why:ru?'Нужно знать, кто выполняет работу и кто принимает результат.':'Identify who does the work and who accepts it.',action:ru?'Добавить участника':'Add team member',run:()=>onCreate('team')},
+  {name:ru?'Контроль':'Control',done:Boolean(project.definitionOfDone)&&workspace.communications.some(inProject),why:ru?'Критерии готовности и регулярный обзор позволяют вовремя заметить отклонение.':'Completion criteria and a review cadence expose deviations early.',action:ru?'Настроить обзор':'Set review cadence',run:()=>onView('people')},
+ ];
+ const configured=contours.filter(x=>x.done).length;
+ return <div className="guide-layout"><section className="panel guide-score"><h2>{ru?'Проведи меня':'Guide me'}</h2><strong>{configured} / {contours.length}</strong><p>{ru?'ключевых контуров настроено':'key controls configured'}</p><p className="muted">{ru?'Наличие записей показывает настройку проекта. Качество данных и состояние проекта проверяются отдельно.':'Records show that project controls are set up. Data quality and project health need separate review.'}</p><button className="button primary" onClick={()=>onView('overview')}>{ru?'Открыть приоритеты':'Open priorities'}</button></section><div className="stage-list">{contours.map(c=><article className="panel" key={c.name}><span className={`status ${c.done?'good':'info'}`}>{c.done?(ru?'Настроено':'Configured'):(ru?'Нужно настроить':'Needs setup')}</span><h3>{c.name}</h3>{workspace.experience!=='advanced'&&<p>{c.why}</p>}{!c.done&&<button className="button" onClick={c.run}>{c.action}</button>}</article>)}</div></div>;
 }
 export { WorkSurface as WorkView } from "./work-surface";
 export function BoardView({
@@ -653,7 +547,7 @@ export function PlanningView({
             {milestones.map((m) => (
               <article className="catalog-card" key={m.id}>
                 <CalendarDays />
-                <p className="eyebrow">{formatDate(m.date,locale)}</p>
+                <MilestoneSummary item={m} workspace={workspace} locale={locale}/>
                 <h3>{m.title}</h3>
                 <strong>{m.progress}%</strong>
                 <span

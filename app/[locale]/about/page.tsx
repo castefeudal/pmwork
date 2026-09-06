@@ -1,3 +1,5 @@
+import { catalogMetadata } from "@/domain/public-metadata";
+export const generateMetadata = ({params}: {params: Promise<{locale:string}>}) => catalogMetadata(params, "about");
 import { notFound } from "next/navigation";
 import type { Locale } from "@/domain/schemas";
 import { PublicHeader } from "@/components/public-header";

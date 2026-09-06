@@ -5,7 +5,7 @@ export default defineConfig({
   // Bound concurrent full-page captures to avoid memory contention.
   workers: 2,
   retries: 1,
-  reporter: "list",
+  reporter: [["list"], ["json", { outputFile: "test-results/e2e-report.json" }]],
   use: { launchOptions: process.env.PMWORK_CHROMIUM ? { executablePath: process.env.PMWORK_CHROMIUM, args: ["--no-sandbox", "--disable-dev-shm-usage", "--no-zygote", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] } : {}, baseURL: "http://127.0.0.1:3000", trace: "on-first-retry" },
   webServer: {
     command: "python3 scripts/serve-export.py",

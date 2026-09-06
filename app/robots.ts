@@ -1,3 +1,4 @@
+import {publicOrigin, publicBasePath} from "@/domain/public-metadata";
 import type { MetadataRoute } from "next";
 export const dynamic = "force-static";
 export default function robots(): MetadataRoute.Robots {
@@ -6,9 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/ru/workspace/", "/en/workspace/"],
+        disallow: [`${publicBasePath}/ru/workspace/`, `${publicBasePath}/en/workspace/`],
       },
     ],
-    sitemap: "https://castefeudal.github.io/pmwork/sitemap.xml",
+    sitemap: `${publicOrigin}${publicBasePath}/sitemap.xml`,
   };
 }

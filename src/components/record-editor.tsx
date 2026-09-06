@@ -1,4 +1,5 @@
 "use client";
+import {RecordHistory} from "./record-history";
 import {DocumentBodyField} from "./document-body-field";
 import { useDialogFocus } from "./use-dialog-focus";
 import { updateWork } from "@/domain/workspace-commands";
@@ -256,7 +257,13 @@ function fieldsFor(
     case "milestone":
       return [
         text("title", "Название", "Title"),
-        text("date", "Дата", "Date", "date"),
+        text("baselineDate", "Обещанная дата", "Baseline date", "date"),
+        text("date", "Текущий прогноз", "Current forecast", "date"),
+        text("actualDate", "Фактическое завершение", "Actual completion", "date"),
+        {...text("ownerId","Ответственный","Owner","select"),options:[{value:"",label:ru?"Не назначен":"Unassigned"},...workspace.teamMembers.filter(m=>m.projectId===projectId).map(m=>({value:m.id,label:m.name}))]},
+        text("ownerLabel", "Имя ответственного вне команды", "External owner name"),
+        {...text("confidence","Уверенность в прогнозе","Forecast confidence","select"),options:[{value:"",label:ru?"Не оценена":"Not assessed"},{value:"unknown",label:ru?"Нет данных":"Unknown"},{value:"low",label:ru?"Низкая":"Low"},{value:"medium",label:ru?"Средняя":"Medium"},{value:"high",label:ru?"Высокая":"High"}]},
+        text("varianceReason", "Причина отклонения", "Reason for variance", "textarea"),
         {
           ...text("status", "Статус", "Status", "select"),
           options: options(locale, "milestoneStatus", [
@@ -295,6 +302,11 @@ function fieldsFor(
       ];
     case "risk":
       return [
+        {...text("monetaryImpact","Денежное влияние","Monetary impact","number"),min:0},
+        {...text("probabilityPercent","Вероятность денежного события, %","Monetary event probability, %","number"),min:0,max:100},
+        {...text("residualMonetaryImpact","Остаточное денежное влияние","Residual monetary impact","number"),min:0},
+        {...text("residualProbabilityPercent","Остаточная вероятность, %","Residual probability, %","number"),min:0,max:100},
+        text("currency","Валюта (ISO, например USD)","Currency (ISO, e.g. USD)"),
         text("title", "Название", "Title"),
         text("category", "Категория", "Category"),
         text("description", "Описание", "Description", "textarea"),
@@ -694,6 +706,12 @@ export function RecordEditor({
         : undefined;
       nextRecord.updatedAt = new Date().toISOString();
     }
+    if (kind === "milestone") {
+      if (!nextRecord.confidence) nextRecord.confidence=undefined;
+      if (!nextRecord.ownerId) nextRecord.ownerId=undefined;
+      if (nextRecord.status === "done" && !nextRecord.actualDate) return setError(ru?"Укажите фактическую дату завершения.":"Enter the actual completion date.");
+    }
+    if (kind === "risk" && !nextRecord.currency) nextRecord.currency=undefined;
     if (kind === "document") nextRecord.updatedAt = new Date().toISOString();
     const validation = workspaceSchema.safeParse({
       ...workspace,
@@ -750,41 +768,8 @@ export function RecordEditor({
     );
     onClose();
   };
-  return (
-    <div
-      className="dialog-backdrop drawer-backdrop"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
-    >
-      <section
-        className="dialog record-editor record-drawer"
-        ref={dialogRef}
-        tabIndex={-1}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={`${prefix}-heading`}
-      >
-        <div className="page-title">
-          <div>
-            <p className="eyebrow">{id}</p>
-            <h2 id={`${prefix}-heading`}>
-              {ru
-                ? `Изменить: ${titleByKind.ru[kind]}`
-                : `Edit ${titleByKind.en[kind]}`}
-            </h2>
-          </div>
-          <button
-            className="icon-button"
-            onClick={onClose}
-            aria-label={ru ? "Закрыть" : "Close"}
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <form action={submit} className="form-grid">
-          {fields.map((field) => (
+  const advancedNames = kind === "risk" ? ["monetaryImpact","probabilityPercent","residualMonetaryImpact","residualProbabilityPercent","currency","residualProbability","residualImpact"] : kind === "work" ? ["contributors","labels","estimate","actualEffort","acceptanceCriteria"] : [];
+  const renderField = (field:Field) => (
             <div
               className={`field ${field.type === "textarea" || field.type === "list" ? "wide" : ""}`}
               key={field.name}
@@ -819,7 +804,43 @@ export function RecordEditor({
                 />
               )}
             </div>
-          ))}
+          );
+  return (
+    <div
+      className="dialog-backdrop drawer-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <section
+        className="dialog record-editor record-drawer"
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${prefix}-heading`}
+      >
+        <div className="page-title">
+          <div>
+            <p className="eyebrow">{id}</p>
+            <h2 id={`${prefix}-heading`}>
+              {ru
+                ? `Изменить: ${titleByKind.ru[kind]}`
+                : `Edit ${titleByKind.en[kind]}`}
+            </h2>
+          </div>
+          <button
+            className="icon-button"
+            onClick={onClose}
+            aria-label={ru ? "Закрыть" : "Close"}
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <RecordHistory workspace={workspace} id={id} kind={kind} locale={locale}/><form action={submit} className="form-grid">
+          {fields.filter(f=>!advancedNames.includes(f.name)).map(renderField)}
+          {advancedNames.length>0&&<details className="wide" open={workspace.experience==='advanced'}><summary>{ru?'Дополнительные свойства':'Advanced properties'}</summary><div className="form-grid">{fields.filter(f=>advancedNames.includes(f.name)).map(renderField)}</div></details>}
           {error && (
             <p className="form-error wide" role="alert">
               {error}

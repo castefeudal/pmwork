@@ -18,6 +18,15 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
   else {ownerPatch.ownerId=undefined;ownerPatch.ownerLabel=ownerPatch.owner??item.ownerLabel??item.owner;}
  }
  const at=new Date().toISOString(),status=patch.status??item.status;
+ // Historical estimates are append-only; ordinary edits must never rewrite them.
+ ownerPatch.originalEstimate=item.originalEstimate;
+ ownerPatch.estimateHistory=item.estimateHistory;
+ if ('estimate' in patch && patch.estimate !== item.estimate) {
+   const history=item.estimateHistory ?? (item.estimate===undefined?[]:[{at:item.updatedAt,value:item.estimate,kind:"imported" as const}]);
+   const first=item.estimate===undefined && history.length===0;
+   ownerPatch.originalEstimate=first?patch.estimate:item.originalEstimate;
+   ownerPatch.estimateHistory=[...history,{at,value:patch.estimate,kind:first?"original":"revised"}];
+ }
  return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
 }
 export const changeWorkStatus=(w:Workspace,id:string,status:WorkItem['status'])=>updateWork(w,id,{status});
@@ -42,7 +51,7 @@ export function generateStatusDraft(w:Workspace,projectId:string,locale:'ru'|'en
 }
 export function createWork(w:Workspace,item:WorkItem){
  if(!w.projects.some(p=>p.id===item.projectId)||w.workItems.some(x=>x.id===item.id))throw Error('Invalid work identity');
- const at=new Date().toISOString();return finish({...w,workItems:[...w.workItems,{...item,createdAt:at,updatedAt:at}]},item.projectId,'work-created',item.title);
+ const at=new Date().toISOString();return finish({...w,workItems:[...w.workItems,{...item,originalEstimate:item.estimate,estimateHistory:item.estimate===undefined?[]:[{at,value:item.estimate,kind:"original"}],createdAt:at,updatedAt:at}]},item.projectId,'work-created',item.title);
 }
 export function createRisk(w:Workspace,risk:Workspace['risks'][number]){
  if(!w.projects.some(p=>p.id===risk.projectId)||w.risks.some(r=>r.id===risk.id))throw Error('Invalid risk identity');

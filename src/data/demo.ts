@@ -330,7 +330,7 @@ export function demoWorkspace(locale: Locale): Workspace {
     }),
   );
   return {
-    schemaVersion: 5,
+    schemaVersion: 6,
     savedWorkViews: [],
     workViewPreferences: [],
     id: "pmwork-demo",
