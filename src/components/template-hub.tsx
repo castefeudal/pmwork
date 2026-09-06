@@ -34,7 +34,7 @@ export function TemplateHub({locale}:{locale:Locale}){
  return <>
   <header className="catalog-hero">
    <p className="eyebrow">PMWORK · {ru?'шаблоны':'templates'}</p>
-   <h1>{ru?'Что вы хотите подготовить?':'What do you need to prepare?'}</h1>
+   <h1>{ru?'Рабочие шаблоны · Что вы хотите подготовить?':'Practical templates · What do you need to prepare?'}</h1>
    <p className="lead">{ru?'Начните с результата, а не с списка из 47 документов. Выберите задачу, найдите шаблон и примените его к проекту.':'Start with the outcome, not a wall of 47 documents. Choose the job, find a template, and apply it to a project.'}</p>
    <div className="catalog-controls"><label className="field"><span className="sr-only">{ru?'Поиск':'Search'}</span><span className="search-input"><Search size={18}/><input className="input" value={query} onChange={e=>{setQuery(e.target.value);setLimit(12)}} placeholder={ru?'Например: статус, риск, устав, встреча…':'For example: status, risk, charter, meeting…'}/></span></label><span className="pill">{data.length} {ru?'шаблонов':'templates'}</span></div>
   </header>
