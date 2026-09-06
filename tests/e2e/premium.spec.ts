@@ -67,7 +67,7 @@ test("offline workspace includes its scripts and fonts",async({page,context},tes
   await page.getByRole("link",{name:"Tools",exact:true}).click();await expect(page.getByRole("slider").first()).toBeVisible();
   await page.goto(route("/en/"));if(testInfo.project.name.includes("mobile")) await page.getByRole("button",{name:"Open menu"}).click();
   if(!testInfo.project.name.includes("mobile")) await page.locator(".public-nav-group summary").first().click();
-  await page.getByRole("link",{name:"Methods",exact:true}).filter({visible:true}).click();await expect(page.getByRole("heading",{name:"Methods library"})).toBeVisible();
+  await page.getByRole("link",{name:"Methods",exact:true}).filter({visible:true}).click();await expect(page.getByRole("heading",{name:/Methods library/})).toBeVisible();
   await context.setOffline(false);
 });
 for(const [width,height] of [[320,760],[360,800],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1920,1080]]){

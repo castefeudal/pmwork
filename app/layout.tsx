@@ -4,6 +4,7 @@ import "./tokens.css";
 import "./globals.css";
 import "./premium.css";
 import "./editorial.css";
+import "./ux-transformation.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
