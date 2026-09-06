@@ -346,7 +346,7 @@ function CPM({ locale }: { locale: Locale }) {
         <h2>
           {ru ? "Редактируемая сетевая модель" : "Editable network model"}
         </h2>
-        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const tasks=projectNetwork(w,id);setRaw(tasks.map(t=>`${t.id},${t.duration},${t.predecessors.join('|')}`).join('\n'));return ru?'Длительности взяты из календарных дат. Только FS с нулевым лагом; завершённые предшественники исключены. Проверьте остаточные длительности начатых работ.':'Durations use calendar dates. Only FS with zero lag; completed predecessors excluded. Check remaining durations of started work.'}}/>
+        <ProjectDataSource locale={locale} scenario={!error&&result.length?{tool:'cpm',result:result.map(t=>`${t.id}: ES ${t.es}, EF ${t.ef}, float ${t.float}${t.critical?' *':''}`).join('\n'),inputs:{network:raw,assumptions:'Finish-to-start, zero lag; calendar-day durations; resources not constrained.'}}:undefined} onLoad={(w,id)=>{const tasks=projectNetwork(w,id);setRaw(tasks.map(t=>`${t.id},${t.duration},${t.predecessors.join('|')}`).join('\n'));return ru?'Длительности взяты из календарных дат. Только FS с нулевым лагом; завершённые предшественники исключены. Проверьте остаточные длительности начатых работ.':'Durations use calendar dates. Only FS with zero lag; completed predecessors excluded. Check remaining durations of started work.'}}/>
         <div className="field">
           <label htmlFor="cpm-input">
             {ru
@@ -472,7 +472,7 @@ function EVM({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>{ru ? "Освоенный объём · EVM" : "Earned Value"}</h2>
-        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const rows=w.budgets.filter(b=>b.projectId===id);if(!rows.length)throw Error();setV({pv:0,ev:0,ac:rows.reduce((s,b)=>s+b.actual,0),bac:rows.reduce((s,b)=>s+b.planned,0)});return ru?'AC и BAC загружены из бюджета. PV и EV пока равны 0: введите измеренные значения в той же валюте; процент закрытых задач не заменяет освоенный объём.':'AC and BAC loaded from budget. PV and EV are currently 0: enter measured values in the same currency; closed-item percentage is not earned value.'}}/>
+        <ProjectDataSource locale={locale} scenario={r?{tool:'evm',result:Object.entries(r).map(([k,n])=>`${k}: ${typeof n==='number'?Number(n.toFixed(2)):'unavailable'}`).join('\n'),inputs:{...v,assumptions:'PV, EV, AC and BAC use the same currency and reporting date. EAC assumes current CPI continues.'}}:undefined} onLoad={(w,id)=>{const rows=w.budgets.filter(b=>b.projectId===id);if(!rows.length)throw Error();setV({pv:0,ev:0,ac:rows.reduce((s,b)=>s+b.actual,0),bac:rows.reduce((s,b)=>s+b.planned,0)});return ru?'AC и BAC загружены из бюджета. PV и EV пока равны 0: введите измеренные значения в той же валюте; процент закрытых задач не заменяет освоенный объём.':'AC and BAC loaded from budget. PV and EV are currently 0: enter measured values in the same currency; closed-item percentage is not earned value.'}}/>
         <div className="form-grid">
           {(Object.keys(v) as (keyof typeof v)[]).map((k) => (
             <NumberField
@@ -520,7 +520,7 @@ function Forecast({ locale }: { locale: Locale }) {
         <h2>
           Monte Carlo · {ru ? "сколько элементов к дате" : "items by date"}
         </h2>
-        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const h=dailyHistory(w,id,new Date().toISOString().slice(0,10));if(!h)throw Error();setRaw(Array.from({length:4},(_,i)=>h.slice(i*7,i*7+7).reduce((a,b)=>a+b,0)).join(','));return ru?'Четыре полных недельных интервала, включая нулевые дни. Короткая выборка: проверьте полноту журнала и стабильность потока.':'Four complete weekly intervals including zero days. Short sample: verify history completeness and flow stability.'}}/>
+        <ProjectDataSource locale={locale} scenario={r?{tool:'forecast',result:`P50 ${r.p50}; P80 ${r.p80}; P90 ${r.p90}`,inputs:{weeklyHistory:raw,weeks,simulations:5000,assumptions:'Independent weekly resampling; stable flow and comparable items. P80 means at least this many items in 80% of simulations.'}}:undefined} onLoad={(w,id)=>{const h=dailyHistory(w,id,new Date().toISOString().slice(0,10));if(!h)throw Error();setRaw(Array.from({length:4},(_,i)=>h.slice(i*7,i*7+7).reduce((a,b)=>a+b,0)).join(','));return ru?'Четыре полных недельных интервала, включая нулевые дни. Короткая выборка: проверьте полноту журнала и стабильность потока.':'Four complete weekly intervals including zero days. Short sample: verify history completeness and flow stability.'}}/>
         <div className="field">
           <label htmlFor="forecast-samples">
             {ru
@@ -577,7 +577,7 @@ function Priority({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>RICE + WSJF</h2>
-        <ProjectDataSource locale={locale} onLoad={(w,id)=>{setProjectItems(w.workItems.filter(x=>x.projectId===id&&!x.archived&&!x.done));setSelectedItem('');return ru?'Выберите работу. Её оценка подставится как усилия и размер; остальные оценки задайте вручную в согласованной шкале.':'Choose a work item. Its estimate supplies effort and size; enter the remaining scores manually on an agreed scale.'}}/>
+        <ProjectDataSource locale={locale} scenario={r!==null&&w!==null?{tool:'priority',result:`RICE ${r.toFixed(1)}; WSJF ${w.toFixed(1)}`,inputs:{...v,ranked,assumptions:'RICE and WSJF use different scales; compare like items and review close scores.'}}:undefined} onLoad={(w,id)=>{setProjectItems(w.workItems.filter(x=>x.projectId===id&&!x.archived&&!x.done));setSelectedItem('');return ru?'Выберите работу. Её оценка подставится как усилия и размер; остальные оценки задайте вручную в согласованной шкале.':'Choose a work item. Its estimate supplies effort and size; enter the remaining scores manually on an agreed scale.'}}/>
         {!!projectItems.length&&<label className="field">{ru?'Рабочий элемент':'Work item'}<select aria-label={ru?'Рабочий элемент':'Work item'} value={selectedItem} onChange={e=>{setSelectedItem(e.target.value);const item=projectItems.find(x=>x.id===e.target.value);if(item)setV({reach:0,impact:0,confidence:0,effort:item.estimate??0,value:0,time:0,risk:0,size:item.estimate??0})}}><option value="">{ru?'Выберите работу':'Choose work'}</option>{projectItems.map(x=><option key={x.id} value={x.id}>{x.title}</option>)}</select></label>}
         <div className="form-grid">
           {Object.entries(v).map(([k, n]) => (
@@ -620,7 +620,7 @@ function Flow({ locale }: { locale: Locale }) {
     <div className="calculator-grid">
       <div className="panel">
         <h2>{ru ? "Закон Литтла" : "Little’s Law"}</h2>
-        <ProjectDataSource locale={locale} onLoad={(w,id)=>{const h=dailyHistory(w,id,new Date().toISOString().slice(0,10));if(!h)throw Error();setWip(w.workItems.filter(x=>x.projectId===id&&!x.archived&&(x.status==='in-progress'||x.status==='review')).length);setThroughput(h.reduce((a,b)=>a+b,0)/h.length);return ru?'Период = календарный день; 28 дней истории. Текущий WIP — снимок, а закон Литтла требует среднего WIP стабильного потока.':'Period = calendar day; 28 days of history. Current WIP is a snapshot; Little’s Law needs average WIP of a stable flow.'}}/>
+        <ProjectDataSource locale={locale} scenario={r!==null?{tool:'flow',result:`Lead time: ${Number(r.cycleTime.toFixed(2))} calendar days`,inputs:{wip,throughput,assumptions:'Average WIP divided by calendar-day throughput; stable flow and consistent boundaries required.'}}:undefined} onLoad={(w,id)=>{const h=dailyHistory(w,id,new Date().toISOString().slice(0,10));if(!h)throw Error();setWip(w.workItems.filter(x=>x.projectId===id&&!x.archived&&(x.status==='in-progress'||x.status==='review')).length);setThroughput(h.reduce((a,b)=>a+b,0)/h.length);return ru?'Период = календарный день; 28 дней истории. Текущий WIP — снимок, а закон Литтла требует среднего WIP стабильного потока.':'Period = calendar day; 28 days of history. Current WIP is a snapshot; Little’s Law needs average WIP of a stable flow.'}}/>
         <div className="form-grid">
           <NumberField label="WIP" value={wip} onChange={setWip} />
           <NumberField

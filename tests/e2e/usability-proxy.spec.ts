@@ -43,3 +43,14 @@ for(const theme of ['light','dark'])test(`prioritization comparison is readable 
  const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(audit.violations).toEqual([]);
  await page.screenshot({path:`test-results/priority-comparison-${theme}-${info.project.name}.png`,fullPage:true,animations:'disabled'});
 });
+
+test('EVM scenario saves its current inputs, assumptions and currency once',async({page})=>{
+ await page.addInitScript(w=>{if(!localStorage.getItem('pmwork:workspace:v3'))localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w))},demoWorkspace('en'));
+ await page.goto(route('/en/tools/?tool=evm'));await page.getByRole('button',{name:'Choose project data',exact:true}).click();
+ await page.getByLabel('PV',{exact:true}).fill('200');
+ const save=page.getByRole('button',{name:'Save scenario to project',exact:true});await save.click();await expect(save).toBeDisabled();
+ await expect(page.getByRole('status')).toContainText('Scenario saved in project documents');
+ await page.reload();
+ const documents=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (s.workspace??s).documents.filter((d:{type:string})=>d.type==='scenario:evm')});
+ expect(documents).toHaveLength(1);expect(documents[0].body).toContain('"pv": 200');expect(documents[0].body).toContain('USD');expect(documents[0].body).toContain('reporting date');
+});
