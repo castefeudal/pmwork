@@ -1,0 +1,35 @@
+.setup-progress{font-weight:800;color:var(--accent)}
+.recommendation-card{padding:1rem;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:var(--radius);background:color-mix(in srgb,var(--accent) 5%,var(--surface));margin:1rem 0}
+.priority-focus{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 6%,var(--surface)),var(--surface))}
+.priority-focus-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem;align-items:center}
+.priority-focus h3{font-size:clamp(1.25rem,2.3vw,1.8rem);margin:.65rem 0 .35rem}
+.priority-focus-action{display:flex;align-items:center;justify-content:flex-end}
+.project-health-v2>.section-line{align-items:flex-start;margin-bottom:1rem}
+.health-confidence{padding:.9rem 1rem;margin:0 0 1rem;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface-2)}
+.health-confidence strong{display:block;font-size:1.7rem;line-height:1.1;margin:.2rem 0}
+.article-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:clamp(1.5rem,4vw,3.5rem);align-items:start;padding-top:2rem;padding-bottom:4rem}
+.article-body{min-width:0}
+.article-body section{padding:1.25rem 0;border-bottom:1px solid var(--line)}
+.article-body section:first-child{padding-top:0}
+.article-body h2{margin:.1rem 0 .6rem}
+.article-body h3{margin:1rem 0 .35rem}
+.article-aside{position:sticky;top:88px;display:grid;gap:.7rem}
+.catalog-grid+.public-container.button-row{justify-content:center;padding-block:1.5rem 4rem}
+.catalog-card>.button-row{margin-top:auto;padding-top:.5rem}
+.catalog-card{display:flex;flex-direction:column;min-width:0}
+.catalog-card .muted.compact{overflow-wrap:anywhere}
+@media(max-width:800px){
+ .priority-focus-grid,.article-layout{grid-template-columns:1fr}
+ .priority-focus-action{justify-content:flex-start}
+ .article-aside{position:static}
+ .catalog-hero{padding-bottom:2rem}
+}
+@media(max-width:430px){
+ .priority-focus{padding:1rem}
+ .priority-focus .button.primary{width:100%}
+ .catalog-grid{gap:.8rem}
+ .catalog-card{padding:1rem}
+ .mobile-workspace-nav{padding-bottom:max(.4rem,env(safe-area-inset-bottom))}
+ .workspace-content{padding-bottom:calc(5.5rem + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){.priority-focus,.recommendation-card{transition:none!important}}
