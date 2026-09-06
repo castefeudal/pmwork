@@ -1,5 +1,5 @@
 import {CatalogPage} from "@/components/catalog-page";
-import {knowledgeDomains,methods,sources} from "@/content/catalog";
+import {knowledgeDomains} from "@/content/catalog";
 import { catalogMetadata } from "@/domain/public-metadata";
 export const generateMetadata = ({params}: {params: Promise<{locale:string}>}) => catalogMetadata(params, "knowledge");
 import { notFound } from "next/navigation";
@@ -15,5 +15,5 @@ export default async function Page({
 }) {
   const { locale } = await params;
   if (locale !== "ru" && locale !== "en") notFound();
-  return <PublicCatalogShell locale={locale as Locale}><CatalogPage locale={locale as Locale} kind="knowledge" records={{knowledgeDomains,methods,sources}}/></PublicCatalogShell>;
+  return <PublicCatalogShell locale={locale as Locale}><CatalogPage locale={locale as Locale} kind="knowledge" records={{knowledgeDomains}}/></PublicCatalogShell>;
 }

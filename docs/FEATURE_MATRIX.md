@@ -7,7 +7,7 @@ Status meanings: **implemented** = changes validated persisted state or provides
 | Capability | Status | Automated evidence | RU/EN | Notes |
 | --- | --- | --- | :---: | --- |
 | Landing / public navigation | Implemented | build + E2E spec | ✓ | Static routes and SEO metadata |
-| Project setup with context fit | Implemented | method-fit unit tests | ✓ | Three-step dialog; ten anchored questions; context persists in schema v5; explicit recommendations |
+| Project setup with context fit | Implemented | method-fit unit tests | ✓ | Three-step dialog; ten anchored questions; context persists in schema v6; explicit recommendations |
 | Multi-project portfolio | Implemented | portfolio unit test | ✓ | Progress, critical signals, forecast, completeness |
 | What should I do now? | Implemented | insights unit tests | ✓ | Deterministic ranked signals with reasons and destinations |
 | Guided lifecycle | Implemented | component/build | ✓ | Initiate → Plan → Deliver → Control → Close |

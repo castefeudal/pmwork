@@ -22,4 +22,11 @@ Historical prompts under `archive/` are superseded as descriptions of the curren
 
 ## Transformation scope
 
-See `UX_TRANSFORMATION_REPORT.md` for this measurable UX slice and `TRANSFORMATION_STATUS.md` for broader remaining acceptance gaps. New project context is persisted; Today links to records; tools can reuse compatible project data. This remains a personal, device-local PM workbench.
+See `UX_TRANSFORMATION_REPORT.md` for measured changes and `TRANSFORMATION_STATUS.md` for current implementation contracts. New project context is persisted; Today links to records; tools can reuse compatible project data. This remains a personal, device-local PM workbench.
+
+
+## Schema v6 lifecycle
+
+Milestone `date` is the current forecast. `baselineDate`, `actualDate`, `ownerId`/`ownerLabel`, `confidence` and `varianceReason` are optional. Migration does not invent past commitments. Work stores `originalEstimate` only when known and `estimateHistory` as timestamped original/revised/imported observations. Risk monetary fields are optional; ordinal impact and explicit event probability percentages are separate concepts.
+
+Starter packs create linked records atomically. Guide uses six configured-control counts. Saved tool scenarios are ordinary editable/exportable documents; they do not silently rewrite the plan. Template reuse avoids identical duplicate drafts.

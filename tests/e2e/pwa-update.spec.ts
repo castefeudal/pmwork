@@ -29,7 +29,7 @@ test('waiting worker activates on request and preserves local workspace',async({
   updated=true;await page.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r!.update()});
   await expect(page.getByText('A new PMWORK version is available')).toBeVisible({timeout:30000});
   expect(await page.evaluate(()=>caches.keys())).toContain(`pmwork-${release.version}`);
-  page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'Update',exact:true}).click();
+  page.once('dialog',d=>d.accept());const reload=page.waitForEvent('domcontentloaded');await page.getByRole('button',{name:'Update',exact:true}).click();await reload;
   await expect(page.locator('.workspace-shell')).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>caches.keys())).toEqual([`pmwork-${release.version}-update`]);
   await expect(page.getByText('A new PMWORK version is available')).toBeHidden();

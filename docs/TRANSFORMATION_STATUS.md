@@ -1,41 +1,32 @@
-# Historical product transformation acceptance ledger
+# Production completion status
 
-This ledger records the scope of PR #4, subsequently merged by the repository owner. The later layout/identity repair is documented in RELEASE.md and LAYOUT_QA.md. The open product gaps below remain factual; the previous draft-release policy applied to that earlier broad transformation.
+Current implementation uses schema v6. The superseded v5 acceptance ledger is preserved under `archive/pre-schema-v6/`; it is not the current product contract.
 
-Base: `dd6aa85b5c46310d62738a7fc494b59fbbdba931`. This ledger describes implemented behavior, not certification of the entire user specification.
+## Product and data
 
-## Implemented in this branch
+- Milestones retain `date` as current forecast, with optional baseline, actual completion, owner reference/label, confidence and variance explanation. Old dates do not become invented baselines.
+- Work retains current estimate and actual effort, with immutable original estimate when observed at creation and appended revision history. Migrated saved estimates are marked imported; calibration excludes records without an original estimate.
+- Monetary risk is optional and separate from ordinal probability × impact. Explicit percentage × monetary impact produces expected exposure; residual exposure requires its own inputs.
+- Five bilingual starter scenarios create linked objectives, work, milestone, risks and review cadence in one workspace update. Undo restores the complete preceding workspace and stops if subsequent changes would be lost.
+- Guide reports configured outcome/work/schedule/risk/people/control contours and directs missing controls to their form or charter. Expert guidance remains compact; density is independent.
+- Tool scenarios are portable project documents containing inputs, assumptions and results. Decision and change tools retain typed operational records.
 
-- Schema v5 with optional typed project context; v1–v4 migration retains storage discovery, owner IDs, saved views and locale.
-- Three-step project setup; ten bilingual context questions with 1/3/5 anchors; five sanitized starter examples; explicit recommendation step.
-- Today replaces the overview route presentation, preserving its URL. Ranked decision/action/check groups open referenced records. Context recommendations include reasons; first actions are explicit.
-- Context can be revised in Setup without silently changing the recorded project methodology.
-- Seven new tool surfaces: deadline bootstrap, monetary risk/EMV with multiple rows and residual exposure, capacity/WIP, weighted decision matrix with ±20% sensitivity, ownership coverage, change scenario and estimate calibration.
-- Project-data loaders for CPM, EVM, Monte Carlo, flow and work-item priority estimates. Missing inputs remain explicitly required.
-- Template destination/depth/preview/application; known project fields reused; undo stops after a later document update. Seventeen fictional completed examples.
-- Forty-seven template-specific usage triggers and failure modes; sixteen method-combination notes; thirty-nine problem-specific next-cycle actions.
-- Playbook action creates a separate issue, with visible midpoint assessments for review. Deep links open supported record editors.
-- Intent aliases for schedule, scope, overload, ownership and cost problems; exact acronym search remains prioritized.
-- Eighteen high-value glossary terms have individual purpose/context and related tool/template links. All list results include definitions; level labels and alphabet control are localized.
-- Canonical tokens extracted into one file; existing component styles retained. Restrained hero, reduced decorative effects, same locally bundled Inter/Manrope.
-- Export postprocessing sets RU/EN document language before service-worker hashing. Static export preserved.
+## Experience and visual system
 
-## Acceptance gaps still open
+- One primary global Add; distinct secondary Add work item on desktop. Mobile uses the global action.
+- Mobile header: home, project, search, options, Add. Language/theme remain in options; bottom navigation has five destinations and safe-area spacing.
+- Work shows search, quick views and records. Status, owner, sort, grouping, columns and saved views share one disclosure.
+- Fonts and tokens precede one consolidated component stylesheet. Obsolete cockpit styles and duplicate declarations were removed. No new final override stylesheet was added.
+- Landing demonstrates actual demo records. Operational headings, primary buttons, Guide geometry and section spacing were refined separately from feature work.
 
-These are implementation gaps, not permission or platform limitations. Do not merge/deploy this branch as the completed transformation until resolved.
+## Editorial and discovery
 
-- Method pages still need the complete individually authored example/minimum/full implementation contract and an apply-to-project flow.
-- Some template guidance and playbook stabilization/prevention blocks remain shared. Copy checking reports these groups explicitly; its pattern PASS is not an editorial-completeness PASS.
-- Most glossary terms still use category-level purpose/context and lack source/tool relationships.
-- Starter packs explain example structures but do not create full record bundles. Existing persisted demos remain three scenarios.
-- Experience modes preserve guidance differences and independent density; they do not yet implement every requested advanced/novice presentation difference.
-- Navigation grouping is refined but does not yet match the entire eight-group proposal.
-- Deadline forecasting assumes complete representative history and comparable items, excludes dependency/capacity effects, and requires explicit human review of data completeness. There is no stored scenario comparison.
-- Monetary risks are entered manually; no persistent monetary risk schema/editor exists. Milestone owner fields are absent and excluded explicitly from ownership audit.
-- Estimate calibration uses current saved estimates, because original-estimate history is not retained. Comparable-unit history must be verified by the user.
-- CSS tokens have one source; remaining component-style duplication has not been fully consolidated.
-- No final product-wide 9/10+ score or formal WCAG certification is asserted.
+All 47 templates have specific bilingual guidance, usage boundaries and worked examples. All 39 playbooks have distinct next-cycle, stabilization and prevention actions. Long secondary duplicate prose is a hard RU/EN gate. Catalogs disclose results progressively while search covers the full collection.
 
-## Release policy
+Method and template detail metadata, public canonicals/alternates, glossary structured data, workspace noindex, sitemap exclusion and base-aware robots paths are covered by export checks.
 
-PR #4 was initially delivered as a draft with these gaps, then merged into main by the repository owner. See RELEASE.md for the current release scope and evidence.
+## Verification authority
+
+`release-evidence.json` records measured source commits and workflow results. A candidate is not deployed merely because local verification passes. Merge requires green root/GitHub Chromium jobs; Pages and live SHA verification follow merge.
+
+Human SUS/SEQ, participant completion times and field Core Web Vitals remain unmeasured. No formal accessibility certification is claimed. The U1–U8 participant protocol remains in UX_BASELINE.md.

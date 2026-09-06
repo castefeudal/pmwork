@@ -1,9 +1,9 @@
 {
   "baseline": "25d59e5de5325885a87d23e0d3e1654347328976",
   "unit": "gzip bytes, initial referenced JavaScript and HTML",
-  "justification": "Public catalogs now isolate client dependencies. Workspace allows 1.9% above the previous 316122-byte stable baseline for schema-v6 lifecycle editors, atomic starter bundles and Guide. Tools allow 1% for accessible distributions and candidate comparison. Rounded boundaries include root/GitHub URL differences; no blanket 700KB ceiling.",
+  "justification": "Public catalogs now isolate client dependencies. Workspace allows 1.9% above the previous 316122-byte stable baseline for schema-v6 lifecycle editors, atomic starter bundles and Guide. Tools allow 1% for accessible distributions and candidate comparison. HTML includes the pre-paint local theme bootstrap and real product proof. Rounded boundaries include root/GitHub URL differences; no blanket 700KB ceiling.",
   "routes": {
-    "": {"js": 189000, "html": 7200, "previousStableJs": 188832},
+    "": {"js": 189000, "html": 7500, "previousStableJs": 188832},
     "glossary": {"js": 227000, "html": 51000, "previousStableJs": 307965},
     "methods": {"js": 190200, "html": 9500, "previousStableJs": 307965},
     "tools": {"js": 204000, "html": 5000, "previousStableJs": 202087},

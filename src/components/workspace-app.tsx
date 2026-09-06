@@ -142,7 +142,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         if (value) {
           const normalized = localizeBundledDemo(value, locale);
           setWorkspace(normalized);
-          setFirstRun(false);
+          setFirstRun(normalized.projects.length===0);
           setView("overview");
           let remembered: string | null = null;
           try { remembered = sessionStorage.getItem("pmwork-project"); } catch {}

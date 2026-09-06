@@ -35,7 +35,7 @@ export function TemplateHub({locale,templates}:{locale:Locale;templates:Template
   <header className="catalog-hero">
    <p className="eyebrow">PMWORK · {ru?'шаблоны':'templates'}</p>
    <h1>{ru?'Рабочие шаблоны · Что вы хотите подготовить?':'Practical templates · What do you need to prepare?'}</h1>
-   <p className="lead">{ru?'Начните с результата, а не с списка из 47 документов. Выберите задачу, найдите шаблон и примените его к проекту.':'Start with the outcome, not a wall of 47 documents. Choose the job, find a template, and apply it to a project.'}</p>
+   <p className="lead">{ru?'Выберите задачу, найдите подходящий шаблон и примените его к своему проекту.':'Start with the outcome, not a wall of 47 documents. Choose the job, find a template, and apply it to a project.'}</p>
    <div className="catalog-controls"><label className="field"><span className="sr-only">{ru?'Поиск':'Search'}</span><span className="search-input"><Search size={18}/><input className="input" value={query} onChange={e=>{setQuery(e.target.value);setLimit(12)}} placeholder={ru?'Например: статус, риск, устав, встреча…':'For example: status, risk, charter, meeting…'}/></span></label><span className="pill">{data.length} {ru?'шаблонов':'templates'}</span></div>
   </header>
   {!query&&group==='all'&&<section className="public-container"><h2>{ru?'Часто нужны в реальном проекте':'Common starting points'}</h2><div className="button-row">{featured.map(slug=>{const t=templates.find(x=>x.slug===slug);return t?<Link className="button" key={slug} href={`/${locale}/templates/${slug}/`}>{t.title[locale]}</Link>:null})}</div></section>}
@@ -45,7 +45,7 @@ export function TemplateHub({locale,templates}:{locale:Locale;templates:Template
    <h2>{t.title[locale]}</h2><p>{t.purpose[locale]}</p>
    <p className="muted compact">{ru?'Когда использовать':'When to use'}: {t.when[locale]}</p>
    <small>{ru?'Ориентир заполнения':'Completion estimate'}: {templatePractice[t.slug]?.[4]} {ru?'мин':'min'}</small>
-   <div className="button-row"><Link className="button primary small" href={`/${locale}/templates/${t.slug}/`}>{ru?'Открыть шаблон':'Open template'}</Link></div>
+   <div className="button-row"><Link className="button small" href={`/${locale}/templates/${t.slug}/`}>{ru?'Открыть шаблон':'Open template'}</Link></div>
   </article>)}</section>
   {!data.length&&<section className="public-container panel"><h2>{ru?'Ничего не найдено':'No matches'}</h2><p>{ru?'Попробуйте другую формулировку или выберите другую задачу.':'Try another phrase or choose another job.'}</p></section>}
   {visible.length<data.length&&<div className="public-container button-row"><button className="button" onClick={()=>setLimit(v=>v+12)}><ChevronDown size={16}/>{ru?`Показать ещё · осталось ${data.length-visible.length}`:`Show more · ${data.length-visible.length} remaining`}</button></div>}
