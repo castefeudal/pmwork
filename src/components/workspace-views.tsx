@@ -1266,7 +1266,7 @@ export function ControlView({
               <p className="eyebrow">{new Date().toLocaleDateString(locale)}</p>
               <h2>{project.name}</h2>
             </div>
-            <button className="button primary" onClick={() => onChange(generateStatusDraft(workspace,project.id,locale))}>{ru ? "Сформировать черновик статуса" : "Generate status report draft"}</button>
+            <button className="button primary" onClick={() => {const next=generateStatusDraft(workspace,project.id,locale);onChange(next);onEdit("document",next.documents.at(-1)!.id);}}>{ru ? "Сформировать черновик статуса" : "Generate status report draft"}</button>
             <button className="button" onClick={() => window.print()}>
               {ru ? "Печать / PDF" : "Print / PDF"}
             </button>

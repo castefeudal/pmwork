@@ -16,6 +16,8 @@ for (const locale of ["ru", "en"] as const) {
     await add.getByRole('button',{name:locale==='ru'?'Работа':'Work item',exact:true}).click();
     const editor=page.getByRole("dialog");
     await editor.getByLabel(locale === "ru" ? "Название" : "Title", {exact: true}).fill(`E2E ${locale}`);
+    await editor.getByLabel(locale === "ru" ? "Владелец" : "Owner",{exact:true}).fill("Release owner");
+    await editor.getByLabel(locale === "ru" ? "Срок / дата пересмотра" : "Due / review date",{exact:true}).fill("2026-10-01");
     await editor.getByRole("button", { name: locale === "ru" ? "Создать" : "Create" }).click();
     await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
     await navigateWorkspace(page,locale === "ru" ? "Доска" : "Board");
@@ -24,11 +26,17 @@ for (const locale of ["ru", "en"] as const) {
     await navigateWorkspace(page,locale === "ru" ? "Риски и решения" : "Risks & decisions");
     await page.getByRole("button", {name: locale === "ru" ? "Добавить запись" : "Add risk",exact: true}).click();
     await page.getByRole("dialog").getByLabel(locale === "ru" ? "Название" : "Title", {exact: true}).fill(`Risk ${locale}`);
+    await page.getByRole("dialog").getByLabel(locale === "ru" ? "Вероятность 1–5" : "Probability 1–5",{exact:true}).fill("5");
+    await page.getByRole("dialog").getByLabel(locale === "ru" ? "Влияние 1–5" : "Impact 1–5",{exact:true}).fill("5");
+    await page.getByRole("dialog").getByLabel(locale === "ru" ? "Меры реагирования" : "Response actions",{exact:true}).fill("Complete security evidence before release review");
     await page.getByRole("button", { name: locale === "ru" ? "Создать" : "Create", exact: true }).click();
     await expect(page.getByText(`Risk ${locale}`, {exact:true})).toBeVisible();
     await expect.poll(()=>page.evaluate(title=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (s.workspace??s).risks.some((r:{title:string})=>r.title===title)},`Risk ${locale}`)).toBe(true);await page.reload();
     await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
     await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
+    const saved=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return s.workspace??s;});
+    expect(saved.workItems.find((x:{title:string})=>x.title===`E2E ${locale}`)).toMatchObject({owner:"Release owner",dueDate:"2026-10-01",status:"ready"});
+    expect(saved.risks.find((x:{title:string})=>x.title===`Risk ${locale}`)).toMatchObject({probability:5,impact:5,actions:"Complete security evidence before release review"});
   });
 }
 test("landing has no serious accessibility violations", async ({ page }) => {

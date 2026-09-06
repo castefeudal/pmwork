@@ -11,6 +11,15 @@ for(const locale of ['ru','en'] as const)test(`mobile work keeps records above f
  await expect(page.getByRole('combobox',{name:ru?'Владелец':'Owner',exact:true,includeHidden:true})).toBeHidden();
  const record=page.locator('.mobile-work-card').first();await expect(record).toBeVisible();
  expect((await record.boundingBox())!.y).toBeLessThan(600);
+ await page.getByRole('button',{name:ru?'Без владельца':'Unassigned',exact:true}).click();
+ const expected=demoWorkspace(locale).workItems.filter(x=>x.projectId==='atlas'&&!x.owner&&x.status!=='done'&&!x.archived);
+ await expect(page.locator('.mobile-work-card')).toHaveCount(expected.length);
+ await page.getByRole('button',{name:ru?'Просрочено':'Overdue',exact:true}).click();
+ const today=new Date().toISOString().slice(0,10);
+ const overdue=demoWorkspace(locale).workItems.filter(x=>x.projectId==='atlas'&&x.dueDate&&x.dueDate<today&&x.status!=='done'&&!x.archived);
+ await expect(page.locator('.mobile-work-card')).toHaveCount(overdue.length);
+ if(!overdue.length)await page.screenshot({path:`test-results/empty-work-${locale}-${test.info().project.name}.png`,fullPage:true,animations:'disabled'});
+ await page.getByRole('button',{name:ru?'Вся работа':'All work',exact:true}).click();
  await page.getByText(ru?'Вид и сортировка':'Display and sorting',{exact:true}).click();
  await expect(page.getByRole('combobox',{name:ru?'Владелец':'Owner',exact:true,includeHidden:true})).toBeVisible();
  await page.getByLabel(ru?'Статус':'Status',{exact:true}).selectOption('ready');

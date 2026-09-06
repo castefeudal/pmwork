@@ -667,7 +667,7 @@ td:is(:nth-last-child(-n + 5)) {
 }
 .metric-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: 0.8rem;
   margin-bottom: 1rem;
 }
@@ -1454,9 +1454,6 @@ blockquote {
   .panel {
     margin-bottom: 1rem;
   }
-  .metric-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .form-grid,
   .calculator-grid {
     grid-template-columns: 1fr;
@@ -1508,9 +1505,6 @@ blockquote {
 @media (max-width: 430px) {
   .method-strip {
     grid-template-columns: 1fr;
-  }
-  .metric-cards {
-    grid-template-columns: 1fr 1fr;
   }
 }
 @media (prefers-reduced-motion: reduce) {
