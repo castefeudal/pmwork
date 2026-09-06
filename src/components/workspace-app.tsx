@@ -195,10 +195,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     if (next.href !== window.location.href) history.pushState(null, "", next);
   }, [ready, firstRun, projectId, view]);
 
-  if (!ready) return <main className="language-gate" aria-busy="true"><Brand/><p role="status">{ru ? "Загрузка рабочего пространства…" : "Loading local workspace…"}</p></main>;
+  // Loading and first run are separate screens. Reusing the centered brand
+  // moves it upward when the taller first-run content arrives from local storage.
+  if (!ready) return <main key="loading" className="language-gate" aria-busy="true"><p role="status">{ru ? "Загрузка рабочего пространства…" : "Loading local workspace…"}</p></main>;
 
   if (firstRun) return (
-    <main className="language-gate first-run-gate">
+    <main key="first-run" className="language-gate first-run-gate">
       <Brand />
       <p className="eyebrow">{ru?"PMWORK · ПЕРВЫЙ ЗАПУСК":"PMWORK · FIRST RUN"}</p>
       <h1>{ru ? "Начните с реального проекта" : "Start with a real project"}</h1>

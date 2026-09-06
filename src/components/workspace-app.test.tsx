@@ -23,7 +23,7 @@ describe("workspace interactions", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Работа" }));
     expect(screen.getByRole("heading", { name: "Работа" })).toBeTruthy();
-    const addTrigger=screen.getAllByRole("button", { name: "Добавить" }).find(button=>button.getAttribute("aria-haspopup")==="dialog");
+    const addTrigger=screen.getByRole("button", { name: "Добавить" });
     expect(addTrigger).toBeTruthy();
     fireEvent.click(addTrigger!);
     const add=screen.getByRole("dialog",{name:"Добавить"});
@@ -31,6 +31,20 @@ describe("workspace interactions", () => {
     fireEvent.change(screen.getByLabelText("Название"), {target: { value: "Component QA item" }});
     fireEvent.click(screen.getByRole("button", { name: "Создать" }));
     await waitFor(() => expect(screen.getAllByText("Component QA item").length).toBeGreaterThan(0));
+  });
+
+  for (const locale of ["ru", "en"] as const) it(`distinguishes global Add from local work creation in ${locale}`, async () => {
+    const ru = locale === "ru";
+    render(<WorkspaceApp locale={locale} />);
+    fireEvent.click(await screen.findByRole("button", { name: ru ? /Посмотреть готовый пример/ : /Explore a completed example/ }));
+    fireEvent.click(within(desktopNav()).getByRole("button", { name: ru ? "Работа" : "Work" }));
+    expect(screen.getAllByRole("button", { name: ru ? "Добавить" : "Add" })).toHaveLength(1);
+    const local = screen.getByRole("button", { name: ru ? "Добавить работу" : "Add work item" });
+    expect(local.classList.contains("primary")).toBe(false);
+    fireEvent.click(local);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(screen.getByLabelText(ru ? "Название" : "Title")).toBeTruthy();
+    expect(screen.queryByRole("dialog", { name: ru ? "Добавить" : "Add" })).toBeNull();
   });
 
   it("treats board as a Work mode rather than a top-level destination", async () => {

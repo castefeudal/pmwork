@@ -39,7 +39,7 @@ export function WorkSurface(props: ViewProps) {
       <label className="search-input"><Search size={17}/><span className="sr-only">{ru ? "Поиск работы" : "Search work"}</span><input className="input" value={config.query} onChange={e => configure({query:e.target.value})} placeholder={ru ? "Название, ID, владелец, метка…" : "Title, ID, owner, label…"}/></label>
       <label className="view-control">{ru ? "Статус" : "Status"}<select aria-label={ru ? "Статус" : "Status"} className="input" value={config.status} onChange={e => configure({status:e.target.value as WorkViewConfig["status"]})}><option value="all">{ru ? "Все статусы" : "All statuses"}</option>{statuses.map(s => <option key={s} value={s}>{displayLabel(locale,"workStatus",s)}</option>)}</select></label>
       <label className="view-control">{ru ? "Владелец" : "Owner"}<select aria-label={ru ? "Владелец" : "Owner"} className="input" value={config.owner} onChange={e => configure({owner:e.target.value})}><option value="">{ru ? "Все владельцы" : "All owners"}</option>{owners.map(s => <option key={s}>{s}</option>)}</select></label>
-      <button className="button primary" onClick={() => onCreate("work")}><Plus size={17}/>{ru ? "Добавить" : "Add"}</button>
+      <button className="button" aria-label={ru ? "Добавить работу" : "Add work item"} onClick={() => onCreate("work")}><Plus size={17}/>{ru ? "Добавить работу" : "Add work item"}</button>
     </div>
     {config.preset === "my" && !config.owner && <p className="notice">{ru ? "Выберите себя в поле «Владелец»: пространство локальное, учётной записи здесь нет." : "Choose yourself in Owner: this local workspace has no signed-in identity."}</p>}
     <div className="view-options-row">
