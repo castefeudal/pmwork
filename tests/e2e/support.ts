@@ -9,9 +9,12 @@ export async function navigateWorkspace(page:Page,name:string){
   if(await work.count())await work.click();
   const boardMode=page.getByRole('button',{name:/^(Board|Доска)$/}).filter({visible:true});await expect(boardMode).toBeVisible();await boardMode.click();return;
  }
- const aliases:Record<string,string>={
-  'Планирование':'План','Planning':'Plan','Настройка':'Настройки','Setup':'Settings','RAID':'Risks & decisions','Риски и решения':'Риски и решения','Проведи меня':'Проведи меня','Guide me':'Guide me'
- };
+ if(name==='RAID'){
+  let target=page.locator('.side-nav').getByRole('button',{name:/^(RAID|Risks & decisions|Риски и решения)$/}).filter({visible:true});
+  if(!await target.count()){await page.getByRole('button',{name:/^(Ещё|More)$/}).click();target=page.getByRole('dialog').getByRole('button',{name:/^(RAID|Risks & decisions|Риски и решения)$/});}
+  await expect(target).toBeVisible();await target.click();return;
+ }
+ const aliases:Record<string,string>={'Планирование':'План','Planning':'Plan','Настройка':'Настройки','Setup':'Settings'};
  const resolved=aliases[name]??name;
  let target=page.locator('.side-nav').getByRole('button',{name:resolved,exact:true}).filter({visible:true});
  if(!await target.count()) target=page.getByRole('navigation',{name:/^(Workspace|Рабочее пространство)$/}).getByRole('button',{name:resolved,exact:true}).filter({visible:true});
