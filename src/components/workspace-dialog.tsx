@@ -229,6 +229,7 @@ export function WorkspaceDialog({
             dueDate: due || undefined,
             estimate: number(fd, "estimate", 0) || undefined,
             originalEstimate: number(fd, "estimate", 0) || undefined,
+            estimateHistory: number(fd,"estimate",0)>0?[{at:new Date().toISOString(),value:number(fd,"estimate",0),kind:"original" as const}]:undefined,
             dependencies: [],
             acceptanceCriteria: lines(text(fd, "acceptance")),
             done: false,

@@ -1,5 +1,6 @@
 "use client";
 
+import {ValueBars,SampleHistogram} from "./tool-charts";
 import {projectNetwork} from "@/domain/project-tool-data";
 import {dailyHistory} from "@/domain/decision-tools";
 import dynamic from "next/dynamic";
@@ -486,6 +487,7 @@ function EVM({ locale }: { locale: Locale }) {
       <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {!r && <p role="alert">{ru ? "Введите конечные неотрицательные значения." : "Enter finite non-negative values."}</p>}
         {r && <p>{ru ? (r.cv < 0 ? "Перерасход относительно освоенного объёма." : "Затраты в пределах освоенного объёма.") : (r.cv < 0 ? "Over budget for earned work." : "Cost is within earned value.")} {ru ? (r.sv < 0 ? "Объём выполненного отстаёт от плана." : "Освоенный объём не отстаёт от плана.") : (r.sv < 0 ? "Earned work is behind plan." : "Earned work is on or ahead of plan.")}</p>}
+        {r&&<ValueBars label={ru?'Стоимость в одинаковых денежных единицах':'Value in the same monetary units'} values={[{label:'PV',value:v.pv},{label:'EV',value:v.ev},{label:'AC',value:v.ac}]}/>}
         <small>CPI = EV / AC · SPI = EV / PV</small>
         <strong>
           CPI {r?.cpi?.toFixed(2) ?? "—"} · SPI {r?.spi?.toFixed(2) ?? "—"}
@@ -536,7 +538,7 @@ function Forecast({ locale }: { locale: Locale }) {
       </div>
       <div className="result-box" role="region" tabIndex={0} aria-label={ru?"Результат расчёта":"Calculation result"}>
         {!r && <p role="alert">{ru ? "Введите минимум 3 неотрицательных наблюдения, включая положительное, и целый горизонт 1–1000 недель." : "Enter at least 3 non-negative observations including a positive value, and an integer horizon of 1–1000 weeks."}</p>}
-        <small>{ru ? "5 000 симуляций" : "5,000 simulations"}</small>
+        <small>{ru ? "5 000 симуляций" : "5,000 simulations"}</small>{r&&<SampleHistogram values={r.results} locale={locale}/>}
         <strong>
           P80 · {r?.p80 ?? "—"} {ru ? "элементов" : "items"}
         </strong>
@@ -553,6 +555,8 @@ function Forecast({ locale }: { locale: Locale }) {
   );
 }
 function Priority({ locale }: { locale: Locale }) {
+  const [candidate,setCandidate]=useState('');
+  const [ranked,setRanked]=useState<{name:string;rice:number;wsjf:number;parts:string}[]>([]);
   const [projectItems,setProjectItems]=useState<WorkItem[]>([]);
   const [selectedItem,setSelectedItem]=useState('');
   const ru = locale === "ru",
@@ -594,6 +598,10 @@ function Priority({ locale }: { locale: Locale }) {
           RICE · {r?.toFixed(1) ?? "—"}
         </strong>
         <p>WSJF · {w?.toFixed(1) ?? "—"}</p>
+        <label className="field">{ru?'Название варианта':'Candidate name'}<input value={candidate} onChange={e=>setCandidate(e.target.value)}/></label>
+        <button className="button" disabled={r===null||w===null||!candidate.trim()} onClick={()=>{if(r===null||w===null)return;setRanked([...ranked.filter(x=>x.name!==candidate.trim()),{name:candidate.trim(),rice:r,wsjf:w,parts:`${v.reach} × ${v.impact} × ${v.confidence}% / ${v.effort}; (${v.value} + ${v.time} + ${v.risk}) / ${v.size}`}]);setCandidate('')}}>{ru?'Добавить к сравнению':'Add to comparison'}</button>
+        {!!ranked.length&&<><p>{ru?'Порядок по RICE. WSJF показан отдельно; сравнивайте только в согласованных шкалах.':'Ordered by RICE. WSJF is shown separately; compare only using agreed scales.'}</p><div className="table-wrap"><table><thead><tr><th>{ru?'Вариант':'Candidate'}</th><th>RICE</th><th>WSJF</th><th>{ru?'Расчёт':'Calculation'}</th></tr></thead><tbody>{[...ranked].sort((a,b)=>b.rice-a.rice).map(x=><tr key={x.name}><th>{x.name}</th><td>{x.rice.toFixed(1)}</td><td>{x.wsjf.toFixed(1)}</td><td>{x.parts}</td></tr>)}</tbody></table></div>{ranked.some((a,i)=>ranked.some((b,j)=>i!==j&&Math.abs(a.rice-b.rice)<=Math.max(a.rice,b.rice)*.05))&&<p className="notice">{ru?'Есть равные или близкие оценки (разница до 5%). Уточните допущения до выбора порядка.':'Some scores tie or differ by at most 5%. Refine assumptions before choosing the order.'}</p>}<button className="button small" onClick={()=>setRanked([])}>{ru?'Очистить сравнение':'Clear comparison'}</button></>}
+
         <small>
           {ru
             ? "Оценки помогают сделать допущения явными, но не превращают стратегию в арифметику. Не сравнивайте несопоставимые элементы."

@@ -22,7 +22,7 @@ test("saved views survive navigation and reload",async({page})=>{
   await navigateWorkspace(page,"Today");
   await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
-  await page.waitForTimeout(650);await page.reload();
+  await expect.poll(()=>page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (s.workspace??s).savedWorkViews.some((v:{name:string})=>v.name==='Release blockers')})).toBe(true);await page.reload();
   await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
 });
@@ -56,7 +56,7 @@ test("calculators validate without crashing and sliders support keys",async({pag
 });
 test("corrupt browser data is preserved while autosave is paused",async({page})=>{
   await page.addInitScript(()=>{Object.defineProperty(window,"indexedDB",{value:undefined,configurable:true});localStorage.setItem("pmwork:workspace:v3","{broken");});
-  await page.goto(route("/en/workspace/"));await expect(page.locator(".recovery-banner").getByText("Autosave paused",{exact:true})).toBeVisible();await page.waitForTimeout(700);
+  await page.goto(route("/en/workspace/"));await expect(page.locator(".recovery-banner").getByText("Autosave paused",{exact:true})).toBeVisible();await page.reload();await expect(page.locator(".recovery-banner").getByText("Autosave paused",{exact:true})).toBeVisible();
   expect(await page.evaluate(()=>localStorage.getItem("pmwork:workspace:v3"))).toBe("{broken");
 });
 test("offline workspace includes its scripts and fonts",async({page,context},testInfo)=>{
@@ -70,7 +70,7 @@ test("offline workspace includes its scripts and fonts",async({page,context},tes
   await page.getByRole("link",{name:"Methods",exact:true}).filter({visible:true}).click();await expect(page.getByRole("heading",{name:/Methods library/})).toBeVisible();
   await context.setOffline(false);
 });
-for(const [width,height] of [[320,760],[360,800],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1920,1080]]){
+for(const [width,height] of [[320,760],[360,800],[390,844],[430,932],[768,1024],[1024,768],[1280,800],[1440,900],[1920,1080]]){
   test(`workspace reflow ${width}x${height}`,async({page},testInfo)=>{
     await page.setViewportSize({width,height});await page.goto(route("/ru/workspace/"));
     for(const name of ["Сейчас","Портфель","Работа","Доска","Планирование","RAID","Люди","Финансы","Контроль","Документы","Настройка"]){

@@ -160,6 +160,7 @@ export function monteCarlo(
       Math.min(results.length - 1, Math.floor((p / 100) * results.length))
     ]!;
   return {
+    results,
     p50: pick(mode === "itemsByDate" ? 50 : 50),
     p80: pick(mode === "itemsByDate" ? 20 : 80),
     p90: pick(mode === "itemsByDate" ? 10 : 90),

@@ -1,3 +1,4 @@
+import {demoWorkspace} from "@/data/demo";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -26,6 +27,7 @@ export async function generateMetadata({
   }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const origin=`https://castefeudal.github.io${process.env.PMWORK_BASE_PATH==="github"?"/pmwork":""}`;
   return {
     title:
       locale === "ru"
@@ -36,10 +38,10 @@ export async function generateMetadata({
         ? "Ведите проекты, бэклог, риски, сроки и решения в одной системе с локальным хранением данных."
         : "Run projects, backlog, risks, schedule, and decisions in one local-first system.",
     alternates: {
-      canonical: `https://castefeudal.github.io/pmwork/${locale}/`,
+      canonical: `${origin}/${locale}/`,
       languages: {
-        ru: "https://castefeudal.github.io/pmwork/ru/",
-        en: "https://castefeudal.github.io/pmwork/en/",
+        ru: `${origin}/ru/`,
+        en: `${origin}/en/`,
       },
     },
     openGraph: {
@@ -51,11 +53,11 @@ export async function generateMetadata({
         locale === "ru"
           ? "Практическая система управления проектами с локальным хранением данных."
           : "A practical local-first project management system.",
-      url: `https://castefeudal.github.io/pmwork/${locale}/`,
+      url: `${origin}/${locale}/`,
       type: "website",
       images: [
         {
-          url: "https://castefeudal.github.io/pmwork/og-image.png",
+          url: `${origin}/og-image.png`,
           width: 1200,
           height: 630,
           alt:
@@ -79,6 +81,7 @@ export default async function Home({
   const locale = raw as Locale,
     t = ui(locale),
     ru = locale === "ru";
+  const preview=demoWorkspace(locale),previewWork=preview.workItems[0],previewRisk=preview.risks[0],previewMilestone=preview.milestones[0];
   return (
     <div className="shell">
       <PublicHeader locale={locale} />
@@ -102,69 +105,13 @@ export default async function Home({
               <span>RU / EN</span>
             </div>
           </div>
-          <div
-            className="cockpit-preview"
-            aria-label={
-              ru ? "Пример интерфейса PMWORK" : "PMWORK interface preview"
-            }
-          >
-            <div className="cockpit-head">
-              <strong>{ru ? "Запуск Atlas" : "Atlas launch"}</strong>
-              <span className="status warn">
-                {ru ? "Есть риски" : "At risk"}
-              </span>
-            </div>
-            <div className="cockpit-body">
-              <div className="mini-side">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-              <div className="mini-main">
-                <div className="metric-grid">
-                  <div className="metric">
-                    <small>WIP</small>
-                    <strong>7</strong>
-                  </div>
-                  <div className="metric">
-                    <small>{ru ? "Риски" : "Risks"}</small>
-                    <strong>4</strong>
-                  </div>
-                  <div className="metric">
-                    <small>SPI</small>
-                    <strong>0.94</strong>
-                  </div>
-                </div>
-                <div className="preview-board">
-                  <div className="preview-column">
-                    <small>{ru ? "ГОТОВО · 3" : "READY · 3"}</small>
-                    <div className="preview-card">
-                      {ru
-                        ? "Согласовать границы релиза"
-                        : "Align release scope"}
-                    </div>
-                  </div>
-                  <div className="preview-column">
-                    <small>{ru ? "В РАБОТЕ · 2/3" : "IN PROGRESS · 2/3"}</small>
-                    <div className="preview-card">
-                      {ru ? "Миграция каталога" : "Catalog migration"}
-                    </div>
-                    <div className="preview-card">
-                      {ru ? "План приёмки" : "Acceptance plan"}
-                    </div>
-                  </div>
-                  <div className="preview-column">
-                    <small>{ru ? "НА ПРОВЕРКЕ · 1" : "REVIEW · 1"}</small>
-                    <div className="preview-card">
-                      {ru ? "Проверка безопасности" : "Security review"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <aside className="product-preview" aria-label={ru?'Пример записей PMWORK':'Example PMWORK records'}>
+            <div className="section-line"><strong>{ru?'Сегодня в проекте':'Today in the project'}</strong><span className="pill">{ru?'Демо':'Demo'}</span></div>
+            <section className="preview-signal"><small>{ru?'ТРЕБУЕТ ВНИМАНИЯ':'REQUIRES ATTENTION'}</small><h2>{previewRisk.title}</h2><p>{previewRisk.actions}</p><Link className="button small" href={`/${locale}/workspace/?view=raid&project=${previewRisk.projectId}&item=${previewRisk.id}`}>{ru?'Открыть риск':'Open risk'}<ArrowRight size={16}/></Link></section>
+            <div className="preview-record"><small>{ru?'Работа':'Work'}</small><strong>{previewWork.title}</strong><span>{previewWork.owner} · {previewWork.dueDate}</span></div>
+            <div className="preview-record"><small>{ru?'Ближайшая веха':'Upcoming milestone'}</small><strong>{previewMilestone.title}</strong><span>{previewMilestone.date}</span></div>
+            <p className="muted">{ru?'Работа, сроки и риски связаны с одним проектом. Откройте пример, чтобы проверить записи и принять следующее решение.':'Work, dates and risks belong to one project. Open the example to inspect records and make the next decision.'}</p>
+          </aside>
         </section>
         <section className="section">
           <div className="section-head">
@@ -226,11 +173,10 @@ export default async function Home({
                 ru ? "Профессиональная база" : "Professional library",
                 `${contentCounts.methods} ${ru ? "методов" : "methods"}, ${contentCounts.templates} ${ru ? "шаблонов" : "templates"}, ${contentCounts.playbooks} ${ru ? "практических сценариев" : "playbooks"}, ${contentCounts.glossary} ${ru ? "терминов" : "terms"}.`,
               ],
-            ].map(([Icon, title, copy], i) => {
+            ].map(([Icon, title, copy]) => {
               const I = Icon as typeof LayoutDashboard;
               return (
                 <article className="feature" key={String(title)}>
-                  <span className="num">0{i + 1}</span>
                   <I size={22} />
                   <h3>{String(title)}</h3>
                   <p>{String(copy)}</p>

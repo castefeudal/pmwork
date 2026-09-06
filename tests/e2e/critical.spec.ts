@@ -26,7 +26,7 @@ for (const locale of ["ru", "en"] as const) {
     await page.getByRole("dialog").getByLabel(locale === "ru" ? "Название" : "Title", {exact: true}).fill(`Risk ${locale}`);
     await page.getByRole("button", { name: locale === "ru" ? "Создать" : "Create", exact: true }).click();
     await expect(page.getByText(`Risk ${locale}`, {exact:true})).toBeVisible();
-    await page.waitForTimeout(600); await page.reload();
+    await expect.poll(()=>page.evaluate(title=>{const s=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (s.workspace??s).risks.some((r:{title:string})=>r.title===title)},`Risk ${locale}`)).toBe(true);await page.reload();
     await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
     await expect(page.getByText(`E2E ${locale}`).filter({visible:true})).toBeVisible();
   });
