@@ -13,7 +13,10 @@ self.addEventListener("fetch", event => {
   if(event.request.method !== "GET" || url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    const hit = await cache.match(event.request, {ignoreSearch:true});
+    const normalizedNavigation = event.request.mode === "navigate" && !url.pathname.endsWith("/")
+      ? new URL(`${url.pathname}/${url.search}`, url.origin)
+      : null;
+    const hit = await cache.match(event.request, {ignoreSearch:true}) || (normalizedNavigation ? await cache.match(normalizedNavigation, {ignoreSearch:true}) : undefined);
     if(hit && /\.(woff2|png|svg|css|js)$/.test(url.pathname)) return hit;
     try {
       const response = await fetch(event.request);

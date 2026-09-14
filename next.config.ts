@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
   assetPrefix: isPages ? "/pmwork/" : undefined,
   images: { unoptimized: true },
   reactStrictMode: true,
+  // Keep the 497-page bilingual export reliable on memory-constrained runners
+  // and Windows, where the default worker pool can terminate native workers.
+  experimental: {
+    cpus: 2,
+    staticGenerationMaxConcurrency: 2,
+  },
 };
 
 export default nextConfig;

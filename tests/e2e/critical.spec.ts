@@ -22,7 +22,7 @@ for (const locale of ["ru", "en"] as const) {
     const card = page.locator(".work-card").filter({ hasText: `E2E ${locale}` });
     await card.getByRole("button", {name: locale === "ru" ? "Переместить вправо" : "Move right"}).click();
     await navigateWorkspace(page,locale === "ru" ? "Риски и решения" : "Risks & decisions");
-    await page.getByRole("button", {name: locale === "ru" ? "Добавить запись" : "Add risk",exact: true}).click();
+    await page.getByRole("button", {name: locale === "ru" ? "Добавить риск" : "Add risk",exact: true}).click();
     await page.getByRole("dialog").getByLabel(locale === "ru" ? "Название" : "Title", {exact: true}).fill(`Risk ${locale}`);
     await page.getByRole("button", { name: locale === "ru" ? "Создать" : "Create", exact: true }).click();
     await expect(page.getByText(`Risk ${locale}`, {exact:true})).toBeVisible();

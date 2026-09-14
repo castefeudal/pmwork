@@ -10,8 +10,8 @@ for (const file of required) {
 }
 
 const ui = fs.readFileSync("src/content/ui.ts", "utf8");
-const ru = ui.match(/ru:\s*\{([\s\S]*?)\n\s*\},\n\s*en:/)?.[1];
-const en = ui.match(/en:\s*\{([\s\S]*?)\n\s*\},\n\}\s+as\s+const;/)?.[1];
+const ru = ui.match(/ru:\s*\{([\s\S]*?)\r?\n\s*\},\r?\n\s*en:/)?.[1];
+const en = ui.match(/en:\s*\{([\s\S]*?)\r?\n\s*\},\r?\n\}\s+as\s+const;/)?.[1];
 if (!ru || !en) throw new Error("Cannot parse locale catalogs");
 const keys = (source) =>
   (source.match(/\b[a-zA-Z]+:/g) || [])

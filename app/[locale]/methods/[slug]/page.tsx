@@ -9,9 +9,9 @@ export function generateStaticParams(){return ['ru','en'].flatMap(locale=>method
 
 export default async function Page({params}:{params:Promise<{locale:string;slug:string}>}){
  const {locale,slug}=await params;if(locale!=='ru'&&locale!=='en')notFound();
- const m=methods.find(x=>x.slug===slug);if(!m)notFound();const l=locale as Locale,ru=l==='ru';
+ const m=methods.find(x=>x.slug===slug);if(!m)notFound();const l=locale as Locale,ru=l==='ru',tool=m.slug==='markovmade'?'markovmade':'fit';
  return <div className="catalog-layout"><PublicHeader locale={l}/><main id="main">
-  <header className="catalog-hero"><p className="eyebrow">PMWORK · {ru?'метод':'method'}</p><h1>{m.title[l]}</h1><p className="lead">{m.summary[l]}</p><div className="button-row"><Link className="button primary" href={`/${l}/tools/?tool=fit`}>{ru?'Проверить совместимость с проектом':'Check project fit'}</Link><Link className="button" href={`/${l}/methods/`}>{ru?'Все методы':'All methods'}</Link></div></header>
+  <header className="catalog-hero"><p className="eyebrow">PMWORK · {ru?'метод':'method'}</p><h1>{m.title[l]}</h1><p className="lead">{m.summary[l]}</p><div className="button-row"><Link className="button primary" href={`/${l}/tools/?tool=${tool}`}>{m.slug==='markovmade'?(ru?'Рассчитать приоритет':'Score an intervention'):(ru?'Проверить совместимость с проектом':'Check project fit')}</Link><Link className="button" href={`/${l}/methods/`}>{ru?'Все методы':'All methods'}</Link></div></header>
   <div className="public-container article-layout"><article className="article-body">
    <section><h2>{ru?'Что решает':'What it solves'}</h2><p>{m.flow[l]}</p></section>
    <section><h2>{ru?'Подходит, если':'Good fit when'}</h2><p>{m.bestFit[l]}</p></section>

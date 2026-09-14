@@ -11,6 +11,7 @@ import {
 } from "@/domain/method-fit";
 import type { CreateType } from "./workspace-types";
 import { displayLabel } from "@/content/workspace-i18n";
+import {applyStarterPackBundle,starterSections,type StarterSection} from "@/content/starter-packs";
 const titles: Record<
   CreateType,
   {
@@ -48,6 +49,12 @@ const number = (fd: FormData, key: string, fallback = 0) => {
   if (raw === null || raw === "") return fallback;
   const parsed = Number(raw);
   return Number.isFinite(parsed) ? parsed : fallback;
+};
+const optionalNumber = (fd: FormData, key: string) => {
+  const raw = fd.get(key);
+  if (raw === null || raw === "") return undefined;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : undefined;
 };
 const lines = (value: string) =>
   value
@@ -202,6 +209,8 @@ export function WorkspaceDialog({
           },
         ],
       };
+      const packId=text(fd,"starterPack"),selected=fd.getAll("packSections").map(String).filter((value):value is StarterSection=>starterSections.includes(value as StarterSection));
+      if(packId)next=applyStarterPackBundle(next,packId,id,locale,selected,at);
       onCommit(next, id);
       onClose();
       return;
@@ -225,7 +234,10 @@ export function WorkspaceDialog({
             labels: lines(text(fd, "labels")),
             startDate: text(fd, "startDate") || undefined,
             dueDate: due || undefined,
-            estimate: number(fd, "estimate", 0) || undefined,
+            estimate: optionalNumber(fd, "estimate"),
+            originalEstimate: optionalNumber(fd, "estimate"),
+            currentEstimate: optionalNumber(fd, "estimate"),
+            estimateHistory: optionalNumber(fd, "estimate") === undefined ? [] : [{value: optionalNumber(fd, "estimate")!,timestamp:at}],
             dependencies: [],
             acceptanceCriteria: lines(text(fd, "acceptance")),
             done: false,
@@ -258,6 +270,12 @@ export function WorkspaceDialog({
             description,
             probability: Math.max(1, Math.min(5, number(fd, "probability", 3))),
             impact: Math.max(1, Math.min(5, number(fd, "impact", 3))),
+            probabilityPct: optionalNumber(fd, "probabilityPct"),
+            impactAmount: optionalNumber(fd, "impactAmount"),
+            residualProbabilityPct: optionalNumber(fd, "residualProbabilityPct"),
+            residualImpactAmount: optionalNumber(fd, "residualImpactAmount"),
+            responseCost: optionalNumber(fd, "responseCost"),
+            currency: optionalNumber(fd, "impactAmount") === undefined ? undefined : (text(fd,"currency") || workspace.projects.find(p=>p.id===projectId)?.currency),
             owner,
             strategy: "mitigate",
             actions: text(fd, "actions"),
@@ -359,8 +377,15 @@ export function WorkspaceDialog({
             projectId,
             title,
             date: due,
+            owner,
+            baselineDate: due,
+            forecastDate: due,
+            confidence: optionalNumber(fd,"confidence"),
             status: "planned",
             progress: 0,
+            createdAt: at,
+            updatedAt: at,
+            history: [],
           },
         ],
         activities: [
@@ -865,6 +890,12 @@ export function WorkspaceDialog({
                 "number",
               )}
               {field("impact", ru ? "Влияние 1–5" : "Impact 1–5", "number")}
+              {field("probabilityPct", ru ? "Денежная вероятность, % (необязательно)" : "Monetary probability, % (optional)", "number")}
+              {field("impactAmount", ru ? "Денежное влияние (необязательно)" : "Monetary impact (optional)", "number")}
+              {field("residualProbabilityPct", ru ? "Остаточная вероятность, %" : "Residual probability, %", "number")}
+              {field("residualImpactAmount", ru ? "Остаточное денежное влияние" : "Residual monetary impact", "number")}
+              {field("responseCost", ru ? "Стоимость реагирования" : "Response cost", "number")}
+              {field("currency", ru ? "Валюта проекта" : "Project currency")}
               {field("trigger", ru ? "Триггер" : "Trigger")}
               {field(
                 "actions",
@@ -873,6 +904,7 @@ export function WorkspaceDialog({
               )}
             </>
           )}
+          {type === "milestone" && field("confidence", ru ? "Уверенность в прогнозе, %" : "Forecast confidence, %", "number")}
           {type === "dependency" && (
             <>
               <div className="field">

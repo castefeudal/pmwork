@@ -1,43 +1,42 @@
 {
-  "measuredAt": "2026-09-05T22:53:04.032Z",
-  "branch": "fix/pmwork-document-layout-brand",
-  "scope": "Local working tree; exact committed state is verified separately by GitHub CI",
-  "unitComponentTests": 63,
-  "browserTests": 192,
-  "htmlPages": 370,
-  "chromium": "149.0.7827.0 (local); GitHub CI uses Playwright-pinned Chromium",
-  "performance": [
-    {
-      "route": "/en/",
-      "htmlGzipBytes": 6846,
-      "initialJsGzipBytes": 188832,
-      "scriptCount": 10
-    },
-    {
-      "route": "/en/glossary",
-      "htmlGzipBytes": 48722,
-      "initialJsGzipBytes": 307965,
-      "scriptCount": 14
-    },
-    {
-      "route": "/en/methods",
-      "htmlGzipBytes": 26072,
-      "initialJsGzipBytes": 307965,
-      "scriptCount": 14
-    },
-    {
-      "route": "/en/tools",
-      "htmlGzipBytes": 4259,
-      "initialJsGzipBytes": 202087,
-      "scriptCount": 11
-    },
-    {
-      "route": "/en/workspace",
-      "htmlGzipBytes": 2326,
-      "initialJsGzipBytes": 316122,
-      "scriptCount": 14
-    }
+  "measuredAt": "2026-09-14T13:15:00.000Z",
+  "baseCommit": "039c69badc72bb57f1617b871c3446202b5f6a30",
+  "branch": "main (working tree)",
+  "scope": "Local production exports for root and /pmwork; GitHub-hosted workflows require commit and push",
+  "productVersion": "2.3.0",
+  "schemaVersion": 6,
+  "unitComponent": { "passed": 79, "failed": 0, "files": 16 },
+  "browser": {
+    "root": { "passed": 198, "failed": 0 },
+    "githubBasePath": { "passed": 198, "failed": 0 },
+    "projects": ["Desktop Chrome", "Pixel 7"]
+  },
+  "export": { "htmlPages": 498, "precacheResources": 806 },
+  "labRenderingRoot": {
+    "note": "Local unthrottled Chromium samples; not field CWV",
+    "worstLcpMs": 308,
+    "worstCls": 0.0043,
+    "clsGate": 0.05,
+    "lcpGateMs": 2500
+  },
+  "labRenderingGithubBasePath": {
+    "note": "Local unthrottled Chromium samples; not field CWV",
+    "worstLcpMs": 300,
+    "worstCls": 0.0043,
+    "clsGate": 0.05,
+    "lcpGateMs": 2500
+  },
+  "githubBasePathPerformance": [
+    { "route": "/en/", "htmlGzipBytes": 6859, "initialJsGzipBytes": 188880, "scriptCount": 10 },
+    { "route": "/en/glossary", "htmlGzipBytes": 48754, "initialJsGzipBytes": 344226, "scriptCount": 14 },
+    { "route": "/en/methods", "htmlGzipBytes": 5763, "initialJsGzipBytes": 344226, "scriptCount": 14 },
+    { "route": "/en/tools", "htmlGzipBytes": 4289, "initialJsGzipBytes": 202431, "scriptCount": 11 },
+    { "route": "/en/workspace", "htmlGzipBytes": 2352, "initialJsGzipBytes": 323189, "scriptCount": 14 }
   ],
-  "editorialAcceptanceComplete": false,
-  "productionDeployed": false
+  "dependencyAudit": { "knownVulnerabilities": 0, "threshold": "moderate" },
+  "copyRepeatedSecondaryGroups": 0,
+  "ci": "not run for uncommitted working tree",
+  "productionDeployed": false,
+  "liveSmoke": "pending exact deployed commit",
+  "humanUsability": "not measured"
 }

@@ -1,21 +1,15 @@
-# Document layout and PMWORK identity release
+# PMWORK 2.3 release
 
-Scope: repair clipped template dialogs, improve document reading and catalog layout, integrate the owner-supplied PM identity, and rename the bundled Atlas demonstration to MARKOVMADE. This release builds on main after PR #4; it does not claim completion of every item in the earlier broad transformation specification.
+Scope: production hardening of the local-first decision cockpit, additive data lifecycle v6, real starter bundles, deterministic scenario persistence/apply flows, MARKOVMADE method/tool, accessibility/performance/PWA repairs, and updated release evidence.
 
-## Evidence
+## Required evidence
 
-[release-evidence.json](release-evidence.json) is the authority for final local test/export counts and compressed transfer sizes. The required run is `npm ci`, `npm run verify`, `npm run test:e2e`, then `npm run performance:check`. Local Chromium 149 is used; GitHub CI validates root and `/pmwork` with its pinned browser. Hosted results belong to the PR Checks and Pages workflow for this commit.
+The authoritative machine-readable snapshot is [release-evidence.json](release-evidence.json). The release sequence is documented in [QUALITY_GATE.md](QUALITY_GATE.md). Root and `/pmwork` outputs must independently pass verify, browser, and performance gates.
 
-[LAYOUT_QA.md](LAYOUT_QA.md) explains the reported defect, repair and regression coverage. Actual visual review includes mobile Russian and desktop English template dialogs, the Russian template catalog and the English dark board. Existing broader screenshots and automated reflow/axe checks are retained. No formal WCAG certification, field Core Web Vitals or unsupported 10/10 product score is asserted.
+## Release boundaries
 
-## User-visible changes
+No backend, authentication, cloud sync, AI chat, analytics, or trackers were added. Deterministic forecasts and scores expose assumptions and confidence; they are not promises or objective probabilities. Human usability results, formal WCAG certification, field Core Web Vitals/INP, CI for an unpushed working tree, and live deployment for an undeployed commit must never be inferred from local tests.
 
-- Viewport-owned modal windows with full document content, scrolling, a sticky title/close control and an accessible apply action.
-- Shared document reading layout with headings, paragraphs, lists, emphasis and tables; editable source remains available without losing changes.
-- Two-column desktop catalogs, single-column mobile catalogs, wrapping content and localized template categories.
-- PM symbol in navigation and install icons; refined navy dark surfaces and restrained teal accents. The mark uses a navy background, not claimed transparency. See [BRAND.md](BRAND.md).
-- MARKOVMADE demonstration title; only exact original names on explicitly marked demo records migrate. Stable IDs and user-created names are preserved.
+## Manual release evidence
 
-## Limits
-
-Document reading supports a deliberate Markdown subset, not a complete rich-text editor. Very wide work boards and tables retain local scrolling. The original references were raster JPGs; no genuine SVG source was supplied or invented. Earlier product/editorial gaps remain described in the historical transformation ledger and are not presented as solved by this visual repair.
+Before announcing production release, complete [USABILITY_PROTOCOL.md](USABILITY_PROTOCOL.md), manual assistive-technology/device checks from [ACCESSIBILITY.md](ACCESSIBILITY.md), visually review the representative screenshot matrix, merge the exact reviewed commit, confirm both Quality Gate matrix jobs and Pages Deploy are green, then run the live smoke check against the emitted `release.json`.

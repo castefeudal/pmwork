@@ -91,8 +91,10 @@ export const enumLabels = {
     },
     milestoneStatus: {
       planned: "Запланирована",
+      "on-track": "По плану",
       "at-risk": "Под угрозой",
       done: "Завершена",
+      cancelled: "Отменена",
     },
     iterationStatus: {
       planned: "Запланирована",
@@ -222,7 +224,13 @@ export const enumLabels = {
       decided: "Decided",
       superseded: "Superseded",
     },
-    milestoneStatus: { planned: "Planned", "at-risk": "At risk", done: "Done" },
+    milestoneStatus: {
+      planned: "Planned",
+      "on-track": "On track",
+      "at-risk": "At risk",
+      done: "Done",
+      cancelled: "Cancelled",
+    },
     iterationStatus: { planned: "Planned", active: "Active", closed: "Closed" },
     dependencyStatus: { open: "Open", met: "Met", breached: "Breached" },
     attitude: {

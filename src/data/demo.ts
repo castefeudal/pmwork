@@ -308,6 +308,9 @@ export function demoWorkspace(locale: Locale): Workspace {
       startDate,
       dueDate,
       estimate,
+      originalEstimate: estimate,
+      currentEstimate: estimate,
+      estimateHistory: [{ value: estimate, timestamp: now }],
       dependencies: id === "PW-106" ? ["PW-102", "PW-103"] : [],
       acceptanceCriteria: [
         ru
@@ -330,7 +333,7 @@ export function demoWorkspace(locale: Locale): Workspace {
     }),
   );
   return {
-    schemaVersion: 5,
+    schemaVersion: 6,
     savedWorkViews: [],
     workViewPreferences: [],
     id: "pmwork-demo",
@@ -353,6 +356,12 @@ export function demoWorkspace(locale: Locale): Workspace {
           : "Decision depends on an external security team.",
         probability: 4,
         impact: 5,
+        probabilityPct: 45,
+        impactAmount: 18000,
+        residualProbabilityPct: 20,
+        residualImpactAmount: 12000,
+        responseCost: 3500,
+        currency: "USD",
         owner: ru ? "Анна Смирнова" : "Anna Smirnova",
         strategy: "mitigate",
         actions: ru
@@ -463,16 +472,31 @@ export function demoWorkspace(locale: Locale): Workspace {
         projectId: "atlas",
         title: ru ? "Готовность пилота" : "Pilot ready",
         date: "2026-09-28",
+        owner: ru ? "Анна Смирнова" : "Anna Smirnova",
+        baselineDate: "2026-09-24",
+        forecastDate: "2026-09-28",
+        confidence: 65,
         status: "at-risk",
         progress: 68,
+        forecastReason: ru ? "Задержка проверки безопасности" : "Security review delay",
+        createdAt: now,
+        updatedAt: now,
+        history: [],
       },
       {
         id: "M-2",
         projectId: "atlas",
         title: ru ? "Публичный запуск" : "Public launch",
         date: "2026-11-14",
+        owner: ru ? "Анна Смирнова" : "Anna Smirnova",
+        baselineDate: "2026-11-14",
+        forecastDate: "2026-11-14",
+        confidence: 78,
         status: "planned",
         progress: 34,
+        createdAt: now,
+        updatedAt: now,
+        history: [],
       },
     ],
     issues: [
@@ -723,6 +747,7 @@ export function demoWorkspace(locale: Locale): Workspace {
           : "Risk R-1 moved to responding",
       },
     ],
+    toolRuns: [],
     projectSettings: [
       {
         projectId: "atlas",

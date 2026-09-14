@@ -23,7 +23,7 @@ describe("workspace interactions", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Работа" }));
     expect(screen.getByRole("heading", { name: "Работа" })).toBeTruthy();
-    const addTrigger=screen.getAllByRole("button", { name: "Добавить" }).find(button=>button.getAttribute("aria-haspopup")==="dialog");
+    const addTrigger=screen.getByRole("button", { name: "Создать запись" });
     expect(addTrigger).toBeTruthy();
     fireEvent.click(addTrigger!);
     const add=screen.getByRole("dialog",{name:"Добавить"});

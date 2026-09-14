@@ -1,26 +1,26 @@
-# PMWORK 2.2
+# PMWORK 2.3
 
-The practical operating system for project managers. PMWORK connects professional guidance to actual project work: understand context, choose an approach, organize delivery, control uncertainty, and learn from the result. Version 2 adds a portfolio control tower, deterministic next-action guidance, schema migrations and operational governance records while preserving an AI-free, device-local architecture.
+PMWORK is a bilingual, local-first Project Management Operating System: project data becomes an explained signal, a decision or action, a persisted change, and a new feedback signal. The application is a Next.js static export with no account, backend, cloud sync, AI chat, analytics, or trackers.
 
-## What is included
+## Product surfaces
 
-- Local-first multi-project workspace with three coherent demo projects.
-- Nine working presets, saved filter/sort/group/property/layout combinations, context-preserving side editing, dense list, accessible Kanban, date-derived timeline, milestones, iterations and dependency register.
-- Risks, issues, assumptions, decisions, stakeholder matrix, team, vendors, project health, budget forecast, editable charter and change/quality controls.
-- Portfolio cockpit, deterministic priority actions, guided lifecycle and global command palette.
-- Deterministic setup and method-fit engine with explainable scoring.
-- CPM, PERT, EVM, Monte Carlo, RICE, WSJF, and Little's Law calculations.
-- Bilingual catalogs: 16 methods, 47 templates, 39 problem playbooks, 26 knowledge domains, 172 glossary records.
-- IndexedDB persistence with a timestamped localStorage mirror, v1/v2/v3→v4 migration, rotating snapshots, validated JSON backup/restore, Markdown export and print/PDF views.
-- RU/EN routes, light/dark/system behavior, responsive layout, versioned offline route/asset cache, SEO and WCAG 2.2 AA target.
+- Today command center: one dominant priority, decision/action/check groups, evidence-aware Stable signals, and separate project state/data confidence.
+- Work: dense list, accessible Kanban, saved views, estimates preserved as Original → Current → Actual, WIP, owners, dependencies, and milestones.
+- Plan and control: milestone baseline/forecast/actual lifecycle, human-readable variance, dependency validation, budget, quality, changes, closure, and status drafts.
+- RAID and people: qualitative risks plus optional monetary EMV, assumptions, issues, decisions, stakeholders, team, communications, and vendors.
+- Deterministic tools: CPM, PERT, EVM, forecast, priority, flow, Deadline Confidence, Risk EMV, Capacity & WIP, Decision Matrix, Ownership Coverage, Change Impact, Estimate Calibration, and MARKOVMADE Priority.
+- Professional library: 17 methods, 47 templates, 39 playbooks, 26 knowledge domains, and 172 glossary records in RU/EN.
+- Five starter packs create selectable, coherent project bundles without invented people.
 
-## Architecture and stack
+## Data, privacy, and offline
 
-Next.js 16.3.4, React 19, strict TypeScript, Zod, IndexedDB, Lucide, Vitest, Playwright, axe. Public pages are statically generated; the workspace runs entirely on the device. No authentication, backend, analytics, AI, or workflow automation is included in v2.
+Schema v6 is stored in IndexedDB with a timestamped localStorage mirror. Migrations accept v1–v5 workspaces without resetting records. JSON backup includes schema/app version, export time, and record counts; import performs size check, parse, migration, strict validation, preview, confirmation, a safety snapshot, then persistence. Unknown future schemas are rejected.
 
-See [Architecture](docs/ARCHITECTURE.md), [Feature matrix](docs/FEATURE_MATRIX.md), [Content sources](docs/CONTENT_SOURCES.md), and [QA report](docs/QA_REPORT.md).
+The production service worker precaches the application shell, routes, scripts, styles, fonts, and PWA assets with a content-derived cache version. Updates require a user action. Project data stays in the current browser origin; clearing browser storage removes it unless the user exported a backup.
 
-## Run locally
+## Stack and local development
+
+Next.js 16, React 19, strict TypeScript, Zod, IndexedDB, Vitest 5, Playwright, and axe.
 
 ```bash
 npm ci
@@ -29,43 +29,31 @@ npm run dev
 
 Open `http://localhost:3000/`.
 
-## Quality gate
+## Release quality gate
 
 ```bash
 npm run verify
 npm run test:e2e
+npm run performance:check
 ```
 
-The main gate runs lint, strict typecheck, content quality validation, RU/EN parity, source-link checks, unit/integration tests, the production static build, and exported-asset validation. E2E then covers desktop/mobile RU/EN journeys, navigation, reflow, storage fallback, and axe accessibility.
-
-## Data and privacy
-
-Workspace data is stored in browser IndexedDB and mirrored to localStorage. The newest valid copy is loaded; unreadable data pauses autosave and exposes recovery. A complete JSON backup can be downloaded and restored; v1/v2/v3 backups migrate to schema v4 and up to five recovery snapshots are retained, including a forced checkpoint before replacement import or restore. Clearing browser storage deletes the local workspace and its snapshots, so important projects should still be exported. No data is sent to a PMWORK server.
+CI executes the same production-export gate for both root hosting and the GitHub Pages `/pmwork` prefix. See [Quality gate](docs/QUALITY_GATE.md), [Release](docs/RELEASE.md), [Schema and migrations](docs/DATA_SCHEMA.md), and [Transformation status](docs/TRANSFORMATION_STATUS.md).
 
 ## Deployment
 
-Push `main` to run the official GitHub Pages workflow. It validates the project, creates a `/pmwork` static export, and deploys `out/`. The same output works on other static hosts without a repository base path. See [Deployment](docs/DEPLOYMENT.md).
+Pushes to `main` run Quality Gate and the official GitHub Pages workflow. The deploy job verifies the published `release.json`, routes, scripts, styles, fonts, and PWA assets against the workflow commit. See [Deployment](docs/DEPLOYMENT.md).
 
-## Project structure
+## Repository map
 
 ```text
 app/              static routes and metadata
 src/components/   public and workspace UI
-src/content/      bilingual catalogs and source registry
-src/domain/       schemas, calculations, fit rules
-src/data/         IndexedDB and demo workspace
-scripts/          content, i18n, and link gates
-tests/e2e/        critical journeys and axe checks
-docs/             product, engineering, and governance docs
+src/content/      bilingual catalogs and starter packs
+src/domain/       schemas, calculations, signals, commands
+src/data/         IndexedDB, migrations, backups, demo workspace
+scripts/          content, export, PWA, link, and performance gates
+tests/e2e/        desktop/mobile workflows, axe, reflow, offline, performance
+docs/             product, engineering, release, and manual protocols
 ```
 
-## Contribution basics
-
-Keep TypeScript strict, preserve RU/EN parity, add official sources for normative claims, label heuristics, avoid framework dogma, and run `npm run verify`. Do not add a license or imply affiliation with framework owners without repository-owner approval.
-
-
-## Current production completion branch
-
-The current product contract is [PRODUCT_SPEC](docs/PRODUCT_SPEC.md). Historical audits and prompts are in `docs/archive/` and are not active release specifications.
-
-Schema v4 separates guidance (`experience`) from `density`. New users explicitly create a project, select a demo, or restore a backup. URL state includes project, view, work layout and operational tabs. The glossary has 172 concepts, twelve categories and 344 bilingual static term pages. Public search loads on demand. Templates require a destination project and support undo. See [QUALITY_GATE](docs/QUALITY_GATE.md) and [RELEASE](docs/RELEASE.md) for verification status.
+Contributions must preserve the local-first/static-export contract, RU/EN parity, migration compatibility, accessible alternatives, and deterministic explanations. Do not weaken gates or present heuristics as objective forecasts.

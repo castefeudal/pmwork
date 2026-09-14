@@ -22,6 +22,7 @@ const emptyV3 = {
   qualityGates: [],
   closureRecords: [],
   activities: [],
+  toolRuns: [],
   projectSettings: [],
 };
 function local() {
@@ -61,14 +62,57 @@ function open() {
 export function migrateWorkspace(value: unknown): Workspace {
   if (!value || typeof value !== "object") throw new Error("Invalid workspace");
   const record = value as Record<string, unknown>;
-  const migrated = record.schemaVersion === 1 || record.schemaVersion === 2 || record.schemaVersion === 3 || record.schemaVersion === 4
-    ? workspaceSchema.parse({ ...emptyV3, ...record, schemaVersion: 5 })
+  const version = Number(record.schemaVersion);
+  const legacy = Number.isInteger(version) && version >= 1 && version <= 5;
+  const projects = Array.isArray(record.projects) ? record.projects as Array<Record<string, unknown>> : [];
+  const migrated = legacy
+    ? workspaceSchema.parse({
+        ...emptyV3,
+        ...record,
+        schemaVersion: 6,
+        toolRuns: Array.isArray(record.toolRuns) ? record.toolRuns : [],
+        workItems: (Array.isArray(record.workItems) ? record.workItems : []).map((raw) => {
+          const item = raw as Record<string, unknown>;
+          const estimate = typeof item.estimate === "number" ? item.estimate : undefined;
+          const original = typeof item.originalEstimate === "number" ? item.originalEstimate : estimate;
+          const current = typeof item.currentEstimate === "number" ? item.currentEstimate : estimate;
+          return {
+            ...item,
+            estimate: current,
+            originalEstimate: original,
+            currentEstimate: current,
+            estimateHistory: Array.isArray(item.estimateHistory) ? item.estimateHistory : original === undefined ? [] : [{ value: original, timestamp: String(item.createdAt ?? "1970-01-01T00:00:00.000Z"), reason: "Migrated from legacy estimate" }],
+          };
+        }),
+        milestones: (Array.isArray(record.milestones) ? record.milestones : []).map((raw) => {
+          const milestone = raw as Record<string, unknown>;
+          const legacyDate = String(milestone.date ?? "");
+          const baselineDate = String(milestone.baselineDate ?? legacyDate);
+          const forecastDate = String(milestone.forecastDate ?? legacyDate);
+          const timestamp = String(milestone.updatedAt ?? (legacyDate ? `${legacyDate}T00:00:00.000Z` : "1970-01-01T00:00:00.000Z"));
+          return {
+            ...milestone,
+            date: forecastDate,
+            owner: String(milestone.owner ?? ""),
+            baselineDate,
+            forecastDate,
+            createdAt: String(milestone.createdAt ?? timestamp),
+            updatedAt: timestamp,
+            history: Array.isArray(milestone.history) ? milestone.history : [],
+          };
+        }),
+        risks: (Array.isArray(record.risks) ? record.risks : []).map((raw) => {
+          const risk = raw as Record<string, unknown>;
+          const project = projects.find((item) => item.id === risk.projectId);
+          return { ...risk, currency: risk.currency ?? (risk.impactAmount === undefined ? undefined : project?.currency) };
+        }),
+      })
     : workspaceSchema.parse(value);
   // Rename only the shipped demo title; preserve user names and stable project IDs.
   for (const project of migrated.projects) {
     if (project.demo && project.id === 'atlas' && ['Atlas Digital Product Launch','Запуск цифрового продукта Atlas'].includes(project.name)) project.name = project.name.replace('Atlas','MARKOVMADE');
   }
-  if (record.schemaVersion === 4 || record.schemaVersion === 5) return migrated;
+  if (version === 4 || version === 5 || version === 6) return migrated;
   return { ...migrated, workItems: migrated.workItems.map(item => {
     const matches = migrated.teamMembers.filter(member => member.projectId === item.projectId && member.name === item.owner);
     return matches.length === 1 ? { ...item, ownerId: matches[0].id, ownerLabel: item.owner } : item;
@@ -210,7 +254,14 @@ export function exportWorkspace(workspace: Workspace) {
   const blob = new Blob(
     [
       JSON.stringify(
-        { product: "PMWORK", exportedAt: new Date().toISOString(), workspace },
+        {
+          product: "PMWORK",
+          schemaVersion: workspace.schemaVersion,
+          appVersion: "2.3.0",
+          exportedAt: new Date().toISOString(),
+          summary: { projects: workspace.projects.length, workItems: workspace.workItems.length, risks: workspace.risks.length },
+          workspace,
+        },
         null,
         2,
       ),

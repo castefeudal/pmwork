@@ -63,7 +63,7 @@ test("offline workspace includes its scripts and fonts",async({page,context},tes
   await page.goto(route("/en/workspace/"));await expect(page.getByText("Requires action")).toBeVisible();
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
   await page.reload();await expect(page.getByRole("button",{name:"Work",exact:true}).filter({visible:true})).toBeVisible();
-  await context.setOffline(true);await page.reload();await navigateWorkspace(page,"Work");await expect(page.getByRole("button",{name:"Add",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();
+  await context.setOffline(true);await page.reload();await navigateWorkspace(page,"Work");await expect(page.getByRole("button",{name:"Add work item",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();
   await page.getByRole("link",{name:"Tools",exact:true}).click();await expect(page.getByRole("slider").first()).toBeVisible();
   await page.goto(route("/en/"));if(testInfo.project.name.includes("mobile")) await page.getByRole("button",{name:"Open menu"}).click();
   if(!testInfo.project.name.includes("mobile")) await page.locator(".public-nav-group summary").first().click();

@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {useDialogFocus} from './use-dialog-focus';
 import {ContextFields} from './context-fields';
 import {defaultContext,contextQuestions} from '@/content/project-context';
-import {starterPacks,starterText} from '@/content/starter-packs';
+import {starterPacks,starterSections,starterText} from '@/content/starter-packs';
 import {scoreApproaches,governanceLevel,type Context} from '@/domain/method-fit';
 import {displayLabel} from '@/content/workspace-i18n';
 import type {Locale} from '@/domain/schemas';
@@ -22,14 +22,15 @@ export function ProjectSetup({locale,onClose,onSubmit}:{locale:Locale;onClose:()
   <form action={onSubmit} onKeyDown={e=>{if(e.key==='Enter'&&step<3&&(e.target as HTMLElement).tagName!=='TEXTAREA')e.preventDefault()}}>
    <fieldset hidden={step!==1} className="setup-fields"><legend>{ru?'Что должно измениться благодаря проекту?':'What should change because of this project?'}</legend><div className="form-grid">
     <label className="field">{ru?'Название проекта':'Project title'}<input name="title" required minLength={2}/></label>
-    <label className="field">{ru?'Тип / пример (необязательно)':'Type / example (optional)'}<select value={pack} onChange={e=>{setPack(e.target.value);const p=starterText(e.target.value,locale);if(p)setObjective(p[1])}}><option value="">{ru?'Свой проект':'Custom project'}</option>{starterPacks.map(p=><option key={p.id} value={p.id}>{p[locale][0]}</option>)}</select></label>
+    <label className="field">{ru?'Тип / стартовый пакет (необязательно)':'Type / starter pack (optional)'}<select value={pack} onChange={e=>{setPack(e.target.value);const p=starterText(e.target.value,locale);if(p)setObjective(p[1])}}><option value="">{ru?'Свой проект':'Custom project'}</option>{starterPacks.map(p=><option key={p.id} value={p.id}>{p[locale][0]}</option>)}</select></label>
+    <input type="hidden" name="starterPack" value={pack}/>
     <input type="hidden" name="projectType" value={starterPacks.find(p=>p.id===pack)?.type??'general'}/>
     <label className="field wide">{ru?'Измеримый результат':'Measurable outcome'}<textarea name="objective" value={objective} onChange={e=>setObjective(e.target.value)} required placeholder={ru?'Например: запустить новую версию к 30 сентября и перевести 80% активных пользователей':'Example: launch the new version by 30 September and migrate 80% of active users'}/></label>
     <label className="field">{ru?'Целевая дата (необязательно)':'Target date (optional)'}<input name="dueDate" type="date"/></label>
     <label className="field">{ru?'Моя роль / владелец':'My role / owner'}<input name="owner" placeholder={ru?'Например: Project Manager':'Example: Project Manager'}/></label>
    </div>
    <details open={advancedBasics} onToggle={e=>setAdvancedBasics((e.currentTarget as HTMLDetailsElement).open)}><summary>{ru?'Дополнительные параметры':'Additional parameters'}</summary><div className="form-grid"><label className="field">{ru?'Спонсор':'Sponsor'}<input name="sponsor"/></label><label className="field">{ru?'Валюта':'Currency'}<input name="currency" defaultValue="USD"/></label><label className="field wide">{ru?'Критерии успеха — по одному на строку':'Success measures — one per line'}<textarea name="successMeasures"/></label></div></details>
-   {example&&<details><summary>{ru?'Посмотреть пример и адаптировать':'Inspect example and adapt'}</summary>{example.slice(2).map((line,i)=><p key={i}>{line}</p>)}</details>}
+   {example&&<details><summary>{ru?'Предпросмотр пакета и выбор состава':'Preview pack and choose contents'}</summary>{example.slice(2).map((line,i)=><p key={i}>{line}</p>)}<fieldset><legend>{ru?'Что создать':'Create'}</legend>{starterSections.map(section=><label key={section} className="checkbox"><input type="checkbox" name="packSections" value={section} defaultChecked/>{({milestones:ru?'Контрольные точки':'Milestones',work:ru?'Начальная работа':'Initial work',risks:ru?'Риски':'Risks',assumptions:ru?'Допущение':'Assumption',decisions:ru?'Решение':'Decision',stakeholders:ru?'Роли заинтересованных сторон':'Stakeholder roles',documents:ru?'Рабочий договор и ритм обзора':'Operating agreement and cadence'})[section]}</label>)}</fieldset><p className="muted">{ru?'Создаются роли-заполнители, а не вымышленные люди. Все элементы можно изменить после применения.':'Role placeholders are created, never fictional people. Every item remains editable after application.'}</p></details>}
    </fieldset>
    <fieldset hidden={step!==2} className="setup-fields"><legend>{ru?'Как устроен проект?':'How is the project shaped?'}</legend><p>{ru?'Четырёх ответов достаточно для первой рекомендации. Среднее значение можно оставить и уточнить позже.':'Four answers are enough for a first recommendation. Midpoint values can be refined later.'}</p>
     <ContextFields value={context} onChange={setContext} locale={locale} keys={coreContextKeys}/>

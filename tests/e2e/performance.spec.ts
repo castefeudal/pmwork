@@ -10,5 +10,7 @@ for(const path of ['','glossary','methods','tools','workspace'])test(`lab render
  await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
  const metrics=await page.evaluate(()=>(window as unknown as {pmworkMetrics:{lcp:number;cls:number}}).pmworkMetrics);
  await testInfo.attach('local-rendering-metrics',{body:JSON.stringify({...metrics,note:'Local unthrottled lab sample, not field CWV.'}),contentType:'application/json'});
- expect(metrics.cls).toBeLessThanOrEqual(.1);
+ console.log(`PERF ${testInfo.project.name} /en/${path} LCP=${Math.round(metrics.lcp)}ms CLS=${metrics.cls.toFixed(6)}`);
+ expect(metrics.cls).toBeLessThanOrEqual(.05);
+ expect(metrics.lcp).toBeLessThanOrEqual(2500);
 });

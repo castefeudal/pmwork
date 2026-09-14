@@ -6,11 +6,11 @@ const counts = {
   playbooks: (text.match(/\bpb\(\s*"/g) || []).length,
 };
 const seedBlock =
-  text.match(/const glossarySeed:[\s\S]*?=\s*\[([\s\S]*?)\];\nconst g\s*=/)?.[1] ??
+  text.match(/const glossarySeed:[\s\S]*?=\s*\[([\s\S]*?)\];\r?\nconst g\s*=/)?.[1] ??
   "";
 const extendedBlock =
   text.match(
-    /const extendedGlossary:[\s\S]*?=\s*\[([\s\S]*?)\];\nexport const glossary/,
+    /const extendedGlossary:[\s\S]*?=\s*\[([\s\S]*?)\];\r?\nexport const glossary/,
   )?.[1] ?? "";
 const seed = (seedBlock.match(/^\s+\[\s*$/gm) || []).length;
 const extended = (extendedBlock.match(/^\s+g\(\s*"/gm) || []).length;

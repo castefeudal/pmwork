@@ -116,6 +116,17 @@ const createLabels={
  en:{work:"Work item",iteration:"Iteration",objective:"Objective",milestone:"Milestone",dependency:"Dependency",risk:"Risk",issue:"Issue",assumption:"Assumption",decision:"Decision",team:"Team member",stakeholder:"Stakeholder",communication:"Communication",meeting:"Meeting",vendor:"Vendor",budget:"Budget line",change:"Change request",quality:"Quality gate",document:"Document",project:"Project"},
 } as const;
 
+function importPreview(locale: Locale, imported: Workspace, replacing: boolean) {
+  const ru=locale==='ru';
+  const summary=ru
+    ? `Копия проверена. Схема: v${imported.schemaVersion}; проектов: ${imported.projects.length}; работ: ${imported.workItems.length}; рисков: ${imported.risks.length}.`
+    : `Backup validated. Schema: v${imported.schemaVersion}; projects: ${imported.projects.length}; work items: ${imported.workItems.length}; risks: ${imported.risks.length}.`;
+  const consequence=replacing
+    ? (ru?' Текущее рабочее пространство будет заменено после создания защитного снимка.':' The current workspace will be replaced after a safety snapshot is created.')
+    : (ru?' Импортировать эту копию?':' Import this backup?');
+  return summary+consequence;
+}
+
 export function WorkspaceApp({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [workspace, setWorkspace] = useState<Workspace>(() => demoWorkspace(locale)),
@@ -195,7 +206,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     if (next.href !== window.location.href) history.pushState(null, "", next);
   }, [ready, firstRun, projectId, view]);
 
-  if (!ready) return <main className="language-gate" aria-busy="true"><Brand/><p role="status">{ru ? "Загрузка рабочего пространства…" : "Loading local workspace…"}</p></main>;
+  if (!ready) return <main className="language-gate first-run-gate" aria-busy="true"><Brand/><p role="status">{ru ? "Загрузка рабочего пространства…" : "Loading local workspace…"}</p></main>;
 
   if (firstRun) return (
     <main className="language-gate first-run-gate">
@@ -209,7 +220,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         <button className="button ghost" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить резервную копию" : "Restore backup"}</button>
       </div>
       <p className="muted compact">{ru?"Данные остаются на этом устройстве. Резервную копию можно скачать в любой момент.":"Data stays on this device. You can download a backup at any time."}</p>
-      <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {const file=e.target.files?.[0];if(!file)return;try{const restored=await importWorkspace(file);setWorkspace({...restored,locale});setProjectId(restored.projects[0]?.id??"");setView("overview");setFirstRun(false);}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}}}/>
+      <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {const file=e.target.files?.[0];if(!file)return;try{const restored=await importWorkspace(file);if(!window.confirm(importPreview(locale,restored,false)))return;setWorkspace({...restored,locale});setProjectId(restored.projects[0]?.id??"");setView("overview");setFirstRun(false);}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}finally{e.target.value='';}}}/>
       {toast&&<p role="alert">{toast}</p>}
       {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}
     </main>
@@ -237,7 +248,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       case "setup": return <SetupView {...common} snapshots={snapshots} onExport={()=>exportWorkspace(workspace)} onImport={()=>fileRef.current?.click()} onRestore={async(key)=>{const snapshot=snapshots.find(item=>item.key===key);if(!window.confirm(ru?`Восстановить снимок от ${snapshot?new Date(snapshot.at).toLocaleString(locale):"выбранной даты"}? Текущее состояние будет заменено. Сначала рекомендуется скачать резервную копию.`:`Restore the snapshot from ${snapshot?new Date(snapshot.at).toLocaleString(locale):"the selected date"}? Current state will be replaced. Download a backup first.`))return;try{const restored=await restoreSnapshot(key);if(!recovery)await saveWorkspace(workspace,true);commit({...restored,locale});setRecovery(false);selectProject(restored.projects[0]?.id??"");setToast(ru?"Снимок данных восстановлен":"Snapshot restored");}catch{setToast(ru?"Не удалось восстановить снимок данных":"Could not restore snapshot");}}}/>;
     }
   };
-  const onImport = async (file?: File) => {if(!file)return;try{const imported=await importWorkspace(file);if(!window.confirm(ru?"Импорт заменит текущее рабочее пространство. Продолжить?":"Import will replace the current workspace. Continue?"))return;if(!recovery)await saveWorkspace(workspace,true);commit({...imported,locale});setRecovery(false);selectProject(imported.projects[0]?.id??"");setToast(ru?"Резервная копия восстановлена":"Backup restored");}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}};
+  const onImport = async (file?: File) => {if(!file)return;try{const imported=await importWorkspace(file);if(!window.confirm(importPreview(locale,imported,true)))return;if(!recovery)await saveWorkspace(workspace,true);commit({...imported,locale});setRecovery(false);selectProject(imported.projects[0]?.id??"");setToast(ru?"Резервная копия восстановлена":"Backup restored");}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}finally{if(fileRef.current)fileRef.current.value='';}};
   const navGroups:[string,WorkspaceView[]][] = workspace.experience==="foundation" ? [
     [ru?"ДЕЙСТВОВАТЬ":"ACT",["overview","work","planning"]],
     [ru?"УПРАВЛЯТЬ":"MANAGE",["raid","control","finance"]],
@@ -272,7 +283,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           <button className="button small command-trigger" aria-label={ru?"Открыть поиск":"Open search"} onClick={()=>setPalette(true)}><Search size={16}/><span>{ru?"Поиск":"Search"}</span><kbd>Ctrl K</kbd></button>
           <button className="button small" onClick={async()=>{if(!recovery)await saveWorkspace(workspace);const next=workspaceUrl(window.location.href,project.id,view);next.pathname=next.pathname.replace(`/${locale}/workspace`,`/${ru?"en":"ru"}/workspace`);window.location.assign(next.href)}}>{ru?"EN":"RU"}</button>
           <ThemeToggle locale={locale}/>
-          <button className="button small primary" aria-label={ru?"Добавить":"Add"} aria-haspopup="dialog" onClick={()=>setAddMenu(true)}><Plus size={17}/><span className="desktop-only">{ru?"Добавить":"Add"}</span></button>
+          <button className="button small primary" aria-label={ru?"Создать запись":"Global create"} aria-haspopup="dialog" onClick={()=>setAddMenu(true)}><Plus size={17}/><span className="desktop-only">{ru?"Создать":"Create"}</span></button>
           <button className="button small desktop-only" onClick={()=>exportWorkspace(workspace)}><Download size={17}/>{ru?"Экспорт":"Export"}</button>
           <button className="button small desktop-only" onClick={()=>fileRef.current?.click()}><Upload size={17}/>{ru?"Импорт":"Import"}</button>
           <input hidden ref={fileRef} type="file" accept="application/json" onChange={(e)=>onImport(e.target.files?.[0])}/>

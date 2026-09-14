@@ -1,11 +1,12 @@
 # Security and privacy review
 
-- User input is rendered as React text; no `dangerouslySetInnerHTML` is used.
-- Imports have a 10 MB limit and are parsed through strict Zod schemas before persistence.
-- Unknown schema versions fail validation rather than silently corrupting state.
-- Project data remains in IndexedDB; there are no credentials, trackers, analytics, or remote sync.
-- Export uses a local Blob URL that is revoked immediately.
-- External source links use `rel="noreferrer"`.
-- Destructive workspace reset is not exposed without a confirmation flow.
+- User content is rendered as React text; the repository contains no `dangerouslySetInnerHTML` path for user input.
+- Imports are limited to 10 MB, parsed, migrated, and strictly validated with Zod before preview or persistence. Unknown future schemas fail closed.
+- Healthy data receives a forced snapshot before import/restore replacement. Corrupt original bytes are preserved while autosave is paused.
+- Project data stays in IndexedDB with a localStorage recovery mirror. There are no credentials, trackers, analytics, remote sync, third-party scripts, or server data endpoints.
+- Blob download URLs are revoked and external source links use safe relationship attributes.
+- `npm audit --audit-level=moderate` reports zero known dependency vulnerabilities for the v2.3 lockfile. Vitest was upgraded to 5.0.0 to remove the prior dev-only path-traversal advisory.
 
-Remaining browser-level risk: any script executing in the origin can access IndexedDB. Deployment should keep dependencies current and use a restrictive platform CSP where headers are supported.
+Browser-origin risk remains fundamental: any JavaScript executing in the PMWORK origin can potentially read IndexedDB. Keep dependencies and deployment actions current, protect the GitHub account and branch, review every third-party dependency, and avoid sharing the origin with unrelated applications.
+
+GitHub Pages cannot attach a repository-controlled response-header CSP. A restrictive meta CSP would conflict with Next's generated inline bootstrap and would offer incomplete protection, so PMWORK does not claim a cosmetic CSP. Static hosts with configurable headers should test a nonce/hash-based policy against the complete export, service worker, fonts, and offline flow before enforcement.

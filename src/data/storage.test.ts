@@ -10,7 +10,7 @@ describe("workspace data", () => {
       expect(
         w.workItems.every((x) => w.projects.some((p) => p.id === x.projectId)),
       ).toBe(true);
-      expect(w.schemaVersion).toBe(5);
+      expect(w.schemaVersion).toBe(6);
     }
   });
   it("round trips JSON with persisted closure", () => {
@@ -18,8 +18,17 @@ describe("workspace data", () => {
     expect(workspaceSchema.parse(JSON.parse(JSON.stringify(w)))).toEqual(w);
     expect(w.closureRecords[0]?.benefitsOwner).toBeTruthy();
   });
-  it("migrates v1, v2 and v3 workspaces without losing core records", () => {
-    for (const version of [1, 2, 3]) {
+  it("preserves legacy milestone dates and estimates as v6 lifecycle baselines", () => {
+    const current=demoWorkspace("en");
+    const workItems=current.workItems.map(item=>{const legacy={...item} as Record<string,unknown>;delete legacy.originalEstimate;delete legacy.currentEstimate;delete legacy.estimateHistory;return legacy;});
+    const milestones=current.milestones.map(item=>{const legacy={...item} as Record<string,unknown>;for(const key of ['owner','baselineDate','forecastDate','confidence','createdAt','updatedAt','history'])delete legacy[key];return legacy;});
+    const legacy={...current,schemaVersion:5,workItems,milestones};
+    const migrated=migrateWorkspace(legacy);
+    expect(migrated.workItems[0]).toMatchObject({originalEstimate:current.workItems[0].estimate,currentEstimate:current.workItems[0].estimate});
+    expect(migrated.milestones[0]).toMatchObject({baselineDate:current.milestones[0].date,forecastDate:current.milestones[0].date});
+  });
+  it("migrates every supported legacy workspace without losing core records", () => {
+    for (const version of [1, 2, 3, 4, 5]) {
       const current = demoWorkspace("en"),
         legacy = { ...current, schemaVersion: version };
       delete (legacy as Record<string, unknown>).closureRecords;
@@ -43,7 +52,7 @@ describe("workspace data", () => {
         ])
           delete (legacy as Record<string, unknown>)[key];
       const migrated = migrateWorkspace(legacy);
-      expect(migrated.schemaVersion).toBe(5);
+      expect(migrated.schemaVersion).toBe(6);
       expect(migrated.projects).toHaveLength(3);
       expect(migrated.closureRecords).toEqual([]);
     }

@@ -42,7 +42,15 @@ export const workItemSchema = z.object({
   labels: z.array(z.string()).default([]),
   startDate: z.string().optional(),
   dueDate: z.string().optional(),
+  /** @deprecated Kept for v1–v5 backup compatibility; mirrors currentEstimate. */
   estimate: z.number().nonnegative().optional(),
+  originalEstimate: z.number().nonnegative().optional(),
+  currentEstimate: z.number().nonnegative().optional(),
+  estimateHistory: z.array(z.object({
+    value: z.number().nonnegative(),
+    timestamp: z.string(),
+    reason: z.string().optional(),
+  })).default([]),
   actualEffort: z.number().nonnegative().optional(),
   milestoneId: z.string().optional(),
   iterationId: z.string().optional(),
@@ -83,6 +91,12 @@ export const riskSchema = z.object({
   reviewDate: z.string(),
   residualProbability: z.number().min(1).max(5).optional(),
   residualImpact: z.number().min(1).max(5).optional(),
+  probabilityPct: z.number().min(0).max(100).optional(),
+  impactAmount: z.number().nonnegative().optional(),
+  residualProbabilityPct: z.number().min(0).max(100).optional(),
+  residualImpactAmount: z.number().nonnegative().optional(),
+  responseCost: z.number().nonnegative().optional(),
+  currency: z.string().min(3).max(3).optional(),
   status: z.enum(["open", "watching", "responding", "closed"]),
 });
 export const projectSchema = z.object({
@@ -168,9 +182,25 @@ export const milestoneSchema = z.object({
   id: z.string(),
   projectId: z.string(),
   title: z.string(),
+  /** @deprecated Kept for v1–v5 backup compatibility; mirrors forecastDate. */
   date: z.string(),
-  status: z.enum(["planned", "at-risk", "done"]),
+  owner: z.string().default(""),
+  baselineDate: z.string(),
+  forecastDate: z.string(),
+  actualDate: z.string().optional(),
+  confidence: z.number().min(0).max(100).optional(),
+  status: z.enum(["planned", "on-track", "at-risk", "done", "cancelled"]),
   progress: z.number().min(0).max(100),
+  forecastReason: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  history: z.array(z.object({
+    at: z.string(),
+    field: z.enum(["baselineDate", "forecastDate", "actualDate", "confidence", "status", "progress", "owner"]),
+    from: z.union([z.string(), z.number(), z.null()]).optional(),
+    to: z.union([z.string(), z.number(), z.null()]),
+    reason: z.string().optional(),
+  })).default([]),
 });
 export const issueSchema = z.object({
   id: z.string(),
@@ -374,8 +404,21 @@ export type WorkViewConfig = z.infer<typeof workViewConfigSchema>;
 export const savedWorkViewSchema = z.object({
   id: z.string(), projectId: z.string(), name: z.string().min(1).max(80), config: workViewConfigSchema,
 });
+export const toolRunSchema = z.object({
+  id: z.string().min(1),
+  projectId: z.string().min(1),
+  tool: z.enum(["deadline", "emv", "capacity", "matrix", "ownership", "change", "calibration", "markovmade"]),
+  createdAt: z.string(),
+  source: z.string().min(1),
+  assumptions: z.array(z.string()).default([]),
+  inputs: z.record(z.string(), z.unknown()),
+  outputSummary: z.string().min(1),
+  confidence: z.enum(["low", "medium", "high", "unknown"]),
+  dataQuality: z.string().min(1),
+  appliedRecordIds: z.array(z.string()).default([]),
+});
 export const workspaceSchema = z.object({
-  schemaVersion: z.literal(5),
+  schemaVersion: z.literal(6),
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
   workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),
@@ -407,6 +450,7 @@ export const workspaceSchema = z.object({
   qualityGates: z.array(qualityGateSchema).default([]),
   closureRecords: z.array(closureRecordSchema).default([]),
   activities: z.array(activitySchema).default([]),
+  toolRuns: z.array(toolRunSchema).default([]),
   projectSettings: z.array(projectSettingsSchema).default([]),
 });
 export type Workspace = z.infer<typeof workspaceSchema>;

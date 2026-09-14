@@ -18,6 +18,13 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
   else {ownerPatch.ownerId=undefined;ownerPatch.ownerLabel=ownerPatch.owner??item.ownerLabel??item.owner;}
  }
  const at=new Date().toISOString(),status=patch.status??item.status;
+ const requestedEstimate=patch.currentEstimate??patch.estimate;
+ if(requestedEstimate!==undefined&&requestedEstimate!==item.currentEstimate){
+  ownerPatch.originalEstimate=item.originalEstimate??item.currentEstimate??item.estimate??requestedEstimate;
+  ownerPatch.currentEstimate=requestedEstimate;
+  ownerPatch.estimate=requestedEstimate;
+  ownerPatch.estimateHistory=[...item.estimateHistory,{value:requestedEstimate,timestamp:at}];
+ }
  return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
 }
 export const changeWorkStatus=(w:Workspace,id:string,status:WorkItem['status'])=>updateWork(w,id,{status});
@@ -54,7 +61,10 @@ export function createDecision(w:Workspace,decision:Workspace['decisions'][numbe
 }
 export function updateMilestone(w:Workspace,id:string,patch:Partial<Workspace['milestones'][number]>){
  const item=w.milestones.find(m=>m.id===id);if(!item)throw Error('Milestone not found');
- return finish({...w,milestones:w.milestones.map(m=>m.id===id?{...m,...patch,id:m.id,projectId:m.projectId}:m)},item.projectId,'milestone-updated',item.title);
+ const at=new Date().toISOString(),tracked=['baselineDate','forecastDate','actualDate','confidence','status','progress','owner'] as const;
+ const history=tracked.flatMap(field=>field in patch&&patch[field]!==item[field]?[{at,field,from:item[field]??null,to:patch[field]??null,reason:field==='forecastDate'?patch.forecastReason:undefined}]:[]);
+ const forecastDate=patch.forecastDate??item.forecastDate;
+ return finish({...w,milestones:w.milestones.map(m=>m.id===id?{...m,...patch,date:forecastDate,updatedAt:at,history:[...m.history,...history],id:m.id,projectId:m.projectId}:m)},item.projectId,'milestone-updated',item.title);
 }
 export function applyTemplate(w:Workspace,document:Workspace['documents'][number]){
  if(!w.projects.some(p=>p.id===document.projectId)||w.documents.some(d=>d.id===document.id))throw Error('Invalid document identity');

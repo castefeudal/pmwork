@@ -7,12 +7,13 @@ import type { ViewProps } from "./workspace-views";
 import type { CreateType, WorkspaceView } from "./workspace-types";
 import type { EditableKind } from "./record-editor";
 export function CommandMenu({workspace, project, locale, onClose, onView, onCreate, onProject, onEdit}: Omit<ViewProps,"onChange"> & {onClose: () => void}) {
-  const ru = locale === "ru", prefix = useId(), dialogRef = useDialogFocus();
+  const ru = locale === "ru", prefix = useId(), dialogRef = useDialogFocus(), base = process.env.NEXT_PUBLIC_PMWORK_BASE_PATH ?? "";
   const [query, setQuery] = useState(""), [selected, setSelected] = useState(0);
   const entries = useMemo(() => {
-    const rows: {id:string; label:string; meta:string; run:()=>void}[] = [];
+    const rows: {id:string; label:string; meta:string; search?:string; run:()=>void}[] = [];
+    const intent:Partial<Record<WorkspaceView,string>>={overview:"today сейчас главное приоритет сигнал",work:"task задача работа backlog бэклог",planning:"deadline срок успеем прогноз forecast milestone веха",raid:"risk риск денег EMV решение decision",people:"owner владелец кто отвечает ответственность",finance:"budget бюджет деньги cost стоимость",control:"status статус change изменение quality качество",guide:"guide помощь подход method"};
     const views: [WorkspaceView,string,string][] = [["overview","Обзор","Overview"],["work","Работа","Work"],["board","Доска","Board"],["planning","Планирование","Planning"],["raid","RAID","RAID"],["people","Люди","People"],["finance","Финансы","Finance"],["control","Контроль","Control"],["documents","Документы","Documents"],["portfolio","Портфель","Portfolio"],["guide","Проведи меня","Guide me"],["setup","Настройка","Setup"]];
-    views.forEach(([id,r,e]) => rows.push({id,label:ru?r:e,meta:ru?"Раздел":"View",run:()=>onView(id)}));
+    views.forEach(([id,r,e]) => rows.push({id,label:ru?r:e,meta:ru?"Раздел":"View",search:intent[id],run:()=>onView(id)}));
     const creates: [CreateType,string,string][] = [["work","Создать работу","Create work"],["risk","Создать риск","Create risk"],["issue","Создать проблему","Create issue"],["decision","Создать решение","Create decision"],["milestone","Создать контрольную точку","Create milestone"],["document","Создать документ","Create document"]];
     creates.forEach(([id,r,e]) => rows.push({id:`create-${id}`,label:ru?r:e,meta:ru?"Действие":"Action",run:()=>onCreate(id)}));
     workspace.projects.forEach(p => rows.push({id:`project-${p.id}`,label:p.name,meta:ru?"Переключить проект":"Switch project",run:()=>{onProject(p.id);onView("overview");}}));
@@ -23,13 +24,24 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
     workspace.decisions.forEach(x=>add("decision",x.id,x.question,x.projectId));
     workspace.milestones.forEach(x=>add("milestone",x.id,x.title,x.projectId));
     workspace.documents.forEach(x=>add("document",x.id,x.title,x.projectId));
+    const tools=[
+      ["deadline","Deadline confidence","срок успеем deadline forecast прогноз P50 P80 P90"],
+      ["emv","Risk EMV","риск денег monetary contingency резерв EMV"],
+      ["capacity","Capacity & WIP","загрузка команды capacity WIP мощность"],
+      ["ownership","Ownership coverage","кто отвечает owner владелец ответственность"],
+      ["markovmade","MARKOVMADE priority","ограничение constraint приоритет evidence ROI"],
+    ];
+    tools.forEach(([id,label,search])=>rows.push({id:`tool-${id}`,label,meta:ru?"Инструмент":"Tool",search,run:()=>{
+      // A full navigation intentionally leaves the workspace application for the public tools bundle.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign(`${base}/${locale}/tools/?tool=${id}`);
+    }}));
     return rows;
-  },[workspace,ru,onView,onCreate,onProject,onEdit]);
-  const index = useMemo(()=>new Fuse(entries,{keys:[{name:"label",weight:2},"meta"],threshold:.35,ignoreLocation:true}),[entries]);
-  const results = query.trim() ? index.search(query,{limit:30}).map(x=>x.item) : entries.slice(0,21);
+  },[workspace,ru,onView,onCreate,onProject,onEdit,base,locale]);
+  const index = useMemo(()=>new Fuse(entries,{keys:[{name:"label",weight:2},"meta","search"],threshold:.4,ignoreLocation:true}),[entries]);
+  const results = query.trim() ? index.search(query,{limit:30}).map(x=>x.item).sort((a,b)=>Number(b.meta.includes(project.name))-Number(a.meta.includes(project.name))) : entries.slice(0,21);
   const active = Math.min(selected, Math.max(0,results.length-1));
   const execute = (i:number) => { const item=results[i]; if(item){onClose();item.run();} };
-  const base = process.env.NEXT_PUBLIC_PMWORK_BASE_PATH ?? "";
   return <div className="dialog-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)onClose();}}>
     <section className="command-palette" ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={ru?"Командная палитра":"Command palette"}>
       <div className="search-input"><Search/><input role="combobox" aria-label={ru?"Найти запись или действие":"Find a record or action"} aria-expanded="true" aria-controls={`${prefix}-results`} aria-activedescendant={results.length ? `${prefix}-${active}`:undefined} autoComplete="off" value={query} onChange={e=>{setQuery(e.target.value);setSelected(0);}} placeholder={ru?"Название, ID, действие…":"Title, ID, action…"} onKeyDown={e=>{if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();setSelected((active+(e.key==="ArrowDown"?1:-1)+results.length)%Math.max(1,results.length));}if(e.key==="Enter"){e.preventDefault();execute(active);}if(e.key==="Escape")onClose();}}/><button className="icon-button" onClick={onClose} aria-label={ru?"Закрыть":"Close"}><X size={18}/></button></div>

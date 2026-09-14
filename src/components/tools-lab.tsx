@@ -5,6 +5,7 @@ import {dailyHistory} from "@/domain/decision-tools";
 import dynamic from "next/dynamic";
 const ProjectDataSource=dynamic(()=>import("./project-data-source").then(m=>m.ProjectDataSource));
 const ProjectTools=dynamic(()=>import("./project-tools").then(m=>m.ProjectTools));
+const MarkovmadeTool=dynamic(()=>import("./markovmade-tool").then(m=>m.MarkovmadeTool));
 import { useUrlChoice } from "./use-url-state";
 import { useId, useMemo, useState } from "react";
 import { displayLabel } from "@/content/workspace-i18n";
@@ -31,7 +32,7 @@ type Tool =
   | "evm"
   | "forecast"
   | "priority"
-  | "flow" | "deadline" | "emv" | "capacity" | "matrix" | "ownership" | "change" | "calibration";
+  | "flow" | "deadline" | "emv" | "capacity" | "matrix" | "ownership" | "change" | "calibration" | "markovmade";
 const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
   uncertainty: { ru: "Неопределённость", en: "Uncertainty" },
   volatility: { ru: "Изменчивость требований", en: "Requirements volatility" },
@@ -49,7 +50,7 @@ const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
 };
 export function ToolsLab({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
-    [tool, setTool] = useUrlChoice<Tool>("tool",["fit","composer","cpm","pert","evm","forecast","priority","flow","deadline","emv","capacity","matrix","ownership","change","calibration"],"fit");
+    [tool, setTool] = useUrlChoice<Tool>("tool",["fit","composer","cpm","pert","evm","forecast","priority","flow","deadline","emv","capacity","matrix","ownership","change","calibration","markovmade"],"fit");
   const titles: Record<Tool, string> = {
     deadline: ru?"Уверенность в сроке":"Deadline confidence",
     emv: ru?"Денежный риск · EMV":"Monetary risk · EMV",
@@ -58,6 +59,7 @@ export function ToolsLab({ locale }: { locale: Locale }) {
     ownership: ru?"Ответственность":"Ownership coverage",
     change: ru?"Сценарий изменения":"Change scenario",
     calibration: ru?"Точность оценок":"Estimate calibration",
+    markovmade: "MARKOVMADE",
     fit: ru ? "Подбор подхода" : "Approach fit",
     composer: ru ? "Конструктор метода" : "Method composer",
     cpm: ru ? "Критический путь · CPM" : "Critical Path",
@@ -98,6 +100,7 @@ export function ToolsLab({ locale }: { locale: Locale }) {
         {tool === "forecast" && <Forecast locale={locale} />}{" "}
         {tool === "priority" && <Priority locale={locale} />}{" "}
         {tool === "flow" && <Flow locale={locale} />}
+        {tool === "markovmade" && <MarkovmadeTool locale={locale} />}
         {(tool === "deadline" || tool === "emv" || tool === "capacity" || tool === "matrix" || tool === "ownership" || tool === "change" || tool === "calibration") && <ProjectTools key={tool} locale={locale} tool={tool}/>}
       </section>
     </>

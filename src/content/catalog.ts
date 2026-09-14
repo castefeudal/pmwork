@@ -487,6 +487,21 @@ export const methods: Method[] = [
     "A scaling framework amplifies complexity and does not repair weak teams.",
     ["agile2"],
   ),
+  m(
+    "markovmade",
+    "MARKOVMADE — авторская методика",
+    "MARKOVMADE — authorial framework",
+    "Авторская операционная методика, а не отраслевой стандарт. Максимизирует измеримый результат на единицу времени, внимания, денег и сложности.",
+    "An authorial operating framework, not an industry standard. It maximizes measurable outcome per unit of time, attention, money, and complexity.",
+    "Зафиксировать реальность → атаковать ограничение → ранжировать по доказательствам и отдаче → убрать сложность → задать результат → определить проверку → снизить трение → обеспечить доступность → исправить систему → замкнуть цикл доказательствами.",
+    "Measure reality → attack the constraint → rank by evidence and ROI → kill complexity → define the outcome → plan validation → minimize friction → support accessibility → design the system → close the loop with evidence.",
+    "Когда много возможных улучшений, ресурсы ограничены, а команде нужен один проверяемый следующий шаг.",
+    "When many interventions compete for limited resources and the team needs one testable next move.",
+    "Это эвристика приоритизации: оценки не доказывают причинность и не заменяют профессиональное суждение, пользовательское исследование или обязательные controls.",
+    "This is a prioritization heuristic: scores do not prove causality or replace professional judgment, user research, or mandatory controls.",
+    [],
+    "Authorial operating framework",
+  ),
 ].map(methodPractice);
 
 export type Template = {
@@ -547,8 +562,8 @@ const template = (
   when: {ru:templatePractice[slug][0],en:templatePractice[slug][1]},
   fields: [...tf[category], ...extra],
   guidance: {
-    ru: "Заполняйте до уровня, достаточного для следующего управленческого действия. Удалите секции, которые ничего не меняют.",
-    en: "Complete only to the depth needed for the next management action. Remove sections that change nothing.",
+    ru: `Полезное завершение «${ru}» позволяет ${purposeRu.charAt(0).toLowerCase()+purposeRu.slice(1)} Следующее решение должно опираться на заполненные поля; удалите секции, которые ничего не меняют.`,
+    en: `A useful ${en} lets the team ${purposeEn.charAt(0).toLowerCase()+purposeEn.slice(1)} The next decision must be supported by its completed fields; remove sections that change nothing.`,
   },
   antiPattern: {ru:templatePractice[slug][2],en:templatePractice[slug][3]},
 });
@@ -983,14 +998,14 @@ const pb = (
   next: [playbookNext[slug]],
   stabilize: [
     {
-      ru: "Сократите активную работу, сделайте приоритеты и зависимости явными, восстановите ритм контроля.",
-      en: "Reduce active work, expose priorities and dependencies, and restore a control cadence.",
+      ru: `После первого действия закрепите новый порядок работы: ${actionRu.charAt(0).toLowerCase()+actionRu.slice(1)} На каждом обзоре проверяйте: ${metricRu.charAt(0).toLowerCase()+metricRu.slice(1)}`,
+      en: `After the immediate action, stabilize the new operating rule: ${actionEn.charAt(0).toLowerCase()+actionEn.slice(1)} At each review inspect: ${metricEn.charAt(0).toLowerCase()+metricEn.slice(1)}`,
     },
   ],
   prevent: [
     {
-      ru: "Добавьте раннее условие срабатывания, владельца и регулярный обзор — не новый отчёт ради отчёта.",
-      en: "Add an early trigger, owner, and regular review—not another report for its own sake.",
+      ru: `Используйте ранний сигнал «${signalRu}» как условие обзора. Назначьте владельца реакции и проверяйте ${metricRu.charAt(0).toLowerCase()+metricRu.slice(1)}, не создавая отчёт ради отчёта.`,
+      en: `Use “${signalEn}” as an early review trigger. Assign a response owner and inspect ${metricEn.charAt(0).toLowerCase()+metricEn.slice(1)} without adding reporting for its own sake.`,
     },
   ],
   metrics: [

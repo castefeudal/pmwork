@@ -204,7 +204,7 @@ function fieldsFor(
         text("labels", "Метки", "Labels", "list"),
         text("startDate", "Дата начала", "Start date", "date"),
         text("dueDate", "Срок", "Due date", "date"),
-        text("estimate", "Оценка трудоёмкости", "Effort estimate", "number"),
+        text("currentEstimate", "Текущая оценка", "Current estimate", "number"),
         text(
           "actualEffort",
           "Фактическая трудоёмкость",
@@ -256,13 +256,20 @@ function fieldsFor(
     case "milestone":
       return [
         text("title", "Название", "Title"),
-        text("date", "Дата", "Date", "date"),
+        text("owner", "Владелец", "Owner"),
+        text("baselineDate", "Базовая дата", "Baseline date", "date"),
+        text("forecastDate", "Прогнозная дата", "Forecast date", "date"),
+        text("actualDate", "Фактическая дата", "Actual date", "date"),
+        {...text("confidence", "Уверенность, %", "Confidence, %", "number"),min:0,max:100},
+        text("forecastReason", "Причина изменения прогноза", "Forecast change reason", "textarea"),
         {
           ...text("status", "Статус", "Status", "select"),
           options: options(locale, "milestoneStatus", [
             "planned",
+            "on-track",
             "at-risk",
             "done",
+            "cancelled",
           ]),
         },
         {
@@ -330,6 +337,12 @@ function fieldsFor(
         text("trigger", "Триггер", "Trigger"),
         text("owner", "Владелец", "Owner"),
         text("reviewDate", "Дата пересмотра", "Review date", "date"),
+        {...text("probabilityPct", "Денежная вероятность, %", "Monetary probability, %", "number"),min:0,max:100},
+        text("impactAmount", "Денежное влияние", "Monetary impact", "number"),
+        {...text("residualProbabilityPct", "Остаточная вероятность, %", "Residual probability, %", "number"),min:0,max:100},
+        text("residualImpactAmount", "Остаточное денежное влияние", "Residual monetary impact", "number"),
+        text("responseCost", "Стоимость реагирования", "Response cost", "number"),
+        text("currency", "Валюта", "Currency"),
         {
           ...text(
             "residualProbability",
@@ -642,7 +655,7 @@ export function RecordEditor({
                 .split(/\n|,/)
                 .map((item) => item.trim())
                 .filter(Boolean)
-            : raw;
+            : (["actualDate", "forecastReason", "currency"].includes(field.name) && raw === "" ? undefined : raw);
     }
     if (kind === "dependency") {
       const predecessor = String(nextRecord.predecessorId),
@@ -693,6 +706,14 @@ export function RecordEditor({
         ? String(record.completedAt || new Date().toISOString())
         : undefined;
       nextRecord.updatedAt = new Date().toISOString();
+    }
+    if (kind === "milestone") {
+      const at=new Date().toISOString();
+      nextRecord.date=nextRecord.forecastDate;
+      nextRecord.updatedAt=at;
+      const tracked=["baselineDate","forecastDate","actualDate","confidence","status","progress","owner"] as const;
+      const additions=tracked.flatMap(field=>nextRecord[field]!==record[field]?[{at,field,from:record[field]??null,to:nextRecord[field]??null,reason:field==="forecastDate"?nextRecord.forecastReason:undefined}]:[]);
+      nextRecord.history=[...(record.history as unknown[]),...additions];
     }
     if (kind === "document") nextRecord.updatedAt = new Date().toISOString();
     const validation = workspaceSchema.safeParse({
@@ -784,6 +805,7 @@ export function RecordEditor({
           </button>
         </div>
         <form action={submit} className="form-grid">
+          {kind === "work" && <div className="notice wide"><strong>{ru ? "Оценки: исходная → текущая → факт" : "Estimates: original → current → actual"}</strong><p>{String(record.originalEstimate ?? "—")} → {String(record.currentEstimate ?? record.estimate ?? "—")} → {String(record.actualEffort ?? "—")}</p><small>{ru ? `Изменений: ${(record.estimateHistory as unknown[]).length}` : `Changes: ${(record.estimateHistory as unknown[]).length}`}</small></div>}
           {fields.map((field) => (
             <div
               className={`field ${field.type === "textarea" || field.type === "list" ? "wide" : ""}`}

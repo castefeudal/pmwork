@@ -5,6 +5,7 @@ import { convertRiskToIssue, generateStatusDraft } from "@/domain/workspace-comm
 import { useUrlChoice } from "./use-url-state";
 import { PlanningTimeline } from "./planning-timeline";
 import { localDay } from "@/domain/work-views";
+import { formatMilestoneVariance } from "@/domain/milestones";
 import {
   AlertTriangle,
   ArrowRight,
@@ -121,11 +122,8 @@ export function PortfolioView({
                   </span>
                   <h3>{p.name}</h3>
                 </div>
-                <strong
-                  className="score-ring"
-                  aria-label={`${s.completeness}%`}
-                >
-                  {s.completeness}
+                <strong className="score-ring" aria-label={`${s.covered} of ${s.total} control contours available`}>
+                  {s.covered}/{s.total}
                 </strong>
               </div>
               <p>{p.objective}</p>
@@ -200,9 +198,9 @@ export function OverviewView({
       <div className="metric-cards">
         <Metric
           name={ru ? "Покрытие контура управления" : "Management coverage"}
-          value={`${complete.score}%`}
+          value={`${complete.passed}/${complete.total}`}
           detail={
-            (ru ? "Полнота заполнения, не вероятность успеха. " : "Completeness, not probability of success. ") + (complete.gaps.length
+            (ru ? "Доступные контуры по текущим данным, не вероятность успеха. " : "Contours available from current data, not probability of success. ") + (complete.gaps.length
               ? `${complete.gaps.length} ${ru ? "пробелов" : "gaps"}`
               : ru
                 ? "контур полный"
@@ -422,15 +420,12 @@ export function GuideView({
             : "UNDERSTAND → DECIDE → DO → CONTROL → LEARN"}
         </p>
         <h2>{ru ? "Проведи меня" : "Guide me"}</h2>
-        <strong>{complete.score}%</strong>
+        <strong>{complete.passed}/{complete.total}</strong>
         <p>
           {ru
-            ? "полнота управленческого контура"
-            : "management control completeness"}
+            ? "контуров управления доступны"
+            : "control contours available"}
         </p>
-        <div className="progress">
-          <span style={{ width: `${complete.score}%` }} />
-        </div>
         {complete.gaps.length > 0 && (
           <p className="muted">
             {ru ? "Пробелы" : "Gaps"}: {complete.gaps.join(", ")}
@@ -644,17 +639,22 @@ export function PlanningView({
         <>
           <button
             className="button primary section-action"
+            aria-label={ru ? "Добавить контрольную точку" : "Add milestone"}
             onClick={() => onCreate("milestone")}
           >
             <Plus size={17} />
-            {ru ? "Добавить" : "Add"}
+            {ru ? "Добавить контрольную точку" : "Add milestone"}
           </button>
           <div className="catalog-grid inline-grid">
             {milestones.map((m) => (
               <article className="catalog-card" key={m.id}>
                 <CalendarDays />
-                <p className="eyebrow">{formatDate(m.date,locale)}</p>
+                <p className="eyebrow">{ru ? "База" : "Baseline"}: {formatDate(m.baselineDate,locale)}</p>
                 <h3>{m.title}</h3>
+                <p>{ru ? "Прогноз" : "Forecast"}: <strong>{formatDate(m.forecastDate,locale)}</strong></p>
+                <p>{ru ? "Факт" : "Actual"}: {m.actualDate ? formatDate(m.actualDate,locale) : (ru ? "не зафиксирован" : "not recorded")}</p>
+                <p>{formatMilestoneVariance(m,locale)} · {ru ? "Владелец" : "Owner"}: {m.owner || (ru ? "не назначен" : "unassigned")}</p>
+                <small className="muted">{ru ? "Уверенность" : "Confidence"}: {m.confidence === undefined ? (ru ? "неизвестна" : "unknown") : `${m.confidence}%`}</small>
                 <strong>{m.progress}%</strong>
                 <span
                   className={`status ${m.status === "at-risk" ? "warn" : m.status === "done" ? "good" : "info"}`}
@@ -795,8 +795,9 @@ export function RaidView({
   onChange,
   onEdit,
 }: ViewProps) {
+  type RaidKind = "risk" | "issue" | "assumption" | "decision" | "dependency";
   const ru = locale === "ru",
-    [tab, setTab] = useUrlChoice<CreateType>("tab",["risk","issue","assumption","decision","dependency"],"risk"),
+    [tab, setTab] = useUrlChoice<RaidKind>("tab",["risk","issue","assumption","decision","dependency"],"risk"),
     map = {
       dependency: workspace.dependencies.filter((x) => x.projectId === project.id),
       risk: workspace.risks.filter((x) => x.projectId === project.id),
@@ -862,10 +863,11 @@ export function RaidView({
       </div>
       <button
         className="button primary section-action"
+        aria-label={ru?({dependency:"Добавить зависимость",risk:"Добавить риск",issue:"Добавить проблему",assumption:"Добавить допущение",decision:"Добавить решение"})[tab]:`Add ${tab}`}
         onClick={() => onCreate(tab)}
       >
         <Plus size={17} />
-        {ru ? "Добавить запись" : `Add ${tab}`}
+        {ru ? ({dependency:"Добавить зависимость",risk:"Добавить риск",issue:"Добавить проблему",assumption:"Добавить допущение",decision:"Добавить решение"})[tab] : `Add ${tab}`}
       </button>
       {tab === "dependency" && <EntityTable rows={map.dependency.map(d => ({id:d.id,title:`${d.predecessorId} → ${d.successorId}`,meta:`${d.type} · ${d.lag} ${ru ? "дн. лага" : "lag days"} · ${d.dueDate || "—"}`,owner:d.owner,status:displayLabel(locale,"dependencyStatus",d.status)}))} locale={locale} onEdit={id => onEdit("dependency",id)} />}
       {tab === "risk" && (
@@ -873,13 +875,17 @@ export function RaidView({
           <div className="panel span-8">
             <details><summary>{ru ? "Риск наступил" : "Convert risk to issue"}</summary>{map.risk.filter(r=>r.status!=="closed").map(r=><button className="button small" key={r.id} onClick={()=>onChange(convertRiskToIssue(workspace,r.id))}>{r.title} → Issue</button>)}</details>
             <EntityTable
-              rows={map.risk.map((r) => ({
-                id: r.id,
-                title: r.title,
-                meta: `P × I = ${r.probability * r.impact} · ${displayLabel(locale, "riskStrategy", r.strategy)}`,
-                owner: r.owner,
-                status: displayLabel(locale, "riskStatus", r.status),
-              }))}
+              rows={map.risk.map((r) => {
+                const gross=r.probabilityPct!==undefined&&r.impactAmount!==undefined?r.probabilityPct/100*r.impactAmount:null;
+                const residual=r.residualProbabilityPct!==undefined&&r.residualImpactAmount!==undefined?r.residualProbabilityPct/100*r.residualImpactAmount:null;
+                return {
+                  id: r.id,
+                  title: r.title,
+                  meta: `P × I = ${r.probability * r.impact} · EMV ${gross===null?(ru?"неизвестна":"unknown"):`${gross.toFixed(0)} ${r.currency??project.currency}`} · ${ru?"остаточная":"residual"} ${residual===null?(ru?"неизвестна":"unknown"):`${residual.toFixed(0)} ${r.currency??project.currency}`} · ${displayLabel(locale, "riskStrategy", r.strategy)}`,
+                  owner: r.owner,
+                  status: displayLabel(locale, "riskStatus", r.status),
+                };
+              })}
               locale={locale}
               onEdit={(id) => onEdit("risk", id)}
               onDelete={(id) => archive(tab, id)}

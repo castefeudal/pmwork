@@ -194,6 +194,8 @@ export function projectCompleteness(workspace: Workspace, projectId: string) {
   const passed = checks.filter(([ok]) => ok).length;
   return {
     score: Math.round((passed / checks.length) * 100),
+    passed,
+    total: checks.length,
     gaps: checks.filter(([ok]) => !ok).map(([, name]) => name),
   };
 }
@@ -246,5 +248,7 @@ export function portfolioSummary(workspace: Workspace, project: Project) {
     planned,
     forecast,
     completeness: projectCompleteness(workspace, project.id).score,
+    covered: projectCompleteness(workspace, project.id).passed,
+    total: projectCompleteness(workspace, project.id).total,
   };
 }

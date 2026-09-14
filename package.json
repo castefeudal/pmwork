@@ -1,6 +1,7 @@
 {
   "name": "pmwork",
-  "version": "2.2.0",
+  "version": "2.3.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "node scripts/next-dev.mjs",
@@ -39,10 +40,10 @@
     "@types/node": "24.3.0",
     "@types/react": "19.1.12",
     "@types/react-dom": "19.1.9",
-    "eslint": "9.34.0",
-    "eslint-config-next": "16.2.0",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.3.5",
     "jsdom": "26.1.0",
     "typescript": "5.9.2",
-    "vitest": "3.2.7"
+    "vitest": "^5.0.0"
   }
 }

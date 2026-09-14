@@ -16,7 +16,7 @@ export default function PublicSearch({locale,onClose}:{locale:Locale;onClose:()=
   ...templates.map(t=>({id:`templates-${t.slug}`,label:t.title[locale],search:`${t.title.ru} ${t.title.en} ${t.purpose.ru} ${t.purpose.en} ${t.when.ru} ${t.when.en}`,group:ru?'ШАБЛОНЫ':'TEMPLATES',url:`/${locale}/templates/${t.slug}/`})),
   ...playbooks.map(t=>({id:`playbooks-${t.slug}`,label:t.title[locale],search:`${t.title.ru} ${t.title.en}`,group:ru?'СЦЕНАРИИ':'PLAYBOOKS',url:`/${locale}/playbooks/?q=${encodeURIComponent(t.title[locale])}`})),
   ...knowledgeDomains.map(t=>({id:t.en,label:t[locale],search:t.ru+' '+t.en,group:ru?'ЗНАНИЯ':'KNOWLEDGE',url:`/${locale}/knowledge/?q=${encodeURIComponent(t[locale])}`})),
-  ...['fit','cpm','pert','evm','forecast','priority','flow','deadline','emv','capacity','matrix','ownership','change','calibration'].map(tool=>({id:tool,label:tool.toUpperCase(),search:tool==='evm'?'EVM earned value освоенный объём':tool,group:ru?'ИНСТРУМЕНТЫ':'TOOLS',url:`/${locale}/tools/?tool=${tool}`})),
+  ...['fit','cpm','pert','evm','forecast','priority','flow','deadline','emv','capacity','matrix','ownership','change','calibration','markovmade'].map(tool=>({id:tool,label:tool.toUpperCase(),search:tool==='evm'?'EVM earned value освоенный объём':tool==='markovmade'?'MARKOVMADE constraint ограничение evidence ROI приоритет':tool,group:ru?'ИНСТРУМЕНТЫ':'TOOLS',url:`/${locale}/tools/?tool=${tool}`})),
  ],[locale,ru]);
  const index=useMemo(()=>new Fuse(entries,{keys:['label','search'],threshold:.35,ignoreLocation:true}),[entries]);
  const matching=query?index.search(query).map(r=>r.item).sort((a,b)=>Number(b.search.toLowerCase().split(' ').includes(query.toLowerCase()))-Number(a.search.toLowerCase().split(' ').includes(query.toLowerCase()))):entries;
