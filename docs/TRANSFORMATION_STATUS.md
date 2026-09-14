@@ -23,11 +23,17 @@ This is an evidence ledger, not a product score.
 - Root browser matrix: 198/198 passed. GitHub Pages-prefix browser matrix: 198/198 passed.
 - Static transfer budgets pass. Browser gates enforce CLS ≤0.05 and local LCP ≤2.5 s.
 
+## Verified hosted
+
+- Commit `5304b2fabf05a1ed0dde0808c056a5cc664b21aa`: Quality Gate passed for both root and `/pmwork` jobs, including verify, browser, and performance steps.
+- GitHub Pages deployment passed for the same commit, including the post-deploy release-marker and asset check.
+- An independent exact-commit smoke from outside GitHub Actions checked 817 URLs from the published service-worker manifest successfully.
+- The production URL is `https://castefeudal.github.io/pmwork/`.
+
 ## Manual or external evidence pending
 
 - Human usability sessions with practicing users; no completion/time/confidence results have been invented.
 - Formal WCAG conformance and manual screen-reader/high-contrast/device review.
 - Field Core Web Vitals and INP; no telemetry is added to this local-first product.
-- GitHub Quality Gate, Pages Deploy, and live smoke for the exact working-tree changes. These can only be claimed after commit/push and hosted workflow completion.
 
 See [USABILITY_PROTOCOL.md](USABILITY_PROTOCOL.md), [RELEASE.md](RELEASE.md), and [release-evidence.json](release-evidence.json).

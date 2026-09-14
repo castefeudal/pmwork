@@ -1,8 +1,9 @@
 {
-  "measuredAt": "2026-09-14T13:15:00.000Z",
+  "measuredAt": "2026-09-14T14:00:00.000Z",
   "baseCommit": "039c69badc72bb57f1617b871c3446202b5f6a30",
-  "branch": "main (working tree)",
-  "scope": "Local production exports for root and /pmwork; GitHub-hosted workflows require commit and push",
+  "releaseCommit": "5304b2fabf05a1ed0dde0808c056a5cc664b21aa",
+  "branch": "main",
+  "scope": "Local root and /pmwork verification plus hosted Quality Gate, Pages deployment, and exact-commit live smoke",
   "productVersion": "2.3.0",
   "schemaVersion": 6,
   "unitComponent": { "passed": 79, "failed": 0, "files": 16 },
@@ -11,7 +12,11 @@
     "githubBasePath": { "passed": 198, "failed": 0 },
     "projects": ["Desktop Chrome", "Pixel 7"]
   },
-  "export": { "htmlPages": 498, "precacheResources": 806 },
+  "export": {
+    "htmlPages": 498,
+    "localWindowsPrecacheResources": 806,
+    "hostedLinuxPrecacheResources": 808
+  },
   "labRenderingRoot": {
     "note": "Local unthrottled Chromium samples; not field CWV",
     "worstLcpMs": 308,
@@ -35,8 +40,17 @@
   ],
   "dependencyAudit": { "knownVulnerabilities": 0, "threshold": "moderate" },
   "copyRepeatedSecondaryGroups": 0,
-  "ci": "not run for uncommitted working tree",
-  "productionDeployed": false,
-  "liveSmoke": "pending exact deployed commit",
+  "ci": {
+    "status": "passed",
+    "qualityGate": "https://github.com/castefeudal/pmwork/actions/runs/34851359580",
+    "jobs": ["root", "github"]
+  },
+  "productionDeployed": true,
+  "pagesDeploy": "https://github.com/castefeudal/pmwork/actions/runs/34851359557",
+  "liveSmoke": {
+    "status": "passed",
+    "url": "https://castefeudal.github.io/pmwork/",
+    "independentRoutesAndAssetsChecked": 817
+  },
   "humanUsability": "not measured"
 }
