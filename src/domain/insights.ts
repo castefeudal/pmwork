@@ -227,11 +227,15 @@ const median = (values: number[]) => {
     ? sorted[middle]!
     : (sorted[middle - 1]! + sorted[middle]!) / 2;
 };
+const percentile = (values: number[], p: number) => {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.min(sorted.length - 1, Math.ceil(p * sorted.length) - 1)]!;
+};
 
 /**
- * Flow metrics use only evidence that the current schema actually stores.
- * `createdAt → completedAt` is lead time, not cycle time. True cycle time remains unknown
- * until a future additive schema records a reliable startedAt/status history.
+ * Flow metrics are evidence-based. Legacy records without a stored work-start transition stay unknown.
+ * New status transitions persist `startedAt` and `statusHistory`, enabling prospective cycle/aging metrics.
  */
 export function flowMetrics(items: WorkItem[], asOf = new Date().toISOString()) {
   const asOfMs = Date.parse(asOf);
@@ -242,21 +246,38 @@ export function flowMetrics(items: WorkItem[], asOf = new Date().toISOString()) 
     completed = done.filter((x) => x.completedAt && Number.isFinite(Date.parse(x.completedAt))),
     leadDays = completed
       .map((x) => {
-        const created = Date.parse(x.createdAt),
-          completedAt = Date.parse(x.completedAt!);
+        const created = Date.parse(x.createdAt), completedAt = Date.parse(x.completedAt!);
         return Number.isFinite(created) && completedAt >= created
           ? (completedAt - created) / 86400000
           : null;
       })
       .filter((value): value is number => value !== null),
+    cycleDays = completed
+      .map((x) => {
+        if (!x.startedAt) return null;
+        const started = Date.parse(x.startedAt), completedAt = Date.parse(x.completedAt!);
+        return Number.isFinite(started) && completedAt >= started
+          ? (completedAt - started) / 86400000
+          : null;
+      })
+      .filter((value): value is number => value !== null),
+    agingWip = wip
+      .map((x) => {
+        if (!x.startedAt) return null;
+        const started = Date.parse(x.startedAt);
+        return Number.isFinite(started) && asOfMs >= started
+          ? { id: x.id, ageDays: (asOfMs - started) / 86400000 }
+          : null;
+      })
+      .filter((value): value is { id: string; ageDays: number } => value !== null)
+      .sort((a, b) => b.ageDays - a.ageDays),
     completedWithin = (days: number) =>
       completed.filter((x) => {
         const completedAt = Date.parse(x.completedAt!);
         return completedAt <= asOfMs && completedAt > asOfMs - days * 86400000;
       }).length;
-  const completed7 = completedWithin(7),
-    completed14 = completedWithin(14),
-    completed28 = completedWithin(28);
+  const completed7 = completedWithin(7), completed14 = completedWithin(14), completed28 = completedWithin(28);
+  const percentileReady = cycleDays.length >= 10;
   return {
     wip: wip.length,
     blocked: active.filter((x) => x.blocked && !x.done).length,
@@ -273,8 +294,21 @@ export function flowMetrics(items: WorkItem[], asOf = new Date().toISOString()) 
       ? leadDays.reduce((sum, value) => sum + value, 0) / leadDays.length
       : null,
     medianLeadDays: median(leadDays),
-    cycleTimeDays: null as number | null,
-    cycleTimeReason: "startedAt/status history is not available in schema v6",
+    cycleSampleSize: cycleDays.length,
+    averageCycleDays: cycleDays.length
+      ? cycleDays.reduce((sum, value) => sum + value, 0) / cycleDays.length
+      : null,
+    medianCycleDays: median(cycleDays),
+    p80CycleDays: percentileReady ? percentile(cycleDays, 0.8) : null,
+    p90CycleDays: percentileReady ? percentile(cycleDays, 0.9) : null,
+    /** @deprecated Use medianCycleDays/sample fields. */
+    cycleTimeDays: median(cycleDays),
+    cycleTimeReason: cycleDays.length ? null : "No reliable stored startedAt evidence for completed work",
+    agingWip,
+    agingWipKnown: agingWip.length,
+    agingWipUnknown: wip.length - agingWip.length,
+    medianWipAgeDays: median(agingWip.map((item) => item.ageDays)),
+    maxWipAgeDays: agingWip.length ? agingWip[0]!.ageDays : null,
   };
 }
 
