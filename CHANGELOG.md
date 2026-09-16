@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased — production hardening
+
+- Added workspace graph integrity validation for cross-project references, dependencies, documents, vendors, settings, date relations and compatibility mirror fields.
+- Hardened migration/import/restore/save so current-schema corruption fails closed while legacy v1-v5 compatibility repair removes only dangling references that cannot survive migration.
+- Added future-schema and unknown-field backup rejection to prevent silent downcasts or silent data loss.
+- Fixed empty-work vacuous truth in control coverage.
+- Corrected flow semantics: trailing 7/14/28-day throughput and lead time now use stored evidence; historic cycle time remains unknown without a reliable start transition.
+- Reduced mandatory PWA precache for deep knowledge/detail pages while preserving runtime caching and offline workspace/application shell behavior.
+- Replaced a permissive global static-JS ceiling with route-specific performance budgets.
+- Added Firefox, WebKit and mobile-WebKit smoke coverage alongside the complete Chromium browser suite.
+- Added a recovery-first App Router error boundary with raw local recovery download and no automatic storage clearing.
+- Added `docs/AUDIT_10_10.md` and reconciled data-schema, quality-gate, transformation-status and release documentation with the current hardening branch.
+
 ## 2.2.0 — 2026-09-05
 
 - Replaced 26 generic knowledge cards with distinct bilingual operational guides and direct workspace actions.
