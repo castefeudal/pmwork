@@ -31,7 +31,7 @@ export function repairLegacyReferences(workspace: Workspace, sourceVersion: numb
   registerRelated(workspace.issues);
   registerRelated(workspace.decisions);
   registerRelated(workspace.stakeholders);
-  registerRelated(workspace.budgetEntries);
+  registerRelated(workspace.budgets);
   registerRelated(workspace.documents);
   registerRelated(workspace.milestones);
   registerRelated(workspace.objectives);
@@ -46,7 +46,6 @@ export function repairLegacyReferences(workspace: Workspace, sourceVersion: numb
   registerRelated(workspace.lessons);
   registerRelated(workspace.communications);
   registerRelated(workspace.qualityGates);
-  registerRelated(workspace.closureRecords);
 
   return {
     ...workspace,
