@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 const LOCAL_KEY = "pmwork:workspace:v3";
+const BASE_PATH = process.env.NEXT_PUBLIC_PMWORK_BASE_PATH ?? "";
 
 export default function ErrorBoundary({
   error,
@@ -59,7 +60,7 @@ export default function ErrorBoundary({
             {ru ? "Скачать recovery-копию" : "Download recovery copy"}
           </button>
         )}
-        <a className="button" href={ru ? "/ru/workspace/" : "/en/workspace/"}>
+        <a className="button" href={`${BASE_PATH}/${ru ? "ru" : "en"}/workspace/`}>
           {ru ? "Открыть рабочее пространство" : "Open workspace"}
         </a>
       </div>
