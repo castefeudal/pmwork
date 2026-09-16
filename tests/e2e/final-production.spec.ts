@@ -43,7 +43,13 @@ test('template detail preserves destination, apply and undo',async({page})=>{
  await page.getByRole('button',{name:'Undo',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Application undone');
 });
 test('My work uses local member identity and editor reassignment clears it',async({page})=>{
- const workspace=demoWorkspace('en');workspace.projectSettings=workspace.projectSettings.map(s=>s.projectId==='atlas'?{...s,localMemberId:'TM-1'}:s);const original=workspace.workItems[0];workspace.workItems=[{...original,title:'Identity-linked work',ownerId:'TM-1',owner:'Former name',status:'ready',done:false},{...original,id:'PW-OTHER',title:'Same name, different member',ownerId:'TM-2',owner:'Anna Smirnova',status:'ready',done:false}];
+ const workspace=demoWorkspace('en');
+ workspace.projectSettings=workspace.projectSettings.map(s=>s.projectId==='atlas'?{...s,localMemberId:'TM-1'}:s);
+ const original=workspace.workItems.find(item=>item.projectId==='atlas')!;
+ workspace.workItems=[...workspace.workItems,
+  {...original,id:'PW-IDENTITY',title:'Identity-linked work',ownerId:'TM-1',owner:'Former name',ownerLabel:'Former name',status:'ready',done:false,parentId:undefined,dependencies:[],riskIds:[],objectiveIds:[]},
+  {...original,id:'PW-OTHER',title:'Same name, different member',ownerId:'TM-2',owner:'Anna Smirnova',ownerLabel:'Anna Smirnova',status:'ready',done:false,parentId:undefined,dependencies:[],riskIds:[],objectiveIds:[]}
+ ];
  await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),workspace);await page.goto(route('/en/workspace/?project=atlas&view=work'));await page.getByRole('button',{name:'My work',exact:true}).click();
  const card=page.locator('.work-title-button,.mobile-work-card').filter({hasText:'Identity-linked work',visible:true});await expect(card).toBeVisible();await expect(page.getByText('Same name, different member',{exact:true})).toHaveCount(0);await card.click();const editor=page.getByRole('dialog');await editor.getByLabel('Owner',{exact:true}).fill('External partner');await editor.getByRole('button',{name:'Save',exact:true}).click();await expect(card).toHaveCount(0);await page.getByRole('button',{name:'All work',exact:true}).click();await expect(card).toBeVisible();
 });
