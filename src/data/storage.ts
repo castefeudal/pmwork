@@ -1,6 +1,7 @@
 import { workspaceSchema, type Workspace } from "@/domain/schemas";
 import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
 import { assertNoUnknownBackupFields } from "@/domain/backup-compatibility";
+import { repairLegacyReferences } from "@/domain/legacy-integrity";
 
 const DB = "pmwork-local",
   STORE = "workspace",
@@ -164,6 +165,8 @@ export function migrateWorkspace(value: unknown): Workspace {
       }),
     };
   }
+
+  if (legacy) migrated = repairLegacyReferences(migrated, version);
 
   return assertWorkspaceGraph(migrated);
 }
