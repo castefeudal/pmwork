@@ -126,10 +126,27 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     item.objectiveIds.forEach((id, refIndex) => sameProject(objectiveById, id, item.projectId, `workItems[${index}].objectiveIds[${refIndex}]`, "objective"));
     if (item.estimate !== undefined && item.currentEstimate !== undefined && item.estimate !== item.currentEstimate)
       add("estimate-mirror", `workItems[${index}].estimate`, "Legacy estimate must mirror currentEstimate");
+    if (item.done !== (item.status === "done")) add("work-state-mirror", `workItems[${index}].done`, "done must mirror status=done");
     const start = parseDate(item.startDate), due = parseDate(item.dueDate);
     if (item.startDate && start === null) add("invalid-date", `workItems[${index}].startDate`, `Invalid date: ${item.startDate}`);
     if (item.dueDate && due === null) add("invalid-date", `workItems[${index}].dueDate`, `Invalid date: ${item.dueDate}`);
     if (start !== null && due !== null && start > due) add("date-order", `workItems[${index}]`, "Work startDate is after dueDate");
+    const createdAt=parseDate(item.createdAt),updatedAt=parseDate(item.updatedAt),startedAt=parseDate(item.startedAt),completedAt=parseDate(item.completedAt);
+    if(createdAt===null)add("invalid-date",`workItems[${index}].createdAt`,`Invalid date: ${item.createdAt}`);
+    if(updatedAt===null)add("invalid-date",`workItems[${index}].updatedAt`,`Invalid date: ${item.updatedAt}`);
+    if(item.startedAt&&startedAt===null)add("invalid-date",`workItems[${index}].startedAt`,`Invalid date: ${item.startedAt}`);
+    if(item.completedAt&&completedAt===null)add("invalid-date",`workItems[${index}].completedAt`,`Invalid date: ${item.completedAt}`);
+    if(createdAt!==null&&startedAt!==null&&startedAt<createdAt)add("flow-date-order",`workItems[${index}].startedAt`,"startedAt is before createdAt");
+    if(startedAt!==null&&completedAt!==null&&completedAt<startedAt)add("flow-date-order",`workItems[${index}].completedAt`,"completedAt is before startedAt");
+    let previousHistoryAt:number|null=null;
+    item.statusHistory?.forEach((entry,historyIndex)=>{
+      const at=parseDate(entry.at);
+      if(at===null)add("invalid-date",`workItems[${index}].statusHistory[${historyIndex}].at`,`Invalid date: ${entry.at}`);
+      else if(previousHistoryAt!==null&&at<previousHistoryAt)add("status-history-order",`workItems[${index}].statusHistory[${historyIndex}]`,"Status history must be chronological");
+      if(at!==null)previousHistoryAt=at;
+    });
+    const lastTransition=item.statusHistory?.at(-1);
+    if(lastTransition&&lastTransition.to!==item.status)add("status-history-state",`workItems[${index}].statusHistory`,"Last status transition must match current status");
   });
 
   const adjacency = new Map<string, string[]>();
