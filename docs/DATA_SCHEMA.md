@@ -5,20 +5,23 @@ Current payload schema: **v6**. The browser discovery key remains `pmwork:worksp
 ## Additive v6 records
 
 - Work estimates retain `originalEstimate`, mutable `currentEstimate`, append-only `estimateHistory { value, timestamp, reason? }`, and `actualEffort`. Deprecated `estimate` remains a compatibility mirror of current estimate.
+- Work records may additionally retain prospective `startedAt` and `statusHistory { at, from, to }`. These fields are optional by design: existing v1–v6 backups remain valid, and PMWORK never invents a historical start time for records created before transition tracking was available.
 - Milestones retain `baselineDate`, `forecastDate`, optional `actualDate`, owner, confidence 0–100, status, progress, forecast reason, timestamps, and append-only field history. Deprecated `date` mirrors forecast date.
 - Risks keep qualitative probability/impact 1–5. Optional monetary fields use independent units: probability percentages, gross/residual impact amounts, response cost, and ISO-like three-letter currency. Missing monetary input means unknown, never zero.
 - `toolRuns` store a compact deterministic run: tool, project, timestamp, source, assumptions, input values, output summary, confidence, data-quality statement, and affected record IDs. They never copy the full workspace.
 
 ## Migration behavior
 
-`migrateWorkspace` accepts v1–v5 and produces a strictly parsed v6 payload. Legacy estimates become original/current baselines with a migration history entry. Legacy milestone `date` becomes both baseline and forecast. Existing IDs, projects, links, records, owner text/IDs, saved views, preferences, and locale are preserved. Missing collections receive safe defaults. Future versions and malformed required fields are rejected.
+`migrateWorkspace` accepts v1–v5 and produces a strictly parsed v6 payload. Legacy estimates become original/current baselines with a migration history entry. Legacy milestone `date` becomes both baseline and forecast. Existing IDs, projects, links, records, owner text/IDs, saved views, preferences, locale, and any already-stored prospective work status evidence are preserved. Missing collections receive safe defaults. Future versions and malformed required fields are rejected.
+
+Crucially, migration does **not** infer `startedAt` or `statusHistory` for old work. An active legacy item with no stored start evidence remains unknown for cycle-time purposes.
 
 The migration pipeline is intentionally fail-closed in two additional ways:
 
 1. **Backup fidelity check.** Zod object parsing can remove unknown keys. PMWORK therefore compares the original payload with the parsed/migrated payload. If an input field would disappear because the current version does not understand it, migration stops instead of silently dropping user data. This applies to nested records as well as the workspace root.
 2. **Graph integrity check.** Shape-valid data is not enough. PMWORK validates project boundaries and links after migration before the workspace can be loaded, saved, exported or restored.
 
-Automated tests cover every supported source version, round-trip parsing, legacy milestone/estimate conversion, invalid storage recovery, snapshot restoration, future-schema rejection, unknown-field protection, and graph-corrupt backups.
+Automated tests cover every supported source version, round-trip parsing, legacy milestone/estimate conversion, prospective status-evidence preservation, invalid storage recovery, snapshot restoration, future-schema rejection, unknown-field protection, and graph-corrupt backups.
 
 ## Graph integrity
 
@@ -42,15 +45,20 @@ A graph-integrity failure is treated as recoverable invalid data: autosave must 
 
 ## Flow metric evidence
 
-Schema v6 stores `createdAt` and optional `completedAt`, but does not store a reliable first-start timestamp or full status-transition history. Therefore:
+PMWORK distinguishes the evidence it actually stores:
 
-- `createdAt → completedAt` is called **lead time**;
-- throughput is calculated from completed records inside explicit 7/14/28-day windows;
-- **cycle time remains unknown** instead of being fabricated from creation time;
-- a future additive schema may introduce prospective `startedAt` / status history, but old backups must not receive invented historical start dates.
+- `createdAt → completedAt` is **lead time**;
+- throughput is completed work inside explicit trailing 7/14/28-day windows, expressed as completed items per day for that window;
+- `startedAt → completedAt` is **cycle time**, but only for records with a reliable stored prospective start transition;
+- active work with `startedAt` exposes **WIP age** from start to the selected/as-of time;
+- records without `startedAt` remain explicitly unknown for cycle/aging metrics rather than being treated as zero or backfilled from `createdAt`;
+- median cycle time is available with any valid sample; P80/P90 are withheld until at least 10 completed records have reliable start evidence;
+- flow metric outputs expose sample size and known/unknown aging counts so the UI can communicate data quality.
+
+`statusHistory` is appended only when PMWORK observes an actual status change. A non-status edit to a legacy active item does not fabricate a historical transition.
 
 ## Backup envelope
 
-Exports contain `product`, `schemaVersion`, `appVersion`, `exportedAt`, project/work/risk counts, and `workspace`. Import is limited to 10 MB and completes parsing, migration, backup-fidelity validation and graph validation before replacement is offered. The UI previews schema and counts, asks for confirmation, and creates a forced local safety snapshot before replacing healthy current data.
+Exports contain `product`, `schemaVersion`, `appVersion`, `exportedAt`, project/work/risk counts, and `workspace`. Import is limited to 10 MB and completes parsing, migration, backup-fidelity validation and graph validation before replacement is offered. The UI previews schema and counts in an accessible PMWORK dialog and creates a forced local safety snapshot before replacing healthy current data. The dialog also offers an explicit **Download current backup** action when there is a healthy current workspace to preserve.
 
 Important: snapshots and IndexedDB are device-local, not cloud backup. Users should download JSON before clearing browser storage or changing origins.
