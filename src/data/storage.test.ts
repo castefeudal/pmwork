@@ -22,17 +22,17 @@ describe("workspace data", () => {
   });
 
   it("preserves prospective status evidence when it exists", () => {
-    const w = demoWorkspace("en"), item = w.workItems[0]!;
-    w.workItems[0] = {
+    const w = demoWorkspace("en"), item = w.workItems[1]!;
+    w.workItems[1] = {
       ...item,
-      startedAt: "2026-09-01T10:00:00.000Z",
+      startedAt: item.createdAt,
       statusHistory: [
-        { at: "2026-09-01T10:00:00.000Z", from: "ready", to: "in-progress" },
+        { at: item.createdAt, from: "ready", to: "in-progress" },
       ],
     };
     const migrated = migrateWorkspace(JSON.parse(JSON.stringify(w)));
-    expect(migrated.workItems[0]?.startedAt).toBe("2026-09-01T10:00:00.000Z");
-    expect(migrated.workItems[0]?.statusHistory).toEqual(w.workItems[0]?.statusHistory);
+    expect(migrated.workItems[1]?.startedAt).toBe(item.createdAt);
+    expect(migrated.workItems[1]?.statusHistory).toEqual(w.workItems[1]?.statusHistory);
   });
 
   it("does not invent work-start evidence for legacy or current records", () => {
