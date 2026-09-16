@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { workspaceSchema } from "@/domain/schemas";
 import { demoWorkspace, localizeBundledDemo } from "./demo";
 import { migrateWorkspace } from "./storage";
+
 describe("workspace data", () => {
   it("validates linked demo data in both locales", () => {
     for (const l of ["ru", "en"] as const) {
@@ -13,11 +14,13 @@ describe("workspace data", () => {
       expect(w.schemaVersion).toBe(6);
     }
   });
+
   it("round trips JSON with persisted closure", () => {
     const w = demoWorkspace("ru");
     expect(workspaceSchema.parse(JSON.parse(JSON.stringify(w)))).toEqual(w);
     expect(w.closureRecords[0]?.benefitsOwner).toBeTruthy();
   });
+
   it("preserves legacy milestone dates and estimates as v6 lifecycle baselines", () => {
     const current=demoWorkspace("en");
     const workItems=current.workItems.map(item=>{const legacy={...item} as Record<string,unknown>;delete legacy.originalEstimate;delete legacy.currentEstimate;delete legacy.estimateHistory;return legacy;});
@@ -27,6 +30,7 @@ describe("workspace data", () => {
     expect(migrated.workItems[0]).toMatchObject({originalEstimate:current.workItems[0].estimate,currentEstimate:current.workItems[0].estimate});
     expect(migrated.milestones[0]).toMatchObject({baselineDate:current.milestones[0].date,forecastDate:current.milestones[0].date});
   });
+
   it("migrates every supported legacy workspace without losing core records", () => {
     for (const version of [1, 2, 3, 4, 5]) {
       const current = demoWorkspace("en"),
@@ -57,6 +61,23 @@ describe("workspace data", () => {
       expect(migrated.closureRecords).toEqual([]);
     }
   });
+
+  it("rejects a schema-valid backup whose graph references another project", () => {
+    const current = demoWorkspace("en");
+    current.workItems[0] = {
+      ...current.workItems[0]!,
+      projectId: "campaign",
+      milestoneId: "M-1",
+    };
+    expect(workspaceSchema.safeParse(current).success).toBe(true);
+    expect(() => migrateWorkspace(current)).toThrow(/Workspace integrity failed/);
+  });
+
+  it("rejects a future schema version rather than silently downcasting it", () => {
+    const future = { ...demoWorkspace("en"), schemaVersion: 99 };
+    expect(() => migrateWorkspace(future)).toThrow();
+  });
+
   it("localizes untouched demo values and preserves edited text", () => {
     const ru = demoWorkspace("ru"),
       edited = {
