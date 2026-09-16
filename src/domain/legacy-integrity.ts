@@ -22,6 +22,32 @@ export function repairLegacyReferences(workspace: Workspace, sourceVersion: numb
     projectId: string,
   ) => Boolean(id && map.get(id)?.projectId === projectId);
 
+  const relatedProjectById = new Map<string, string>();
+  const registerRelated = (rows: Array<{ id: string; projectId: string }>) => {
+    for (const row of rows) relatedProjectById.set(row.id, row.projectId);
+  };
+  registerRelated(workspace.workItems);
+  registerRelated(workspace.risks);
+  registerRelated(workspace.issues);
+  registerRelated(workspace.decisions);
+  registerRelated(workspace.stakeholders);
+  registerRelated(workspace.budgetEntries);
+  registerRelated(workspace.documents);
+  registerRelated(workspace.milestones);
+  registerRelated(workspace.objectives);
+  registerRelated(workspace.assumptions);
+  registerRelated(workspace.dependencies);
+  registerRelated(workspace.iterations);
+  registerRelated(workspace.teamMembers);
+  registerRelated(workspace.changes);
+  registerRelated(workspace.vendors);
+  registerRelated(workspace.meetings);
+  registerRelated(workspace.statusReports);
+  registerRelated(workspace.lessons);
+  registerRelated(workspace.communications);
+  registerRelated(workspace.qualityGates);
+  registerRelated(workspace.closureRecords);
+
   return {
     ...workspace,
     workItems: workspace.workItems.map((item) => ({
@@ -52,6 +78,10 @@ export function repairLegacyReferences(workspace: Workspace, sourceVersion: numb
     iterations: workspace.iterations.map((iteration) => ({
       ...iteration,
       workItemIds: iteration.workItemIds.filter((id) => sameProject(workById, id, iteration.projectId)),
+    })),
+    documents: workspace.documents.map((document) => ({
+      ...document,
+      relatedIds: document.relatedIds.filter((id) => relatedProjectById.get(id) === document.projectId),
     })),
     capacityAllocations: workspace.capacityAllocations.filter((allocation) =>
       sameProject(memberById, allocation.memberId, allocation.projectId),
