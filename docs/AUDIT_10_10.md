@@ -1,8 +1,9 @@
 # PMWORK production hardening audit
 
-Date: 2026-09-16
-Baseline: `51d1f596b67921af7ee985f2a390bd07fc8d3506`
-Branch: `feat/pmwork-10-10-production-pass`
+Date: 2026-09-17
+Original baseline: `51d1f596b67921af7ee985f2a390bd07fc8d3506`
+Completion baseline: `f458a3a71850175be1afd45bbbfe2e24a45946e6`
+Current branch: `feat/pmwork-10-10-completion` (PR #8)
 
 This document is an evidence ledger, not a subjective product score. A capability is marked verified only when the relevant automated or manual evidence exists.
 
@@ -12,34 +13,27 @@ The transformation keeps PMWORK local-first and static-exported: no backend, aut
 
 ## Baseline evidence
 
-The last production evidence before this branch recorded:
+The earlier release evidence recorded schema v6 with v1-v5 migration, 79 passing unit/component tests, 198 Chromium tests for root and 198 for `/pmwork`, 498 exported HTML pages, approximately 806–808 precached resources, local unthrottled LCP around 300 ms / CLS 0.0043, route JS baselines around 189–344 kB gzip, and no dependency vulnerabilities at the configured moderate threshold. Human usability was not measured.
 
-- schema v6 with v1-v5 migration;
-- 79 passing unit/component tests;
-- 198 passing Chromium browser tests for root and 198 for `/pmwork`;
-- 498 exported HTML pages;
-- approximately 806-808 precached resources;
-- worst local unthrottled LCP about 300 ms and CLS 0.0043;
-- initial JavaScript gzip around 189 kB landing, 344 kB glossary/methods, 202 kB tools and 323 kB workspace;
-- zero dependency vulnerabilities at the configured moderate threshold;
-- human usability not measured.
-
-Those numbers belong to the baseline release and are not carried forward as evidence for this branch.
+Those values belong to the earlier baseline and are not reused as evidence for the completion branch.
 
 ## Findings and treatment
 
 | Severity | Finding | Treatment | Acceptance evidence |
 | --- | --- | --- | --- |
-| P0 | Schema validation checked object shape but did not prove cross-record graph integrity. A structurally valid import could contain missing or cross-project references. | Added `validateWorkspaceGraph` / `assertWorkspaceGraph`; storage migration, save, import and restore now reject graph-corrupt data without mutating the original recovery source. | Dedicated graph tests + storage migration regression + CI. |
-| P1 | Empty work collections received positive ownership/acceptance checks because `[].every(...)` is true. | Coverage now requires actual work/committed work before those contours can pass. | Regression test on an empty project work set. |
-| P1 | `flowMetrics` labelled all historically completed work as throughput and labelled `createdAt → completedAt` as cycle time. | Throughput is now calculated over trailing 7/14/28-day windows; stored created-to-completed duration is explicitly lead time. True cycle time remains unknown until a reliable startedAt/status-history model exists. | Unit tests with fixed as-of timestamp. |
-| P1 | Browser QA covered Chromium only, leaving Safari/WebKit and Firefox local-storage/IndexedDB/navigation behavior untested. | Added a bounded Firefox/WebKit/mobile-WebKit smoke matrix instead of duplicating the complete Chromium suite. | Cross-browser smoke CI on root export. |
-| P1 | PWA precached hundreds of method/template/glossary detail documents on every release. | Detail documents now use runtime caching after successful visits; application shell, workspace, catalog indexes and shared assets remain precached. | Build output `release.json` asset count and existing offline tests/browser flows. |
-| P1 | Static JS gate allowed 700 kB gzip on every route, far above the measured baseline. | Replaced the global ceiling with route-specific budgets derived from the previous release baseline with headroom for legitimate changes. | `performance:check` in root and `/pmwork` CI. |
-| P1 | Runtime route failure had no product-specific recovery surface. | Added a recovery-first App Router error boundary. It does not clear storage and can download the raw local recovery envelope before retrying. | Type/build/browser verification; manual destructive-error check still recommended. |
-| P2 | Main branch is currently unprotected. | No repository administration setting was changed by this branch. Recommended governance remains PR-only production changes, required Quality Gate, and no force pushes. | Repository setting/manual owner action. |
-| P2 | Several large UI components remain highly coupled. | This branch extracts the new integrity domain from UI and avoids expanding the monoliths further, but a full low-risk split of `workspace-views`, `workspace-dialog`, `workspace-app`, `record-editor`, `tools-lab`, and `project-tools` remains a separate refactor because it needs visual regression evidence across many surfaces. | Open limitation; do not call complete. |
-| P2 | Exact cycle time and aging WIP cannot be reconstructed from schema v6 without inventing historical start transitions. | Do not fabricate startedAt during migration. Current UI/domain reports cycle time as unknown. A future additive schema may record status history prospectively. | Explicit domain behavior and tests. |
+| P0 | Shape validation alone did not prove cross-record graph integrity. | `validateWorkspaceGraph` / `assertWorkspaceGraph` cover project boundaries, references, cycles, mirrors and date relations; storage paths fail closed without clearing recovery sources. | Dedicated graph/storage tests + exact-head CI. |
+| P1 | Empty work collections could pass ownership/acceptance contours via vacuous `every()`. | Coverage requires actual work/committed work. | Empty-project regression. |
+| P1 | Flow semantics conflated cumulative completions and created-to-completed duration with throughput/cycle time. | Throughput is trailing 7/14/28-day completion rate; created→completed is lead time. | Fixed-as-of flow tests. |
+| P1 | Exact cycle time and WIP age were previously unavailable. | Added optional prospective `startedAt` and `statusHistory`; only observed transitions create evidence. Legacy records remain unknown. Cycle sample size, median, P80/P90 (>=10 reliable samples), and known/unknown aging WIP are exposed. | Command, storage and flow regressions. |
+| P1 | Prospective evidence itself could become contradictory if only Zod shape validation applied. | Graph validation now rejects invalid flow timestamps, completion before start, non-chronological transition history, stale last transition, and `done`/status disagreement. | Integrity regression. |
+| P1 | Import/snapshot replacement used native browser confirmation and did not expose a first-class current-backup action in the confirmation surface. | Replaced with accessible PMWORK modal showing validated counts/selected snapshot, consequence, safety-snapshot behavior and `Download current backup` when applicable. | Type/build/E2E plus manual focus/readability review. |
+| P1 | Browser QA was Chromium-only. | Added bounded Firefox/WebKit/mobile-WebKit smoke without duplicating the full suite. | Root cross-browser CI. |
+| P1 | PWA precached hundreds of deep content documents every release. | Detail routes moved to runtime caching; application shell/workspace/catalog indexes/shared assets remain offline-ready. | Build release manifest + offline/browser tests. |
+| P1 | Static-JS gate was too permissive globally. | Route-specific budgets now use measured baseline plus explicit headroom. | `performance:check` on root and `/pmwork`. |
+| P1 | Runtime route failure lacked PMWORK-specific recovery. | Recovery-first App Router error boundary preserves storage and offers raw local recovery download before retry. | Build/browser verification. |
+| P2 | `workspace-app.tsx` owned settings UI in addition to shell/navigation/persistence/recovery. | Extracted `WorkspaceSettingsView`; recovery confirmation is a separate component. This is an incremental domain-boundary split rather than a cosmetic mass refactor. | Type/build/browser verification. |
+| P2 | Other large UI modules remain coupled. | No forced full rewrite. Further decomposition remains appropriate only alongside concrete changes and browser/visual evidence. | Open maintainability limitation. |
+| P2 | Main branch is currently unprotected. | No admin setting is silently changed by application code. Recommend PR-only production changes, required Quality Gate, and no force pushes. | Owner/admin action. |
 
 ## Data integrity contract
 
@@ -54,19 +48,32 @@ Graph validation checks:
 - objective deliverables and iteration membership;
 - capacity owner references;
 - vendor milestone/risk/dependency references;
-- project settings local member references;
+- project-settings local-member references;
 - document/tool-run related records;
-- invalid and impossible project/work/iteration date order;
+- invalid/impossible project/work/iteration date order;
 - legacy `estimate/currentEstimate` and milestone `date/forecastDate` mirrors;
+- work `done/status` consistency and prospective flow timestamp/history consistency;
 - one-per-project settings/preferences/closure records.
 
-Future schema versions continue to fail closed rather than being silently downcast.
+Future schema versions continue to fail closed rather than being silently downcast. Unknown backup fields that cannot be preserved are rejected rather than stripped.
+
+## Flow evidence contract
+
+- Lead time: `createdAt → completedAt`.
+- Cycle time: `startedAt → completedAt`, only with stored start evidence.
+- Throughput: completed items inside explicit trailing 7/14/28-day windows.
+- Aging WIP: `startedAt → asOf` for active records with stored start evidence.
+- Missing historical start evidence is **unknown**, not zero and not inferred from `createdAt`.
+- P80/P90 cycle time is withheld until at least 10 reliable completed samples exist.
+- Migration and unrelated edits never fabricate `startedAt` or status history.
+
+## Recovery contract
+
+Before replacement, import performs size/read/parse/migration/backup-fidelity/graph validation. The confirmation surface states what will be replaced, previews available counts, explains the safety snapshot, and allows downloading the healthy current workspace before replacement. A restore failure never automatically clears the original storage source.
 
 ## Evidence hierarchy
 
-### Automated
-
-Required before merge:
+### Automated — required for exact PR head
 
 - lint;
 - TypeScript typecheck;
@@ -80,19 +87,20 @@ Required before merge:
 - route-specific performance budgets on both bases;
 - bounded Firefox/WebKit/mobile-WebKit smoke on root.
 
-### Manual / external
-
-Still required and **not inferred from automation**:
+### Manual / external — still not inferred from automation
 
 - participant usability protocol;
 - NVDA/VoiceOver comprehension;
 - Windows High Contrast;
-- 200% and 400% zoom/reflow manual inspection;
+- 200% and 400% zoom/reflow inspection;
 - physical iOS/Android virtual-keyboard and safe-area review;
-- field Core Web Vitals/INP if measurement is ever introduced without violating the privacy contract.
+- representative human visual regression review;
+- field Core Web Vitals/INP if a privacy-compatible measurement mechanism is ever introduced.
 
 Human usability status: **NOT MEASURED**.
+Formal WCAG conformance: **NOT CERTIFIED**.
+Field CWV/INP: **NOT MEASURED**.
 
-## Definition of done for this branch
+## Definition of done for this completion branch
 
-The branch can be considered technically releasable when its exact head commit passes the root and GitHub-base Quality Gate, including the new cross-browser smoke, and its final evidence is recorded in `TRANSFORMATION_STATUS.md` / `RELEASE.md`. Human usability and formal WCAG remain external/manual evidence and must not be described as passed.
+The branch is technically releasable only when its exact final head passes the root and GitHub-base Quality Gate, including cross-browser smoke, performance gates and all regression tests. Automated success must not be converted into claims of human usability, formal WCAG certification, physical-device behavior or field performance.
