@@ -35,8 +35,13 @@ describe("PM calculations", () => {
     }));
   it("rejects invalid PERT order", () =>
     expect(() => calculatePERT(5, 2, 8)).toThrow());
-  it("calculates EVM and handles zero", () => {
-    expect(calculateEVM(100, 90, 80, 200).cpi).toBeCloseTo(1.125);
+  it("calculates EVM, keeps the CPI model compatible and exposes alternative assumptions", () => {
+    const result = calculateEVM(100, 90, 80, 200);
+    expect(result.cpi).toBeCloseTo(1.125);
+    expect(result.eac).toBeCloseTo(177.7777778);
+    expect(result.eacModels).toHaveLength(3);
+    expect(result.eacModels.find((model) => model.id === "remaining-at-budget")?.value).toBe(190);
+    expect(result.eacModels.find((model) => model.id === "cpi-spi-continues")?.value).toBeCloseTo(188.6419753);
     expect(calculateEVM(0, 0, 0, 100).spi).toBeNull();
   });
   it("calculates prioritization and flow", () => {
