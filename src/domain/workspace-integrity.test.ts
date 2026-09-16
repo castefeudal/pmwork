@@ -8,6 +8,12 @@ describe("workspace graph integrity", () => {
     expect(validateWorkspaceGraph(demoWorkspace("en"))).toEqual([]);
   });
 
+  it("accepts an intentionally unscheduled project", () => {
+    const workspace = demoWorkspace("en");
+    workspace.projects[0] = { ...workspace.projects[0]!, targetDate: "" };
+    expect(validateWorkspaceGraph(workspace)).toEqual([]);
+  });
+
   it("rejects a structurally valid cross-project work reference", () => {
     const workspace = demoWorkspace("en");
     workspace.workItems[0] = { ...workspace.workItems[0]!, milestoneId: "M-1", projectId: "campaign" };
