@@ -12,16 +12,18 @@ export default function ErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const [locale, setLocale] = useState<"ru" | "en">("en");
-  const [hasRecovery, setHasRecovery] = useState(false);
+  const [locale] = useState<"ru" | "en">(() =>
+    typeof window !== "undefined" && window.location.pathname.includes("/ru/") ? "ru" : "en",
+  );
+  const [hasRecovery] = useState(() => {
+    try {
+      return typeof localStorage !== "undefined" && Boolean(localStorage.getItem(LOCAL_KEY));
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
-    setLocale(window.location.pathname.includes("/ru/") ? "ru" : "en");
-    try {
-      setHasRecovery(Boolean(localStorage.getItem(LOCAL_KEY)));
-    } catch {
-      setHasRecovery(false);
-    }
     console.error("PMWORK route error", error);
   }, [error]);
 
