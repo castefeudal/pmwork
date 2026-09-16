@@ -9,7 +9,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 24
     strategy:
       fail-fast: false
       matrix:
@@ -27,6 +27,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run performance:check
+      - name: Install Firefox and WebKit for root smoke matrix
+        if: matrix.base == 'root'
+        run: npx playwright install --with-deps firefox webkit
+      - name: Cross-browser smoke
+        if: matrix.base == 'root'
+        run: npm run test:cross-browser
       - uses: actions/upload-artifact@v7
         if: always()
         with:
