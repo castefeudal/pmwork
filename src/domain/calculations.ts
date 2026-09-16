@@ -83,15 +83,42 @@ export function calculateEVM(pv: number, ev: number, ac: number, bac: number) {
     throw new Error("Values must be non-negative");
   const spi = pv === 0 ? null : ev / pv;
   const cpi = ac === 0 ? null : ev / ac;
-  const eac = cpi && cpi > 0 ? bac / cpi : null;
+  const eacCpi = cpi && cpi > 0 ? bac / cpi : null;
+  const eacRemainingAtBudget = ac + (bac - ev);
+  const eacCpiSpi =
+    cpi && cpi > 0 && spi && spi > 0
+      ? ac + (bac - ev) / (cpi * spi)
+      : null;
+  const eacModels = [
+    {
+      id: "cpi-continues" as const,
+      value: eacCpi,
+      formula: "BAC / CPI",
+      assumption: "Observed cost efficiency continues for the remaining work.",
+    },
+    {
+      id: "remaining-at-budget" as const,
+      value: eacRemainingAtBudget,
+      formula: "AC + (BAC - EV)",
+      assumption: "Past variance is treated as atypical and remaining work follows the original budget rate.",
+    },
+    {
+      id: "cpi-spi-continues" as const,
+      value: eacCpiSpi,
+      formula: "AC + (BAC - EV) / (CPI × SPI)",
+      assumption: "Both cost and schedule efficiency continue to influence the remaining work.",
+    },
+  ];
   return {
     sv: ev - pv,
     cv: ev - ac,
     spi,
     cpi,
-    eac,
-    etc: eac === null ? null : Math.max(0, eac - ac),
-    vac: eac === null ? null : bac - eac,
+    // Backward-compatible default. UI must label its assumption rather than imply it is universal.
+    eac: eacCpi,
+    eacModels,
+    etc: eacCpi === null ? null : Math.max(0, eacCpi - ac),
+    vac: eacCpi === null ? null : bac - eacCpi,
   };
 }
 
@@ -160,7 +187,7 @@ export function monteCarlo(
       Math.min(results.length - 1, Math.floor((p / 100) * results.length))
     ]!;
   return {
-    p50: pick(mode === "itemsByDate" ? 50 : 50),
+    p50: pick(50),
     p80: pick(mode === "itemsByDate" ? 20 : 80),
     p90: pick(mode === "itemsByDate" ? 10 : 90),
     p70: pick(mode === "itemsByDate" ? 30 : 70),
