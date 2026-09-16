@@ -17,7 +17,7 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
   if(member){ownerPatch.owner=member.name;ownerPatch.ownerLabel=member.name;}
   else {ownerPatch.ownerId=undefined;ownerPatch.ownerLabel=ownerPatch.owner??item.ownerLabel??item.owner;}
  }
- const at=new Date().toISOString(),status=patch.status??item.status;
+ const at=new Date().toISOString(),status=patch.status??item.status,statusChanged=status!==item.status;
  const requestedEstimate=patch.currentEstimate??patch.estimate;
  if(requestedEstimate!==undefined&&requestedEstimate!==item.currentEstimate){
   ownerPatch.originalEstimate=item.originalEstimate??item.currentEstimate??item.estimate??requestedEstimate;
@@ -25,7 +25,10 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
   ownerPatch.estimate=requestedEstimate;
   ownerPatch.estimateHistory=[...item.estimateHistory,{value:requestedEstimate,timestamp:at}];
  }
- return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
+ const enteredActive=statusChanged&&['in-progress','review','done'].includes(status);
+ const startedAt=item.startedAt??(enteredActive?at:undefined);
+ const statusHistory=statusChanged?[...(item.statusHistory??[]),{at,from:item.status,to:status}]:item.statusHistory;
+ return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,startedAt,statusHistory,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
 }
 export const changeWorkStatus=(w:Workspace,id:string,status:WorkItem['status'])=>updateWork(w,id,{status});
 export const archiveWork=(w:Workspace,id:string)=>updateWork(w,id,{archived:true});
