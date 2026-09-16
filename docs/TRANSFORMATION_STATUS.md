@@ -1,39 +1,59 @@
-# PMWORK 2.3 transformation status
+# PMWORK production hardening status
 
 This is an evidence ledger, not a product score.
 
-## Implemented
+Branch: `feat/pmwork-10-10-production-pass`
+Baseline: `51d1f596b67921af7ee985f2a390bd07fc8d3506`
 
-- Schema v6 with v1–v5 additive migration; milestone baseline/forecast/actual history, original/current estimate history, optional monetary risk layer, and compact tool runs.
-- Backup metadata and safe validate → migrate → preview → confirm → snapshot → replace sequence; corrupt/future data fails safely.
-- Today with one dominant priority, decision/action/check groups, evidence-only Stable confirmations, direct record actions, and state separated from data confidence.
-- Guide and portfolio use `N/N control contours available`; no management-quality percentage is presented.
-- Five selectable starter packs create linked milestones, work, risks, assumption, decision, role placeholders, operating cadence/document, DoD, and project settings.
-- Deadline, EMV, Capacity/WIP, matrix/sensitivity, ownership, change, and calibration workflows load project data, expose limits, calculate, save tool runs, and apply supported records without rewriting baselines.
-- MARKOVMADE bilingual authorial method (explicitly not an industry standard) plus deterministic priority scoring, sensitivity, scenario persistence, and Decision/Work/Assumption creation with direct navigation.
-- Template guidance and playbook stabilize/prevent copy are object-specific; copy gate reports zero repeated secondary-prose groups.
-- Intent search covers deadline/forecast, monetary risk/EMV, ownership, capacity/WIP, and constraint/ROI language in RU/EN.
-- CLS sources repaired by stable first-run geometry and optional local-font rendering. Accessible create names, light contrast, Windows export paths, canonical offline directory navigation, static language, and cross-platform export serving are regression-tested.
-- Dependency audit is clean after Vitest 5 migration.
+## Implemented on the hardening branch
 
-## Verified locally
+- Added workspace graph integrity validation across project ownership, work relations, dependencies, RAID links, documents, vendors, settings, dates and compatibility mirror fields.
+- Current-schema corruption fails closed. Legacy v1-v5 payloads are migrated first and only legacy-only dangling compatibility references are removed before graph validation; source recovery data is not overwritten.
+- Added explicit future-schema rejection and unknown-field compatibility checks so a newer backup is not silently downcast.
+- Fixed empty-project control coverage: an empty work collection no longer passes ownership or acceptance-criteria contours through vacuous `every()` truth.
+- Corrected flow semantics: created-to-completed duration is lead time, and throughput is trailing completed work over 7/14/28-day windows. True cycle time remains unknown until PMWORK stores a reliable work-start transition prospectively.
+- Reduced PWA precache pressure by moving method/template/glossary detail pages out of mandatory release precache while retaining runtime caching and the offline application shell.
+- Replaced the previous single 700 kB static JavaScript ceiling with route-specific transfer budgets derived from measured production baselines with explicit headroom.
+- Added bounded Firefox, WebKit and mobile-WebKit smoke coverage without duplicating the full Chromium suite.
+- Added a recovery-first App Router error boundary that never clears local storage and provides a raw local recovery download before retry.
+- Added `docs/AUDIT_10_10.md` and expanded data-schema / quality-gate documentation around the new integrity contract.
 
-- 79/79 unit and component tests.
-- Root and `/pmwork` production exports: 498 HTML pages and 806 precached resources each.
-- Root browser matrix: 198/198 passed. GitHub Pages-prefix browser matrix: 198/198 passed.
-- Static transfer budgets pass. Browser gates enforce CLS ≤0.05 and local LCP ≤2.5 s.
+## Existing product capabilities retained
 
-## Verified hosted
+- Local-first static export with no backend, authentication, cloud database, remote sync, analytics, trackers or AI chat.
+- RU/EN, root hosting and GitHub Pages `/pmwork` compatibility.
+- IndexedDB primary persistence, local recovery mirror, snapshots and JSON backup/import.
+- PWA/offline runtime, deterministic calculations and explainable signals.
+- Foundation / Practitioner / Advanced guidance and Comfortable / Compact density.
+- Today dominant-priority workflow, Work list/board/saved views, milestones, RAID, people, finance/control, tools, methods/templates/playbooks/knowledge/glossary and starter packs.
 
-- Commit `5304b2fabf05a1ed0dde0808c056a5cc664b21aa`: Quality Gate passed for both root and `/pmwork` jobs, including verify, browser, and performance steps.
-- GitHub Pages deployment passed for the same commit, including the post-deploy release-marker and asset check.
-- An independent exact-commit smoke from outside GitHub Actions checked 817 URLs from the published service-worker manifest successfully.
-- The production URL is `https://castefeudal.github.io/pmwork/`.
+## Verification status for this branch
 
-## Manual or external evidence pending
+The branch must not be described as production-verified until the exact head commit passes the complete Quality Gate for both base paths.
 
-- Human usability sessions with practicing users; no completion/time/confidence results have been invented.
-- Formal WCAG conformance and manual screen-reader/high-contrast/device review.
-- Field Core Web Vitals and INP; no telemetry is added to this local-first product.
+Required automated evidence:
 
-See [USABILITY_PROTOCOL.md](USABILITY_PROTOCOL.md), [RELEASE.md](RELEASE.md), and [release-evidence.json](release-evidence.json).
+- lint;
+- TypeScript typecheck;
+- content, copy, i18n and link gates;
+- unit/component tests;
+- static build and export validation;
+- complete Chromium E2E for root and `/pmwork`;
+- route-specific performance budgets for root and `/pmwork`;
+- bounded Firefox/WebKit/mobile-WebKit smoke on root.
+
+The prior production baseline remains separately documented in `release-evidence.json`; its results are not automatically attributed to this branch.
+
+## Deliberately unresolved / manual evidence
+
+- Human usability protocol: **NOT MEASURED**.
+- Formal WCAG conformance: **NOT CERTIFIED**. Automated accessibility coverage does not replace NVDA/VoiceOver/high-contrast/zoom/device review.
+- Field Core Web Vitals / INP: **NOT MEASURED** because PMWORK does not add telemetry to satisfy this pass.
+- Exact historic cycle time / aging WIP for existing records cannot be reconstructed from schema v6 without inventing a start transition. PMWORK must keep this unknown until prospective status history exists.
+- Large UI modules still warrant a low-risk decomposition pass, but decomposition must not be performed merely to satisfy a file-size target without visual/browser evidence across affected surfaces.
+
+## Release rule
+
+Merge only an exact reviewed commit with green root and GitHub-base Quality Gate results. Do not convert automated success into claims of human usability, formal WCAG compliance or field performance.
+
+See [AUDIT_10_10.md](AUDIT_10_10.md), [QUALITY_GATE.md](QUALITY_GATE.md), [USABILITY_PROTOCOL.md](USABILITY_PROTOCOL.md), [RELEASE.md](RELEASE.md) and [release-evidence.json](release-evidence.json).
