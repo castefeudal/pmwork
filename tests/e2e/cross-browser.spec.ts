@@ -15,7 +15,8 @@ async function storedDemoName(page: import("@playwright/test").Page) {
 async function openDemo(page: import("@playwright/test").Page) {
   await page.goto(`${base}/en/workspace/`);
   const demo = page.getByRole("button", { name: /Explore a completed example/ });
-  if (await demo.isVisible()) await demo.click();
+  await expect(demo).toBeVisible();
+  await demo.click();
   await expect(page.locator(".workspace-shell")).toBeVisible();
   await expect.poll(() => storedDemoName(page)).toBe("MARKOVMADE Digital Product Launch");
 }
