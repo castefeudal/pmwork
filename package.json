@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:cross-browser": "playwright test -c playwright.cross-browser.config.ts",
     "content:validate": "node scripts/content-check.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "links:check": "node scripts/links-check.mjs",
