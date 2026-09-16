@@ -52,4 +52,24 @@ describe("workspace graph integrity", () => {
     expect(codes).toContain("estimate-mirror");
     expect(codes).toContain("milestone-mirror");
   });
+
+  it("rejects contradictory prospective flow evidence", () => {
+    const workspace = demoWorkspace("en"), item = workspace.workItems[0]!;
+    workspace.workItems[0] = {
+      ...item,
+      status: "in-progress",
+      done: true,
+      startedAt: "2026-09-04T00:00:00.000Z",
+      completedAt: "2026-09-03T00:00:00.000Z",
+      statusHistory: [
+        { at: "2026-09-04T00:00:00.000Z", from: "ready", to: "review" },
+        { at: "2026-09-03T00:00:00.000Z", from: "review", to: "done" },
+      ],
+    };
+    const codes = validateWorkspaceGraph(workspace).map((issue) => issue.code);
+    expect(codes).toContain("work-state-mirror");
+    expect(codes).toContain("flow-date-order");
+    expect(codes).toContain("status-history-order");
+    expect(codes).toContain("status-history-state");
+  });
 });
