@@ -196,8 +196,8 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
 
   workspace.projects.forEach((project, index) => {
     const start = parseDate(project.startDate), target = parseDate(project.targetDate);
-    if (start === null) add("invalid-date", `projects[${index}].startDate`, `Invalid date: ${project.startDate}`);
-    if (target === null) add("invalid-date", `projects[${index}].targetDate`, `Invalid date: ${project.targetDate}`);
+    if (project.startDate && start === null) add("invalid-date", `projects[${index}].startDate`, `Invalid date: ${project.startDate}`);
+    if (project.targetDate && target === null) add("invalid-date", `projects[${index}].targetDate`, `Invalid date: ${project.targetDate}`);
     if (start !== null && target !== null && start > target) add("date-order", `projects[${index}]`, "Project startDate is after targetDate");
   });
   workspace.milestones.forEach((milestone, index) => {
