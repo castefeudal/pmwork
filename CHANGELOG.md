@@ -6,7 +6,12 @@
 - Hardened migration/import/restore/save so current-schema corruption fails closed while legacy v1-v5 compatibility repair removes only dangling references that cannot survive migration.
 - Added future-schema and unknown-field backup rejection to prevent silent downcasts or silent data loss.
 - Fixed empty-work vacuous truth in control coverage.
-- Corrected flow semantics: trailing 7/14/28-day throughput and lead time now use stored evidence; historic cycle time remains unknown without a reliable start transition.
+- Corrected flow semantics: trailing 7/14/28-day throughput and lead time now use stored evidence.
+- Added prospective work-start/status evidence without invalidating legacy backups; new transitions now support real cycle-time and aging-WIP metrics while old records stay unknown rather than inferred.
+- Added cycle sample size, median cycle time, P80/P90 only with sufficient evidence, and known/unknown WIP-aging counts.
+- Extended graph integrity to reject contradictory prospective flow timestamps/history and status/done mismatches.
+- Replaced native import/snapshot confirmation with an accessible PMWORK recovery dialog including validated backup counts, safety-snapshot semantics and an explicit current-backup download action.
+- Extracted the workspace Settings/data-recovery surface from the application shell as a low-risk architecture decomposition.
 - Reduced mandatory PWA precache for deep knowledge/detail pages while preserving runtime caching and offline workspace/application shell behavior.
 - Replaced a permissive global static-JS ceiling with route-specific performance budgets.
 - Added Firefox, WebKit and mobile-WebKit smoke coverage alongside the complete Chromium browser suite.
