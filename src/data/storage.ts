@@ -1,5 +1,6 @@
 import { workspaceSchema, type Workspace } from "@/domain/schemas";
 import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
+import { assertNoUnknownBackupFields } from "@/domain/backup-compatibility";
 
 const DB = "pmwork-local",
   STORE = "workspace",
@@ -137,6 +138,8 @@ export function migrateWorkspace(value: unknown): Workspace {
         }),
       })
     : workspaceSchema.parse(value);
+
+  assertNoUnknownBackupFields(value, migrated);
 
   // Rename only the shipped demo title; preserve user names and stable project IDs.
   for (const project of migrated.projects) {
