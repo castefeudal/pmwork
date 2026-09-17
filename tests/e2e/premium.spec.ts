@@ -114,8 +114,12 @@ test("project switching and validated backup replacement",async({page})=>{
  expect(backup.workspace.projects).toHaveLength(3);
  await page.locator('input[type="file"]').setInputFiles({name:"invalid.json",mimeType:"application/json",buffer:Buffer.from("{broken")});
  await expect(page.getByText("File did not pass validation",{exact:true})).toBeVisible();await expect(project).toHaveValue("campaign");
- page.once("dialog",dialog=>dialog.accept());
  await page.locator('input[type="file"]').setInputFiles({name:"backup.json",mimeType:"application/json",buffer:raw});
+ const restoreDialog=page.getByRole("dialog",{name:"Confirm restore",exact:true});
+ await expect(restoreDialog).toBeVisible();
+ await expect(restoreDialog.getByText("The backup passed validation.",{exact:true})).toBeVisible();
+ await expect(restoreDialog.getByRole("button",{name:"Download current backup",exact:true})).toBeVisible();
+ await restoreDialog.getByRole("button",{name:"Restore",exact:true}).click();
  await expect(page.getByText("Backup restored",{exact:true})).toBeVisible();
 });
 for(const locale of ["ru","en"]) {

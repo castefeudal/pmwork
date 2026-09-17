@@ -26,6 +26,16 @@ jobs:
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - name: Preserve Chromium browser evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-qa-${{ matrix.base }}
+          path: |
+            test-results
+            playwright-report
+          retention-days: 7
+          if-no-files-found: warn
       - run: npm run performance:check
       - name: Install Firefox and WebKit for root smoke matrix
         if: matrix.base == 'root'
@@ -33,11 +43,3 @@ jobs:
       - name: Cross-browser smoke
         if: matrix.base == 'root'
         run: npm run test:cross-browser
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: browser-qa-${{ matrix.base }}
-          path: |
-            test-results
-            playwright-report
-          retention-days: 7

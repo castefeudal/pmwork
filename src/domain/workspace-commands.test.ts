@@ -8,6 +8,18 @@ describe('safe workspace commands',()=>{
  it('converts a risk once and retains source linkage',()=>{const w={...demoWorkspace('en'),issues:[]},risk=w.risks[0];const next=convertRiskToIssue(w,risk.id);expect(next.issues.find(i=>i.relatedRiskId===risk.id)?.title).toBe(risk.title);expect(convertRiskToIssue(next,risk.id)).toEqual(next);expect(w.risks[0].status).not.toBe('closed');});
  it('creates an editable status document and records activity',()=>{const w=demoWorkspace('en');const next=generateStatusDraft(w,'atlas','en');expect(next.documents.at(-1)?.body).toContain('Decisions needed');expect(next.activities).toHaveLength(w.activities.length+1);});
  it('keeps completion fields consistent and rejects foreign owner references',()=>{const w=demoWorkspace('en'),item=w.workItems[0];expect(changeWorkStatus(w,item.id,'done').workItems[0].completedAt).toBeTruthy();expect(()=>updateWorkOwner(w,item.id,'missing')).toThrow();});
+ it('records prospective status evidence without fabricating legacy start times',()=>{
+  const w=demoWorkspace('en'),item=w.workItems.find(x=>x.status==='ready'||x.status==='backlog')!;
+  expect(item.startedAt).toBeUndefined();expect(item.statusHistory).toBeUndefined();
+  const started=changeWorkStatus(w,item.id,'in-progress').workItems.find(x=>x.id===item.id)!;
+  expect(started.startedAt).toBeTruthy();expect(started.statusHistory?.at(-1)).toMatchObject({from:item.status,to:'in-progress'});
+  const done=changeWorkStatus({...w,workItems:w.workItems.map(x=>x.id===item.id?started:x)},item.id,'done').workItems.find(x=>x.id===item.id)!;
+  expect(done.completedAt).toBeTruthy();expect(done.startedAt).toBe(started.startedAt);expect(done.statusHistory).toHaveLength(2);
+  const legacy={...item,status:'in-progress' as const};
+  const legacyWorkspace={...w,workItems:w.workItems.map(x=>x.id===item.id?legacy:x)};
+  const untouched=updateWork(legacyWorkspace,item.id,{priority:'high'}).workItems.find(x=>x.id===item.id)!;
+  expect(untouched.startedAt).toBeUndefined();expect(untouched.statusHistory).toBeUndefined();
+ });
  it('reconciles text reassignment with stable owner references',()=>{
   const w=demoWorkspace('en'),item=w.workItems[0],members=w.teamMembers.filter(m=>m.projectId===item.projectId);
   const assigned=updateWorkOwner(w,item.id,members[0].id);

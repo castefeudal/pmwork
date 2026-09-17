@@ -21,6 +21,34 @@ describe("workspace data", () => {
     expect(w.closureRecords[0]?.benefitsOwner).toBeTruthy();
   });
 
+  it("preserves prospective status evidence when it exists", () => {
+    const w = demoWorkspace("en"), item = w.workItems[1]!;
+    w.workItems[1] = {
+      ...item,
+      startedAt: item.createdAt,
+      statusHistory: [
+        { at: item.createdAt, from: "ready", to: "in-progress" },
+      ],
+    };
+    const migrated = migrateWorkspace(JSON.parse(JSON.stringify(w)));
+    expect(migrated.workItems[1]?.startedAt).toBe(item.createdAt);
+    expect(migrated.workItems[1]?.statusHistory).toEqual(w.workItems[1]?.statusHistory);
+  });
+
+  it("does not invent work-start evidence for legacy or current records", () => {
+    const current = demoWorkspace("en");
+    const item = current.workItems[0]!;
+    delete (item as Partial<typeof item>).startedAt;
+    delete (item as Partial<typeof item>).statusHistory;
+    const migratedCurrent = migrateWorkspace(JSON.parse(JSON.stringify(current)));
+    expect(migratedCurrent.workItems[0]?.startedAt).toBeUndefined();
+    expect(migratedCurrent.workItems[0]?.statusHistory).toBeUndefined();
+    const legacy = { ...current, schemaVersion: 5 };
+    const migratedLegacy = migrateWorkspace(JSON.parse(JSON.stringify(legacy)));
+    expect(migratedLegacy.workItems[0]?.startedAt).toBeUndefined();
+    expect(migratedLegacy.workItems[0]?.statusHistory).toBeUndefined();
+  });
+
   it("preserves legacy milestone dates and estimates as v6 lifecycle baselines", () => {
     const current=demoWorkspace("en");
     const workItems=current.workItems.map(item=>{const legacy={...item} as Record<string,unknown>;delete legacy.originalEstimate;delete legacy.currentEstimate;delete legacy.estimateHistory;return legacy;});

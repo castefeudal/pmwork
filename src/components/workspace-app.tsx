@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
-import {ContextFields} from "./context-fields";
-import {defaultContext} from "@/content/project-context";
 import { TodayView } from "./today-view";
 import { readWorkspaceUrl, workspaceUrl } from "@/domain/workspace-url";
 import { WorkspaceMore } from "./workspace-more";
+import { WorkspaceSettingsView } from "./workspace-settings-view";
+import { RecoveryConfirmDialog } from "./recovery-confirm-dialog";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -28,7 +28,7 @@ import {
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
 import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
-import { displayLabel, enumLabels } from "@/content/workspace-i18n";
+import { displayLabel } from "@/content/workspace-i18n";
 import {
   exportWorkspace,
   importWorkspace,
@@ -116,16 +116,9 @@ const createLabels={
  en:{work:"Work item",iteration:"Iteration",objective:"Objective",milestone:"Milestone",dependency:"Dependency",risk:"Risk",issue:"Issue",assumption:"Assumption",decision:"Decision",team:"Team member",stakeholder:"Stakeholder",communication:"Communication",meeting:"Meeting",vendor:"Vendor",budget:"Budget line",change:"Change request",quality:"Quality gate",document:"Document",project:"Project"},
 } as const;
 
-function importPreview(locale: Locale, imported: Workspace, replacing: boolean) {
-  const ru=locale==='ru';
-  const summary=ru
-    ? `Копия проверена. Схема: v${imported.schemaVersion}; проектов: ${imported.projects.length}; работ: ${imported.workItems.length}; рисков: ${imported.risks.length}.`
-    : `Backup validated. Schema: v${imported.schemaVersion}; projects: ${imported.projects.length}; work items: ${imported.workItems.length}; risks: ${imported.risks.length}.`;
-  const consequence=replacing
-    ? (ru?' Текущее рабочее пространство будет заменено после создания защитного снимка.':' The current workspace will be replaced after a safety snapshot is created.')
-    : (ru?' Импортировать эту копию?':' Import this backup?');
-  return summary+consequence;
-}
+type PendingRecovery =
+  | { kind: "import"; candidate: Workspace; replacing: boolean }
+  | { kind: "snapshot"; key: string; label: string };
 
 export function WorkspaceApp({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
@@ -143,6 +136,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [toast, setToast] = useState(""),
     [lastSaved, setLastSaved] = useState(""),
     [snapshots, setSnapshots] = useState<{key:string;at:string}[]>([]),
+    [pendingRecovery,setPendingRecovery]=useState<PendingRecovery|null>(null),
     fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -206,6 +200,25 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     if (next.href !== window.location.href) history.pushState(null, "", next);
   }, [ready, firstRun, projectId, view]);
 
+  const stageImport=async(file?:File,replacing=!firstRun)=>{if(!file)return;try{const candidate=await importWorkspace(file);setPendingRecovery({kind:"import",candidate,replacing});}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}finally{if(fileRef.current)fileRef.current.value='';}};
+  const confirmRecovery=async()=>{
+    const pending=pendingRecovery;if(!pending)return;
+    try{
+      if(pending.kind==="import"){
+        if(pending.replacing&&!recovery)await saveWorkspace(workspace,true);
+        const next=workspaceSchema.parse({...pending.candidate,locale});
+        setWorkspace(next);setProjectId(next.projects[0]?.id??"");setView("overview");setFirstRun(false);setRecovery(false);setToast(ru?"Резервная копия восстановлена":"Backup restored");
+      }else{
+        const restored=await restoreSnapshot(pending.key);
+        if(!recovery)await saveWorkspace(workspace,true);
+        const next=workspaceSchema.parse({...restored,locale});
+        setWorkspace(next);setProjectId(next.projects[0]?.id??"");setRecovery(false);setToast(ru?"Снимок данных восстановлен":"Snapshot restored");
+      }
+      setPendingRecovery(null);
+    }catch{setToast(ru?"Не удалось восстановить данные. Исходные данные не удалены.":"Could not restore data. Original data was not deleted.");}
+  };
+  const recoveryDialog=pendingRecovery&&<RecoveryConfirmDialog locale={locale} candidate={pendingRecovery.kind==="import"?pendingRecovery.candidate:undefined} snapshotLabel={pendingRecovery.kind==="snapshot"?pendingRecovery.label:undefined} replacing={pendingRecovery.kind==="snapshot"||pendingRecovery.replacing} canExportCurrent={(pendingRecovery.kind==="snapshot"||pendingRecovery.replacing)&&!recovery&&!firstRun} onExportCurrent={()=>exportWorkspace(workspace)} onCancel={()=>setPendingRecovery(null)} onConfirm={()=>void confirmRecovery()}/>;
+
   if (!ready) return <main className="language-gate first-run-gate" aria-busy="true"><Brand/><p role="status">{ru ? "Загрузка рабочего пространства…" : "Loading local workspace…"}</p></main>;
 
   if (firstRun) return (
@@ -220,14 +233,15 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         <button className="button ghost" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить резервную копию" : "Restore backup"}</button>
       </div>
       <p className="muted compact">{ru?"Данные остаются на этом устройстве. Резервную копию можно скачать в любой момент.":"Data stays on this device. You can download a backup at any time."}</p>
-      <input hidden ref={fileRef} type="file" accept="application/json" onChange={async e => {const file=e.target.files?.[0];if(!file)return;try{const restored=await importWorkspace(file);if(!window.confirm(importPreview(locale,restored,false)))return;setWorkspace({...restored,locale});setProjectId(restored.projects[0]?.id??"");setView("overview");setFirstRun(false);}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}finally{e.target.value='';}}}/>
+      <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>void stageImport(e.target.files?.[0],false)}/>
       {toast&&<p role="alert">{toast}</p>}
       {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}
+      {recoveryDialog}
     </main>
   );
 
   const project = workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
-  if (!project) return <main className="language-gate"><Brand/><h1>{ru ? "Создайте первый проект" : "Create your first project"}</h1><button className="button primary" onClick={() => setDialog("project")}>{ru ? "Создать проект" : "Create project"}</button>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));if(id)setProjectId(id);}}/>}</main>;
+  if (!project) return <main className="language-gate"><Brand/><h1>{ru ? "Создайте первый проект" : "Create your first project"}</h1><button className="button primary" onClick={() => setDialog("project")}>{ru ? "Создать проект" : "Create project"}</button>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));if(id)setProjectId(id);}}/>}{recoveryDialog}</main>;
 
   const commit = (next: Workspace) => setWorkspace(workspaceSchema.parse(next));
   const selectProject = (id: string) => { setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
@@ -245,10 +259,9 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       case "finance": return <FinanceView {...common}/>;
       case "control": return <ControlView {...common}/>;
       case "documents": return <DocumentsView {...common}/>;
-      case "setup": return <SetupView {...common} snapshots={snapshots} onExport={()=>exportWorkspace(workspace)} onImport={()=>fileRef.current?.click()} onRestore={async(key)=>{const snapshot=snapshots.find(item=>item.key===key);if(!window.confirm(ru?`Восстановить снимок от ${snapshot?new Date(snapshot.at).toLocaleString(locale):"выбранной даты"}? Текущее состояние будет заменено. Сначала рекомендуется скачать резервную копию.`:`Restore the snapshot from ${snapshot?new Date(snapshot.at).toLocaleString(locale):"the selected date"}? Current state will be replaced. Download a backup first.`))return;try{const restored=await restoreSnapshot(key);if(!recovery)await saveWorkspace(workspace,true);commit({...restored,locale});setRecovery(false);selectProject(restored.projects[0]?.id??"");setToast(ru?"Снимок данных восстановлен":"Snapshot restored");}catch{setToast(ru?"Не удалось восстановить снимок данных":"Could not restore snapshot");}}}/>;
+      case "setup": return <WorkspaceSettingsView {...common} snapshots={snapshots} onExport={()=>exportWorkspace(workspace)} onImport={()=>fileRef.current?.click()} onRestore={(key)=>{const snapshot=snapshots.find(item=>item.key===key);setPendingRecovery({kind:"snapshot",key,label:snapshot?new Date(snapshot.at).toLocaleString(locale):(ru?"выбранная дата":"selected date")});}}/>;
     }
   };
-  const onImport = async (file?: File) => {if(!file)return;try{const imported=await importWorkspace(file);if(!window.confirm(importPreview(locale,imported,true)))return;if(!recovery)await saveWorkspace(workspace,true);commit({...imported,locale});setRecovery(false);selectProject(imported.projects[0]?.id??"");setToast(ru?"Резервная копия восстановлена":"Backup restored");}catch{setToast(ru?"Файл не прошёл проверку":"File did not pass validation");}finally{if(fileRef.current)fileRef.current.value='';}};
   const navGroups:[string,WorkspaceView[]][] = workspace.experience==="foundation" ? [
     [ru?"ДЕЙСТВОВАТЬ":"ACT",["overview","work","planning"]],
     [ru?"УПРАВЛЯТЬ":"MANAGE",["raid","control","finance"]],
@@ -286,7 +299,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           <button className="button small primary" aria-label={ru?"Создать запись":"Global create"} aria-haspopup="dialog" onClick={()=>setAddMenu(true)}><Plus size={17}/><span className="desktop-only">{ru?"Создать":"Create"}</span></button>
           <button className="button small desktop-only" onClick={()=>exportWorkspace(workspace)}><Download size={17}/>{ru?"Экспорт":"Export"}</button>
           <button className="button small desktop-only" onClick={()=>fileRef.current?.click()}><Upload size={17}/>{ru?"Импорт":"Import"}</button>
-          <input hidden ref={fileRef} type="file" accept="application/json" onChange={(e)=>onImport(e.target.files?.[0])}/>
+          <input hidden ref={fileRef} type="file" accept="application/json" onChange={(e)=>void stageImport(e.target.files?.[0],true)}/>
         </header>
         <div className="workspace-content">
           {recovery&&<section className="recovery-banner" role="alert"><strong>{ru?"Автосохранение приостановлено":"Autosave paused"}</strong><p>{ru?"Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках.":"Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Settings."}</p><button className="button" onClick={()=>fileRef.current?.click()}>{ru?"Импортировать копию":"Import backup"}</button><button className="button" onClick={()=>setView("setup")}>{ru?"Снимки данных":"Recovery snapshots"}</button></section>}
@@ -298,20 +311,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
       {editor&&<RecordEditor kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setEditor(null)} onChange={commit}/>} 
       {palette&&<CommandPalette workspace={workspace} project={project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={setDialog} onProject={selectProject} onEdit={(kind,id)=>setEditor({kind,id})}/>} 
+      {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}
     </div>
   );
-}
-
-function SetupView({workspace,project,locale,onChange,snapshots,onExport,onImport,onRestore}:{workspace:Workspace;project:Workspace["projects"][number];locale:Locale;onChange:(workspace:Workspace)=>void;snapshots:{key:string;at:string}[];onExport:()=>void;onImport:()=>void;onRestore:(key:string)=>void;}) {
-  const ru=locale==="ru",settings=workspace.projectSettings.find(x=>x.projectId===project.id),updateLimit=(column:string,value:number)=>onChange({...workspace,projectSettings:settings?workspace.projectSettings.map(x=>x.projectId===project.id?{...x,wipLimits:{...x.wipLimits,[column]:Math.max(1,value)}}:x):[...workspace.projectSettings,{projectId:project.id,enabledTypes:["initiative","epic","feature","story","task","subtask","bug","spike","deliverable"],wipLimits:{[column]:Math.max(1,value)},governance:project.governance,probabilityScale:5,impactScale:5}]});
-  return <div className="dashboard-grid">
-    <details className="panel span-12"><summary>{ru?"Контекст проекта и рекомендации":"Project context and recommendations"}</summary><p>{ru?"Ответы меняют рекомендации на экране «Сейчас». Сохранённый подход проекта изменяется отдельно в карточке проекта.":"Answers change Today recommendations. Change the recorded project approach separately in the project editor."}</p><ContextFields locale={locale} value={settings?.context??defaultContext} onChange={context=>onChange({...workspace,projectSettings:[...workspace.projectSettings.filter(x=>x.projectId!==project.id),{projectId:project.id,enabledTypes:["task"],wipLimits:{},governance:project.governance,probabilityScale:5,impactScale:5,...settings,context}]})}/></details>
-    <section className="panel span-6"><h3>{ru?"Это я в этом проекте":"This is me in this project"}</h3><select className="input" aria-label={ru?"Это я в этом проекте":"This is me in this project"} value={workspace.projectSettings.find(s=>s.projectId===project.id)?.localMemberId??""} onChange={e=>{const existing=workspace.projectSettings.find(s=>s.projectId===project.id);onChange({...workspace,projectSettings:[...workspace.projectSettings.filter(s=>s.projectId!==project.id),{projectId:project.id,enabledTypes:["task"],wipLimits:{},governance:project.governance,probabilityScale:5,impactScale:5,...existing,localMemberId:e.target.value||undefined}]})}}><option value="">{ru?"Не выбрано":"Not selected"}</option>{workspace.teamMembers.filter(m=>m.projectId===project.id).map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select><p className="muted">{ru?"Локальная настройка для представления «Моя работа».":"A local preference for the My work view."}</p></section>
-    <section className="panel span-6"><h3>{ru?"Уровень подсказок":"Guidance level"}</h3><p className="muted">{workspace.experience==="foundation"?(ru?"Пошаговые объяснения и упрощённая первичная навигация.":"Step-by-step explanations and simplified primary navigation."):workspace.experience==="advanced"?(ru?"Контрольные данные и действия без лишнего учебного слоя.":"Control data and actions with minimal teaching layer."):(ru?"Сбалансированные подсказки для регулярной проектной работы.":"Balanced guidance for regular project delivery.")}</p><select className="input" aria-label={ru?"Уровень подсказок":"Guidance level"} value={workspace.experience} onChange={e=>onChange({...workspace,experience:e.target.value as Workspace["experience"]})}>{Object.entries(enumLabels[locale].experience).map(([value,label])=><option value={value} key={value}>{label}</option>)}</select></section>
-    <section className="panel span-6"><h3>{ru?"Плотность интерфейса":"Interface density"}</h3><p className="muted">{ru?"Независима от уровня подсказок.":"Independent from guidance level."}</p><select className="input" aria-label={ru?"Плотность интерфейса":"Interface density"} value={workspace.density} onChange={e=>onChange({...workspace,density:e.target.value as Workspace["density"]})}><option value="comfortable">{ru?"Комфортная":"Comfortable"}</option><option value="compact">{ru?"Компактная":"Compact"}</option></select></section>
-    <section className="panel span-6"><h3>{ru?"Локальные данные":"Local data"}</h3><p className="muted">{ru?"Данные сохраняются на этом устройстве. Перед очисткой браузера скачайте резервную копию.":"Data is stored on this device. Download a backup before clearing the browser."}</p><div className="button-row"><button className="button" onClick={onExport}><Download size={16}/>{ru?"Скачать резервную копию":"Download backup"}</button><button className="button" onClick={onImport}><Upload size={16}/>{ru?"Восстановить":"Restore"}</button></div></section>
-    <section className="panel span-6"><h3>{ru?"Лимиты незавершённой работы (WIP)":"WIP limits"}</h3><div className="form-grid"><label className="field"><span>{ru?"В работе":"In progress"}</span><input type="number" min="1" value={settings?.wipLimits["in-progress"]??3} onChange={e=>updateLimit("in-progress",Number(e.target.value))}/></label><label className="field"><span>{ru?"На проверке":"Review"}</span><input type="number" min="1" value={settings?.wipLimits.review??2} onChange={e=>updateLimit("review",Number(e.target.value))}/></label></div><p className="muted">{ru?"Лимит должен отражать доступную мощность системы, а не желаемое количество задач.":"A limit should reflect system capacity, not desired task count."}</p></section>
-    <section className="panel span-6"><h3>{ru?"Автоматические снимки данных":"Automatic snapshots"}</h3>{snapshots.length?<ul className="clean-list">{snapshots.map(s=><li key={s.key}><div className="section-line"><time>{new Date(s.at).toLocaleString(locale)}</time><button className="button small" onClick={()=>onRestore(s.key)}>{ru?"Восстановить":"Restore"}</button></div></li>)}</ul>:<p className="muted">{ru?"Первый снимок создаётся после сохранения.":"The first snapshot is created after saving."}</p>}</section>
-  </div>;
 }

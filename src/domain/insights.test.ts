@@ -60,4 +60,59 @@ describe("deterministic project control", () => {
     expect(result.cycleTimeDays).toBeNull();
     expect(result.cycleTimeReason).toMatch(/startedAt/);
   });
+
+  it("uses only stored start evidence for cycle time and WIP aging", () => {
+    const base = workspace.workItems.filter((x) => x.projectId === "atlas");
+    const items = base.map((item, index) => {
+      if (index === 0)
+        return {
+          ...item,
+          status: "done" as const,
+          done: true,
+          createdAt: "2026-08-20T00:00:00.000Z",
+          startedAt: "2026-09-01T00:00:00.000Z",
+          completedAt: "2026-09-03T00:00:00.000Z",
+          statusHistory: [
+            { at: "2026-09-01T00:00:00.000Z", from: "ready" as const, to: "in-progress" as const },
+            { at: "2026-09-03T00:00:00.000Z", from: "in-progress" as const, to: "done" as const },
+          ],
+        };
+      if (index === 1)
+        return {
+          ...item,
+          status: "in-progress" as const,
+          done: false,
+          startedAt: "2026-09-02T00:00:00.000Z",
+          statusHistory: [
+            { at: "2026-09-02T00:00:00.000Z", from: "ready" as const, to: "in-progress" as const },
+          ],
+        };
+      return item;
+    });
+    const result = flowMetrics(items, "2026-09-05T00:00:00.000Z");
+    expect(result.cycleSampleSize).toBe(1);
+    expect(result.medianCycleDays).toBe(2);
+    expect(result.cycleTimeDays).toBe(2);
+    expect(result.cycleTimeReason).toBeNull();
+    expect(result.p80CycleDays).toBeNull();
+    expect(result.agingWip.some((entry) => entry.ageDays === 3)).toBe(true);
+    expect(result.agingWipUnknown).toBeGreaterThanOrEqual(0);
+  });
+
+  it("does not publish cycle-time percentiles below the minimum evidence sample", () => {
+    const seed = workspace.workItems[0]!;
+    const items = Array.from({ length: 9 }, (_, index) => ({
+      ...seed,
+      id: `cycle-${index}`,
+      status: "done" as const,
+      done: true,
+      createdAt: "2026-08-01T00:00:00.000Z",
+      startedAt: `2026-08-${String(index + 2).padStart(2, "0")}T00:00:00.000Z`,
+      completedAt: `2026-08-${String(index + 3).padStart(2, "0")}T00:00:00.000Z`,
+    }));
+    const result = flowMetrics(items, "2026-09-05T00:00:00.000Z");
+    expect(result.cycleSampleSize).toBe(9);
+    expect(result.p80CycleDays).toBeNull();
+    expect(result.p90CycleDays).toBeNull();
+  });
 });

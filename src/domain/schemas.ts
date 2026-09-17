@@ -15,6 +15,11 @@ export const workStatusSchema = z.enum([
   "review",
   "done",
 ]);
+export const workStatusHistoryEntrySchema = z.object({
+  at: z.string(),
+  from: workStatusSchema,
+  to: workStatusSchema,
+});
 export const healthSchema = z.enum(["green", "amber", "red", "unknown"]);
 export const workItemSchema = z.object({
   id: z.string().min(1),
@@ -64,6 +69,10 @@ export const workItemSchema = z.object({
   order: z.number().default(0),
   createdAt: z.string(),
   updatedAt: z.string(),
+  /** First observed transition into active work. Never backfilled for legacy records. */
+  startedAt: z.string().optional(),
+  /** Prospective status evidence. Empty/absent history means unknown, not zero duration. */
+  statusHistory: z.array(workStatusHistoryEntrySchema).optional(),
   completedAt: z.string().optional(),
   archived: z.boolean().default(false),
 });
