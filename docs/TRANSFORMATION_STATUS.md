@@ -5,6 +5,7 @@ This is an evidence ledger, not a product score.
 Current completion branch: `feat/pmwork-10-10-completion` (PR #8).
 Completion baseline: `f458a3a71850175be1afd45bbbfe2e24a45946e6`.
 Original production-hardening baseline: `51d1f596b67921af7ee985f2a390bd07fc8d3506`.
+Verified implementation head: `1ce3b6f942782730fbd9736e26911cfbc2131bf9`.
 
 ## Implemented before this completion branch
 
@@ -28,6 +29,8 @@ Original production-hardening baseline: `51d1f596b67921af7ee985f2a390bd07fc8d350
 - Replaced native confirmation in import and snapshot replacement with an accessible PMWORK dialog showing validated schema/project/work/risk counts, replacement consequences, safety-snapshot semantics, and an explicit `Download current backup` action when applicable.
 - Extracted the Settings/data-recovery surface from `workspace-app.tsx` into `workspace-settings-view.tsx`, reducing coupling without a broad UI rewrite.
 - Updated `DATA_SCHEMA.md` to document the prospective-evidence and recovery contracts.
+- Updated the recovery E2E contract to exercise the accessible PMWORK restore dialog instead of waiting for a removed native browser confirm.
+- Moved Chromium browser-evidence upload directly after the full E2E suite so later Playwright runs cannot clear the screenshots before artifact retention.
 
 ## Existing product capabilities retained
 
@@ -40,17 +43,18 @@ Original production-hardening baseline: `51d1f596b67921af7ee985f2a390bd07fc8d350
 
 ## Verification status
 
-The exact PR head must pass the complete Quality Gate before this branch is described as production-verified. Required automated evidence remains:
+Quality Gate run #117 (`35272644246`) passed on verified implementation head `1ce3b6f942782730fbd9736e26911cfbc2131bf9`:
 
-- lint and TypeScript typecheck;
-- content, copy, i18n and link gates;
-- unit/component tests;
-- static build and export validation;
-- complete Chromium E2E for root and `/pmwork`;
-- route-specific performance budgets for root and `/pmwork`;
-- bounded Firefox/WebKit/mobile-WebKit smoke on root.
+- root and GitHub-base lint/typecheck/content/copy/i18n/links/build/export gates: PASS;
+- Vitest: 18 files / 97 tests PASS;
+- export: 498 HTML pages PASS;
+- full Chromium E2E: 204 root + 204 GitHub-base PASS;
+- route-specific performance budgets: root + GitHub-base PASS;
+- Firefox/WebKit/mobile-WebKit smoke: 9/9 PASS;
+- PWA mandatory precache: 169 resources, with deep content moved to runtime cache;
+- Chromium visual-evidence artifacts retained successfully for both base paths; root artifact contains 197 PNG files.
 
-Do not attribute prior baseline numbers to the new PR head. `docs/RELEASE.md` records final exact-head evidence after CI completes.
+`docs/RELEASE.md` contains the exact route transfer/lab measurements and the evidence boundaries. Any documentation-only commit after the verified implementation head must pass the complete gate again before merge.
 
 ## Deliberately unresolved / manual evidence
 
@@ -59,7 +63,7 @@ Do not attribute prior baseline numbers to the new PR head. `docs/RELEASE.md` re
 - Field Core Web Vitals / INP: **NOT MEASURED** because PMWORK does not add telemetry for this pass.
 - Historic cycle time / aging WIP remain unknown for legacy records that have no reliable start evidence; only prospective transitions can produce those metrics.
 - Remaining large UI files should be decomposed only where a concrete change requires it and browser/visual evidence can be preserved. This branch deliberately performs one low-risk extraction rather than a cosmetic file-count rewrite.
-- Human visual-regression review on representative physical/browser combinations remains a release responsibility; automated browser checks are not a substitute for that observation.
+- Human visual-regression review on representative physical/browser combinations remains a release responsibility. CI retains deterministic screenshot evidence but does not claim a pixel-baseline or human-review pass.
 
 ## Release rule
 
