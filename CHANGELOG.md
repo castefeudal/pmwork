@@ -16,6 +16,9 @@
 - Replaced a permissive global static-JS ceiling with route-specific performance budgets.
 - Added Firefox, WebKit and mobile-WebKit smoke coverage alongside the complete Chromium browser suite.
 - Added a recovery-first App Router error boundary with raw local recovery download and no automatic storage clearing.
+- Updated recovery E2E to exercise the accessible replacement modal and its current-backup action.
+- Preserved full Chromium visual evidence before cross-browser smoke so CI retains representative screenshots for manual review; verified artifacts contain 197 PNG files on root.
+- Verified the implementation head with 97 unit/component tests, 204 Chromium E2E on root, 204 Chromium E2E on `/pmwork`, 9 Firefox/WebKit/mobile-WebKit smoke tests, both route-specific performance gates and 498-page static exports.
 - Added `docs/AUDIT_10_10.md` and reconciled data-schema, quality-gate, transformation-status and release documentation with the current hardening branch.
 
 ## 2.2.0 — 2026-09-05
