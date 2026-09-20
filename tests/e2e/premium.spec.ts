@@ -26,6 +26,23 @@ test("saved views survive navigation and reload",async({page})=>{
   await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
 });
+test("destructive saved-view action uses an accessible confirmation",async({page})=>{
+  await page.goto(route("/en/workspace/"));
+  await navigateWorkspace(page,"Work");
+  await page.getByText("Saved views",{exact:true}).click();
+  await page.getByLabel("View name").fill("Temporary view");
+  await page.getByRole("button",{name:"Save view",exact:true}).click();
+  const deleteButton=page.getByRole("button",{name:"Delete view Temporary view",exact:true});
+  await deleteButton.click();
+  const confirmation=page.getByRole("dialog",{name:"Delete saved view?",exact:true});
+  await expect(confirmation).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(confirmation).toHaveCount(0);
+  await expect(deleteButton).toBeVisible();
+  await deleteButton.click();
+  await page.getByRole("dialog",{name:"Delete saved view?",exact:true}).getByRole("button",{name:"Delete",exact:true}).click();
+  await expect(deleteButton).toHaveCount(0);
+});
 test("side editor preserves context and keyboard focus",async({page},testInfo)=>{
   await page.goto(route("/en/workspace/"));await navigateWorkspace(page,"Board");
   const title=page.getByRole("button",{name:"Align first-release scope",exact:true});await title.click();

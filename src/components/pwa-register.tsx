@@ -1,7 +1,8 @@
 "use client";
 import { useEffect,useState } from "react";
+import { ConfirmationDialog } from "./confirmation-dialog";
 export function PwaRegister() {
- const [notice,setNotice]=useState(''),[waiting,setWaiting]=useState<ServiceWorker|null>(null);
+ const [notice,setNotice]=useState(''),[waiting,setWaiting]=useState<ServiceWorker|null>(null),[confirmUpdate,setConfirmUpdate]=useState(false);
  useEffect(() => {
   const ru=location.pathname.includes('/ru/');
   const offline=()=>setNotice(ru?'Нет сети · изменения сохраняются локально':'Offline · changes save locally');
@@ -19,5 +20,6 @@ export function PwaRegister() {
  },[]);
  const ru=typeof location!=='undefined'&&location.pathname.includes('/ru/');
  if(!notice&&!waiting)return null;
- return <aside className="pwa-notice" role="status">{notice}{waiting&&<><span>{ru?'Доступна новая версия PMWORK':'A new PMWORK version is available'}</span><button className="button small" onClick={()=>{if(!window.confirm(ru?'Сохраните открытые изменения перед обновлением. Обновить сейчас?':'Save open edits before updating. Update now?'))return; navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});waiting.postMessage({type:'SKIP_WAITING'});}}>{ru?'Обновить':'Update'}</button></>}</aside>;
+ const update=()=>{if(!waiting)return; navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});waiting.postMessage({type:'SKIP_WAITING'});setConfirmUpdate(false);};
+ return <>{<aside className="pwa-notice" role="status">{notice}{waiting&&<><span>{ru?'Доступна новая версия PMWORK':'A new PMWORK version is available'}</span><button className="button small" onClick={()=>setConfirmUpdate(true)}>{ru?'Обновить':'Update'}</button></>}</aside>}{confirmUpdate&&<ConfirmationDialog locale={ru?'ru':'en'} title={ru?'Обновить PMWORK?':'Update PMWORK?'} message={ru?'Сохраните открытые изменения перед обновлением. После обновления страница перезагрузится.':'Save open edits before updating. The page will reload after the update.'} confirmLabel={ru?'Обновить':'Update'} onCancel={()=>setConfirmUpdate(false)} onConfirm={update}/>}</>;
 }

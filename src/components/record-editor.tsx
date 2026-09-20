@@ -8,6 +8,7 @@ import { Trash2, X } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
 import { displayLabel } from "@/content/workspace-i18n";
+import { ConfirmationDialog } from "./confirmation-dialog";
 
 export type EditableKind =
   | "project"
@@ -625,7 +626,7 @@ export function RecordEditor({
 }) {
   const dialogRef = useDialogFocus();
   const prefix = useId();
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""), [confirming, setConfirming] = useState<"project" | "record" | null>(null);
   const collection = collectionByKind[kind];
   const records = workspace[collection] as unknown as Array<
     Record<string, unknown>
@@ -734,16 +735,8 @@ export function RecordEditor({
     } else onChange(validation.data);
     onClose();
   };
-  const remove = () => {
+  const performRemove = () => {
     if (kind === "project") {
-      if (
-        !window.confirm(
-          ru
-            ? "Отметить проект как отменённый? Все связанные данные сохранятся, проект можно будет вернуть в работу."
-            : "Mark this project as cancelled? All linked data will be preserved and the project can be reactivated.",
-        )
-      )
-        return;
       onChange(
         workspaceSchema.parse({
           ...workspace,
@@ -755,14 +748,6 @@ export function RecordEditor({
       onClose();
       return;
     }
-    if (
-      !window.confirm(
-        ru
-          ? `Удалить ${titleByKind.ru[kind]}? Действие нельзя отменить.`
-          : `Delete this ${titleByKind.en[kind]}? This cannot be undone.`,
-      )
-    )
-      return;
     try {
       onChange(removeWorkspaceRecord(workspace, kind, id));
       onClose();
@@ -774,7 +759,9 @@ export function RecordEditor({
       );
     }
   };
+  const remove = () => setConfirming(kind === "project" ? "project" : "record");
   return (
+    <>
     <div
       className="dialog-backdrop drawer-backdrop"
       role="presentation"
@@ -872,5 +859,7 @@ export function RecordEditor({
         </form>
       </section>
     </div>
+    {confirming && <ConfirmationDialog locale={locale} title={confirming === "project" ? (ru ? "Отменить проект?" : "Cancel project?") : (ru ? "Удалить запись?" : "Delete record?")} message={confirming === "project" ? (ru ? "Связанные данные сохранятся, а проект получит статус «Отменён». Его можно вернуть в работу." : "Linked data will be preserved and the project will be marked cancelled. It can be reactivated later.") : (ru ? `Удалить ${titleByKind.ru[kind]}? Это действие нельзя отменить.` : `Delete this ${titleByKind.en[kind]}? This cannot be undone.`)} confirmLabel={confirming === "project" ? (ru ? "Отменить проект" : "Cancel project") : (ru ? "Удалить" : "Delete")} onCancel={() => setConfirming(null)} onConfirm={() => {setConfirming(null);performRemove();}}/>}
+    </>
   );
 }

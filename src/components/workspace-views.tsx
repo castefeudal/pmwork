@@ -26,6 +26,8 @@ import {
 import type { CreateType, WorkspaceView } from "./workspace-types";
 import type { EditableKind } from "./record-editor";
 import { displayLabel } from "@/content/workspace-i18n";
+import { useState } from "react";
+import { ConfirmationDialog } from "./confirmation-dialog";
 const columns = ["backlog", "ready", "in-progress", "review", "done"] as const;
 const statusLabel = {
   ru: {
@@ -1705,6 +1707,7 @@ export function EntityTable({
   onDelete?: (id: string) => void;
 }) {
   const ru = locale === "ru";
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   if (!rows.length)
     return (
       <div className="empty-state panel">
@@ -1718,6 +1721,7 @@ export function EntityTable({
       </div>
     );
   return (
+    <>
     <div className="table-wrap">
       <table>
         <thead>
@@ -1760,16 +1764,7 @@ export function EntityTable({
                     {onDelete && (
                       <button
                         className="icon-button"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              ru
-                                ? `Удалить «${x.title}»? Это действие нельзя отменить.`
-                                : `Delete “${x.title}”? This cannot be undone.`,
-                            )
-                          )
-                            onDelete(x.id);
-                        }}
+                        onClick={() => setPendingDelete(x.id)}
                         aria-label={`${ru ? "Удалить" : "Delete"} ${x.title}`}
                       >
                         <Trash2 size={16} />
@@ -1783,6 +1778,8 @@ export function EntityTable({
         </tbody>
       </table>
     </div>
+    {pendingDelete && (() => { const row = rows.find(item => item.id === pendingDelete); return row ? <ConfirmationDialog locale={locale} title={ru ? "Подтвердите удаление" : "Confirm deletion"} message={ru ? `Удалить «${row.title}»? Это действие нельзя отменить.` : `Delete “${row.title}”? This cannot be undone.`} confirmLabel={ru ? "Удалить" : "Delete"} onCancel={() => setPendingDelete(null)} onConfirm={() => {onDelete?.(pendingDelete);setPendingDelete(null);}}/> : null; })()}
+    </>
   );
 }
 function Metric({
