@@ -244,7 +244,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   const project = workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
   if (!project) return <main className="language-gate"><Brand/><h1>{ru ? "Создайте первый проект" : "Create your first project"}</h1><button className="button primary" onClick={() => setDialog("project")}>{ru ? "Создать проект" : "Create project"}</button>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));if(id)setProjectId(id);}}/>}{recoveryDialog}</main>;
 
-  const commit = (next: Workspace) => setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));
+  const commit = (next: Workspace) => { try { setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next))); } catch { setToast(ru ? "Изменение не применено: нарушена целостность связанных данных" : "Change was not applied because related data would become inconsistent"); } };
   const selectProject = (id: string) => { setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
   const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:setDialog,onEdit:(kind,id)=>setEditor({kind,id}),onChange:commit,onProject:selectProject};
   const render = () => {
