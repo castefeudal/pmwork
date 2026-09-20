@@ -506,6 +506,11 @@ function EVM({ locale }: { locale: Locale }) {
     </div>
   );
 }
+function seededRandom(seedText:string){
+  let seed=2166136261;
+  for(let i=0;i<seedText.length;i++){seed^=seedText.charCodeAt(i);seed=Math.imul(seed,16777619);}
+  return ()=>{seed+=0x6D2B79F5;let t=seed;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
+}
 function Forecast({ locale }: { locale: Locale }) {
   const ru = locale === "ru",
     [raw, setRaw] = useState("5,7,6,8,4,7,9,6"),
@@ -513,7 +518,7 @@ function Forecast({ locale }: { locale: Locale }) {
   const r = useMemo(() => {
     const tokens = raw.split(",").map(x => x.trim());
     if (tokens.some(x => x === "")) return null;
-    try { return monteCarlo(tokens.map(Number), weeks, 5000, Math.random, "itemsByDate"); } catch { return null; }
+    try { return monteCarlo(tokens.map(Number), weeks, 5000, seededRandom(`${raw}|${weeks}`), "itemsByDate"); } catch { return null; }
   }, [raw, weeks]);
   return (
     <div className="calculator-grid">

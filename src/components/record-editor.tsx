@@ -1,7 +1,7 @@
 "use client";
 import {DocumentBodyField} from "./document-body-field";
 import { useDialogFocus } from "./use-dialog-focus";
-import { updateWork } from "@/domain/workspace-commands";
+import { removeWorkspaceRecord, updateWork } from "@/domain/workspace-commands";
 
 import { useId, useState } from "react";
 import { Trash2, X } from "lucide-react";
@@ -763,13 +763,16 @@ export function RecordEditor({
       )
     )
       return;
-    onChange(
-      workspaceSchema.parse({
-        ...workspace,
-        [collection]: records.filter((item) => item !== record),
-      }),
-    );
-    onClose();
+    try {
+      onChange(removeWorkspaceRecord(workspace, kind, id));
+      onClose();
+    } catch {
+      setError(
+        ru
+          ? "Запись не удалена: связанные данные не удалось безопасно обновить."
+          : "Record was not deleted because related data could not be updated safely.",
+      );
+    }
   };
   return (
     <div

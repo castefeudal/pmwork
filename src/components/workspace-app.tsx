@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
+import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
 import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
 import { displayLabel } from "@/content/workspace-i18n";
 import {
@@ -206,12 +207,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     try{
       if(pending.kind==="import"){
         if(pending.replacing&&!recovery)await saveWorkspace(workspace,true);
-        const next=workspaceSchema.parse({...pending.candidate,locale});
+        const next=assertWorkspaceGraph(workspaceSchema.parse({...pending.candidate,locale}));
         setWorkspace(next);setProjectId(next.projects[0]?.id??"");setView("overview");setFirstRun(false);setRecovery(false);setToast(ru?"Резервная копия восстановлена":"Backup restored");
       }else{
         const restored=await restoreSnapshot(pending.key);
         if(!recovery)await saveWorkspace(workspace,true);
-        const next=workspaceSchema.parse({...restored,locale});
+        const next=assertWorkspaceGraph(workspaceSchema.parse({...restored,locale}));
         setWorkspace(next);setProjectId(next.projects[0]?.id??"");setRecovery(false);setToast(ru?"Снимок данных восстановлен":"Snapshot restored");
       }
       setPendingRecovery(null);
@@ -235,15 +236,15 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       <p className="muted compact">{ru?"Данные остаются на этом устройстве. Резервную копию можно скачать в любой момент.":"Data stays on this device. You can download a backup at any time."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>void stageImport(e.target.files?.[0],false)}/>
       {toast&&<p role="alert">{toast}</p>}
-      {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}
+      {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}
       {recoveryDialog}
     </main>
   );
 
   const project = workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
-  if (!project) return <main className="language-gate"><Brand/><h1>{ru ? "Создайте первый проект" : "Create your first project"}</h1><button className="button primary" onClick={() => setDialog("project")}>{ru ? "Создать проект" : "Create project"}</button>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(workspaceSchema.parse(next));if(id)setProjectId(id);}}/>}{recoveryDialog}</main>;
+  if (!project) return <main className="language-gate"><Brand/><h1>{ru ? "Создайте первый проект" : "Create your first project"}</h1><button className="button primary" onClick={() => setDialog("project")}>{ru ? "Создать проект" : "Create project"}</button>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));if(id)setProjectId(id);}}/>}{recoveryDialog}</main>;
 
-  const commit = (next: Workspace) => setWorkspace(workspaceSchema.parse(next));
+  const commit = (next: Workspace) => { try { setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next))); } catch { setToast(ru ? "Изменение не применено: нарушена целостность связанных данных" : "Change was not applied because related data would become inconsistent"); } };
   const selectProject = (id: string) => { setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
   const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:setDialog,onEdit:(kind,id)=>setEditor({kind,id}),onChange:commit,onProject:selectProject};
   const render = () => {
