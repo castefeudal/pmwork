@@ -1,6 +1,6 @@
 import { describe,it,expect } from 'vitest';
 import {demoWorkspace,emptyWorkspace} from '@/data/demo';
-import {convertRiskToIssue,generateStatusDraft,changeWorkStatus,updateWorkOwner,updateWork} from './workspace-commands';
+import {convertRiskToIssue,generateStatusDraft,changeWorkStatus,removeWorkspaceRecord,updateWorkOwner,updateWork} from './workspace-commands';
 import {migrateWorkspace} from '@/data/storage';
 describe('safe workspace commands',()=>{
  it('starts without demo records',()=>{const w=emptyWorkspace('en');for(const value of Object.values(w))if(Array.isArray(value))expect(value).toEqual([]);});
@@ -36,5 +36,17 @@ describe('safe workspace commands',()=>{
   assigned.teamMembers=assigned.teamMembers.filter(m=>m.id!==member.id);
   const retained=changeWorkStatus(assigned,item.id,'review').workItems[0];
   expect(retained.ownerId).toBeUndefined();expect(retained.owner).toBe(member.name);
+ });
+
+ it('removes referenced records without corrupting the workspace graph',()=>{
+  const w=demoWorkspace('en');
+  const withoutWork=removeWorkspaceRecord(w,'work','PW-103');
+  expect(withoutWork.workItems.some(item=>item.id==='PW-103')).toBe(false);
+  expect(withoutWork.dependencies.some(dep=>dep.predecessorId==='PW-103'||dep.successorId==='PW-103')).toBe(false);
+  expect(withoutWork.issues.some(issue=>issue.relatedWorkIds.includes('PW-103'))).toBe(false);
+  expect(withoutWork.iterations.some(iteration=>iteration.workItemIds.includes('PW-103'))).toBe(false);
+  const withoutRisk=removeWorkspaceRecord(w,'risk','R-1');
+  expect(withoutRisk.issues.find(issue=>issue.id==='I-1')?.relatedRiskId).toBeUndefined();
+  expect(withoutRisk.workItems.every(item=>!item.riskIds.includes('R-1'))).toBe(true);
  });
 });
