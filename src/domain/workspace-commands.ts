@@ -1,4 +1,5 @@
 import { workspaceSchema,type Workspace,type WorkItem } from './schemas';
+import { assertWorkspaceGraph } from './workspace-integrity';
 function finish(workspace:Workspace,projectId:string,type:string,message:string):Workspace {
  return workspaceSchema.parse({...workspace,activities:[...workspace.activities,{id:crypto.randomUUID(),projectId,type,message,at:new Date().toISOString()}]});
 }
@@ -76,4 +77,76 @@ export function applyTemplate(w:Workspace,document:Workspace['documents'][number
 export function approveChange(w:Workspace,id:string,approver:string,decision:string){
  const item=w.changes.find(c=>c.id===id);if(!item||!approver.trim()||!decision.trim())throw Error('Approval needs a change, approver and rationale');
  return finish({...w,changes:w.changes.map(c=>c.id===id?{...c,status:'approved',approver,decision}:c)},item.projectId,'change-approved',item.change);
+}
+
+
+export type RemovableRecordKind =
+ | 'work' | 'dependency' | 'milestone' | 'iteration' | 'risk' | 'issue'
+ | 'assumption' | 'decision' | 'stakeholder' | 'team' | 'communication'
+ | 'vendor' | 'budget' | 'change' | 'quality' | 'document';
+
+const removableCollectionByKind = {
+ work:'workItems',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
+ risk:'risks',issue:'issues',assumption:'assumptions',decision:'decisions',
+ stakeholder:'stakeholders',team:'teamMembers',communication:'communications',
+ vendor:'vendors',budget:'budgets',change:'changes',quality:'qualityGates',document:'documents',
+} as const satisfies Record<RemovableRecordKind,keyof Workspace>;
+
+/**
+ * Remove one editable record without leaving dangling graph references.
+ * Substantive related records are preserved; only references and records that
+ * cannot exist independently (explicit dependencies/capacity allocations) are detached.
+ */
+export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:string):Workspace {
+ const collection=removableCollectionByKind[kind];
+ const rows=w[collection] as unknown as Array<{id:string;projectId?:string}>;
+ const target=rows.find(row=>row.id===id);
+ if(!target)throw new Error('Record not found');
+ let next={...w,[collection]:rows.filter(row=>row.id!==id)} as Workspace;
+
+ if(kind==='work'){
+  next={...next,
+   workItems:next.workItems.map(item=>({
+    ...item,
+    parentId:item.parentId===id?undefined:item.parentId,
+    dependencies:item.dependencies.filter(ref=>ref!==id),
+   })),
+   dependencies:next.dependencies.filter(dep=>dep.predecessorId!==id&&dep.successorId!==id),
+   issues:next.issues.map(issue=>({...issue,relatedWorkIds:issue.relatedWorkIds.filter(ref=>ref!==id)})),
+   objectives:next.objectives.map(objective=>({...objective,deliverableIds:objective.deliverableIds.filter(ref=>ref!==id)})),
+   iterations:next.iterations.map(iteration=>({...iteration,workItemIds:iteration.workItemIds.filter(ref=>ref!==id)})),
+  };
+ }
+ if(kind==='risk'){
+  next={...next,
+   workItems:next.workItems.map(item=>({...item,riskIds:item.riskIds.filter(ref=>ref!==id)})),
+   issues:next.issues.map(issue=>issue.relatedRiskId===id?{...issue,relatedRiskId:undefined}:issue),
+   vendors:next.vendors.map(vendor=>({...vendor,riskIds:vendor.riskIds.filter(ref=>ref!==id)})),
+  };
+ }
+ if(kind==='milestone'){
+  next={...next,
+   workItems:next.workItems.map(item=>item.milestoneId===id?{...item,milestoneId:undefined}:item),
+   vendors:next.vendors.map(vendor=>({...vendor,milestones:vendor.milestones.filter(ref=>ref!==id)})),
+  };
+ }
+ if(kind==='iteration'){
+  next={...next,workItems:next.workItems.map(item=>item.iterationId===id?{...item,iterationId:undefined}:item)};
+ }
+ if(kind==='dependency'){
+  next={...next,vendors:next.vendors.map(vendor=>({...vendor,dependencyIds:vendor.dependencyIds.filter(ref=>ref!==id)}))};
+ }
+ if(kind==='team'){
+  next={...next,
+   workItems:next.workItems.map(item=>item.ownerId===id?{...item,ownerId:undefined,ownerLabel:item.ownerLabel??item.owner}:item),
+   capacityAllocations:next.capacityAllocations.filter(allocation=>allocation.memberId!==id),
+   projectSettings:next.projectSettings.map(settings=>settings.localMemberId===id?{...settings,localMemberId:undefined}:settings),
+  };
+ }
+
+ next={...next,
+  documents:next.documents.map(document=>({...document,relatedIds:document.relatedIds.filter(ref=>ref!==id)})),
+  toolRuns:next.toolRuns.map(run=>({...run,appliedRecordIds:run.appliedRecordIds.filter(ref=>ref!==id)})),
+ };
+ return assertWorkspaceGraph(workspaceSchema.parse(next));
 }
