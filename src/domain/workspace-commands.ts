@@ -105,16 +105,18 @@ export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:st
  let next={...w,[collection]:rows.filter(row=>row.id!==id)} as Workspace;
 
  if(kind==='work'){
+  const removedDependencyIds=new Set(next.dependencies.filter(dep=>dep.predecessorId===id||dep.successorId===id).map(dep=>dep.id));
   next={...next,
    workItems:next.workItems.map(item=>({
     ...item,
     parentId:item.parentId===id?undefined:item.parentId,
     dependencies:item.dependencies.filter(ref=>ref!==id),
    })),
-   dependencies:next.dependencies.filter(dep=>dep.predecessorId!==id&&dep.successorId!==id),
+   dependencies:next.dependencies.filter(dep=>!removedDependencyIds.has(dep.id)),
    issues:next.issues.map(issue=>({...issue,relatedWorkIds:issue.relatedWorkIds.filter(ref=>ref!==id)})),
    objectives:next.objectives.map(objective=>({...objective,deliverableIds:objective.deliverableIds.filter(ref=>ref!==id)})),
    iterations:next.iterations.map(iteration=>({...iteration,workItemIds:iteration.workItemIds.filter(ref=>ref!==id)})),
+   vendors:next.vendors.map(vendor=>({...vendor,dependencyIds:vendor.dependencyIds.filter(ref=>!removedDependencyIds.has(ref))})),
   };
  }
  if(kind==='risk'){
