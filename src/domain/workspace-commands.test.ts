@@ -1,6 +1,6 @@
 import { describe,it,expect } from 'vitest';
 import {demoWorkspace,emptyWorkspace} from '@/data/demo';
-import {convertRiskToIssue,generateStatusDraft,changeWorkStatus,removeWorkspaceRecord,updateWorkOwner,updateWork} from './workspace-commands';
+import {convertRiskToIssue,generateStatusDraft,changeWorkStatus,createWork,removeWorkspaceRecord,updateWorkOwner,updateWork} from './workspace-commands';
 import {migrateWorkspace} from '@/data/storage';
 describe('safe workspace commands',()=>{
  it('starts without demo records',()=>{const w=emptyWorkspace('en');for(const value of Object.values(w))if(Array.isArray(value))expect(value).toEqual([]);});
@@ -33,9 +33,15 @@ describe('safe workspace commands',()=>{
   const assigned=updateWorkOwner(w,item.id,member.id);
   assigned.teamMembers=assigned.teamMembers.map(m=>m.id===member.id?{...m,name:'New name'}:m);
   expect(updateWork(assigned,item.id,{priority:'high'}).workItems[0].owner).toBe('New name');
-  assigned.teamMembers=assigned.teamMembers.filter(m=>m.id!==member.id);
-  const retained=changeWorkStatus(assigned,item.id,'review').workItems[0];
+  const withoutMember=removeWorkspaceRecord(assigned,'team',member.id);
+  const retained=changeWorkStatus(withoutMember,item.id,'review').workItems[0];
   expect(retained.ownerId).toBeUndefined();expect(retained.owner).toBe(member.name);
+ });
+ it('fails closed when a mutation introduces a cross-project reference',()=>{
+  const w=demoWorkspace('en'),item=w.workItems[0]!,foreign={...w.milestones[0]!,id:'M-CAMPAIGN',projectId:'campaign' as const};
+  w.milestones=[...w.milestones,foreign];
+  expect(()=>updateWork(w,item.id,{milestoneId:foreign.id})).toThrow(/Workspace integrity failed/);
+  expect(()=>createWork(w,{...item,id:'WI-CROSS-PROJECT',milestoneId:foreign.id})).toThrow(/Workspace integrity failed/);
  });
 
  it('removes referenced records without corrupting the workspace graph',()=>{

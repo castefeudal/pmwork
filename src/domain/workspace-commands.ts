@@ -1,7 +1,7 @@
 import { workspaceSchema,type Workspace,type WorkItem } from './schemas';
 import { assertWorkspaceGraph } from './workspace-integrity';
 function finish(workspace:Workspace,projectId:string,type:string,message:string):Workspace {
- return workspaceSchema.parse({...workspace,activities:[...workspace.activities,{id:crypto.randomUUID(),projectId,type,message,at:new Date().toISOString()}]});
+ return assertWorkspaceGraph(workspaceSchema.parse({...workspace,activities:[...workspace.activities,{id:crypto.randomUUID(),projectId,type,message,at:new Date().toISOString()}]}));
 }
 export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>):Workspace {
  const item=workspace.workItems.find(x=>x.id===id);if(!item)throw new Error('Work item not found');
