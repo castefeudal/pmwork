@@ -142,9 +142,9 @@ export function portfolioSummary(workspace: Workspace, project: Project) {
     { planned, forecast } = projectFinancials(workspace, project.id),
     coverage = projectCompleteness(workspace, project.id);
   return {
-    progress: Math.round(
-      (items.filter((x) => x.done).length / Math.max(1, items.length)) * 100,
-    ),
+    progress: items.length ? Math.round(
+      (items.filter((x) => x.done).length / items.length) * 100,
+    ) : null,
     open: items.filter((x) => !x.done).length,
     critical: actions.filter((x) => x.severity === "critical").length,
     planned,

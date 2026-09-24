@@ -136,8 +136,8 @@ export function PortfolioView({
               <p>{p.objective}</p>
               <div className="project-metrics">
                 <span>
-                  <b>{s.progress}%</b>
-                  {ru ? "готово" : "complete"}
+                  <b>{s.progress===null?(ru?"Нет данных":"Unknown"):`${s.progress}%`}</b>
+                  {ru ? "работ завершено" : "work items done"}
                 </span>
                 <span>
                   <b>{s.open}</b>

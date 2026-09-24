@@ -47,5 +47,7 @@ describe('explainable project priorities', () => {
     const w=demoWorkspace('en'), seed=w.milestones[0]!;
     w.milestones=[{...seed,id:'late',status:'on-track',forecastDate:'2026-09-24'},{...seed,id:'cancelled',status:'cancelled',forecastDate:'2026-09-24'},{...seed,id:'done',status:'done',forecastDate:'2026-09-24'}];
     expect(projectActions(w,seed.projectId,'en',day).filter(x=>x.source?.kind==='milestone').map(x=>x.id)).toEqual(['milestone-late']);
+    w.milestones=[{...seed,forecastDate:'',date:'',status:'planned'}];
+    expect(projectActions(w,seed.projectId,'en',day).filter(x=>x.source?.kind==='milestone')).toEqual([]);
   });
 });

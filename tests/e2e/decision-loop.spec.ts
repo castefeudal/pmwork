@@ -36,9 +36,10 @@ for(const locale of ['ru','en'] as const) test(`schedule comparison requires app
   await expect(dialog.locator('.scenario-diff')).toContainText('⇒');
   const axe=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
   expect(axe.violations).toEqual([]);
-  await dialog.getByRole('button',{name:locale==='ru'?'Применить показанные изменения':'Apply reviewed changes',exact:true}).click();
   const dates=()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem('pmwork:workspace:v3')!);return (raw.workspace??raw).workItems.map((x:{startDate?:string;dueDate?:string})=>[x.startDate??null,x.dueDate??null]);});
   const original=w.workItems.map(x=>[x.startDate??null,x.dueDate??null]);
+  expect(await dates()).toEqual(original);
+  await dialog.getByRole('button',{name:locale==='ru'?'Применить показанные изменения':'Apply reviewed changes',exact:true}).click();
   await expect.poll(dates).not.toEqual(original);
   await page.getByRole('button',{name:locale==='ru'?'Отменить последний сценарий':'Undo last scenario',exact:true}).click();
   await expect.poll(dates).toEqual(original);

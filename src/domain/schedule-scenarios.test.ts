@@ -15,6 +15,8 @@ describe('isolated schedule scenarios',()=>{
     const unscheduled=previewScheduleScenario(w,'atlas','Unknown',7,item.id);
     expect(unscheduled.work).toEqual([]);
     expect(unscheduled.unscheduled).toBe(1);
+    w.milestones=w.milestones.map(x=>({...x,forecastDate:'',date:''}));
+    expect(previewScheduleScenario(w,'atlas','Unknown milestone dates',7,undefined,true).milestones).toEqual([]);
   });
   it('applies dates transactionally, records history, and supports an inverse without resetting unrelated edits',()=>{
     const w=demoWorkspace('en'),draft=previewScheduleScenario(w,'atlas','A',7,undefined,true);

@@ -315,7 +315,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         </div>
       </main>
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
-      {editor&&<RecordEditor kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
+      {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
       {palette&&<CommandPalette workspace={workspace} project={project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={setDialog} onProject={selectProject} onEdit={openRecord}/>} 
       {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}

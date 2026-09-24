@@ -1,3 +1,5 @@
+> Historical hardening evidence follows. For the current Private release scope and exact-commit evidence mechanism, see [PRIVATE_RELEASE.md](PRIVATE_RELEASE.md). Counts and SHAs below apply only to the historical commits explicitly named.
+
 # PMWORK production hardening status
 
 This is an evidence ledger, not a product score.

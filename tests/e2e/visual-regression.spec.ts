@@ -7,6 +7,13 @@ import { route } from './support';
 test.skip(process.platform!=='linux','Pixel baselines use the Linux CI rendering environment');
 for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])test(`visual contract ${locale} ${theme}`,async({page})=>{
   test.setTimeout(180000);
+  // Production deliberately permits a permanent fallback on slow font loads.
+  // Pixel references compare the loaded bundled faces, not optional-font timing.
+  // Keep the same font files/metrics; normalize only the loading policy in this fixture.
+  await page.route('**/*.css',async route=>{
+    const response=await route.fetch();
+    await route.fulfill({response,body:(await response.text()).replace(/font-display:\s*optional/g,'font-display:block')});
+  });
   await page.clock.setFixedTime(new Date('2026-09-25T12:00:00Z'));
   await page.emulateMedia({reducedMotion:'reduce',colorScheme:theme as 'light'|'dark'});
   await page.addInitScript(({theme})=>localStorage.setItem('pmwork-theme',theme),{theme});

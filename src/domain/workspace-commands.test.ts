@@ -19,6 +19,11 @@ describe('safe workspace commands',()=>{
   const legacyWorkspace={...w,workItems:w.workItems.map(x=>x.id===item.id?legacy:x)};
   const untouched=updateWork(legacyWorkspace,item.id,{priority:'high'}).workItems.find(x=>x.id===item.id)!;
   expect(untouched.startedAt).toBeUndefined();expect(untouched.statusHistory).toBeUndefined();
+  const completedLegacy=changeWorkStatus(legacyWorkspace,item.id,'done').workItems.find(x=>x.id===item.id)!;
+  expect(completedLegacy.completedAt).toBeTruthy();
+  expect(completedLegacy.startedAt).toBeUndefined();
+  const directlyCompleted=changeWorkStatus(w,item.id,'done').workItems.find(x=>x.id===item.id)!;
+  expect(directlyCompleted.startedAt).toBeUndefined();
  });
  it('reconciles text reassignment with stable owner references',()=>{
   const w=demoWorkspace('en'),item=w.workItems[0],members=w.teamMembers.filter(m=>m.projectId===item.projectId);

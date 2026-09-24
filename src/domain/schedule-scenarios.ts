@@ -51,7 +51,7 @@ export function previewScheduleScenario(w:Workspace, projectId:string, name:stri
     id:x.id,title:x.title,before:{startDate:x.startDate,dueDate:x.dueDate},after:{startDate:shift(x.startDate,days),dueDate:shift(x.dueDate,days)},
   }));
   const linkedMilestones=new Set(selected.map(x=>x.milestoneId).filter(Boolean));
-  const milestones:MilestoneChange[]=!shiftMilestones||days===0?[]:w.milestones.filter(x=>x.projectId===projectId&&x.status!=='done'&&x.status!=='cancelled'&&(!workId||linkedMilestones.has(x.id))).map(x=>({id:x.id,title:x.title,baseline:x.baselineDate,before:x.forecastDate,after:shift(x.forecastDate,days)!}));
+  const milestones:MilestoneChange[]=!shiftMilestones||days===0?[]:w.milestones.filter(x=>x.projectId===projectId&&!!x.forecastDate&&x.status!=='done'&&x.status!=='cancelled'&&(!workId||linkedMilestones.has(x.id))).map(x=>({id:x.id,title:x.title,baseline:x.baselineDate,before:x.forecastDate,after:shift(x.forecastDate,days)!}));
   return {projectId,name,source:scheduleSource(w,projectId),work,milestones,
     conflictsBefore:dependencyConflicts(w,projectId).length,
     conflictsAfter:dependencyConflicts(projectDraft(w,work,milestones),projectId).length,

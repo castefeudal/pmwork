@@ -77,7 +77,7 @@ test("corrupt browser data is preserved while autosave is paused",async({page})=
   expect(await page.evaluate(()=>localStorage.getItem("pmwork:workspace:v3"))).toBe("{broken");
 });
 test("offline workspace includes its scripts and fonts",async({page,context},testInfo)=>{
-  await page.goto(route("/en/workspace/"));await expect(page.getByText("Requires action")).toBeVisible();
+  await page.goto(route("/en/workspace/"));await expect(page.locator(".priority-focus .button.primary")).toBeVisible();
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
   await page.reload();await expect(page.getByRole("button",{name:"Work",exact:true}).filter({visible:true})).toBeVisible();
   await context.setOffline(true);await page.reload();await navigateWorkspace(page,"Work");await expect(page.getByRole("button",{name:"Add work item",exact:true})).toBeVisible();await page.getByRole("button",{name:"Open search"}).click();

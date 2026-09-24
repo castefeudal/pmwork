@@ -29,6 +29,17 @@ export function projectActions(workspace: Workspace, projectId: string, locale: 
   const t = (r: string, e: string) => ru ? r : e;
   const out: ActionSignal[] = [];
   const items = workspace.workItems.filter(x => x.projectId === projectId && !x.archived);
+  const riskWork=new Map<string,string[]>(),milestoneWork=new Map<string,string[]>();
+  for(const item of items) {
+    for(const riskId of item.riskIds) {
+      const linked=riskWork.get(riskId);
+      if(linked)linked.push(item.id);else riskWork.set(riskId,[item.id]);
+    }
+    if(item.milestoneId) {
+      const linked=milestoneWork.get(item.milestoneId);
+      if(linked)linked.push(item.id);else milestoneWork.set(item.milestoneId,[item.id]);
+    }
+  }
   const add = (signal: Omit<ActionSignal, 'evidence' | 'affectedIds'> & { affectedIds?: string[] }, rule: string, missing: string[] = [], basis: 'recorded' | 'heuristic' = 'recorded') => {
     out.push({ ...signal, affectedIds: signal.affectedIds ?? (signal.source ? [signal.source.id] : []), evidence: { basis, rule, asOf, missing } });
   };
@@ -70,17 +81,17 @@ export function projectActions(workspace: Workspace, projectId: string, locale: 
     if (!reviewDue && score < 15) continue;
     add({ id: `risk-${x.id}`, severity: score >= 15 || (reviewDue && x.reviewDate < asOf) ? 'high' : 'medium', category: 'review',
       source: { kind: 'risk', id: x.id, owner: x.owner },
-      affectedIds: [x.id, ...items.filter(w => w.riskIds.includes(x.id)).map(w => w.id)],
+      affectedIds: [x.id, ...(riskWork.get(x.id)??[])],
       title: `${reviewDue ? t('Пересмотреть риск', 'Review risk') : t('Высокая оценка риска', 'High risk score')}: ${x.title}`,
       why: `P × I = ${score}${reviewDue ? ` · ${t('Дата пересмотра', 'Review date')}: ${x.reviewDate}` : ''}`, dueDate: x.reviewDate || undefined,
       action: t('Проверить триггер, меры реагирования и назначить следующую дату пересмотра.', 'Review the trigger and response, then set the next review date.'),
       consequence: t('Без пересмотра актуальность оценки и мер реагирования остаётся непроверенной.', 'Without a review, the assessment and response may be out of date.'), view: 'raid',
     }, reviewDue ? t('Риск открыт; дата пересмотра наступила. P × I — эвристическая оценка, не вероятность события.', 'Risk is open; review date has arrived. P × I is a heuristic score, not an event probability.') : t('Эвристика: P × I ≥ 15 по порядковым шкалам 1–5. Это не денежная экспозиция.', 'Heuristic: P × I ≥ 15 on ordinal 1–5 scales. This is not monetary exposure.'), [...ownerGap(x.owner), ...(!x.reviewDate ? [t('Дата пересмотра не указана', 'Review date is not recorded')] : [])], 'heuristic');
   }
-  for (const x of workspace.milestones.filter(x => x.projectId === projectId && x.status !== 'done' && x.status !== 'cancelled' && (x.status === 'at-risk' || x.forecastDate < asOf))) add({
+  for (const x of workspace.milestones.filter(x => x.projectId === projectId && x.status !== 'done' && x.status !== 'cancelled' && (x.status === 'at-risk' || (!!x.forecastDate && x.forecastDate < asOf)))) add({
     id: `milestone-${x.id}`, severity: 'high', category: 'due', source: { kind: 'milestone', id: x.id, owner: x.owner },
-    affectedIds: [x.id, ...items.filter(w => w.milestoneId === x.id).map(w => w.id)],
-    title: `${x.forecastDate < asOf ? t('Контрольная точка просрочена', 'Overdue milestone') : t('Контрольная точка под риском', 'Milestone at risk')}: ${x.title}`,
+    affectedIds: [x.id, ...(milestoneWork.get(x.id)??[])],
+    title: `${x.forecastDate && x.forecastDate < asOf ? t('Контрольная точка просрочена', 'Overdue milestone') : t('Контрольная точка под риском', 'Milestone at risk')}: ${x.title}`,
     why: `${t('Базовый план', 'Baseline')}: ${x.baselineDate} → ${t('Прогноз', 'Forecast')}: ${x.forecastDate}`, dueDate: x.forecastDate,
     action: t('Проверить связанную работу и прогноз, сохранив базовый план.', 'Review linked work and the forecast while preserving the baseline.'),
     consequence: t('Связанные обязательства могут потребовать пересмотра; влияние нужно проверить.', 'Related commitments may need review; the impact needs to be checked.'), view: 'planning',
