@@ -5,6 +5,9 @@ import { route } from './support';
 // CI baselines are generated and reviewed on Linux with the pinned Playwright browser.
 // Local Windows runs keep functional coverage; pixel comparison uses the CI platform.
 test.skip(process.platform!=='linux','Pixel baselines use the Linux CI rendering environment');
+// A service worker can serve CSS without page.route seeing it on later navigations.
+// Offline/cache behavior is covered by the functional suite, not pixel fixtures.
+test.use({serviceWorkers:'block'});
 for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])test(`visual contract ${locale} ${theme}`,async({page})=>{
   test.setTimeout(180000);
   // Production deliberately permits a permanent fallback on slow font loads.

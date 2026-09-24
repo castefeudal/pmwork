@@ -1,0 +1,29 @@
+name: Review visual references
+on:
+  push:
+    branches: ["qa/visual-references"]
+jobs:
+  references:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test visual-regression.spec.ts --update-snapshots
+      - name: Verify references in fresh browser contexts
+        run: npx playwright test visual-regression.spec.ts --repeat-each=2
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: visual-reference-review
+          path: |
+            tests/e2e/visual-regression.spec.ts-snapshots
+            test-results
+            quality-evidence
+          retention-days: 7
