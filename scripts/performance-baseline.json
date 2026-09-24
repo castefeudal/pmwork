@@ -1,0 +1,13 @@
+{
+  "commit": "82500a878e9eddecd8386bd03bd3432ccbc648eb",
+  "source": "https://castefeudal.github.io/pmwork/",
+  "method": "gzipSync of decoded initial JavaScript resources referenced by production HTML; no field telemetry",
+  "initialJs": {
+    "/en/": 191095,
+    "/en/glossary": 348700,
+    "/en/methods": 348700,
+    "/en/tools": 204981,
+    "/en/workspace": 329404
+  },
+  "maximumRegression": 0.05
+}

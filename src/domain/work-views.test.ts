@@ -20,6 +20,11 @@ describe("operational views",()=>{
     const rows=[{...items[0],id:'mine',ownerId:'member-1',owner:'Former name'},{...items[0],id:'other',ownerId:'member-2',owner:'New name'}];
     expect(selectWork(rows,workViewConfigSchema.parse({preset:'my',owner:'New name'}),now,'member-1').map(x=>x.id)).toEqual(['mine']);
   });
+  it('does not assign unlinked names or unowned work to a stable local identity',()=>{
+    const rows=[{...items[0],id:'linked',ownerId:'member-1',owner:'Ada'}, {...items[0],id:'ambiguous',ownerId:undefined,owner:'Ada'}, {...items[0],id:'unassigned',ownerId:undefined,owner:''}];
+    expect(selectWork(rows,workViewConfigSchema.parse({preset:'my'}),now,'member-1').map(x=>x.id)).toEqual(['linked']);
+    expect(selectWork(rows,workViewConfigSchema.parse({preset:'my',owner:'Ada'}),now,'member-1').map(x=>x.id)).toEqual(['linked']);
+  });
   it("round trips saved view configuration and upgrades existing v3 backups",()=>{
     const workspace=demoWorkspace("en"),config=workViewConfigSchema.parse({preset:"blocked",sort:"due",group:"owner",type:"board",properties:["owner"]});
     workspace.savedWorkViews=[{id:"v1",projectId:"atlas",name:"Release blockers",config}];

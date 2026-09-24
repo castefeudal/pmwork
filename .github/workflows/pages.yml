@@ -11,23 +11,22 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
-  build:
+  quality:
+    uses: ./.github/workflows/ci.yml
+  deploy:
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npm run verify
-        env:
-          PMWORK_BASE_PATH: github
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-        env:
-          PMWORK_BASE_PATH: github
-      - run: npm run performance:check
+      - uses: actions/download-artifact@v8
+        with:
+          name: tested-site-${{ github.sha }}
+          path: out
+      - name: Verify artifact commit before publishing
+        run: node -e "const r=require('./out/release.json');const e=require('./out/quality-evidence.json');if(r.commit!==process.env.GITHUB_SHA||e.commit!==r.commit)throw Error('Artifact commit mismatch')"
       - uses: actions/upload-pages-artifact@v5
         with:
           path: ./out

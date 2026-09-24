@@ -47,3 +47,25 @@
  .workspace-content{padding-bottom:calc(5.5rem + env(safe-area-inset-bottom))}
 }
 @media(prefers-reduced-motion:reduce){.priority-focus,.recommendation-card{transition:none!important}}
+/* Disclosure keeps the action prominent while making each rule inspectable. */
+.signal-evidence { margin-block: .75rem; font-size: .875rem; }
+.signal-evidence summary { cursor: pointer; min-height: 32px; padding-block: .35rem; }
+.signal-evidence dl { display: grid; grid-template-columns: minmax(7rem, 1fr) minmax(0, 3fr); gap: .5rem 1rem; }
+.signal-evidence dt { font-weight: 600; }
+.signal-evidence dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .signal-evidence dl { grid-template-columns: 1fr; }
+  .signal-evidence dd { margin-bottom: .5rem; }
+}
+
+.collection-pager { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem; margin-block:.75rem; }
+.collection-pager span { font-size:.875rem; font-variant-numeric:tabular-nums; }
+
+.scenario-comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+.scenario-option { border:1px solid var(--line); border-radius:var(--radius-sm); padding:1rem; min-width:0; }
+.scenario-option .view-control { margin-bottom:.75rem; }
+.scenario-option select { max-width:100%; }
+.scenario-checkbox { display:flex; align-items:center; gap:.75rem; min-height:44px; }
+.scenario-diff { padding-left:1.25rem; overflow-wrap:anywhere; }
+.scenario-diff li { margin-block:.75rem; }
+@media(max-width:700px) { .scenario-comparison { grid-template-columns:1fr; } }

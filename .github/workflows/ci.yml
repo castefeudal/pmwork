@@ -1,8 +1,9 @@
 name: Quality gate
 on:
   push:
-    branches: [main, "build/**"]
+    branches: ["build/**"]
   pull_request:
+  workflow_call:
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -23,6 +24,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=high
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
@@ -36,10 +38,25 @@ jobs:
             playwright-report
           retention-days: 7
           if-no-files-found: warn
-      - run: npm run performance:check
       - name: Install Firefox and WebKit for root smoke matrix
         if: matrix.base == 'root'
         run: npx playwright install --with-deps firefox webkit
       - name: Cross-browser smoke
         if: matrix.base == 'root'
         run: npm run test:cross-browser
+      - run: npm run performance:check
+      - run: npm run evidence:release
+      - name: Preserve exact-commit evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-evidence-${{ matrix.base }}-${{ github.sha }}
+          path: quality-evidence
+          retention-days: 30
+      - name: Preserve tested GitHub Pages export
+        if: matrix.base == 'github'
+        uses: actions/upload-artifact@v7
+        with:
+          name: tested-site-${{ github.sha }}
+          path: out
+          retention-days: 7

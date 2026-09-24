@@ -10,6 +10,10 @@ for (let attempt = 0; attempt < 8; attempt++) {
   if (attempt < 7) await new Promise(resolve => setTimeout(resolve, 10000));
 }
 if (release?.commit !== process.env.GITHUB_SHA) throw new Error(`Live release does not match ${process.env.GITHUB_SHA}`);
+const evidenceResponse=await fetch(new URL(`quality-evidence.json?check=${Date.now()}`,base),{signal:AbortSignal.timeout(15000),cache:'no-store'});
+if(!evidenceResponse.ok)throw new Error('Published release evidence is unavailable');
+const evidence=await evidenceResponse.json();
+if(evidence.commit!==release.commit||evidence.unit.failed||evidence.browser.unexpected||!evidence.unit.passed||!evidence.browser.expected)throw new Error('Published evidence does not verify this production commit');
 const workerResponse = await fetch(new URL(`sw.js?check=${Date.now()}`, base), {signal: AbortSignal.timeout(15000), cache:'no-store'});
 if (!workerResponse.ok) throw new Error(`Published service worker: ${workerResponse.status}`);
 const worker = await workerResponse.text();

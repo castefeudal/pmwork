@@ -1,7 +1,11 @@
 "use client";
+import dynamic from "next/dynamic";
+const ScheduleScenarios=dynamic(()=>import("./schedule-scenarios"));
+import { projectFinancials } from "@/domain/finance";
+import { CollectionPager } from "./collection-pager";
 import { formatDate } from "@/domain/format-date";
 import { ProjectHealth } from "./project-health";
-import { convertRiskToIssue, generateStatusDraft } from "@/domain/workspace-commands";
+import { convertRiskToIssue, generateStatusDraft, updateWork } from "@/domain/workspace-commands";
 import { useUrlChoice } from "./use-url-state";
 import { PlanningTimeline } from "./planning-timeline";
 import { localDay } from "@/domain/work-views";
@@ -53,7 +57,8 @@ const healthClass = (v: string) =>
       : v === "red"
         ? "bad"
         : "info";
-const formatMoney = (locale: Locale, currency: string, value: number) => {
+const formatMoney = (locale: Locale, currency: string, value: number | null | undefined) => {
+  if(value===null||value===undefined)return locale==="ru"?"Неизвестно":"Unknown";
   try {
     return new Intl.NumberFormat(locale, {
       style: "currency",
@@ -114,7 +119,7 @@ export function PortfolioView({
       <div className="portfolio-grid">
         {workspace.projects.map((p) => {
           const s = portfolioSummary(workspace, p),
-            over = s.forecast > s.planned && s.planned > 0;
+            over = s.forecast !== null && s.planned !== null && s.forecast > s.planned && s.planned > 0;
           return (
             <article className="project-card" key={p.id}>
               <div className="project-card-head">
@@ -131,8 +136,8 @@ export function PortfolioView({
               <p>{p.objective}</p>
               <div className="project-metrics">
                 <span>
-                  <b>{s.progress}%</b>
-                  {ru ? "готово" : "complete"}
+                  <b>{s.progress===null?(ru?"Нет данных":"Unknown"):`${s.progress}%`}</b>
+                  {ru ? "работ завершено" : "work items done"}
                 </span>
                 <span>
                   <b>{s.open}</b>
@@ -482,6 +487,7 @@ export function BoardView({
   onEdit,
   visibleItems,
 }: ViewProps & { visibleItems?: WorkItem[] }) {
+  const [pages,setPages] = useState<Record<string,number>>({});
   const ru = locale === "ru",
     items = workspace.workItems.filter(
       (x) => x.projectId === project.id && !x.archived,
@@ -489,24 +495,10 @@ export function BoardView({
     settings = workspace.projectSettings.find(
       (x) => x.projectId === project.id,
     ),
-    update = (id: string, status: WorkItem["status"]) =>
-      onChange({
-        ...workspace,
-        workItems: workspace.workItems.map((x) =>
-          x.id === id
-            ? {
-                ...x,
-                status,
-                done: status === "done",
-                updatedAt: new Date().toISOString(),
-                completedAt:
-                  status === "done"
-                    ? (x.completedAt ?? new Date().toISOString())
-                    : undefined,
-              }
-            : x,
-        ),
-      });
+    update = (id: string, status: WorkItem["status"]) => {
+      if (!items.some(item => item.id === id)) return;
+      onChange(updateWork(workspace, id, { status }));
+    };
   return (
     <>
       <div className="toolbar">
@@ -530,6 +522,8 @@ export function BoardView({
         {columns.map((col, ci) => {
           const rows = (visibleItems ?? items).filter((x) => x.status === col),
             limit = settings?.wipLimits[col];
+          const pageKey=project.id+":"+col;
+          const page=Math.min(pages[pageKey]??0,Math.max(0,Math.ceil(rows.length/40)-1));
           return (
             <section
               className="board-column"
@@ -552,7 +546,7 @@ export function BoardView({
                 </span>
               </div>
               {limit && items.filter(x => x.status === col).length > limit && <p className="bad-text">{ru ? "Превышен лимит WIP" : "WIP limit exceeded"}: {items.filter(x => x.status === col).length} / {limit}</p>}
-              {rows.map((x) => (
+              {rows.slice(page*40,(page+1)*40).map((x) => (
                 <article
                   className={`work-card ${x.blocked ? "blocked" : ""}`}
                   key={x.id}
@@ -597,6 +591,7 @@ export function BoardView({
                   </div>
                 </article>
               ))}
+              <CollectionPager page={page} size={40} total={rows.length} locale={locale} label={`${statusLabel[locale][col]} · ${ru?"Страницы":"Pages"}`} onPage={index=>setPages({...pages,[pageKey]:index})}/>
             </section>
           );
         })}
@@ -604,15 +599,10 @@ export function BoardView({
     </>
   );
 }
-export function PlanningView({
-  workspace,
-  project,
-  locale,
-  onCreate,
-  onEdit,
-}: ViewProps) {
+export function PlanningView(props: ViewProps) {
+  const {workspace,project,locale,onCreate,onEdit}=props;
   const ru = locale === "ru",
-    [tab, setTab] = useUrlChoice("tab",["timeline","milestones","iterations","dependencies"],"timeline"),
+    [tab, setTab] = useUrlChoice("tab",["timeline","milestones","iterations","dependencies","scenarios"],"timeline"),
     milestones = workspace.milestones.filter((x) => x.projectId === project.id),
     iterations = workspace.iterations.filter((x) => x.projectId === project.id),
     deps = workspace.dependencies.filter((x) => x.projectId === project.id);
@@ -622,6 +612,7 @@ export function PlanningView({
     ["milestones", ru ? "Контрольные точки" : "Milestones"],
     ["iterations", ru ? "Итерации" : "Iterations"],
     ["dependencies", ru ? "Зависимости" : "Dependencies"],
+    ["scenarios", ru ? "Сценарии" : "Scenarios"],
   ];
   return (
     <>
@@ -636,6 +627,7 @@ export function PlanningView({
           </button>
         ))}
       </div>
+      {tab === "scenarios" && <ScheduleScenarios {...props} key={project.id}/>}
       {tab === "timeline" && <PlanningTimeline workspace={workspace} project={project} locale={locale} onCreate={onCreate} onEdit={onEdit} />}
       {tab === "milestones" && (
         <>
@@ -1186,19 +1178,12 @@ export function FinanceView({
 }: ViewProps) {
   const ru = locale === "ru",
     rows = workspace.budgets.filter((x) => x.projectId === project.id),
-    planned = rows.reduce((s, x) => s + x.planned, 0),
-    actual = rows.reduce((s, x) => s + x.actual, 0),
-    committed = rows.reduce((s, x) => s + x.committed, 0),
-    forecast = rows.reduce(
-      (s, x) => s + (x.forecast ?? x.actual + x.committed),
-      0,
-    ),
-    variance = planned - forecast;
+    { planned, actual, committed, variance, missingForecast } = projectFinancials(workspace,project.id);
   return (
     <>
       <div className="metric-cards">
         <Metric
-          name={ru ? "План" : "Baseline"}
+          name={ru ? "Плановый бюджет" : "Planned budget"}
           value={formatMoney(locale, project.currency, planned)}
         />
         <Metric
@@ -1213,7 +1198,7 @@ export function FinanceView({
           name={ru ? "Отклонение прогноза" : "Forecast variance"}
           value={formatMoney(locale, project.currency, variance)}
           detail={
-            variance < 0
+            variance === null ? (ru ? "Недостаточно данных прогноза" : "Forecast evidence is incomplete") : variance < 0
               ? ru
                 ? "прогноз перерасхода"
                 : "forecast overrun"
@@ -1223,6 +1208,7 @@ export function FinanceView({
           }
         />
       </div>
+      {missingForecast>0&&<p className="notice">{ru?`Прогноз не указан для ${missingForecast} статей. Факт и обязательства не заменяют прогноз полной стоимости.`:`Forecast is missing for ${missingForecast} lines. Actuals and commitments do not replace a total cost forecast.`}</p>}
       <button
         className="button primary section-action"
         onClick={() => onCreate("budget")}
@@ -1245,7 +1231,7 @@ export function FinanceView({
           </thead>
           <tbody>
             {rows.map((x) => {
-              const f = x.forecast ?? x.actual + x.committed;
+              const f = x.forecast;
               return (
                 <tr key={x.id}>
                   <td>
@@ -1255,8 +1241,8 @@ export function FinanceView({
                   <td>{formatMoney(locale, project.currency, x.actual)}</td>
                   <td>{formatMoney(locale, project.currency, x.committed)}</td>
                   <td>{formatMoney(locale, project.currency, f)}</td>
-                  <td className={x.planned - f < 0 ? "bad-text" : "good-text"}>
-                    {formatMoney(locale, project.currency, x.planned - f)}
+                  <td className={f === undefined ? "muted" : x.planned - f < 0 ? "bad-text" : "good-text"}>
+                    {formatMoney(locale, project.currency, f === undefined ? null : x.planned - f)}
                   </td>
                   <td>
                     <button

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { TodayView } from "./today-view";
-import { readWorkspaceUrl, workspaceUrl } from "@/domain/workspace-url";
+import { readWorkspaceUrl, workspaceUrl, readWorkspaceRecord, workspaceRecordUrl } from "@/domain/workspace-url";
 import { WorkspaceMore } from "./workspace-more";
 import { WorkspaceSettingsView } from "./workspace-settings-view";
 import { RecoveryConfirmDialog } from "./recovery-confirm-dialog";
@@ -153,12 +153,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           setProjectId(normalized.projects.some((p) => p.id === remembered) ? remembered! : (normalized.projects[0]?.id ?? ""));
           const context = readWorkspaceUrl(window.location.search, value);
           setProjectId(context.project); setView(context.view);
-          const itemId=new URLSearchParams(window.location.search).get('item');
-          if(itemId){
-            const collections:[EditableKind,Array<{id:string;projectId?:string}>][]=[['document',value.documents],['work',value.workItems],['risk',value.risks],['issue',value.issues],['decision',value.decisions],['team',value.teamMembers],['milestone',value.milestones],['change',value.changes]];
-            const found=collections.find(([,rows])=>rows.some(row=>row.id===itemId&&row.projectId===context.project));
-            if(found)setEditor({kind:found[0],id:itemId});
-          }
+          setEditor(readWorkspaceRecord(window.location.search, value, context.project));
         }
         setReady(true);
         listSnapshots().then(setSnapshots).catch(() => undefined);
@@ -186,13 +181,13 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); setPalette(true); }
-      if (event.key === "Escape") { setDialog(null); setEditor(null); setPalette(false); setAddMenu(false); }
+      if (event.key === "Escape") { setDialog(null); setEditor(null); history.replaceState(null, "", workspaceRecordUrl(window.location.href,null)); setPalette(false); setAddMenu(false); }
     };
     addEventListener("keydown", onKey); return () => removeEventListener("keydown", onKey);
   }, []);
   useEffect(() => {
     if (!ready || firstRun) return;
-    const restore = () => { const context = readWorkspaceUrl(window.location.search, workspace); setProjectId(context.project); setView(context.view); };
+    const restore = () => { const context = readWorkspaceUrl(window.location.search, workspace); setProjectId(context.project); setView(context.view); setEditor(readWorkspaceRecord(window.location.search,workspace,context.project)); };
     addEventListener("popstate", restore); return () => removeEventListener("popstate", restore);
   }, [ready, firstRun, workspace]);
   useEffect(() => {
@@ -246,7 +241,17 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
 
   const commit = (next: Workspace) => { try { setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next))); } catch { setToast(ru ? "Изменение не применено: нарушена целостность связанных данных" : "Change was not applied because related data would become inconsistent"); } };
   const selectProject = (id: string) => { setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
-  const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:setDialog,onEdit:(kind,id)=>setEditor({kind,id}),onChange:commit,onProject:selectProject};
+  const openRecord = (kind: EditableKind, id: string) => {
+    const record={kind,id};
+    const next=workspaceRecordUrl(window.location.href,record);
+    if(next.href!==window.location.href)history.pushState(null,"",next);
+    setEditor(record);
+  };
+  const closeRecord = () => {
+    history.replaceState(null,"",workspaceRecordUrl(window.location.href,null));
+    setEditor(null);
+  };
+  const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:setDialog,onEdit:openRecord,onChange:commit,onProject:selectProject};
   const render = () => {
     switch (view) {
       case "portfolio": return <PortfolioView {...common}/>;
@@ -310,8 +315,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         </div>
       </main>
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
-      {editor&&<RecordEditor kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setEditor(null)} onChange={commit}/>} 
-      {palette&&<CommandPalette workspace={workspace} project={project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={setDialog} onProject={selectProject} onEdit={(kind,id)=>setEditor({kind,id})}/>} 
+      {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
+      {palette&&<CommandPalette workspace={workspace} project={project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={setDialog} onProject={selectProject} onEdit={openRecord}/>} 
       {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}
     </div>
