@@ -8,7 +8,7 @@
     "build": "next build && node scripts/prepare-pwa.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --reporter=default --reporter=json --outputFile=quality-evidence/unit.json",
     "test:e2e": "playwright test",
     "test:cross-browser": "playwright test -c playwright.cross-browser.config.ts",
     "content:validate": "node scripts/content-check.mjs",
@@ -17,7 +17,8 @@
     "export:validate": "node scripts/export-check.mjs",
     "verify": "npm run lint && npm run typecheck && npm run content:validate && npm run copy:check && npm run i18n:check && npm run links:check && npm run test && npm run build && npm run export:validate",
     "performance:check": "node scripts/performance-check.mjs",
-    "copy:check": "node scripts/copy-quality-check.mjs"
+    "copy:check": "node scripts/copy-quality-check.mjs",
+    "evidence:release": "node scripts/release-evidence.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",

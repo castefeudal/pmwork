@@ -9,8 +9,9 @@ export function selectWork(items: WorkItem[], config: WorkViewConfig, now = new 
   const soon = localDay(next), recent = now.getTime() - 7 * 86400000;
   return items.filter(x => {
     if (x.archived || (config.status !== "all" && x.status !== config.status)) return false;
-    if (config.preset === "my" && localOwnerId && x.ownerId) {
-      if(x.ownerId !== localOwnerId) return false;
+    if (config.preset === "my") {
+      // A stable identity must never fall back to an ambiguous display name.
+      if (localOwnerId ? x.ownerId !== localOwnerId : (!config.owner || x.owner !== config.owner)) return false;
     } else if (config.owner && x.owner !== config.owner) return false;
     if (!`${x.id} ${x.title} ${x.owner} ${x.labels.join(" ")}`.toLocaleLowerCase().includes(config.query.toLocaleLowerCase())) return false;
     const open = x.status !== "done", overdue = open && !!x.dueDate && x.dueDate < today;

@@ -1,4 +1,5 @@
 "use client";
+import { CollectionPager } from "./collection-pager";
 import { updateWork } from "@/domain/workspace-commands";
 import { formatDate } from "@/domain/format-date";
 import { useState } from "react";
@@ -16,20 +17,27 @@ export function WorkSurface(props: ViewProps) {
   const ru = locale === "ru", lang = ru ? 0 : 1;
   const [name, setName] = useState(""), [undo, setUndo] = useState<string | null>(null), [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const config = workspace.workViewPreferences.find(x => x.projectId === project.id)?.config ?? workViewConfigSchema.parse({});
+  const [paging,setPaging] = useState({key:"",index:0});
+  const pageKey=project.id+JSON.stringify(config);
   const saved = workspace.savedWorkViews.filter(x => x.projectId === project.id);
+  const members=new Map(workspace.teamMembers.filter(m=>m.projectId===project.id).map(m=>[m.id,m]));
   const all = workspace.workItems.filter(x => x.projectId === project.id && !x.archived).map(item => {
-    const member=workspace.teamMembers.find(m=>m.id===item.ownerId&&m.projectId===project.id);
+    const member=members.get(item.ownerId??"");
     return member?{...item,owner:member.name}:item;
   });
   const self = workspace.teamMembers.find(m => m.projectId===project.id && m.id === workspace.projectSettings.find(s => s.projectId === project.id)?.localMemberId);
   const items = config.preset === "my" && !self ? [] : selectWork(all, config.preset === "my" && self ? {...config, owner:self.name} : config, new Date(), self?.id);
+  const page=Math.min(paging.key===pageKey?paging.index:0,Math.max(0,Math.ceil(items.length/100)-1));
+  const visible=items.slice(page*100,(page+1)*100);
   const owners = [...new Set(all.map(x => x.owner).filter(Boolean))].sort();
   const configure = (patch: Partial<WorkViewConfig>) => onChange({...workspace, workViewPreferences: [...workspace.workViewPreferences.filter(x => x.projectId !== project.id), {projectId: project.id, config: {...config, ...patch}}]});
   const update = (id: string, patch: Partial<WorkItem>) => onChange(updateWork(workspace,id,patch));
   const groups = new Map<string, WorkItem[]>();
-  for (const item of items) {
+  for (const item of visible) {
     const key = config.group === "none" ? "" : item[config.group];
-    groups.set(key, [...(groups.get(key) ?? []), item]);
+    const group = groups.get(key);
+    if (group) group.push(item);
+    else groups.set(key, [item]);
   }
   return <>
     {config.preset === "my" && !self && <p className="notice" role="status">{ru ? "Выберите «Это я в этом проекте» в настройках проекта, чтобы увидеть свою работу." : "Choose ‘This is me in this project’ in project settings to see your work."}</p>}
@@ -42,7 +50,6 @@ export function WorkSurface(props: ViewProps) {
       <label className="view-control">{ru ? "Владелец" : "Owner"}<select aria-label={ru ? "Владелец" : "Owner"} className="input" value={config.owner} onChange={e => configure({owner:e.target.value})}><option value="">{ru ? "Все владельцы" : "All owners"}</option>{owners.map(s => <option key={s}>{s}</option>)}</select></label>
       <button className="button primary" aria-label={ru ? "Добавить рабочий элемент" : "Add work item"} onClick={() => onCreate("work")}><Plus size={17}/>{ru ? "Добавить работу" : "Add work item"}</button>
     </div>
-    {config.preset === "my" && !config.owner && <p className="notice">{ru ? "Выберите себя в поле «Владелец»: пространство локальное, учётной записи здесь нет." : "Choose yourself in Owner: this local workspace has no signed-in identity."}</p>}
     <div className="view-options-row">
       <span className="muted" role="status">{items.length} / {all.length} {ru ? "элементов" : "items"}</span>
       <details className="view-display"><summary><SlidersHorizontal size={16}/>{ru ? "Вид и сортировка" : "Display and sorting"}</summary><div className="view-config">
@@ -59,8 +66,9 @@ export function WorkSurface(props: ViewProps) {
     </div>
     {undo && <div className="notice" role="status">{ru ? "Работа в архиве." : "Work archived."} <button className="button small" onClick={() => {update(undo,{archived:false});setUndo(null);}}>{ru ? "Отменить архивацию" : "Undo archive"}</button></div>}
     {pendingDelete && <ConfirmationDialog locale={locale} title={ru ? "Удалить представление?" : "Delete saved view?"} message={ru ? "Будет удалено только представление. Рабочие элементы сохранятся." : "Only the saved view will be deleted. Work items will be preserved."} confirmLabel={ru ? "Удалить" : "Delete"} onCancel={() => setPendingDelete(null)} onConfirm={() => {onChange({...workspace,savedWorkViews:workspace.savedWorkViews.filter(x => x.id !== pendingDelete)});setPendingDelete(null);}}/>}
+    {config.type === "list" && <CollectionPager page={page} size={100} total={items.length} locale={locale} label={ru?"Страницы работы":"Work pages"} onPage={index=>setPaging({key:pageKey,index})}/>}
     {!items.length ? <div className="empty-state"><Search/><h3>{ru ? "Нет подходящей работы" : "No matching work"}</h3><p>{ru ? "Здесь появятся элементы выбранного представления. Измените фильтры или добавьте работу." : "Items matching this view appear here. Adjust filters or add work."}</p><button className="button" onClick={() => configure(workViewConfigSchema.parse({}))}>{ru ? "Показать всё" : "Show all"}</button></div>
       : config.type === "board" ? <BoardView {...props} visibleItems={items}/>
-      : <><div className="mobile-work-list">{items.map(x => <button className="mobile-work-card" key={x.id} onClick={() => onEdit("work",x.id)}><small>{x.id} · {displayLabel(locale,"priority",x.priority)}</small><strong>{x.title}</strong><span>{displayLabel(locale,"workStatus",x.status)}{x.blocked ? (ru ? " · Блокер" : " · Blocked") : ""}</span><span>{x.owner || (ru ? "Без владельца" : "Unassigned")} · {formatDate(x.dueDate,locale)}</span></button>)}</div><div className="table-wrap work-table"><table><thead><tr><th>{ru ? "Работа" : "Work"}</th>{config.properties.map(p => <th key={p}>{properties[p][lang]}</th>)}<th>{ru ? "Статус" : "Status"}</th><th>{ru ? "Действия" : "Actions"}</th></tr></thead>{[...groups].map(([group, rows]) => <tbody key={group}>{config.group !== "none" && <tr className="group-row"><th colSpan={config.properties.length+3}>{config.group === "owner" ? group || (ru ? "Без владельца" : "Unassigned") : displayLabel(locale,config.group === "status" ? "workStatus" : "priority",group)} <span className="pill">{rows.length}</span></th></tr>}{rows.map(x => <tr key={x.id}><td className="work-title-cell"><small className="muted">{x.id}</small><button className="work-title-button" onClick={() => onEdit("work",x.id)}>{x.title}</button>{x.blocked && <span className="status bad">{ru ? "Блокер" : "Blocked"}</span>}{x.dueDate && x.dueDate < localDay() && !x.done && <span className="status warn">{ru ? "Просрочено" : "Overdue"}</span>}</td>{config.properties.map(p => <td key={p}>{p === "owner" ? <input className="cell-input" aria-label={`${ru ? "Владелец" : "Owner"} ${x.title}`} value={x.owner} onChange={e => update(x.id,{owner:e.target.value})}/> : p === "due" ? formatDate(x.dueDate,locale) : p === "priority" ? displayLabel(locale,"priority",x.priority) : p === "effort" ? x.estimate ?? "—" : workspace.milestones.find(m => m.id === x.milestoneId)?.title || "—"}</td>)}<td><select className="input" aria-label={`${ru ? "Статус" : "Status"} ${x.title}`} value={x.status} onChange={e => update(x.id,{status:e.target.value as WorkItem["status"]})}>{statuses.map(s => <option key={s} value={s}>{displayLabel(locale,"workStatus",s)}</option>)}</select></td><td><details><summary aria-label={`${ru ? "Действия" : "Actions"}: ${x.title}`}>…</summary><button className="button small" onClick={() => {update(x.id,{archived:true});setUndo(x.id);}}>{ru ? "В архив" : "Archive"}</button></details></td></tr>)}</tbody>)}</table></div></>}
+      : <><div className="mobile-work-list">{visible.map(x => <button className="mobile-work-card" key={x.id} onClick={() => onEdit("work",x.id)}><small>{x.id} · {displayLabel(locale,"priority",x.priority)}</small><strong>{x.title}</strong><span>{displayLabel(locale,"workStatus",x.status)}{x.blocked ? (ru ? " · Блокер" : " · Blocked") : ""}</span><span>{x.owner || (ru ? "Без владельца" : "Unassigned")} · {formatDate(x.dueDate,locale)}</span></button>)}</div><div className="table-wrap work-table"><table><thead><tr><th>{ru ? "Работа" : "Work"}</th>{config.properties.map(p => <th key={p}>{properties[p][lang]}</th>)}<th>{ru ? "Статус" : "Status"}</th><th>{ru ? "Действия" : "Actions"}</th></tr></thead>{[...groups].map(([group, rows]) => <tbody key={group}>{config.group !== "none" && <tr className="group-row"><th colSpan={config.properties.length+3}>{config.group === "owner" ? group || (ru ? "Без владельца" : "Unassigned") : displayLabel(locale,config.group === "status" ? "workStatus" : "priority",group)} <span className="pill">{rows.length}</span></th></tr>}{rows.map(x => <tr key={x.id}><td className="work-title-cell"><small className="muted">{x.id}</small><button className="work-title-button" onClick={() => onEdit("work",x.id)}>{x.title}</button>{x.blocked && <span className="status bad">{ru ? "Блокер" : "Blocked"}</span>}{x.dueDate && x.dueDate < localDay() && !x.done && <span className="status warn">{ru ? "Просрочено" : "Overdue"}</span>}</td>{config.properties.map(p => <td key={p}>{p === "owner" ? <input className="cell-input" aria-label={`${ru ? "Владелец" : "Owner"} ${x.title}`} value={x.owner} onChange={e => update(x.id,{owner:e.target.value})}/> : p === "due" ? formatDate(x.dueDate,locale) : p === "priority" ? displayLabel(locale,"priority",x.priority) : p === "effort" ? x.estimate ?? "—" : workspace.milestones.find(m => m.id === x.milestoneId)?.title || "—"}</td>)}<td><select className="input" aria-label={`${ru ? "Статус" : "Status"} ${x.title}`} value={x.status} onChange={e => update(x.id,{status:e.target.value as WorkItem["status"]})}>{statuses.map(s => <option key={s} value={s}>{displayLabel(locale,"workStatus",s)}</option>)}</select></td><td><details><summary aria-label={`${ru ? "Действия" : "Actions"}: ${x.title}`}>…</summary><button className="button small" onClick={() => {update(x.id,{archived:true});setUndo(x.id);}}>{ru ? "В архив" : "Archive"}</button></details></td></tr>)}</tbody>)}</table></div></>}
   </>;
 }

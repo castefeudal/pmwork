@@ -9,7 +9,7 @@ test.beforeEach(async ({page}) => {
 for (const locale of ["ru", "en"] as const) {
   test(`${locale} critical workspace journey`, async ({ page }) => {
     await page.goto(route(`/${locale}/workspace/`));
-    await expect(page.getByText(locale === "ru" ? "Требуется действие" : "Requires action")).toBeVisible();
+    await expect(page.getByRole("heading", {name: locale === "ru" ? "Приоритеты проекта" : "Project priorities", exact: true})).toBeVisible();
     await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
     await page.locator('.workspace-top button[aria-haspopup="dialog"]').click();
     const add=page.getByRole('dialog',{name:locale==='ru'?'Добавить':'Add'});
