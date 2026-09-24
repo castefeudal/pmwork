@@ -27,15 +27,6 @@ jobs:
       - run: npm audit --audit-level=high
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
-      - name: Bootstrap visual references for review
-        if: github.ref == 'refs/heads/build/pmwork-visual-baselines'
-        run: npx playwright test visual-regression.spec.ts --update-snapshots
-      - name: Preserve visual references for review
-        if: github.ref == 'refs/heads/build/pmwork-visual-baselines'
-        uses: actions/upload-artifact@v7
-        with:
-          name: visual-references-${{ matrix.base }}
-          path: tests/e2e/visual-regression.spec.ts-snapshots
       - run: npm run test:e2e
       - name: Preserve Chromium browser evidence
         if: always()

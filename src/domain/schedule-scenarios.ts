@@ -30,7 +30,7 @@ function shift(date: string | undefined, days: number) {
   const ms=Date.parse(`${date}T00:00:00Z`);
   if(!Number.isFinite(ms))throw new Error('Invalid schedule date');
   const result=new Date(ms+days*86400000).toISOString().slice(0,10);
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(result))throw new Error('Date outside supported range');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(result)||result.startsWith('0000'))throw new Error('Date outside supported range');
   return result;
 }
 function projectDraft(w:Workspace, work:WorkChange[], milestones:MilestoneChange[]) {

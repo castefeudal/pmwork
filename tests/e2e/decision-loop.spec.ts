@@ -31,6 +31,12 @@ for(const locale of ['ru','en'] as const) test(`schedule comparison requires app
   await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),w);
   await page.goto(route(`/${locale}/workspace/?project=atlas&view=planning&tab=scenarios`));
   await expect(page.locator('.scenario-option')).toHaveCount(2);
+  const shift=page.getByRole('spinbutton',{name:locale==='ru'?'Сдвиг, календарных дней':'Shift, calendar days'}).first();
+  await shift.fill('4000');
+  await expect(page.getByRole('alert')).toBeVisible();
+  await shift.fill('-7');
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  await shift.fill('7');
   await page.getByRole('button',{name:locale==='ru'?'Просмотреть изменения A':'Review changes A',exact:true}).click();
   const dialog=page.getByRole('dialog');
   await expect(dialog.locator('.scenario-diff')).toContainText('⇒');
