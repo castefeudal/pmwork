@@ -2,6 +2,9 @@
 
 ## Unreleased — production hardening
 
+- Reworked the public landing narrative around the daily signal → decision → action → control loop, with direct workspace entry, explicit offline/local-first trust points, and visible Pavel Markov authorship.
+- Added Pavel Markov as the creator in locale landing metadata and clarified local data storage in the English hero copy.
+- Added the responsive landing-to-workspace operating-loop section and ensured the author link remains visually distinguishable for accessibility.
 - Added workspace graph integrity validation for cross-project references, dependencies, documents, vendors, settings, date relations and compatibility mirror fields.
 - Hardened migration/import/restore/save so current-schema corruption fails closed while legacy v1-v5 compatibility repair removes only dangling references that cannot survive migration.
 - Added future-schema and unknown-field backup rejection to prevent silent downcasts or silent data loss.
