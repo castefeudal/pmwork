@@ -4,6 +4,7 @@ PMWORK 2.3 is a Next.js static export. GitHub Pages serves it below `/pmwork`; r
 
 ## System boundaries
 
+- Public locale landing metadata and copy live in `app/[locale]/page.tsx` and `src/content/ui.ts`; product-library proof counts come from source collections rather than hardcoded totals. Shared public/workspace styling is layered through `app/tokens.css`, foundations, feature styles and responsive/accessibility rules.
 - `src/domain/schemas.ts` defines additive workspace schema v6, including milestone lifecycle, estimate history, optional monetary risk fields, and compact persisted `toolRuns`.
 - `src/data/storage.ts` owns v1–v5 migration, strict v6 parsing, IndexedDB/localStorage reconciliation, rotating snapshots, backup metadata, and safe import/export.
 - `src/domain/workspace-commands.ts` owns linked mutations and preserves immutable estimate/milestone history.

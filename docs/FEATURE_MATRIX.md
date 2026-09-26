@@ -4,6 +4,7 @@ Status meanings: **implemented** changes persisted state or completes a determin
 
 | Capability | Status | Automated evidence | RU/EN |
 | --- | --- | --- | :---: |
+| Public landing daily-loop story, local-first trust points, and visible author credit | Implemented | static export, axe, responsive navigation | ✓ |
 | Today command center and honest confidence | Implemented | insights + browser + axe | ✓ |
 | Work list, saved views, accessible Kanban | Implemented | unit/component/browser | ✓ |
 | Milestone lifecycle and variance | Implemented | schema/migration/unit/browser | ✓ |

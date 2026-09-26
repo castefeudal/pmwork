@@ -79,6 +79,19 @@ These are CI lab observations only; they are not field performance claims.
 
 The mobile-Chromium workspace observation in the same run was LCP 268 ms / CLS 0.000000. These values are useful only as regression evidence inside this CI environment.
 
+## Feature branch verification — landing narrative
+
+The landing-surface update was built and tested on `feat/pmwork-market-leading-product`. Application artifact source: `2eb07847b8f237772c5e89424e9408b5f2be250e6`. A documentation-only commit follows these checks; production files are unchanged by that documentation update.
+
+- `npm ci`: PASS; `npm audit --audit-level=high`: 0 vulnerabilities.
+- Full `npm run verify`: PASS for root and GitHub Pages `/pmwork`; 18 Vitest files / 99 tests, 499 Next static routes, 498 exported HTML pages, PWA package 162 precached resources.
+- Full Chromium E2E: 208/208 on root and 208/208 on `/pmwork`; landing axe checks passed on desktop and mobile.
+- Cross-browser smoke: 9/9 (Firefox, WebKit, mobile WebKit).
+- Route-specific transfer budgets: PASS on both base paths. Root measurements: landing 7,761 B HTML / 191,082 B JS gzip; glossary 48,794 / 348,659; methods 5,802 / 348,659; tools 4,336 / 204,931; workspace 2,396 / 329,337. `/pmwork` measurements: landing 7,769 / 191,132; glossary 48,825 / 348,709; methods 5,823 / 348,709; tools 4,352 / 204,981; workspace 2,412 / 329,404.
+- Chromium lab observations (root): landing LCP 168 ms / CLS 0.000000; glossary 140 / 0; methods 128 / 0; tools 128 / 0; workspace 268 / 0.004300. These are local lab results, not field Core Web Vitals.
+
+These checks establish regression evidence for this branch. They do not establish human usability, formal WCAG conformance, physical-device review, or production deployment.
+
 ## Manual / external evidence
 
 Still required before claiming the corresponding quality dimension:

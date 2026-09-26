@@ -4,6 +4,7 @@ PMWORK is a bilingual, local-first Project Management Operating System: project 
 
 ## Product surfaces
 
+- Public RU/EN landing page explains the daily signal → decision → action → control loop, local/offline operation, and creator Pavel Markov.
 - Today command center: one dominant priority, decision/action/check groups, evidence-aware Stable signals, and separate project state/data confidence.
 - Work: dense list, accessible Kanban, saved views, estimates preserved as Original → Current → Actual, WIP, owners, dependencies, and milestones.
 - Plan and control: milestone baseline/forecast/actual lifecycle, human-readable variance, dependency validation, budget, quality, changes, closure, and status drafts.
