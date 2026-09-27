@@ -289,7 +289,13 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         <div className="side-foot"><Link className="button small" href={`/${locale}/knowledge`}><BookOpen size={16}/><span>{ru?"База знаний":"Knowledge"}</span></Link><button className="button small" onClick={()=>setDialog("project")}><Plus size={16}/><span>{ru?"Проект":"Project"}</span></button></div>
       </aside>
 
-      <nav className="mobile-workspace-nav" aria-label={ru?"Рабочее пространство":"Workspace"}>{(["overview","work","planning","control"] as WorkspaceView[]).map(id=><button key={id} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined} onClick={()=>setView(id)}>{id==="overview"?(ru?"Сейчас":"Today"):navLabels[locale][id]}</button>)}<button onClick={()=>setMore(true)} aria-haspopup="dialog">{ru?"Ещё":"More"}</button></nav>
+      <nav className="mobile-workspace-nav" aria-label={ru?"Рабочее пространство":"Workspace"}>
+        {(["overview","work","planning","control"] as WorkspaceView[]).map((id,index)=>{
+          const Icon=[Home,ListChecks,CalendarDays,ClipboardCheck][index];
+          return <button key={id} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined} onClick={()=>setView(id)}><Icon size={19} aria-hidden="true"/><span>{id==="overview"?(ru?"Сейчас":"Today"):id==="planning"?(ru?"План":"Plan"):navLabels[locale][id]}</span></button>;
+        })}
+        <button onClick={()=>setMore(true)} aria-haspopup="dialog"><Plus size={19} aria-hidden="true"/><span>{ru?"Ещё":"More"}</span></button>
+      </nav>
       {more&&<WorkspaceMore title={ru?"Ещё":"More"} onClose={()=>setMore(false)}>{(["raid","people","finance","documents","guide","portfolio","setup"] as WorkspaceView[]).map(id=><button className="button" key={id} onClick={()=>{setView(id);setMore(false)}}>{navLabels[locale][id]}</button>)}<Link className="button" href={`/${locale}/knowledge`}>{ru?"База знаний":"Knowledge"}</Link></WorkspaceMore>}
       {addMenu&&<WorkspaceMore title={ru?"Добавить":"Add"} onClose={()=>setAddMenu(false)}><div className="global-add-grid">{addGroups.map(group=><section key={group.id}><h3>{ru?({work:"Работа",plan:"Планирование",raid:"Риски и решения",people:"Люди",control:"Контроль",document:"Документы"} as Record<string,string>)[group.id]:({work:"Work",plan:"Planning",raid:"Risks & decisions",people:"People",control:"Control",document:"Documents"} as Record<string,string>)[group.id]}</h3><div className="button-row">{group.types.map(type=><button className="button" key={type} onClick={()=>{setAddMenu(false);setDialog(type)}}>{createLabels[locale][type as keyof typeof createLabels[typeof locale]]}</button>)}</div></section>)}</div></WorkspaceMore>}
 

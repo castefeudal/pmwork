@@ -1,6 +1,6 @@
 # Architecture
 
-PMWORK 2.3 is a Next.js static export. GitHub Pages serves it below `/pmwork`; root hosting remains a tested build target. The browser is the complete runtime: there is no backend, authentication, cloud database, telemetry, or remote calculation service.
+PMWORK 2.4 is a Next.js static export. GitHub Pages serves it below `/pmwork`; root hosting remains a tested build target. The browser is the complete runtime: there is no backend, authentication, cloud database, telemetry, or remote calculation service.
 
 ## System boundaries
 

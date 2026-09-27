@@ -97,6 +97,54 @@ export function PortfolioView({
   onEdit,
 }: ViewProps) {
   const ru = locale === "ru";
+  const [filter, setFilter] = useState<"all" | "attention" | "critical" | "upcoming" | "overdue" | "stale" | "owner" | "forecast">("all");
+  const today = localDay();
+  const asOf = Date.parse(`${today}T23:59:59.999Z`);
+  const next30Days = new Date(asOf + 30 * 86400000).toISOString().slice(0, 10);
+  const filters = [
+    ["all", ru ? "Все проекты" : "All projects"],
+    ["attention", ru ? "Требуют внимания" : "Needs attention"],
+    ["critical", ru ? "Критичные" : "Critical"],
+    ["upcoming", ru ? "Ближайшая точка" : "Upcoming milestone"],
+    ["overdue", ru ? "Просрочено" : "Overdue"],
+    ["stale", ru ? "Нет свежих обновлений" : "Stale activity"],
+    ["owner", ru ? "Нет владельца" : "Missing owner"],
+    ["forecast", ru ? "Нет прогноза" : "Missing forecast"],
+  ] as const;
+  const projectEvidence = (p: Project) => {
+    const summary = portfolioSummary(workspace, p);
+    const actions = projectActions(workspace, p.id, locale);
+    const milestones = workspace.milestones
+      .filter((item) => item.projectId === p.id && item.status !== "done" && item.status !== "cancelled")
+      .sort((a, b) => a.forecastDate.localeCompare(b.forecastDate));
+    const activity = workspace.activities
+      .filter((item) => item.projectId === p.id)
+      .map((item) => item.at)
+      .filter(Boolean)
+      .sort()
+      .at(-1);
+    const activityAt = activity ? Date.parse(activity) : Number.NaN;
+    const overdue = workspace.workItems.some((item) => item.projectId === p.id && !item.archived && !item.done && item.dueDate && item.dueDate < today)
+      || milestones.some((item) => item.forecastDate < today)
+      || actions.some((item) => item.dueDate && item.dueDate < today);
+    const upcoming = milestones.find((item) => item.forecastDate >= today && item.forecastDate <= next30Days);
+    const stale = !Number.isFinite(activityAt) || asOf - activityAt > 30 * 86400000;
+    return { summary, actions, milestones, activity, overdue, upcoming, stale };
+  };
+  const evidenceByProject = new Map(workspace.projects.map((project) => [project.id, projectEvidence(project)]));
+  const visibleProjects = workspace.projects.filter((p) => {
+    const { summary, actions, overdue, upcoming, stale } = evidenceByProject.get(p.id)!;
+    switch (filter) {
+      case "attention": return actions.length > 0 || overdue || stale || !p.owner.trim() || summary.forecast === null;
+      case "critical": return actions.some((item) => item.severity === "critical");
+      case "upcoming": return Boolean(upcoming);
+      case "overdue": return overdue;
+      case "stale": return stale;
+      case "owner": return !p.owner.trim();
+      case "forecast": return summary.forecast === null;
+      default: return true;
+    }
+  });
   return (
     <>
       <div className="page-title">
@@ -116,9 +164,15 @@ export function PortfolioView({
           {ru ? "Создать проект" : "Create project"}
         </button>
       </div>
+      <nav className="portfolio-filterbar" aria-label={ru ? "Фильтры портфеля" : "Portfolio filters"}>
+        {filters.map(([id, label]) => (
+          <button key={id} type="button" className={filter === id ? "active" : ""} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label}</button>
+        ))}
+        <span className="portfolio-filter-count">{visibleProjects.length} / {workspace.projects.length}</span>
+      </nav>
       <div className="portfolio-grid">
-        {workspace.projects.map((p) => {
-          const s = portfolioSummary(workspace, p),
+        {visibleProjects.map((p) => {
+          const evidence = evidenceByProject.get(p.id)!, s = evidence.summary,
             over = s.forecast !== null && s.planned !== null && s.forecast > s.planned && s.planned > 0;
           return (
             <article className="project-card" key={p.id}>
@@ -152,6 +206,11 @@ export function PortfolioView({
                   {ru ? "прогноз" : "forecast"}
                 </span>
               </div>
+              <div className="portfolio-evidence">
+                <span className={evidence.overdue ? "bad-text" : ""}><b>{evidence.overdue ? (ru ? "Просрочено" : "Overdue") : (ru ? "Сроки" : "Schedule")}</b>{evidence.overdue ? (ru ? "Есть просроченная работа или точка" : "Overdue work or milestone") : (ru ? "Нет просроченных дат" : "No overdue dates recorded")}</span>
+                <span><b>{evidence.upcoming ? evidence.upcoming.title : (ru ? "Ближайшая точка не задана" : "No upcoming milestone")}</b>{evidence.upcoming ? formatDate(evidence.upcoming.forecastDate, locale) : (ru ? "Нет активной точки в следующие 30 дней" : "No active milestone in the next 30 days")}</span>
+                <span className={evidence.stale ? "warn-text" : ""}><b>{ru ? "Последняя активность" : "Last activity"}</b>{evidence.activity ? formatDate(evidence.activity.slice(0, 10), locale) : (ru ? "Нет записанной активности" : "No activity recorded")}</span>
+              </div>
               <div className="card-foot">
                 <span className="muted">
                   {displayLabel(locale, "approach", p.approach)} ·{" "}
@@ -178,6 +237,7 @@ export function PortfolioView({
           );
         })}
       </div>
+      {visibleProjects.length === 0 && <section className="portfolio-empty" role="status"><strong>{ru ? "Проекты по фильтру не найдены" : "No projects match this filter"}</strong><p>{ru ? "Измените фильтр или проверьте записи портфеля." : "Change the filter or review the portfolio records."}</p><button className="button small" onClick={() => setFilter("all")}>{ru ? "Показать все проекты" : "Show all projects"}</button></section>}
     </>
   );
 }
