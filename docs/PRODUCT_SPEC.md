@@ -4,6 +4,8 @@ PMWORK connects understand → decide → do → control → learn in one device
 
 ## Current behavior
 
+The public RU/EN landing page explains the daily signal → decision → action → control loop, makes local/offline operation and Pavel Markov authorship visible, and links directly into the workspace. Content-library counts are derived from the bilingual source collections.
+
 1. First run is value-first: start a real project, explicitly explore the demo, or restore a validated backup. No automatic demo persistence.
 2. All levels start at Today. Today isolates the highest-priority current signal and then groups remaining decisions, actions and checks. Foundation keeps expandable purpose/action/output/mistake explanations.
 3. Guidance level and interface density are independent. Foundation uses a simpler primary information architecture; advanced users receive less teaching content without being forced into compact density.

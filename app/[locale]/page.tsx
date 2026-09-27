@@ -35,6 +35,8 @@ export async function generateMetadata({
       locale === "ru"
         ? "Ведите проекты, бэклог, риски, сроки и решения в одной системе с локальным хранением данных."
         : "Run projects, backlog, risks, schedule, and decisions in one local-first system.",
+    authors: [{ name: "Pavel Markov" }],
+    creator: "Pavel Markov",
     alternates: {
       canonical: `https://castefeudal.github.io/pmwork/${locale}/`,
       languages: {
@@ -93,14 +95,16 @@ export default async function Home({
                 {t.hero.open}
                 <ArrowRight size={18} />
               </Link>
-              <Link className="button secondary" href={`/${locale}/tools#fit`}>
-                {t.hero.choose}
+              <Link className="button secondary" href={`/${locale}/#system`}>
+                {ru ? "Изучить систему" : "Explore the system"}
               </Link>
             </div>
             <div className="trust-line">
-              <span>{ru ? "Локальное хранение" : "Local-first"}</span>
+              <span>{ru ? "Работает офлайн" : "Works offline"}</span>
+              <span>{ru ? "Без аккаунта" : "No account"}</span>
               <span>RU / EN</span>
             </div>
+            <p className="hero-author">{ru ? "Создано Павлом Марковым" : "Created by Pavel Markov"} · <Link href={`/${locale}/about/`}>{ru ? "О продукте" : "About PMWORK"}</Link></p>
           </div>
           <div
             className="cockpit-preview"
@@ -166,7 +170,7 @@ export default async function Home({
             </div>
           </div>
         </section>
-        <section className="section">
+        <section className="section" id="system">
           <div className="section-head">
             <div>
               <p className="eyebrow">
@@ -237,6 +241,28 @@ export default async function Home({
                 </article>
               );
             })}
+          </div>
+        </section>
+        <section className="section operating-loop">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow">{ru ? "Ежедневный рабочий цикл" : "The daily operating loop"}</p>
+              <h2>{ru ? "От сигнала — к проверяемому действию" : "From signal to an action you can verify"}</h2>
+            </div>
+            <p>{ru ? "Каждый вывод ведёт к исходной записи. Обновите её — и локальное состояние проекта пересчитается." : "Every signal leads to its source record. Update that record and the local project picture recalculates."}</p>
+          </div>
+          <div className="feature-grid">
+            {[
+              [ru ? "Понять" : "Understand", ru ? "Today показывает приоритет и объясняет, какие записи его вызвали." : "Today surfaces a priority and shows which records produced it."],
+              [ru ? "Решить" : "Decide", ru ? "Откройте риск, блокер или решение прямо из сигнала." : "Open a risk, blocker, or decision directly from its signal."],
+              [ru ? "Действовать" : "Act", ru ? "Измените запись или создайте следующий шаг в рабочем контуре." : "Change the record or create the next step in the project workspace."],
+              [ru ? "Контролировать" : "Control", ru ? "Сверяйте сроки, бюджет и контрольные точки с зафиксированными данными." : "Review schedule, budget, and milestones against recorded evidence."],
+            ].map(([title, copy], i) => <article className="feature" key={title}><span className="num">0{i + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}
+          </div>
+          <div className="operating-loop-proof">
+            <strong>{ru ? "Данные остаются на устройстве" : "Your project data stays on this device"}</strong>
+            <p>{ru ? "Без регистрации и обязательного сервера. Создавайте локальные резервные копии и продолжайте работу без сети." : "No account or required server. Create local backups and keep working offline."}</p>
+            <Link className="button primary" href={`/${locale}/workspace/`}>{ru ? "Открыть рабочее пространство" : "Open the workspace"}<ArrowRight size={18}/></Link>
           </div>
         </section>
         <section className="section">

@@ -14,7 +14,7 @@ const translations = {
     hero: {
       eyebrow: "Практическая система руководителя проекта",
       title: "Понимайте, что происходит. Решайте, что делать дальше.",
-      lead: "Рабочее пространство руководителя проекта: задачи, сроки, риски и решения с понятными причинами и действиями. Данные хранятся на вашем устройстве.",
+      lead: "Ведите работу, принимайте решения, управляйте сроками, рисками и результатами. Выводы объяснимы, данные хранятся на вашем устройстве.",
       open: "Создать / открыть проект",
       choose: "Подобрать подход",
     },
@@ -62,7 +62,7 @@ const translations = {
     hero: {
       eyebrow: "Practical PM operating system",
       title: "Understand what is happening. Decide what to do next.",
-      lead: "Methods, backlog, Kanban, risks, stakeholders, schedule, budget, documents, and professional playbooks in one practical system.",
+      lead: "Manage work, make decisions, control schedule and risk, and learn from project evidence. No account or server required; data stays on your device.",
       open: "Create / open project",
       choose: "Choose an approach",
     },

@@ -1,5 +1,7 @@
 # PMWORK identity
 
+The bilingual landing page visibly credits Pavel Markov and locale metadata declares him as creator. Keep this attribution clear and restrained across future public-surface redesigns.
+
 The owner supplied a metallic blue/teal/copper PM symbol with two upward arrows. The supplied JPGs are raster reference boards, not SVG source assets; their checkerboard is baked into the image.
 
 The integrated mark is an image-assisted adaptation of that supplied symbol, with the wordmark and checkerboard removed and a dark navy tile background. It is deliberately a raster asset, not a claimed vector reconstruction. Use `public/brand/logo-mark.webp` in navigation, with the accessible PMWORK text alongside it. Keep the mark's aspect ratio and fixed dimensions to prevent layout shifts. Do not add glow or animation to the logo.

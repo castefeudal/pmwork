@@ -1,10 +1,12 @@
-# PMWORK 2.3
+# PMWORK 2.4
 
 PMWORK is a bilingual, local-first Project Management Operating System: project data becomes an explained signal, a decision or action, a persisted change, and a new feedback signal. The application is a Next.js static export with no account, backend, cloud sync, AI chat, analytics, or trackers.
 
 ## Product surfaces
 
+- Public RU/EN landing page explains the daily signal → decision → action → control loop, local/offline operation, and creator Pavel Markov.
 - Today command center: one dominant priority, decision/action/check groups, evidence-aware Stable signals, and separate project state/data confidence.
+- Today evidence coverage links missing owners, risk review dates, decision dates, and milestone forecasts to their source modules. Portfolio filters expose attention, critical signals, upcoming milestones, overdue records, stale activity, missing owners and missing forecasts without a synthetic portfolio score.
 - Work: dense list, accessible Kanban, saved views, estimates preserved as Original → Current → Actual, WIP, owners, dependencies, and milestones.
 - Plan and control: milestone baseline/forecast/actual lifecycle, human-readable variance, dependency validation, budget, quality, changes, closure, and status drafts.
 - RAID and people: qualitative risks plus optional monetary EMV, assumptions, issues, decisions, stakeholders, team, communications, and vendors.

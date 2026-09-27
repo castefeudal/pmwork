@@ -33,9 +33,10 @@ for(const locale of ['ru','en'] as const) test(`schedule comparison requires app
   await expect(page.locator('.scenario-option')).toHaveCount(2);
   const shift=page.getByRole('spinbutton',{name:locale==='ru'?'Сдвиг, календарных дней':'Shift, calendar days'}).first();
   await shift.fill('4000');
-  await expect(page.getByRole('alert')).toBeVisible();
+  const inputError=page.locator('.scenario-option').first().getByRole('alert');
+  await expect(inputError).toContainText(locale==='ru'?'целое число дней от −3650 до 3650':'whole number of days from −3650 to 3650');
   await shift.fill('-7');
-  await expect(page.getByRole('alert')).toHaveCount(0);
+  await expect(inputError).toHaveCount(0);
   await shift.fill('7');
   await page.getByRole('button',{name:locale==='ru'?'Просмотреть изменения A':'Review changes A',exact:true}).click();
   const dialog=page.getByRole('dialog');

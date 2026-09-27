@@ -22,6 +22,8 @@ Browser coverage includes approval/undo, date provenance, typed record navigatio
 
 Pixel regression uses fixed clock, bundled fonts, reduced motion and the pinned Playwright Chromium in Linux CI. It covers landing, onboarding, Today, Work, Board, Planning, scenarios, RAID, People, Portfolio, Finance, Control/report drafts, Settings, Documents and Tools in RU/EN, light/dark, desktop/mobile. Expected images are reviewed artifacts checked into the repository. Normal CI compares them; it does not update baselines.
 
+The separate `Review visual references` workflow runs only on the explicit `qa/visual-references` branch. It generates candidate images and compares them twice in fresh browser contexts before exporting them for review. Pixel fixtures block service workers so cached CSS cannot bypass the deterministic font-loading policy; normal offline/PWA tests retain service workers.
+
 ## Explicit limits
 
 - Schedule scenarios model date shifts and dependency conflicts. They do not predict resource availability, cost changes, risk realization or deadline probability. Drafts live on the current screen; applied dates and history use normal local persistence.

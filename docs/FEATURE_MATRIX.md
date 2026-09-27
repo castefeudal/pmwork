@@ -4,6 +4,10 @@ Status meanings: **implemented** changes persisted state or completes a determin
 
 | Capability | Status | Automated evidence | RU/EN |
 | --- | --- | --- | :---: |
+| Today evidence coverage linked to source modules | Implemented | domain evidence + Chromium mobile/desktop browser | ✓ |
+| Portfolio attention, critical, upcoming, overdue, stale, owner and forecast filters | Implemented | data-derived filter E2E | ✓ |
+| Semantic light/dark workspace design tokens and five-destination mobile navigation | Implemented | responsive visual and accessibility regression | ✓ |
+| Public landing daily-loop story, local-first trust points, and visible author credit | Implemented | static export, axe, responsive navigation | ✓ |
 | Today command center and honest confidence | Implemented | insights + browser + axe | ✓ |
 | Work list, saved views, accessible Kanban | Implemented | unit/component/browser | ✓ |
 | Milestone lifecycle and variance | Implemented | schema/migration/unit/browser | ✓ |
