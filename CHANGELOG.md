@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.0 — 2026-09-27
+
+- Rebuilt the workspace foundation around semantic light/dark surface, text, border, status, spacing, radius and elevation tokens while preserving existing feature styling contracts.
+- Refined the desktop shell into a quieter control surface with clearer navigation grouping, denser project identity and restrained selected states.
+- Reworked Today around one evidence-backed priority and a data-coverage strip that links owner gaps, unreviewed risks, undated decisions and forecast gaps to their source modules.
+- Rebuilt Portfolio as a scannable executive list with operational filters for attention, critical signals, upcoming milestones, overdue records, stale activity, missing owners and missing forecasts.
+- Replaced the mobile workspace navigation with a five-destination, safe-area-aware bottom bar and consistent More drawer access.
+- Added browser coverage for Today data coverage and Portfolio evidence filters; no workspace schema changes or synthetic history were introduced.
+
 ## Unreleased — production hardening
 
 - Reworked the public landing narrative around the daily signal → decision → action → control loop, with direct workspace entry, explicit offline/local-first trust points, and visible Pavel Markov authorship.
