@@ -59,8 +59,8 @@ export function DocumentCenter({ workspace, project, locale, onCreate, onEdit, o
     ["meeting", ru ? "Встречи" : "Meetings"], ["notes", ru ? "Заметки и прочее" : "Notes & other"],
   ];
   return <>
-    <div className="documents-heading page-title">
-      <div><p className="eyebrow">{ru ? "Локальная библиотека проекта" : "Local project library"}</p><h2>{ru ? "Документы" : "Documents"}</h2><p className="muted">{ru ? "Находите рабочие документы и переходите к связанным записям." : "Find project documents and open the records they reference."}</p></div>
+    <div className="documents-heading">
+      <div><p className="eyebrow">{ru ? "БИБЛИОТЕКА ПРОЕКТА · ЛОКАЛЬНО" : "LOCAL PROJECT LIBRARY"}</p><p className="muted">{ru ? "Находите рабочие документы и переходите к связанным записям." : "Find project documents and open the records they reference."}</p></div>
       <button className="button primary" onClick={() => onCreate("document")}><Plus size={17}/>{ru ? "Создать документ" : "Create document"}</button>
     </div>
     <div className="documents-toolbar">

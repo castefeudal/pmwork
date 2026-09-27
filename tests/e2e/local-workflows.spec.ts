@@ -21,10 +21,17 @@ test("calendar shows stored dates and opens the source work record", async ({ pa
   await expect(editor.getByLabel("Title")).toHaveValue(title?.trim() ?? "");
 });
 
-test("document library supports search, pinning, editing and Markdown download", async ({ page }) => {
+test("document library supports search, pinning, editing and Markdown download", async ({ page }, testInfo) => {
   await page.goto(route("/en/workspace/"));
   await navigateWorkspace(page, "Documents");
+  await page.screenshot({ path: testInfo.outputPath("document-center.png"), fullPage: true });
   const card = page.getByRole("article").filter({ hasText: "Project Charter" });
+  await expect(card).toBeVisible();
+  await page.getByRole("button", { name: "Plan & control", exact: true }).click();
+  await expect(card).toBeVisible();
+  await page.getByRole("button", { name: "Status", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("No matching documents");
+  await page.getByRole("button", { name: "All", exact: true }).click();
   await expect(card).toBeVisible();
   await card.getByRole("button", { name: "Pin Project Charter" }).click();
   await expect(card.getByRole("button", { name: "Unpin Project Charter" })).toHaveAttribute("aria-pressed", "true");
