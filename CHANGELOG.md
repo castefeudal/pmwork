@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.0 — 2026-09-28
+
+- Added a project calendar that reads only recorded work dates, milestone forecasts and risk review dates, and opens the source record.
+- Added local CSV exports for work, risks, issues, decisions, milestones and budget with formula-injection protection, plus all-day iCalendar export.
+- Replaced the basic document list with searchable, filterable, pinnable project documents, linked-record navigation and Markdown download.
+- Expanded status drafts with an executive summary, schedule variance, risk exposure, budget totals, pending controls, data snapshot date and source links; drafts open for editing before sharing.
+- Made stakeholder matrix points keyboard-operable and directly editable.
+- Added unit and browser regressions for these workflows.
+
 ## 2.4.0 — 2026-09-27
 
 - Rebuilt the workspace foundation around semantic light/dark surface, text, border, status, spacing, radius and elevation tokens while preserving existing feature styling contracts.

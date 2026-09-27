@@ -186,6 +186,7 @@ export const documentSchema = z.object({
   body: z.string(),
   relatedIds: z.array(z.string()),
   updatedAt: z.string(),
+  pinned: z.boolean().optional(),
 });
 export const milestoneSchema = z.object({
   id: z.string(),

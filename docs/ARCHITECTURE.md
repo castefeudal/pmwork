@@ -1,6 +1,6 @@
 # Architecture
 
-PMWORK 2.4 is a Next.js static export. GitHub Pages serves it below `/pmwork`; root hosting remains a tested build target. The browser is the complete runtime: there is no backend, authentication, cloud database, telemetry, or remote calculation service.
+PMWORK 2.5 is a Next.js static export. GitHub Pages serves it below `/pmwork`; root hosting remains a tested build target. The browser is the complete runtime: there is no backend, authentication, cloud database, telemetry, or remote calculation service.
 
 ## System boundaries
 
@@ -8,6 +8,8 @@ PMWORK 2.4 is a Next.js static export. GitHub Pages serves it below `/pmwork`; r
 - `src/domain/schemas.ts` defines additive workspace schema v6, including milestone lifecycle, estimate history, optional monetary risk fields, and compact persisted `toolRuns`.
 - `src/data/storage.ts` owns v1–v5 migration, strict v6 parsing, IndexedDB/localStorage reconciliation, rotating snapshots, backup metadata, and safe import/export.
 - `src/domain/workspace-commands.ts` owns linked mutations and preserves immutable estimate/milestone history.
+- `src/domain/calendar.ts` projects only entered work, milestone and risk dates; `src/domain/exports.ts` produces local CSV and iCalendar files without mutating workspace data.
+- `src/components/document-center.tsx` provides the local searchable document library; status-report generation remains a pure workspace command and opens as a normal editable document.
 - `src/domain/insights.ts` derives Today signals and observable control-contour coverage. Missing data remains unknown rather than green.
 - `src/domain/decision-tools.ts` and `src/domain/markovmade.ts` contain deterministic, validation-first calculations; UI components persist only assumptions, inputs, summaries, confidence, quality, and affected IDs.
 - `src/content/` contains bilingual methods, templates, playbooks, starter packs, glossary, and source relationships. Content and i18n gates execute during every build.
@@ -21,7 +23,7 @@ Import ordering is deliberately transactional at the UI boundary: read and size-
 
 ## Static export and PWA
 
-`next.config.ts` limits static-generation concurrency to two workers so the 498-HTML-page bilingual export is reliable on constrained CI and Windows. `scripts/prepare-pwa.mjs` normalizes paths across operating systems, fixes static document language before hashing, derives a cache revision from output content, and emits `release.json`. The service worker normalizes canonical directory URLs, serves version-matched assets offline, and exposes an explicit waiting-update action.
+`next.config.ts` limits static-generation concurrency to two workers so the bilingual static export is reliable on constrained CI and Windows. `scripts/prepare-pwa.mjs` normalizes paths across operating systems, fixes static document language before hashing, derives a cache revision from output content, and emits `release.json`. The service worker normalizes canonical directory URLs, serves version-matched assets offline, and exposes an explicit waiting-update action.
 
 ## UI architecture
 

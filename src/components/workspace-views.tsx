@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 const ScheduleScenarios=dynamic(()=>import("./schedule-scenarios"));
 import { projectFinancials } from "@/domain/finance";
+import { projectCalendarIcs, projectCsv, type CsvCollection } from "@/domain/exports";
 import { CollectionPager } from "./collection-pager";
 import { formatDate } from "@/domain/format-date";
 import { ProjectHealth } from "./project-health";
@@ -1114,16 +1115,19 @@ export function PeopleView({
               <h3>{ru ? "Влияние × интерес" : "Influence × Interest"}</h3>
               <div className="stakeholder-matrix">
                 {stakeholders.map((x) => (
-                  <span
+                  <button type="button"
                     key={x.id}
+                    className="matrix-point"
                     style={{
                       left: `${(x.influence - 1) * 23}%`,
                       bottom: `${(x.interest - 1) * 23}%`,
                     }}
                     title={x.name}
+                    aria-label={`${x.name}; ${ru ? "влияние" : "influence"} ${x.influence}/5; ${ru ? "интерес" : "interest"} ${x.interest}/5; ${displayLabel(locale, "attitude", x.attitude)}`}
+                    onClick={() => onEdit("stakeholder", x.id)}
                   >
                     {x.name.slice(0, 2)}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -1403,6 +1407,13 @@ export function ControlView({
       ),
     });
   };
+  const createEditableStatusDraft = () => {
+    const next = generateStatusDraft(workspace, project.id, locale);
+    const draft = [...next.documents].reverse().find(document => document.type === "status-report" && !workspace.documents.some(item => item.id === document.id));
+    onChange(next);
+    if (draft) onEdit("document", draft.id);
+  };
+  const exportCollection = (kind: CsvCollection) => download(`pmwork-${project.id}-${kind}.csv`, projectCsv(workspace, project.id, kind, locale), "text/csv;charset=utf-8");
   return (
     <>
       <div className="tabs">
@@ -1429,11 +1440,19 @@ export function ControlView({
               <p className="eyebrow">{new Date().toLocaleDateString(locale)}</p>
               <h2>{project.name}</h2>
             </div>
-            <button className="button primary" onClick={() => onChange(generateStatusDraft(workspace,project.id,locale))}>{ru ? "Сформировать черновик статуса" : "Generate status report draft"}</button>
+            <button className="button primary" onClick={createEditableStatusDraft}>{ru ? "Сформировать и изменить черновик" : "Generate and edit status draft"}</button>
             <button className="button" onClick={() => window.print()}>
               {ru ? "Печать / PDF" : "Print / PDF"}
             </button>
           </div>
+          <details className="panel export-panel">
+            <summary>{ru ? "Экспорт данных проекта" : "Export project data"}</summary>
+            <p className="muted">{ru ? "Файлы формируются только в этом браузере. CSV защищает текст от выполнения как формулы; прогноз без данных остаётся пустым." : "Files are generated in this browser. CSV values are protected from formula execution; missing forecasts stay blank."}</p>
+            <div className="button-row">
+              {(["work", "risks", "issues", "decisions", "milestones", "budget"] as CsvCollection[]).map(kind => <button className="button small" key={kind} onClick={() => exportCollection(kind)}>{ru ? ({work:"Работа CSV",risks:"Риски CSV",issues:"Проблемы CSV",decisions:"Решения CSV",milestones:"Контрольные точки CSV",budget:"Бюджет CSV"}[kind]) : ({work:"Work CSV",risks:"Risks CSV",issues:"Issues CSV",decisions:"Decisions CSV",milestones:"Milestones CSV",budget:"Budget CSV"}[kind])}</button>)}
+              <button className="button small" onClick={() => download(`pmwork-${project.id}-calendar.ics`, projectCalendarIcs(workspace, project.id, locale), "text/calendar;charset=utf-8")}>{ru ? "Календарь ICS" : "Calendar ICS"}</button>
+            </div>
+          </details>
           <p className={`status ${healthClass(project.health.schedule)}`}>
             {displayLabel(locale, "health", project.health.schedule)}
           </p>
@@ -1678,59 +1697,6 @@ export function ControlView({
           </p>
         </div>
       )}
-    </>
-  );
-}
-export function DocumentsView({
-  workspace,
-  project,
-  locale,
-  onCreate,
-  onEdit,
-}: ViewProps) {
-  const ru = locale === "ru",
-    rows = workspace.documents.filter((x) => x.projectId === project.id);
-  return (
-    <>
-      <button
-        className="button primary section-action"
-        onClick={() => onCreate("document")}
-      >
-        <Plus size={17} />
-        {ru ? "Создать документ" : "Create document"}
-      </button>
-      <div className="catalog-grid inline-grid">
-        {rows.map((x) => (
-          <article className="catalog-card" key={x.id}>
-            <FileText size={22} />
-            <p className="eyebrow">{x.type.startsWith("template:") ? (ru ? "Шаблон" : "Template") : ({charter: ru ? "Устав" : "Charter", note: ru ? "Заметка" : "Note"}[x.type] ?? x.type)}</p>
-            <h3>{x.title}</h3>
-            <p>
-              {x.body.replaceAll("#", "").slice(0, 180) ||
-                (ru ? "Пустой документ" : "Empty document")}
-            </p>
-            <div className="card-foot">
-              <span className="muted">
-                {new Date(x.updatedAt).toLocaleDateString(locale)}
-              </span>
-              <div className="button-row">
-                <button
-                  className="button small"
-                  onClick={() => onEdit("document", x.id)}
-                >
-                  {ru ? "Открыть / изменить" : "Open / edit"}
-                </button>
-                <button
-                  className="button small"
-                  onClick={() => download(`${x.title}.md`, x.body)}
-                >
-                  Markdown
-                </button>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
     </>
   );
 }

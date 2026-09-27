@@ -42,13 +42,13 @@ import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkspaceDialog } from "./workspace-dialog";
+import { DocumentCenter } from "./document-center";
 import { RecordEditor, type EditableKind } from "./record-editor";
 import type { CreateType, WorkspaceView } from "./workspace-types";
 import {
   BoardView,
   CommandPalette,
   ControlView,
-  DocumentsView,
   FinanceView,
   GuideView,
   PeopleView,
@@ -264,7 +264,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       case "people": return <PeopleView {...common}/>;
       case "finance": return <FinanceView {...common}/>;
       case "control": return <ControlView {...common}/>;
-      case "documents": return <DocumentsView {...common}/>;
+      case "documents": return <DocumentCenter {...common}/>;
       case "setup": return <WorkspaceSettingsView {...common} snapshots={snapshots} onExport={()=>exportWorkspace(workspace)} onImport={()=>fileRef.current?.click()} onRestore={(key)=>{const snapshot=snapshots.find(item=>item.key===key);setPendingRecovery({kind:"snapshot",key,label:snapshot?new Date(snapshot.at).toLocaleString(locale):(ru?"выбранная дата":"selected date")});}}/>;
     }
   };
