@@ -1,40 +1,43 @@
 import Link from "next/link";
 import {
+  ArrowDown,
   ArrowRight,
+  ArrowUpRight,
   BookOpen,
   ChartNoAxesCombined,
-  GitBranch,
+  Check,
+  CircleDot,
+  Compass,
   LayoutDashboard,
+  LockKeyhole,
   ShieldCheck,
+  Sparkles,
   Workflow,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/domain/schemas";
-import { ui } from "@/content/ui";
 import { contentCounts } from "@/content/catalog";
 import { PublicHeader } from "@/components/public-header";
+import { ProductShowcase } from "@/components/product-showcase";
 import { Footer } from "@/components/footer";
+
 export function generateStaticParams() {
   return [{ locale: "ru" }, { locale: "en" }];
 }
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{
-    locale: string;
-  }>;
-}): Promise<Metadata> {
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
+  const ru = locale === "ru";
+  const title = ru
+    ? "PMWORK — ясность в сложных проектах"
+    : "PMWORK — clarity for complex projects";
+  const description = ru
+    ? "Ведите работу, риски, решения и сроки в одной практической системе. Без аккаунта: данные проекта остаются на вашем устройстве."
+    : "Bring work, risks, decisions, and schedules into one practical system. No account: your project data stays on your device.";
   return {
-    title:
-      locale === "ru"
-        ? "PMWORK — операционная система руководителя проекта"
-        : "PMWORK — Project Management Operating System",
-    description:
-      locale === "ru"
-        ? "Ведите проекты, бэклог, риски, сроки и решения в одной системе с локальным хранением данных."
-        : "Run projects, backlog, risks, schedule, and decisions in one local-first system.",
+    title,
+    description,
     authors: [{ name: "Pavel Markov" }],
     creator: "Pavel Markov",
     alternates: {
@@ -45,326 +48,237 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title:
-        locale === "ru"
-          ? "PMWORK — операционная система руководителя проекта"
-          : "PMWORK — Project Management Operating System",
-      description:
-        locale === "ru"
-          ? "Практическая система управления проектами с локальным хранением данных."
-          : "A practical local-first project management system.",
+      title,
+      description,
       url: `https://castefeudal.github.io/pmwork/${locale}/`,
       type: "website",
-      images: [
-        {
-          url: "https://castefeudal.github.io/pmwork/og-image.png",
-          width: 1200,
-          height: 630,
-          alt:
-            locale === "ru"
-              ? "PMWORK — система управления проектами"
-              : "PMWORK project management system",
-        },
-      ],
+      images: [{
+        url: "https://castefeudal.github.io/pmwork/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: ru ? "PMWORK — практическая система управления проектами" : "PMWORK — practical project management system",
+      }],
     },
   };
 }
-export default async function Home({
-  params,
-}: {
-  params: Promise<{
-    locale: string;
-  }>;
-}) {
+
+const copy = {
+  ru: {
+    kicker: "ПРОЕКТЫ СЛОЖНЫЕ. СЛЕДУЮЩИЙ ШАГ — ЯСНЫЙ.",
+    titleTop: "Меньше тумана.",
+    titleBottom: "Больше движения.",
+    lead: "PMWORK соединяет план, ежедневную работу, риски и решения — чтобы команда понимала, что происходит и что делать дальше.",
+    start: "Открыть рабочее пространство",
+    startAccessible: "Создать / открыть проект",
+    explore: "Посмотреть продукт",
+    value: ["Без аккаунта и обязательного сервера", "Работает офлайн", "Проект хранится у вас"],
+    created: "Независимый продукт Павла Маркова",
+    scroll: "ПРОДУКТ, КОТОРЫЙ ДУМАЕТ ВМЕСТЕ С ВАМИ",
+    libraryLabel: "ИНСТРУМЕНТЫ И ЗНАНИЯ",
+    capabilityTitle: "Всё необходимое — в одном рабочем ритме.",
+    capabilityLead: "Не ещё одна доска задач. Связанный контур от сигнала до решения и следующего действия.",
+    features: [
+      { icon: LayoutDashboard, label: "Обзор проекта", title: "Важное видно сразу", body: "Сроки, контрольные точки, блокеры и здоровье проекта — с объяснением каждого сигнала.", href: "/workspace/", link: "Посмотреть обзор" },
+      { icon: Workflow, label: "Ежедневная работа", title: "План становится движением", body: "Бэклог, Kanban, список и календарь связаны с исходными записями и зависимостями.", href: "/workspace/", link: "Войти в работу" },
+      { icon: ShieldCheck, label: "Риски и решения", title: "Ничего важного не теряется", body: "RAID, владельцы, триггеры и история решений рядом с действиями команды.", href: "/workspace/", link: "Открыть управление" },
+      { icon: ChartNoAxesCombined, label: "Расчёты и выбор", title: "Математика без чёрного ящика", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo — с видимыми допущениями.", href: "/tools/", link: "Изучить инструменты" },
+      { icon: Compass, label: "Выбор подхода", title: "Практика под контекст", body: "Сопоставляйте ограничения, ритм поставки и потребности команды.", href: "/methods/", link: "Сравнить подходы" },
+      { icon: BookOpen, label: "База практик", title: "Знания, которые можно применить", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
+    ],
+    flowEyebrow: "ОДИН СВЯЗАННЫЙ ЦИКЛ",
+    flowTitle: "От сигнала — к результату.",
+    flowLead: "Контекст не распадается на отчёты, переписки и отдельные таблицы.",
+    flow: [
+      ["Увидеть", "Today объясняет, что требует внимания — и показывает исходные записи."],
+      ["Решить", "Откройте риск, блокер или решение прямо из контекста проекта."],
+      ["Сделать", "Назначьте владельца и следующий шаг там, где команда уже работает."],
+      ["Проверить", "Сроки, бюджет и контрольные точки сверяются с фактическими данными."],
+    ],
+    privacyEyebrow: "ВАША РАБОТА — ВАША",
+    privacyTitle: "С самого начала всё под вашим контролем.",
+    privacyLead: "Рабочее пространство создаётся на устройстве. PMWORK не просит регистрацию, не отправляет проект на обязательный сервер и продолжает работать без сети.",
+    privacyPoints: ["Автоматическое локальное сохранение", "Экспортируемые резервные копии", "Импорт с предварительной проверкой", "Связи и историю можно перенести"],
+    privacyBadge: "ЛОКАЛЬНОЕ ХРАНЕНИЕ",
+    privacyStatus: "Устройство · доступно офлайн",
+    privacyHint: "Данные не покидают браузер без вашего действия",
+    libraryEyebrow: "БИБЛИОТЕКА PMWORK",
+    librarySectionTitle: "Учитесь на практике. Действуйте увереннее.",
+    libraryLead: "От точного термина — к методу, шаблону и действию в проекте.",
+    library: [
+      ["Методы", `${contentCounts.methods}`, "Выбрать, сравнить и адаптировать", "/methods/"],
+      ["Шаблоны", `${contentCounts.templates}`, "Начать с хорошей структуры", "/templates/"],
+      ["Практические сценарии", `${contentCounts.playbooks}`, "Разобрать реальную ситуацию", "/playbooks/"],
+      ["Глоссарий", `${contentCounts.glossary}`, "Говорить с командой точнее", "/glossary/"],
+    ],
+    approachEyebrow: "КОНТЕКСТ ВАЖНЕЕ ДОГМЫ",
+    approachTitle: "Нет одной методологии для всех проектов.",
+    approachLead: "Соберите достаточный уровень управления из реальных ограничений, а не из модного названия.",
+    approaches: [["Предиктивный", "Стабильность"], ["Scrum", "Обратная связь"], ["Kanban", "Поток"], ["Гибридный", "Адаптация"], ["PRINCE2", "Управление"]],
+    principles: ["Ценность важнее активности.", "Прозрачность важнее бюрократии.", "Каждый критичный риск — с владельцем."],
+    finalEyebrow: "НАЧНИТЕ С ТОГО, ЧТО ЕСТЬ",
+    finalTitle: "Верните себе ясность в проекте.",
+    finalLead: "Посмотрите интерактивный обзор продукта или откройте своё рабочее пространство — без регистрации и лишней настройки.",
+    finalStart: "Открыть PMWORK",
+    finalDemo: "Посмотреть обзор продукта",
+    noSetup: "Данные останутся на этом устройстве",
+  },
+  en: {
+    kicker: "COMPLEX PROJECTS. CLEAR NEXT MOVES.",
+    titleTop: "Less fog.",
+    titleBottom: "More momentum.",
+    lead: "PMWORK connects plans, daily work, risks, and decisions so teams can see what is happening and what to do next.",
+    start: "Open your workspace",
+    startAccessible: "Create / open project",
+    explore: "See the product",
+    value: ["No account or required server", "Works offline", "Your project stays yours"],
+    created: "An independent product by Pavel Markov",
+    scroll: "A PRODUCT THAT THINKS ALONG WITH YOU",
+    libraryLabel: "TOOLS AND KNOWLEDGE",
+    capabilityTitle: "Everything you need, in one working rhythm.",
+    capabilityLead: "More than another task board. One connected path from signal to decision to next action.",
+    features: [
+      { icon: LayoutDashboard, label: "Project overview", title: "See what matters first", body: "Schedule, milestones, blockers, and project health, with every signal explained.", href: "/workspace/", link: "Explore the overview" },
+      { icon: Workflow, label: "Daily delivery", title: "Turn the plan into progress", body: "Backlog, Kanban, list, and calendar connect to source records and dependencies.", href: "/workspace/", link: "Open your work" },
+      { icon: ShieldCheck, label: "Risks and decisions", title: "Keep important things in view", body: "RAID, owners, triggers, and decision history stay close to the work.", href: "/workspace/", link: "Explore governance" },
+      { icon: ChartNoAxesCombined, label: "Models and estimates", title: "Math without the black box", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo, with assumptions in view.", href: "/tools/", link: "Explore the tools" },
+      { icon: Compass, label: "Approach fit", title: "Practice shaped around context", body: "Match constraints, delivery cadence, and team needs before choosing a method.", href: "/methods/", link: "Compare approaches" },
+      { icon: BookOpen, label: "Practice library", title: "Knowledge you can put to work", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} playbooks, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
+    ],
+    flowEyebrow: "ONE CONNECTED LOOP",
+    flowTitle: "From signal to outcome.",
+    flowLead: "Keep context together across reports, messages, and disconnected spreadsheets.",
+    flow: [
+      ["Notice", "Today explains what needs attention and points to the source records."],
+      ["Decide", "Open a risk, blocker, or decision directly in the project context."],
+      ["Act", "Assign an owner and next step where the team already works."],
+      ["Review", "Compare schedule, budget, and milestones with recorded evidence."],
+    ],
+    privacyEyebrow: "YOUR WORK IS YOURS",
+    privacyTitle: "You stay in control from the very first click.",
+    privacyLead: "Your workspace lives on your device. PMWORK needs no account, sends no project to a required server, and keeps working offline.",
+    privacyPoints: ["Automatic local saving", "Portable backup exports", "Imports validated before replacement", "Relationships and history stay portable"],
+    privacyBadge: "LOCAL STORAGE",
+    privacyStatus: "This device · available offline",
+    privacyHint: "Your data stays in the browser until you choose to move it",
+    libraryEyebrow: "THE PMWORK LIBRARY",
+    librarySectionTitle: "Build expertise by putting it into practice.",
+    libraryLead: "Move from a useful term to a method, a template, and a next step in your project.",
+    library: [
+      ["Methods", `${contentCounts.methods}`, "Choose, compare, and tailor", "/methods/"],
+      ["Templates", `${contentCounts.templates}`, "Start with a strong structure", "/templates/"],
+      ["Playbooks", `${contentCounts.playbooks}`, "Work through a real situation", "/playbooks/"],
+      ["Glossary", `${contentCounts.glossary}`, "Give the team a shared language", "/glossary/"],
+    ],
+    approachEyebrow: "CONTEXT OVER DOGMA",
+    approachTitle: "No single method fits every project.",
+    approachLead: "Build just enough governance from real constraints, not a fashionable label.",
+    approaches: [["Predictive", "Stability"], ["Scrum", "Feedback"], ["Kanban", "Flow"], ["Hybrid", "Adaptation"], ["PRINCE2", "Governance"]],
+    principles: ["Value over activity.", "Transparency over bureaucracy.", "Every critical risk has an owner."],
+    finalEyebrow: "START WHERE YOU ARE",
+    finalTitle: "Bring clarity back to your project.",
+    finalLead: "Explore the interactive product preview or open a workspace of your own. No signup and no setup overhead.",
+    finalStart: "Open PMWORK",
+    finalDemo: "See the product preview",
+    noSetup: "Your data stays on this device",
+  },
+} as const;
+
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   if (raw !== "ru" && raw !== "en") notFound();
-  const locale = raw as Locale,
-    t = ui(locale),
-    ru = locale === "ru";
+  const locale = raw as Locale;
+  const ru = locale === "ru";
+  const t = copy[locale];
+  const featureLinks = t.features;
+
   return (
-    <div className="shell">
+    <div className="shell site-shell">
       <PublicHeader locale={locale} />
-      <main id="main">
-        <section className="hero">
-          <div>
-            <p className="eyebrow">{t.hero.eyebrow}</p>
-            <h1>{t.hero.title}</h1>
-            <p className="lead">{t.hero.lead}</p>
-            <div className="button-row">
-              <Link className="button primary" href={`/${locale}/workspace`}>
-                {t.hero.open}
-                <ArrowRight size={18} />
-              </Link>
-              <Link className="button secondary" href={`/${locale}/#system`}>
-                {ru ? "Изучить систему" : "Explore the system"}
-              </Link>
+      <main id="main" className="marketing-home">
+        <section className="hero marketing-hero">
+          <div className="hero-copy">
+            <p className="hero-kicker"><span className="hero-kicker-dot" />{t.kicker}</p>
+            <h1><span>{t.titleTop}</span><span className="hero-title-accent">{t.titleBottom}</span></h1>
+            <p className="lead">{t.lead}</p>
+            <div className="button-row hero-actions">
+              <Link className="button primary" aria-label={t.startAccessible} href={`/${locale}/workspace/`}>{t.start}<ArrowRight size={17} aria-hidden="true" /></Link>
+              <a className="button hero-secondary" href="#product-preview"><span className="hero-play" aria-hidden="true">▶</span>{t.explore}</a>
             </div>
-            <div className="trust-line">
-              <span>{ru ? "Работает офлайн" : "Works offline"}</span>
-              <span>{ru ? "Без аккаунта" : "No account"}</span>
-              <span>RU / EN</span>
-            </div>
-            <p className="hero-author">{ru ? "Создано Павлом Марковым" : "Created by Pavel Markov"} · <Link href={`/${locale}/about/`}>{ru ? "О продукте" : "About PMWORK"}</Link></p>
+            <ul className="hero-value-list">
+              {t.value.map(item => <li key={item}><Check size={14} aria-hidden="true" />{item}</li>)}
+            </ul>
+            <p className="hero-author">{t.created} · <Link href={`/${locale}/about/`}>{ru ? "О продукте" : "About"}</Link></p>
           </div>
-          <div
-            className="cockpit-preview"
-            aria-label={
-              ru ? "Пример интерфейса PMWORK" : "PMWORK interface preview"
-            }
-          >
-            <div className="cockpit-head">
-              <strong>{ru ? "Запуск Atlas" : "Atlas launch"}</strong>
-              <span className="status warn">
-                {ru ? "Есть риски" : "At risk"}
-              </span>
-            </div>
-            <div className="cockpit-body">
-              <div className="mini-side">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-              <div className="mini-main">
-                <div className="metric-grid">
-                  <div className="metric">
-                    <small>WIP</small>
-                    <strong>7</strong>
-                  </div>
-                  <div className="metric">
-                    <small>{ru ? "Риски" : "Risks"}</small>
-                    <strong>4</strong>
-                  </div>
-                  <div className="metric">
-                    <small>SPI</small>
-                    <strong>0.94</strong>
-                  </div>
-                </div>
-                <div className="preview-board">
-                  <div className="preview-column">
-                    <small>{ru ? "ГОТОВО · 3" : "READY · 3"}</small>
-                    <div className="preview-card">
-                      {ru
-                        ? "Согласовать границы релиза"
-                        : "Align release scope"}
-                    </div>
-                  </div>
-                  <div className="preview-column">
-                    <small>{ru ? "В РАБОТЕ · 2/3" : "IN PROGRESS · 2/3"}</small>
-                    <div className="preview-card">
-                      {ru ? "Миграция каталога" : "Catalog migration"}
-                    </div>
-                    <div className="preview-card">
-                      {ru ? "План приёмки" : "Acceptance plan"}
-                    </div>
-                  </div>
-                  <div className="preview-column">
-                    <small>{ru ? "НА ПРОВЕРКЕ · 1" : "REVIEW · 1"}</small>
-                    <div className="preview-card">
-                      {ru ? "Проверка безопасности" : "Security review"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <ProductShowcase locale={locale} />
+          <a className="hero-scroll-cue" href="#capabilities"><span>{t.scroll}</span><ArrowDown size={14} aria-hidden="true" /></a>
+        </section>
+
+        <section className="proof-ribbon" aria-label={ru ? "Библиотека PMWORK" : "PMWORK library"}>
+          <div className="proof-ribbon-inner">
+            <div className="proof-ribbon-intro"><Sparkles size={17} aria-hidden="true" /><span>{ru ? "СИЛЬНАЯ ПРАКТИЧЕСКАЯ БАЗА" : "A PRACTICAL FOUNDATION"}</span></div>
+            {[
+              [contentCounts.methods, ru ? "методов" : "methods", "/methods/"],
+              [contentCounts.templates, ru ? "шаблонов" : "templates", "/templates/"],
+              [contentCounts.playbooks, ru ? "сценариев" : "playbooks", "/playbooks/"],
+              [contentCounts.glossary, ru ? "терминов" : "terms", "/glossary/"],
+            ].map(([value, label, href]) => <Link className="proof-ribbon-stat" href={`/${locale}${href}`} key={String(label)}><strong>{value}</strong><span>{label}</span><ArrowUpRight size={13} aria-hidden="true" /></Link>)}
           </div>
         </section>
-        <section className="section" id="system">
-          <div className="section-head">
-            <div>
-              <p className="eyebrow">
-                {ru
-                  ? "ПОНЯТЬ → РЕШИТЬ → СДЕЛАТЬ → КОНТРОЛИРОВАТЬ → НАУЧИТЬСЯ"
-                  : "UNDERSTAND → DECIDE → DO → CONTROL → LEARN"}
-              </p>
-              <h2>
-                {ru ? "Знания становятся работой" : "Knowledge becomes work"}
-              </h2>
-            </div>
-            <p>
-              {ru
-                ? "PMWORK помогает вести риск от оценки до реагирования: вероятность, влияние, владелец, триггер, действия и дата следующей проверки."
-                : "PMWORK supports risk assessment and response: probability, impact, owner, trigger, actions and next review date."}
-            </p>
+
+        <section className="section marketing-section" id="capabilities">
+          <div className="marketing-section-head">
+            <div><p className="eyebrow">{t.libraryLabel}</p><h2>{t.capabilityTitle}</h2></div>
+            <p>{t.capabilityLead}</p>
           </div>
-          <div className="feature-grid">
-            {[
-              [
-                LayoutDashboard,
-                ru ? "Центр управления проектом" : "Project cockpit",
-                ru
-                  ? "Цели, контрольные точки, блокеры, решения и показатели состояния без загадочной единой оценки."
-                  : "Objectives, milestones, blockers, decisions, and health dimensions without a mysterious score.",
-              ],
-              [
-                Workflow,
-                ru ? "Система выполнения" : "Work system",
-                ru
-                  ? "Бэклог, Kanban, список и план-график с лимитами незавершённой работы, зависимостями и явными правилами."
-                  : "Backlog, Kanban, list, and timeline with WIP, dependencies, and explicit policies.",
-              ],
-              [
-                ShieldCheck,
-                ru ? "RAID и управление" : "RAID & governance",
-                ru
-                  ? "Риски, проблемы, допущения, контроль изменений и уровень управления под контекст."
-                  : "Risks, issues, assumptions, change control, and context-fit governance.",
-              ],
-              [
-                GitBranch,
-                ru ? "Подбор подхода" : "Approach fit",
-                ru
-                  ? "Сравните подходы по требованиям, срокам, зависимостям и устройству команды."
-                  : "Compare approaches using requirements, deadlines, dependencies and team context.",
-              ],
-              [
-                ChartNoAxesCombined,
-                ru ? "Расчёты" : "Calculations",
-                ru
-                  ? "CPM, PERT, EVM, RICE, WSJF, Little’s Law и Monte Carlo в браузере."
-                  : "CPM, PERT, EVM, RICE, WSJF, Little’s Law, and Monte Carlo in-browser.",
-              ],
-              [
-                BookOpen,
-                ru ? "Профессиональная база" : "Professional library",
-                `${contentCounts.methods} ${ru ? "методов" : "methods"}, ${contentCounts.templates} ${ru ? "шаблонов" : "templates"}, ${contentCounts.playbooks} ${ru ? "практических сценариев" : "playbooks"}, ${contentCounts.glossary} ${ru ? "терминов" : "terms"}.`,
-              ],
-            ].map(([Icon, title, copy], i) => {
-              const I = Icon as typeof LayoutDashboard;
-              return (
-                <article className="feature" key={String(title)}>
-                  <span className="num">0{i + 1}</span>
-                  <I size={22} />
-                  <h3>{String(title)}</h3>
-                  <p>{String(copy)}</p>
-                </article>
-              );
+          <div className="capability-grid">
+            {featureLinks.map((feature, i) => {
+              const Icon = feature.icon;
+              return <Link className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
+                <div className="capability-topline"><span className="capability-icon"><Icon size={19} strokeWidth={1.8} aria-hidden="true" /></span><span className="capability-number">0{i + 1}</span></div>
+                <span className="capability-label">{feature.label}</span><h3>{feature.title}</h3><p>{feature.body}</p>
+                <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
+              </Link>;
             })}
           </div>
         </section>
-        <section className="section operating-loop">
-          <div className="section-head">
-            <div>
-              <p className="eyebrow">{ru ? "Ежедневный рабочий цикл" : "The daily operating loop"}</p>
-              <h2>{ru ? "От сигнала — к проверяемому действию" : "From signal to an action you can verify"}</h2>
-            </div>
-            <p>{ru ? "Каждый вывод ведёт к исходной записи. Обновите её — и локальное состояние проекта пересчитается." : "Every signal leads to its source record. Update that record and the local project picture recalculates."}</p>
+
+        <section className="section flow-section">
+          <div className="marketing-section-head flow-head">
+            <div><p className="eyebrow">{t.flowEyebrow}</p><h2>{t.flowTitle}</h2></div><p>{t.flowLead}</p>
           </div>
-          <div className="feature-grid">
-            {[
-              [ru ? "Понять" : "Understand", ru ? "Today показывает приоритет и объясняет, какие записи его вызвали." : "Today surfaces a priority and shows which records produced it."],
-              [ru ? "Решить" : "Decide", ru ? "Откройте риск, блокер или решение прямо из сигнала." : "Open a risk, blocker, or decision directly from its signal."],
-              [ru ? "Действовать" : "Act", ru ? "Измените запись или создайте следующий шаг в рабочем контуре." : "Change the record or create the next step in the project workspace."],
-              [ru ? "Контролировать" : "Control", ru ? "Сверяйте сроки, бюджет и контрольные точки с зафиксированными данными." : "Review schedule, budget, and milestones against recorded evidence."],
-            ].map(([title, copy], i) => <article className="feature" key={title}><span className="num">0{i + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}
+          <div className="flow-steps">
+            {t.flow.map(([title, body], i) => <article className="flow-step" key={title}>
+              <span className="flow-step-index"><span>0{i + 1}</span>{i < t.flow.length - 1 && <span className="flow-connector" aria-hidden="true" />}</span>
+              <h3>{title}</h3><p>{body}</p>
+            </article>)}
           </div>
-          <div className="operating-loop-proof">
-            <strong>{ru ? "Данные остаются на устройстве" : "Your project data stays on this device"}</strong>
-            <p>{ru ? "Без регистрации и обязательного сервера. Создавайте локальные резервные копии и продолжайте работу без сети." : "No account or required server. Create local backups and keep working offline."}</p>
-            <Link className="button primary" href={`/${locale}/workspace/`}>{ru ? "Открыть рабочее пространство" : "Open the workspace"}<ArrowRight size={18}/></Link>
+          <div className="flow-proof"><span className="flow-proof-icon"><CircleDot size={18} /></span><p><strong>{ru ? "Каждый сигнал объясним." : "Every signal is explainable."}</strong> {ru ? "Каждый вывод ведёт к конкретной записи проекта, которую можно проверить и изменить." : "Every insight leads to a specific project record you can inspect and update."}</p><Link className="text-link" href={`/${locale}/workspace/`}>{ru ? "Посмотреть на примере" : "See it in the workspace"}<ArrowRight size={15} /></Link></div>
+        </section>
+
+        <section className="section privacy-section">
+          <div className="privacy-copy"><p className="eyebrow">{t.privacyEyebrow}</p><h2>{t.privacyTitle}</h2><p className="privacy-lead">{t.privacyLead}</p><ul>{t.privacyPoints.map(item => <li key={item}><Check size={16} aria-hidden="true" />{item}</li>)}</ul><Link className="text-link" href={`/${locale}/privacy/`}>{ru ? "Как PMWORK обращается с данными" : "How PMWORK handles data"}<ArrowRight size={15} /></Link></div>
+          <div className="privacy-visual" aria-label={t.privacyStatus}>
+            <div className="privacy-orbit privacy-orbit-one" /><div className="privacy-orbit privacy-orbit-two" />
+            <div className="privacy-device-card"><span className="privacy-lock"><LockKeyhole size={19} /></span><span className="privacy-card-label">{t.privacyBadge}</span><strong>{t.privacyStatus}</strong><span className="privacy-card-divider" /><span className="privacy-device-row"><span className="privacy-device-led" />{t.privacyHint}</span><span className="privacy-device-meta"><span>PMWORK</span><span>{ru ? "БРАУЗЕРНОЕ ХРАНИЛИЩЕ" : "BROWSER STORAGE"}</span></span></div>
+            <span className="privacy-check privacy-check-one"><Check size={14} /></span><span className="privacy-check privacy-check-two"><ShieldCheck size={15} /></span>
           </div>
         </section>
-        <section className="section">
-          <div className="section-head">
-            <div>
-              <p className="eyebrow">
-                {ru ? "Контекст важнее догмы" : "Context over dogma"}
-              </p>
-              <h2>
-                {ru
-                  ? "Подход — это система допущений"
-                  : "An approach is a system of assumptions"}
-              </h2>
-            </div>
-            <p>
-              {ru
-                ? "Используйте предиктивный, адаптивный, потоковый или гибридный подход осмысленно. Управление, планирование, ритм поставки и практики улучшений можно сочетать, если их исходные допущения не конфликтуют."
-                : "Use predictive, adaptive, flow, or hybrid intentionally. Governance, planning, delivery cadence, and improvement practices can be composed when their operating assumptions do not conflict."}
-            </p>
-          </div>
-          <div className="method-strip">
-            {(ru
-              ? ["Предиктивный", "Scrum", "Kanban", "Гибридный", "PRINCE2"]
-              : ["Predictive", "Scrum", "Kanban", "Hybrid", "PRINCE2"]
-            ).map((x, i) => (
-              <div key={x}>
-                <span className="num">{String(i + 1).padStart(2, "0")}</span>
-                <strong>{x}</strong>
-                <small>
-                  {i === 0
-                    ? ru
-                      ? "контроль"
-                      : "control"
-                    : i === 1
-                      ? ru
-                        ? "эмпирика"
-                        : "empiricism"
-                      : i === 2
-                        ? ru
-                          ? "поток"
-                          : "flow"
-                        : i === 3
-                          ? ru
-                            ? "адаптация"
-                            : "tailoring"
-                          : ru
-                            ? "управление"
-                            : "governance"}
-                </small>
-              </div>
-            ))}
-          </div>
+
+        <section className="section library-section">
+          <div className="marketing-section-head"><div><p className="eyebrow">{t.libraryEyebrow}</p><h2>{t.librarySectionTitle}</h2></div><p>{t.libraryLead}</p></div>
+          <div className="library-grid">{t.library.map(([name, amount, description, href], i) => <Link className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span><span className="library-index">0{i + 1}</span></Link>)}</div>
         </section>
-        <section className="section">
-          <div className="section-head">
-            <div>
-              <p className="eyebrow">
-                {ru ? "Принципы PMWORK" : "PMWORK principles"}
-              </p>
-              <h2>
-                {ru
-                  ? "Минимально достаточный контроль"
-                  : "Minimum sufficient control"}
-              </h2>
-            </div>
-            <div>
-              <p>
-                <strong>
-                  {ru ? "Контекст важнее догмы." : "Context over dogma."}
-                </strong>{" "}
-                {ru
-                  ? "Нет одной методологии для всех проектов."
-                  : "No method fits every project."}
-              </p>
-              <p>
-                <strong>
-                  {ru ? "Ценность важнее активности." : "Value over activity."}
-                </strong>{" "}
-                {ru
-                  ? "Выполненные задачи не равны результату."
-                  : "Completed tasks are not the outcome."}
-              </p>
-              <p>
-                <strong>
-                  {ru
-                    ? "Прозрачность важнее бюрократии."
-                    : "Transparency over bureaucracy."}
-                </strong>{" "}
-                {ru
-                  ? "Артефакт нужен, когда помогает решению."
-                  : "An artifact matters when it supports a decision."}
-              </p>
-              <p>
-                <strong>
-                  {ru ? "Явная ответственность." : "Explicit ownership."}
-                </strong>{" "}
-                {ru
-                  ? "Критичная работа, риск и решение имеют владельца."
-                  : "Critical work, risks, and decisions have owners."}
-              </p>
-            </div>
-          </div>
+
+        <section className="section approach-section">
+          <div className="approach-heading"><p className="eyebrow">{t.approachEyebrow}</p><h2>{t.approachTitle}</h2><p>{t.approachLead}</p></div>
+          <div className="approach-content"><div className="approach-ribbon">{t.approaches.map(([title, quality], i) => <Link href={`/${locale}/methods/`} key={title} className="approach-item"><span className="approach-count">0{i + 1}</span><strong>{title}</strong><span>{quality}</span><ArrowUpRight size={14} aria-hidden="true" /></Link>)}</div><div className="approach-principles">{t.principles.map((principle, i) => <span key={principle}><span>0{i + 1}</span>{principle}</span>)}</div><Link className="text-link" href={`/${locale}/methods/`}>{ru ? "Найти подход для своего проекта" : "Find an approach for your project"}<ArrowRight size={15} /></Link></div>
+        </section>
+
+        <section className="closing-section">
+          <div className="closing-glow" aria-hidden="true" />
+          <p className="eyebrow">{t.finalEyebrow}</p><h2>{t.finalTitle}</h2><p>{t.finalLead}</p>
+          <div className="button-row"><Link className="button primary" href={`/${locale}/workspace/`}>{t.finalStart}<ArrowRight size={17} aria-hidden="true" /></Link><a className="button closing-secondary" href="#product-preview">{t.finalDemo}<ArrowUpRight size={16} aria-hidden="true" /></a></div>
+          <span className="closing-note"><LockKeyhole size={13} aria-hidden="true" />{t.noSetup}</span>
         </section>
       </main>
       <Footer locale={locale} />

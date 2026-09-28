@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.0 — 2026-09-28
+
+- Rebuilt the bilingual landing page as a premium product story, with an interactive workspace preview, clear product capabilities, an operational loop, local-first trust details, linked knowledge metrics, method guidance and focused entry points.
+- Added a cohesive visual system for marketing, catalog and workspace surfaces, with refined type scale, spacing, layered surfaces, restrained teal and copper accents, responsive layouts and subtle entrance, hover and progress animations.
+- Added reduced-motion support and localized preview content, including the sample date and weekday labels.
+- Reused the existing demo project and content counts; no workspace schema or project records changed.
+
 ## 2.5.0 — 2026-09-28
 
 - Added a project calendar that reads only recorded work dates, milestone forecasts and risk review dates, and opens the source record.

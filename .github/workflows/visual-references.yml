@@ -2,6 +2,7 @@ name: Review visual references
 on:
   push:
     branches: ["qa/visual-references"]
+  workflow_dispatch:
 jobs:
   references:
     runs-on: ubuntu-latest

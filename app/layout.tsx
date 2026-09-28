@@ -6,6 +6,7 @@ import "./premium.css";
 import "./editorial.css";
 import "./ux-transformation.css";
 import "./workspace.css";
+import "./excellence.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
