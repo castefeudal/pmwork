@@ -1356,7 +1356,7 @@ blockquote {
     ),
     linear-gradient(transparent 49.5%, var(--line) 50%, transparent 50.5%);
 }
-.stakeholder-matrix span {
+.stakeholder-matrix .matrix-point {
   position: absolute;
   width: 38px;
   height: 38px;
@@ -1368,8 +1368,11 @@ blockquote {
   color: #fff;
   font-size: 0.72rem;
   font-weight: 900;
-  cursor: help;
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  padding: 0;
 }
+.stakeholder-matrix .matrix-point:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; z-index: 1; }
 .command-trigger kbd,
 .command-palette kbd {
   padding: 0.12rem 0.35rem;

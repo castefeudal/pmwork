@@ -10,6 +10,11 @@ Status meanings: **implemented** changes persisted state or completes a determin
 | Public landing daily-loop story, local-first trust points, and visible author credit | Implemented | static export, axe, responsive navigation | ✓ |
 | Today command center and honest confidence | Implemented | insights + browser + axe | ✓ |
 | Work list, saved views, accessible Kanban | Implemented | unit/component/browser | ✓ |
+| Project calendar from recorded work, milestone and risk dates | Implemented | domain + browser workflow | ✓ |
+| Local CSV data export with formula-injection protection and iCalendar calendar export | Implemented | export unit + browser workflow | ✓ |
+| Document search, categories, pinning, linked records and Markdown download | Implemented | component/domain + browser workflow | ✓ |
+| Editable source-linked status report draft | Implemented | command unit + browser workflow | ✓ |
+| Stakeholder matrix keyboard access and direct editing | Implemented | browser accessibility regression | ✓ |
 | Milestone lifecycle and variance | Implemented | schema/migration/unit/browser | ✓ |
 | Original/current/actual estimates | Implemented | commands/migration/unit | ✓ |
 | Qualitative + optional monetary risk | Implemented | schema/calculation/browser | ✓ |

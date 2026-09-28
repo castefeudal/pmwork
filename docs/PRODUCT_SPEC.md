@@ -16,9 +16,11 @@ The public RU/EN landing page explains the daily signal → decision → action 
 8. Public search covers methods, templates, playbooks, knowledge, glossary and tools and prioritizes deterministic problem-intent matches for common natural-language PM problems. Method fit is a heuristic compatibility score, not a success probability.
 9. Templates use a task-first hub with progressive result disclosure and individual static RU/EN detail routes. Template application uses an explicit destination and supports open/undo. New-project state contains no demo records.
 10. Methods use a context-first hub and individual static RU/EN practical routes with fit, limitations, minimum implementation, operating model, tailoring and sources.
-11. Mobile Work uses cards; Planning presents dates and milestones with an optional full timeline.
+11. Mobile Work uses cards; Planning presents dates and milestones with an optional full timeline; Work also offers a calendar that opens dated source records.
 12. Local project identity supports My work. Risk conversion creates a linked issue; a deterministic status draft creates an editable document.
 13. Project health separates derived state from data confidence; missing records reduce confidence rather than being treated as positive evidence.
+14. Control generates an editable, source-linked status snapshot with a visible snapshot date and an explicit reporting-period reminder. CSV and iCalendar exports are built locally; CSV text is protected against spreadsheet-formula execution.
+15. The Documents view searches titles, content, type and linked IDs, supports category filters and pinned records, opens supported links, and downloads Markdown without rendering document HTML.
 
 Historical prompts under `archive/` are superseded as descriptions of the current implementation. The user execution specification remains the acceptance target; a feature is only verified when its associated release evidence passes.
 
