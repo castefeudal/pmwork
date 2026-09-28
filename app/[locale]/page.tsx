@@ -69,6 +69,7 @@ const copy = {
     titleBottom: "Больше движения.",
     lead: "PMWORK соединяет план, ежедневную работу, риски и решения — чтобы команда понимала, что происходит и что делать дальше.",
     start: "Открыть рабочее пространство",
+    startAccessible: "Создать / открыть проект",
     explore: "Посмотреть продукт",
     value: ["Без аккаунта и обязательного сервера", "Работает офлайн", "Проект хранится у вас"],
     created: "Независимый продукт Павла Маркова",
@@ -127,6 +128,7 @@ const copy = {
     titleBottom: "More momentum.",
     lead: "PMWORK connects plans, daily work, risks, and decisions so teams can see what is happening and what to do next.",
     start: "Open your workspace",
+    startAccessible: "Create / open project",
     explore: "See the product",
     value: ["No account or required server", "Works offline", "Your project stays yours"],
     created: "An independent product by Pavel Markov",
@@ -199,7 +201,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <h1><span>{t.titleTop}</span><span className="hero-title-accent">{t.titleBottom}</span></h1>
             <p className="lead">{t.lead}</p>
             <div className="button-row hero-actions">
-              <Link className="button primary" href={`/${locale}/workspace/`}>{t.start}<ArrowRight size={17} aria-hidden="true" /></Link>
+              <Link className="button primary" aria-label={t.startAccessible} href={`/${locale}/workspace/`}>{t.start}<ArrowRight size={17} aria-hidden="true" /></Link>
               <a className="button hero-secondary" href="#product-preview"><span className="hero-play" aria-hidden="true">▶</span>{t.explore}</a>
             </div>
             <ul className="hero-value-list">
