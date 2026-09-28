@@ -10,7 +10,7 @@ const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы раб�
 describe("workspace interactions", () => {
   it("does not persist demo before an explicit choice", async () => {
     render(<WorkspaceApp locale="en" />);
-    await screen.findByRole("heading", { name: "Start with a real project" });
+    await screen.findByRole("heading", { name: "Start with what matters." });
     fireEvent(window, new Event("pagehide"));
     expect(localStorage.getItem("pmwork:workspace:v3")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /Start my project/i }));
