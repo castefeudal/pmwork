@@ -215,20 +215,37 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   };
   const recoveryDialog=pendingRecovery&&<RecoveryConfirmDialog locale={locale} candidate={pendingRecovery.kind==="import"?pendingRecovery.candidate:undefined} snapshotLabel={pendingRecovery.kind==="snapshot"?pendingRecovery.label:undefined} replacing={pendingRecovery.kind==="snapshot"||pendingRecovery.replacing} canExportCurrent={(pendingRecovery.kind==="snapshot"||pendingRecovery.replacing)&&!recovery&&!firstRun} onExportCurrent={()=>exportWorkspace(workspace)} onCancel={()=>setPendingRecovery(null)} onConfirm={()=>void confirmRecovery()}/>;
 
-  if (!ready) return <main className="language-gate first-run-gate" aria-busy="true"><Brand/><p role="status">{ru ? "Загрузка рабочего пространства…" : "Loading local workspace…"}</p></main>;
+  if (!ready) return (
+    <main className="workspace-boot" aria-busy="true" aria-label={ru ? "Загрузка PMWORK" : "Loading PMWORK"}>
+      <div className="boot-glow" aria-hidden="true" />
+      <header className="boot-header"><Brand/><span><i />{ru ? "РАБОТАЕТ НА ЭТОМ УСТРОЙСТВЕ" : "RUNNING ON THIS DEVICE"}</span></header>
+      <section className="boot-center" aria-live="polite">
+        <div className="boot-orbit" aria-hidden="true"><span/><span/><span/><div><Brand/></div></div>
+        <p className="eyebrow">{ru ? "ПОДГОТАВЛИВАЕМ ВАШЕ ПРОСТРАНСТВО" : "PREPARING YOUR WORKSPACE"}</p>
+        <h1>{ru ? "Собираем всё в одну ясную картину." : "Bringing your work into focus."}</h1>
+        <p className="boot-status" role="status">{ru ? "Аккуратно проверяем локальные данные и контекст проекта" : "Checking your local data and project context"}</p>
+        <div className="boot-progress" aria-hidden="true"><span /></div>
+        <span className="boot-privacy">{ru ? "Ваши данные не покидают это устройство" : "Your data stays on this device"}</span>
+      </section>
+      <footer className="boot-footer"><span>PMWORK <i>·</i> PROJECT OPERATING SPACE</span><span>{ru ? "Приватно по умолчанию" : "Private by default"}</span></footer>
+    </main>
+  );
 
   if (firstRun) return (
     <main className="language-gate first-run-gate">
       <Brand />
-      <p className="eyebrow">{ru?"PMWORK · ПЕРВЫЙ ЗАПУСК":"PMWORK · FIRST RUN"}</p>
-      <h1>{ru ? "Начните с реального проекта" : "Start with a real project"}</h1>
-      <p className="lead">{ru ? "За несколько минут PMWORK соберёт рабочий контур: результат, ближайшую работу, контрольную точку и ключевые риски." : "In a few minutes PMWORK will create a usable project frame: outcome, next work, milestone and key risks."}</p>
-      <div className="first-run-actions">
-        <button className="button primary" onClick={() => { setWorkspace(emptyWorkspace(locale)); setDialog("project"); }}><span>{ru ? "Начать свой проект" : "Start my project"}</span><small>{ru?"Рекомендуется · около 2–3 минут":"Recommended · about 2–3 minutes"}</small></button>
-        <button className="button" onClick={() => { setWorkspace(demoWorkspace(locale)); setProjectId("atlas"); setFirstRun(false); }}><span>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</span><small>{ru?"Понять PMWORK примерно за минуту":"Understand PMWORK in about a minute"}</small></button>
-        <button className="button ghost" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить резервную копию" : "Restore backup"}</button>
+      <div className="first-run-hero">
+        <p className="eyebrow">{ru?"ВАШЕ ПРОСТРАНСТВО ГОТОВО":"YOUR SPACE IS READY"}</p>
+        <h1>{ru ? "Начнём с того, что важно." : "Start with what matters."}</h1>
+        <p className="lead">{ru ? "Создайте рабочий проект или сначала осмотритесь на живом примере. Ваш выбор можно изменить в любой момент." : "Create a working project, or explore a live example first. You can change your choice at any time."}</p>
       </div>
-      <p className="muted compact">{ru?"Данные остаются на этом устройстве. Резервную копию можно скачать в любой момент.":"Data stays on this device. You can download a backup at any time."}</p>
+      <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">✓</span><span><strong>{ru ? "Никакой настройки ради настройки" : "No setup for setup’s sake"}</strong><small>{ru ? "Только нужный контекст — можно перейти к работе сразу." : "Capture just enough context and move straight into the work."}</small></span><span className="first-run-time">{ru ? "≈ 2 МИН" : "≈ 2 MIN"}</span></div>
+      <div className="first-run-actions">
+        <button className="button primary first-run-option" onClick={() => { setWorkspace(emptyWorkspace(locale)); setDialog("project"); }}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{ru ? "Начать свой проект" : "Start my project"}</strong><small>{ru?"Для работы с первого дня":"Make it useful from day one"}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <button className="button first-run-option" onClick={() => { setWorkspace(demoWorkspace(locale)); setProjectId("atlas"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true">✳</span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru?"Живой проект, уже наполненный данными":"A complete, interactive sample project"}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <button className="button ghost first-run-restore" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить из резервной копии" : "Restore from a backup"}</button>
+      </div>
+      <p className="first-run-privacy"><span aria-hidden="true">⌑</span>{ru?"Локально и конфиденциально. Резервную копию можно скачать в настройках.":"Local and private. Export a backup anytime from Settings."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>void stageImport(e.target.files?.[0],false)}/>
       {toast&&<p role="alert">{toast}</p>}
       {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));setProjectId(id??"");setView("overview");setFirstRun(false);}}/>}

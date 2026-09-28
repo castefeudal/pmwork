@@ -28,7 +28,7 @@ test("public shell and workspace hydrate without runtime errors", async ({ page 
   await page.goto(`${base}/en/`);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.goto(`${base}/en/workspace/`);
-  await expect(page.getByText(/Start with a real project|Loading local workspace/)).toBeVisible();
+  await expect(page.getByText(/Start with what matters|Bringing your work into focus/)).toBeVisible();
   await expect.poll(() => errors).toEqual([]);
 });
 
