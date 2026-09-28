@@ -12,7 +12,7 @@
   --border-strong: rgba(19, 42, 47, .19);
   --text-primary: #14272b;
   --text-secondary: #566a6c;
-  --text-tertiary: #687977;
+  --text-tertiary: #7a8a89;
   --accent-primary: #087a70;
   --accent-secondary: #1e8494;
   --accent-copper: #a96d49;
@@ -48,7 +48,7 @@ html { scroll-padding-top: 92px; }
 body { letter-spacing: -.006em; }
 ::selection { color: #06231f; background: #80ded0; }
 
-.site-shell { min-height: 100vh; overflow: clip; }
+.site-shell { --text-tertiary: color-mix(in srgb, var(--text-primary) 68%, var(--canvas)); min-height: 100vh; overflow: clip; }
 .site-shell > .topbar {
   position: sticky;
   top: 0;
