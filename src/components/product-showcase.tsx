@@ -12,7 +12,7 @@ import {
   Command,
   FileText,
   LayoutDashboard,
-  ListTodo,
+  ListChecks,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -99,7 +99,7 @@ export function ProductShowcase({ locale }: { locale: Locale }) {
   const [overview, delivery, decisions] = t.views;
   const options: { id: ShowcaseView; label: string; icon: typeof LayoutDashboard }[] = [
     { id: "overview", label: overview, icon: LayoutDashboard },
-    { id: "delivery", label: delivery, icon: ListTodo },
+    { id: "delivery", label: delivery, icon: ListChecks },
     { id: "decisions", label: decisions, icon: FileText },
   ];
 
@@ -114,7 +114,7 @@ export function ProductShowcase({ locale }: { locale: Locale }) {
         <aside className="showcase-sidebar" aria-hidden="true">
           <div className="showcase-project-mark">M</div>
           <span className="showcase-side-active"><LayoutDashboard size={16} /></span>
-          <span><ListTodo size={16} /></span>
+          <span><ListChecks size={16} /></span>
           <span><CalendarDays size={16} /></span>
           <span><ShieldCheck size={16} /></span>
           <span><FileText size={16} /></span>
@@ -144,7 +144,7 @@ export function ProductShowcase({ locale }: { locale: Locale }) {
               <div className="showcase-signal"><span className="showcase-alert-icon"><CircleAlert size={15} /></span><div><strong>{t.signal}</strong><span>{t.signalBody}</span></div><span className="showcase-signal-tag">{t.risk}</span></div>
             </>}
             {view === "delivery" && <>
-              <div className="showcase-welcome"><div><h2>{t.workTitle}</h2><p>{t.workSub}</p></div><span className="showcase-date"><ListTodo size={13} /> {locale === "ru" ? "12 ЗАДАЧ" : "12 ITEMS"}</span></div>
+              <div className="showcase-welcome"><div><h2>{t.workTitle}</h2><p>{t.workSub}</p></div><span className="showcase-date"><ListChecks size={13} /> {locale === "ru" ? "12 ЗАДАЧ" : "12 ITEMS"}</span></div>
               <div className="showcase-board">{t.columns.map((column, index) => <div className="showcase-board-column" key={column}><div className="showcase-board-label"><span>{column}</span><b>{[4, 3, 5][index]}</b></div>{t.cards.slice(index, index + (index === 1 ? 2 : 1)).map((card, cardIndex) => <div className={`showcase-board-card board-card-${index}`} key={card}><span>{index === 2 ? <CircleCheck size={13} /> : index === 1 && cardIndex === 0 ? <CircleAlert size={13} /> : <span className="showcase-card-dot" />}</span><strong>{card}</strong><div><i>{["UX", "API", "PM"][cardIndex % 3]}</i><small>{cardIndex % 2 ? "24 SEP" : "26 SEP"}</small></div></div>)}</div>)}</div>
               <div className="showcase-inline-note"><Check size={15} /><span>{locale === "ru" ? "Ограничение незавершённой работы помогает команде сохранять фокус." : "Work-in-progress limits help the team keep its focus."}</span></div>
             </>}

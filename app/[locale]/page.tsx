@@ -8,7 +8,6 @@ import {
   Check,
   CircleDot,
   Compass,
-  FileText,
   LayoutDashboard,
   LockKeyhole,
   ShieldCheck,
