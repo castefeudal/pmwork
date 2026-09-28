@@ -4,7 +4,7 @@ import { route,navigateWorkspace } from './support';
 import { demoWorkspace } from '../../src/data/demo';
 test('explicit first run, URL history, locale and independent preferences',async({page})=>{
  await page.goto(route('/en/workspace/'));
- await expect(page.getByRole('heading',{name:'Start with a real project'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Start with what matters.'})).toBeVisible();
  expect(await page.evaluate(()=>localStorage.getItem('pmwork:workspace:v3'))).toBeNull();
  await page.screenshot({path:`test-results/first-run-${test.info().project.name}.png`,fullPage:true});
  await page.getByRole('button',{name:/Explore a completed example/}).click();
@@ -26,6 +26,12 @@ test('glossary aliases, detail links, filter and accessibility',async({page})=>{
 });
 test('public search opens term with keyboard',async({page})=>{
  await page.goto(route('/en/'));await page.keyboard.press('Control+k');await page.getByRole('searchbox').fill('WBS');await expect(page.locator('#public-result-0')).toContainText('Work Breakdown');await page.keyboard.press('Enter');await expect(page).toHaveURL(/glossary\/work-breakdown-structure/);
+});
+test('root entry offers accessible language routes',async({page})=>{
+ await page.goto(route('/'));await expect(page.getByRole('heading',{name:'Make the next move the right one.'})).toBeVisible();
+ await expect(page.getByRole('link',{name:/Русский/})).toHaveAttribute('href',/\/ru\/$/);await expect(page.getByRole('link',{name:/English/})).toHaveAttribute('href',/\/en\/$/);
+ await page.screenshot({path:`test-results/root-entry-${test.info().project.name}.png`,fullPage:true});
+ const results=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(results.violations).toEqual([]);
 });
 test('clean project creation leaves demo behind',async({page})=>{
  await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:/Start my project/}).click();
