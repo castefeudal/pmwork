@@ -13,7 +13,7 @@ export default function RootPage() {
         <p className="entry-lead">A clear view of the work, decisions and risks that move your project forward.</p>
       </section>
       <section className="entry-choice" aria-label="Choose your language">
-        <div className="entry-choice-heading"><span><Globe2 size={16} aria-hidden="true" /> YOUR WORKSPACE</span><span>01 / 02</span></div>
+        <div className="entry-choice-heading"><span><Globe2 size={16} aria-hidden="true" /> YOUR WORKSPACE</span><span>RU / EN</span></div>
         <p>Выберите язык интерфейса <span aria-hidden="true">·</span> Choose your language</p>
         <div className="entry-languages">
           <Link className="entry-language" href="/ru"><span className="entry-language-code">RU</span><span><strong>Русский</strong><small>Полный интерфейс и база знаний</small></span><ArrowRight size={19} aria-hidden="true" /></Link>

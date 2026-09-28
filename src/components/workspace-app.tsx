@@ -216,7 +216,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   const recoveryDialog=pendingRecovery&&<RecoveryConfirmDialog locale={locale} candidate={pendingRecovery.kind==="import"?pendingRecovery.candidate:undefined} snapshotLabel={pendingRecovery.kind==="snapshot"?pendingRecovery.label:undefined} replacing={pendingRecovery.kind==="snapshot"||pendingRecovery.replacing} canExportCurrent={(pendingRecovery.kind==="snapshot"||pendingRecovery.replacing)&&!recovery&&!firstRun} onExportCurrent={()=>exportWorkspace(workspace)} onCancel={()=>setPendingRecovery(null)} onConfirm={()=>void confirmRecovery()}/>;
 
   if (!ready) return (
-    <main className="workspace-boot" aria-busy="true" aria-label={ru ? "Загрузка PMWORK" : "Loading PMWORK"}>
+    <main className="language-gate first-run-gate workspace-boot" aria-busy="true" aria-label={ru ? "Загрузка PMWORK" : "Loading PMWORK"}>
       <div className="boot-glow" aria-hidden="true" />
       <header className="boot-header"><Brand/><span><i />{ru ? "РАБОТАЕТ НА ЭТОМ УСТРОЙСТВЕ" : "RUNNING ON THIS DEVICE"}</span></header>
       <section className="boot-center" aria-live="polite">

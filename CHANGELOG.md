@@ -4,6 +4,7 @@
 
 - Rebuilt the root language-entry page as a polished PMWORK introduction with direct, prominent Russian and English routes, local-first trust cues and responsive motion.
 - Replaced the workspace’s blank loading pause with an honest, accessible local-data preparation screen and a calm indeterminate progress animation.
+- Kept the loading/onboarding shell dimensions stable to protect cumulative layout shift, and refreshed the reviewed Linux onboarding references for desktop and mobile.
 - Refined the first-run path with clearer project/example/backup choices, setup expectations, privacy reassurance, responsive layouts and reduced-motion behavior.
 - Kept first-run actions, backup restore and the existing project creation flow connected to their original functions; no workspace data schema changed.
 - Updated browser journey expectations for the redesigned first-run experience.

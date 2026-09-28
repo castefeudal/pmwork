@@ -8,6 +8,14 @@ const openDemo=async()=>fireEvent.click(await screen.findByRole("button",{name:/
 const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы рабочего пространства|Workspace sections/});
 
 describe("workspace interactions", () => {
+  it("shows the accessible branded local-data loader while opening the workspace", () => {
+    render(<WorkspaceApp locale="en" />);
+    const main = screen.getByRole("main");
+    expect(main.getAttribute("aria-busy")).toBe("true");
+    expect(within(main).getByRole("status").textContent).toContain("Checking your local data and project context");
+    expect(within(main).getByRole("heading", { name: "Bringing your work into focus." })).toBeTruthy();
+  });
+
   it("does not persist demo before an explicit choice", async () => {
     render(<WorkspaceApp locale="en" />);
     await screen.findByRole("heading", { name: "Start with what matters." });

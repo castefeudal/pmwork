@@ -29,7 +29,8 @@ test('public search opens term with keyboard',async({page})=>{
 });
 test('root entry offers accessible language routes',async({page})=>{
  await page.goto(route('/'));await expect(page.getByRole('heading',{name:'Make the next move the right one.'})).toBeVisible();
- await expect(page.getByRole('link',{name:/Русский/})).toHaveAttribute('href','/ru');await expect(page.getByRole('link',{name:/English/})).toHaveAttribute('href','/en');
+ await expect(page.getByRole('link',{name:/Русский/})).toHaveAttribute('href',/\/ru\/$/);await expect(page.getByRole('link',{name:/English/})).toHaveAttribute('href',/\/en\/$/);
+ await page.screenshot({path:`test-results/root-entry-${test.info().project.name}.png`,fullPage:true});
  const results=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(results.violations).toEqual([]);
 });
 test('clean project creation leaves demo behind',async({page})=>{
