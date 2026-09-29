@@ -1,3 +1,4 @@
+@layer editorial {
 /* Reading surfaces and viewport-owned overlays. */
 .catalog-card, .panel, .metric-card, .table-wrap { backdrop-filter: none; }
 .catalog-card:hover, .metric-card:hover, .method-strip div:hover { transform: none; box-shadow: var(--shadow-sm); }
@@ -51,3 +52,5 @@
 
 .catalog-card > .pill { align-self: flex-start; }
 .workspace-top h1 { white-space: normal; overflow-wrap: anywhere; }
+
+}

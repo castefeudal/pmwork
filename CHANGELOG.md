@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.0 — 2026-09-29
+
+- Reorganized the global visual system into named CSS cascade layers with a shared semantic foundation for surfaces, type, accents, motion, layout and overlays.
+- Improved small-screen legibility across first run and the interactive product preview; the preview now uses a focused, scrollable mobile composition.
+- Expanded the command palette with locally stored recent destinations, grouped matches and inline query highlighting.
+- Increased readability in Today coverage, Portfolio evidence, calendar metadata and mobile workspace navigation.
+- Added browser layout coverage for RU/EN workspace surfaces across the requested phone, tablet, laptop and desktop widths, including first-run and editor reachability.
+- Extended accessibility smoke checks across RU/EN and light/dark workspace themes.
+
 ## 2.6.1 — 2026-09-28
 
 - Rebuilt the root language-entry page as a polished PMWORK introduction with direct, prominent Russian and English routes, local-first trust cues and responsive motion.

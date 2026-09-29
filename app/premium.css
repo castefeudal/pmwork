@@ -1,3 +1,4 @@
+@layer components {
 
 html {
   background: var(--bg);
@@ -136,7 +137,7 @@ summary {
 }
 
 .eyebrow {
-  font-size: .74rem;
+  font-size: var(--type-label);
   letter-spacing: .14em;
   font-weight: 800;
 }
@@ -156,15 +157,10 @@ summary {
 }
 
 .button.primary {
-  color: white;
-  background: linear-gradient(135deg, #0f766e, #0e7490);
-  border-color: rgba(255,255,255,.12);
-  box-shadow: 0 12px 28px rgba(15,118,110,.22);
-}
-
-[data-theme="dark"] .button.primary {
-  color: #031214;
-  background: linear-gradient(135deg, #5eead4, #67e8f9);
+  color: var(--text-on-accent);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-primary) 16%, transparent);
 }
 
 .trust-line {
@@ -709,4 +705,6 @@ input[type="range"] { min-height:44px; accent-color:var(--accent); }
  .page-context h2 { font-size:1.75rem; }
  .page-context .muted { font-size:.8125rem; line-height:1.45; }
  .workspace-content { padding-top:1rem; }
+}
+
 }
