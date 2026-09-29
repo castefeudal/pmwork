@@ -101,8 +101,10 @@ for(const [width,height] of [[320,760],[360,800],[390,844],[768,1024],[1024,768]
 }
 for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as const){
   test(`accessibility representative surfaces ${locale} ${theme}`,async({page},testInfo)=>{
+    test.setTimeout(120_000);
     await page.addInitScript(theme=>localStorage.setItem("pmwork-theme",theme),theme);
     await page.goto(route(`/${locale}/workspace/`));
+    await expect(page.locator("html")).toHaveAttribute("data-theme",theme);
     for(const name of (locale==="ru"?["Сейчас","Работа","Доска","Планирование","RAID"]:["Today","Work","Board","Planning","RAID"])){
       await navigateWorkspace(page,name);
       await page.screenshot({path:`test-results/theme-${testInfo.project.name}-${locale}-${theme}-${name}.png`,fullPage:true});

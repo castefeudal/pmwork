@@ -1,3 +1,4 @@
+@layer marketing {
 .setup-progress{font-weight:800;color:var(--accent)}
 .recommendation-card{padding:1rem;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:var(--radius);background:color-mix(in srgb,var(--accent) 5%,var(--surface));margin:1rem 0}
 .first-run-gate{max-width:780px;align-content:center}
@@ -80,3 +81,5 @@
 .scenario-diff { padding-left:1.25rem; overflow-wrap:anywhere; }
 .scenario-diff li { margin-block:.75rem; }
 @media(max-width:700px) { .scenario-comparison { grid-template-columns:1fr; } }
+
+}
