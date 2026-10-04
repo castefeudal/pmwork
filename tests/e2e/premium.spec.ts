@@ -134,6 +134,13 @@ for(const locale of ["ru","en"] as const){
     const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
     expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))).toEqual([]);
   });
+  test(`dark glossary catalog accessibility ${locale}`,async({page})=>{
+    await page.addInitScript(()=>localStorage.setItem("pmwork-theme","dark"));
+    await page.goto(route(`/${locale}/glossary/`));
+    await expect(page.locator("html")).toHaveAttribute("data-theme","dark");
+    const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
+    expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))).toEqual([]);
+  });
 }
 test("Pages navigation keeps prefix and both fonts actually load",async({page})=>{
   await page.goto(route("/ru/"));await page.evaluate(()=>document.fonts.ready);
