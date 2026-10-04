@@ -1,4 +1,4 @@
-# PMWORK 2.4
+# PMWORK 2.8
 
 PMWORK is a bilingual, local-first Project Management Operating System: project data becomes an explained signal, a decision or action, a persisted change, and a new feedback signal. The application is a Next.js static export with no account, backend, cloud sync, AI chat, analytics, or trackers.
 

@@ -118,12 +118,21 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.addInitScript(theme=>localStorage.setItem("pmwork-theme",theme),theme);
     await page.goto(route(`/${locale}/workspace/`));
     await expect(page.locator("html")).toHaveAttribute("data-theme",theme);
-    for(const name of (locale==="ru"?["Сейчас","Работа","Доска","Планирование","RAID"]:["Today","Work","Board","Planning","RAID"])){
+    for(const name of (locale==="ru"?["Сейчас","Работа","Доска","Планирование","RAID","Люди"]:["Today","Work","Board","Planning","RAID","People"])){
       await navigateWorkspace(page,name);
       await page.screenshot({path:`test-results/theme-${testInfo.project.name}-${locale}-${theme}-${name}.png`,fullPage:true});
       const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
       expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),name).toEqual([]);
     }
+  });
+}
+for(const locale of ["ru","en"] as const){
+  test(`first-run accessibility ${locale}`,async({page})=>{
+    await page.addInitScript(()=>localStorage.removeItem("pmwork:workspace:v3"));
+    await page.goto(route(`/${locale}/workspace/`));
+    await expect(page.locator(".first-run-gate")).toBeVisible();
+    const results=await new AxeBuilder({page:page as never}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
+    expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))).toEqual([]);
   });
 }
 test("Pages navigation keeps prefix and both fonts actually load",async({page})=>{
