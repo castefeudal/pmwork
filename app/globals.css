@@ -1360,7 +1360,7 @@ blockquote {
   transform: translate(-50%, 50%);
   border-radius: 50%;
   background: var(--accent);
-  color: #fff;
+  color: var(--text-on-accent);
   font-size: 0.72rem;
   font-weight: 900;
   cursor: pointer;
@@ -1691,7 +1691,7 @@ blockquote {
 .glossary-layout { display: grid; grid-template-columns: 235px minmax(0,1fr); gap: 32px; align-items: start; }
 .glossary-categories { display: grid; gap: 5px; position: sticky; top: 90px; }
 .glossary-categories .button { justify-content: start; text-align: left; white-space: normal; }
-.glossary-categories [aria-pressed=true], .alphabet [aria-pressed=true] { background: var(--accent); color: white; }
+.glossary-categories [aria-pressed=true], .alphabet [aria-pressed=true] { background: var(--accent); color: var(--text-on-accent); }
 .alphabet { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 16px; }
 .alphabet button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 6px 9px; border-radius: 5px; min-height: 32px; }
 .glossary-results { border-top: 1px solid var(--line); }
