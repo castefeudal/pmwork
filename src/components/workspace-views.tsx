@@ -133,6 +133,11 @@ export function PortfolioView({
     return { summary, actions, milestones, activity, overdue, upcoming, stale };
   };
   const evidenceByProject = new Map(workspace.projects.map((project) => [project.id, projectEvidence(project)]));
+  const severityOrder = { critical: 0, high: 1, medium: 2 } as const;
+  const leadingSignals = new Map(workspace.projects.map((project) => [
+    project.id,
+    evidenceByProject.get(project.id)!.actions.slice().sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity])[0],
+  ]));
   const visibleProjects = workspace.projects.filter((p) => {
     const { summary, actions, overdue, upcoming, stale } = evidenceByProject.get(p.id)!;
     switch (filter) {
@@ -146,6 +151,9 @@ export function PortfolioView({
       default: return true;
     }
   });
+  const prioritizedProjects = visibleProjects.map((project, index) => ({ project, index, signal: leadingSignals.get(project.id) }))
+    .sort((a, b) => (a.signal ? severityOrder[a.signal.severity] : 3) - (b.signal ? severityOrder[b.signal.severity] : 3) || a.index - b.index)
+    .map(({ project }) => project);
   return (
     <>
       <div className="page-title">
@@ -172,9 +180,10 @@ export function PortfolioView({
         <span className="portfolio-filter-count">{visibleProjects.length} / {workspace.projects.length}</span>
       </nav>
       <div className="portfolio-grid">
-        {visibleProjects.map((p) => {
+        {prioritizedProjects.map((p) => {
           const evidence = evidenceByProject.get(p.id)!, s = evidence.summary,
-            over = s.forecast !== null && s.planned !== null && s.forecast > s.planned && s.planned > 0;
+            over = s.forecast !== null && s.planned !== null && s.forecast > s.planned && s.planned > 0,
+            signal = leadingSignals.get(p.id);
           return (
             <article className="project-card" key={p.id}>
               <div className="project-card-head">
@@ -188,7 +197,14 @@ export function PortfolioView({
                   {s.covered}/{s.total}
                 </strong>
               </div>
-              <p>{p.objective}</p>
+              <div className="project-card-intro">
+                <p>{p.objective}</p>
+                <div className={`project-leading-signal${signal ? ` signal-${signal.severity}` : ""}`}>
+                  <span>{ru ? "Первый сигнал для проверки" : "Leading signal to review"}</span>
+                  <strong>{signal?.title ?? (ru ? "Нет открытого сигнала по текущим правилам" : "No open signal from the current rules")}</strong>
+                  {signal && <small>{signal.why}</small>}
+                </div>
+              </div>
               <div className="project-metrics">
                 <span>
                   <b>{s.progress===null?(ru?"Нет данных":"Unknown"):`${s.progress}%`}</b>

@@ -26,6 +26,19 @@ test("saved views survive navigation and reload",async({page})=>{
   await navigateWorkspace(page,"Work");
   await expect(page.getByRole("button",{name:"Blocked",exact:true})).toHaveAttribute("aria-pressed","true");
 });
+test("work keeps view, filters and add action in the primary toolbar",async({page})=>{
+  await page.goto(route("/en/workspace/"));await navigateWorkspace(page,"Work");
+  const toolbar=page.locator(".work-toolbar");
+  await expect(toolbar.getByRole("textbox",{name:"Search work"})).toBeVisible();
+  await expect(toolbar.getByRole("group",{name:"Work view"}).getByRole("button",{name:"List"})).toBeVisible();
+  await expect(toolbar.getByText("Filters",{exact:true})).toBeVisible();
+  await expect(toolbar.getByRole("button",{name:"Add work item"})).toBeVisible();
+  await expect(toolbar.getByLabel("Status",{exact:true})).toBeHidden();
+  await toolbar.getByText("Filters",{exact:true}).click();
+  await toolbar.getByLabel("Status",{exact:true}).selectOption("ready");
+  await expect(page.locator(".mobile-work-card:visible, .work-title-button:visible").filter({hasText:"Align first-release scope"})).toBeVisible();
+  await expect(page.locator(".mobile-work-card:visible, .work-title-button:visible").filter({hasText:"Migrate knowledge catalog"})).toHaveCount(0);
+});
 test("destructive saved-view action uses an accessible confirmation",async({page})=>{
   await page.goto(route("/en/workspace/"));
   await navigateWorkspace(page,"Work");

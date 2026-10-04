@@ -46,7 +46,7 @@ describe("workspace interactions", () => {
     await openDemo();
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Work" }));
     expect(within(desktopNav()).queryByRole("button",{name:"Board"})).toBeNull();
-    fireEvent.click(screen.getByRole("button",{name:"Board"}));
+    fireEvent.click(within(screen.getByRole("group",{name:"Work view"})).getByRole("button",{name:"Board"}));
     const card = screen.getByText("Align first-release scope").closest("article");
     expect(card).toBeTruthy();
     fireEvent.click(card!.querySelector("button[aria-label='Move right']")!);
