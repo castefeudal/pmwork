@@ -384,7 +384,7 @@ body { letter-spacing: -.006em; }
 
 .flow-section { max-width: 100%; padding: clamp(5rem,9vw,8.4rem) max(clamp(1.4rem,5.4vw,5.5rem),calc((100vw - var(--marketing-max))/2 + 5.5rem)); background: linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 46%,var(--canvas)),color-mix(in srgb,var(--surface-1) 55%,var(--canvas))); border-block: 1px solid var(--line); }
 .flow-head { max-width: 1260px; margin-inline: auto; }
-.flow-steps { max-width: 1260px; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1.25rem; margin: .4rem auto 0; }
+.flow-steps { max-width: 1260px; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 1.05rem; margin: .4rem auto 0; }
 .flow-step { min-width: 0; }
 .flow-step-index { display: flex; align-items: center; min-height: 42px; color: var(--accent); font-family: var(--font-display),sans-serif; font-size: .72rem; font-weight: 760; letter-spacing: .12em; }
 .flow-step-index > span:first-child { display: grid; flex: 0 0 34px; place-items: center; width: 34px; height: 34px; border: 1px solid color-mix(in srgb,var(--accent) 30%,var(--line)); border-radius: 50%; background: var(--surface-solid); box-shadow: 0 0 0 5px color-mix(in srgb,var(--accent) 5%,transparent); }

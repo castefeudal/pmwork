@@ -607,8 +607,17 @@ tbody tr:hover {
 .view-presets button { flex-shrink:0; padding:.5rem .75rem; border:1px solid transparent; background:transparent; color:var(--muted); border-radius:var(--radius-sm); font-size:.875rem; cursor:pointer; }
 .view-presets button:hover { background:var(--surface-2); color:var(--ink); }
 .view-presets button.active { color:var(--accent); border-color:var(--line-strong); background:var(--accent-soft); font-weight:650; }
-.work-toolbar { align-items:end; gap:.75rem; }
+.work-toolbar { align-items:center; gap:.6rem; }
 .work-toolbar .search-input { flex:1 1 220px; margin:0; }
+.work-view-toggle { display:inline-flex; flex:0 0 auto; padding:3px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--surface-2); }
+.work-view-toggle .button { min-height:36px; padding:.4rem .72rem; border:1px solid transparent; box-shadow:none; }
+.work-view-toggle .button.active { border-color:var(--line); color:var(--ink); background:var(--surface-solid); box-shadow:var(--shadow-hairline); }
+.work-filter-disclosure { position:relative; }
+.work-filter-disclosure summary { min-height:40px; display:flex; align-items:center; gap:.45rem; padding:.45rem .7rem; border:1px solid var(--line); border-radius:var(--radius-sm); color:var(--ink); background:var(--surface-solid); cursor:pointer; list-style:none; }
+.work-filter-disclosure summary::-webkit-details-marker { display:none; }
+.work-filter-disclosure[open] { flex-basis:100%; }
+.work-filter-panel { display:flex; flex-wrap:wrap; gap:.8rem; margin-top:.5rem; padding:.8rem; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface-solid); }
+.work-filter-panel>.view-control { flex:1 1 170px; }
 .view-control { display:flex; flex-direction:column; gap:.35rem; font-size:.875rem; color:var(--muted); min-width:0; }
 .view-control .input { color:var(--ink); width:100%; min-width:0; }
 .view-options-row { display:flex; align-items:center; flex-wrap:wrap; gap:.75rem; margin:0 0 1rem; font-size:.875rem; }
@@ -641,7 +650,7 @@ tbody tr:hover {
 .range-endpoints { display:flex; justify-content:space-between; font-size:.8125rem; color:var(--muted); }
 input[type="range"] { min-height:44px; accent-color:var(--accent); }
 @keyframes drawer-enter { from { transform:translateX(24px); opacity:.5; } to { transform:translateX(0); opacity:1; } }
-@media (max-width:640px) { .work-toolbar>.view-control { flex:1 1 130px; } .work-toolbar>.button { width:100%; justify-content:center; } .record-drawer { border-radius:0; padding:1rem; } .view-options-row { gap:.35rem; } .workspace-top h1 { overflow-wrap:anywhere; } }
+@media (max-width:640px) { .work-toolbar>.button { width:100%; justify-content:center; } .work-filter-panel { display:grid; grid-template-columns:minmax(0,1fr); } .record-drawer { border-radius:0; padding:1rem; } .view-options-row { gap:.35rem; } .workspace-top h1 { overflow-wrap:anywhere; } }
 @media (prefers-reduced-motion:reduce) { .record-drawer { animation:none; } }
 .timeline-scroll { overflow:auto; max-height:65vh; margin-top:1.25rem; border:1px solid var(--line); border-radius:var(--radius); }
 .date-timeline { padding:.75rem; }

@@ -9,7 +9,7 @@ export async function navigateWorkspace(page:Page,name:string){
   if(!await work.count()) work=mobile.getByRole('button',{name:/^(Work|Работа)$/}).filter({visible:true});
   if(!await work.count()){await page.getByRole('button',{name:/^(Ещё|More)$/}).click();work=page.getByRole('dialog').getByRole('button',{name:/^(Work|Работа)$/});}
   await expect(work).toBeVisible();await work.click();
-  const boardMode=page.getByRole('button',{name:/^(Board|Доска)$/}).filter({visible:true});await expect(boardMode).toBeVisible();await boardMode.click();return;
+  const boardMode=page.getByRole('group',{name:/^(Work view|Представление работы)$/}).getByRole('button',{name:/^(Board|Доска)$/});await expect(boardMode).toBeVisible();await boardMode.click();return;
  }
  if(name==='RAID'){
   let target=page.locator('.side-nav').getByRole('button',{name:/^(RAID|Risks & decisions|Риски и решения)$/}).filter({visible:true});

@@ -202,7 +202,14 @@ td, th { font-variant-numeric: tabular-nums; }
 .project-card:hover { transform: none; border-color: var(--border-strong); box-shadow: var(--shadow-low); }
 .project-card-head { align-items: center; }
 .project-card h3 { font-size: 1.07rem; margin: 7px 0 2px; }
-.project-card > p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+.project-card-intro { min-width:0; display:grid; gap:8px; }
+.project-card-intro p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+.project-leading-signal { min-width:0; display:grid; gap:3px; padding:7px 9px; border-left:2px solid var(--accent-copper); background:var(--surface-1); }
+.project-leading-signal > span { color:var(--accent-primary); font-size:10px; font-weight:750; letter-spacing:.06em; text-transform:uppercase; }
+.project-leading-signal > strong { color:var(--text-primary); font-size:12px; line-height:1.35; overflow-wrap:anywhere; }
+.project-leading-signal > small { color:var(--text-secondary); font-size:11px; line-height:1.35; overflow-wrap:anywhere; }
+.project-leading-signal.signal-critical { border-left-color:var(--semantic-danger); }
+.project-leading-signal.signal-high { border-left-color:var(--semantic-warning); }
 .score-ring { width: 40px; height: 40px; border-width: 3px; font-size: 12px; }
 .project-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
 .project-metrics span { gap: 3px; font-size: 12px; line-height: 1.4; }
@@ -326,7 +333,7 @@ td, th { font-variant-numeric: tabular-nums; }
   .today-layout aside > .panel { position: static; }
   .project-card { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 14px; }
   .project-card-head { grid-column: 1 / -1; }
-  .project-card > p { grid-column: 1 / -1; }
+  .project-card-intro { grid-column: 1 / -1; }
   .project-metrics { grid-column: 1 / -1; }
   .portfolio-evidence { grid-column: 1 / -1; }
   .project-card .card-foot { grid-column: 1 / -1; justify-content: flex-start; }
@@ -347,7 +354,7 @@ td, th { font-variant-numeric: tabular-nums; }
     gap: 10px 14px;
   }
   .project-card-head { grid-column: 1; }
-  .project-card > p { grid-column: 2; grid-row: 1; }
+  .project-card-intro { grid-column: 2; grid-row: 1; }
   .project-metrics, .portfolio-evidence, .project-card .card-foot { grid-column: 1 / -1; }
   .project-metrics { grid-row: 2; }
   .portfolio-evidence { grid-row: 3; }

@@ -18,6 +18,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/domain/schemas";
 import { contentCounts } from "@/content/catalog";
+import { demoWorkspace } from "@/data/demo";
 import { PublicHeader } from "@/components/public-header";
 import { ProductShowcase } from "@/components/product-showcase";
 import { Footer } from "@/components/footer";
@@ -64,10 +65,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const copy = {
   ru: {
-    kicker: "ПРОЕКТЫ СЛОЖНЫЕ. СЛЕДУЮЩИЙ ШАГ — ЯСНЫЙ.",
-    titleTop: "Меньше тумана.",
-    titleBottom: "Больше движения.",
-    lead: "PMWORK соединяет план, ежедневную работу, риски и решения — чтобы команда понимала, что происходит и что делать дальше.",
+    kicker: "ПРАКТИЧЕСКАЯ СИСТЕМА РУКОВОДИТЕЛЯ ПРОЕКТА",
+    titleTop: "От хаоса проекта",
+    titleBottom: "— к ясному следующему решению.",
+    lead: "PMWORK связывает реальные сигналы проекта с решениями, действиями и контролем результата. Рабочие данные остаются на вашем устройстве.",
     start: "Открыть рабочее пространство",
     startAccessible: "Создать / открыть проект",
     explore: "Посмотреть продукт",
@@ -86,13 +87,14 @@ const copy = {
       { icon: BookOpen, label: "База практик", title: "Знания, которые можно применить", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
     ],
     flowEyebrow: "ОДИН СВЯЗАННЫЙ ЦИКЛ",
-    flowTitle: "От сигнала — к результату.",
-    flowLead: "Контекст не распадается на отчёты, переписки и отдельные таблицы.",
+    flowTitle: "От сигнала — к проверяемому результату.",
+    flowLead: "Один связанный цикл на примере записей демо-проекта PMWORK.",
     flow: [
-      ["Увидеть", "Today объясняет, что требует внимания — и показывает исходные записи."],
-      ["Решить", "Откройте риск, блокер или решение прямо из контекста проекта."],
-      ["Сделать", "Назначьте владельца и следующий шаг там, где команда уже работает."],
-      ["Проверить", "Сроки, бюджет и контрольные точки сверяются с фактическими данными."],
+      ["СИГНАЛ", "Today показывает блокер «Провести проверку безопасности» и причину ожидания внешнего решения."],
+      ["РЕШЕНИЕ", "В журнале виден открытый вопрос: переносить ли устаревший раздел вопросов и ответов."],
+      ["ДЕЙСТВИЕ", "Рабочая запись связывает блокер с владельцем и следующим шагом команды."],
+      ["КОНТРОЛЬ", "Контрольная точка готовности пилота содержит прогноз, статус и уверенность."],
+      ["РЕЗУЛЬТАТ", "У проекта есть проверяемая цель: к Q1 не менее 60% типовых запросов решаются без оператора."],
     ],
     privacyEyebrow: "ВАША РАБОТА — ВАША",
     privacyTitle: "С самого начала всё под вашим контролем.",
@@ -123,10 +125,10 @@ const copy = {
     noSetup: "Данные останутся на этом устройстве",
   },
   en: {
-    kicker: "COMPLEX PROJECTS. CLEAR NEXT MOVES.",
-    titleTop: "Less fog.",
-    titleBottom: "More momentum.",
-    lead: "PMWORK connects plans, daily work, risks, and decisions so teams can see what is happening and what to do next.",
+    kicker: "THE PRACTICAL OPERATING SYSTEM FOR PROJECT MANAGERS",
+    titleTop: "From project noise",
+    titleBottom: "to a clear next decision.",
+    lead: "PMWORK connects real project signals to decisions, actions, and outcome control. Your working data stays on your device.",
     start: "Open your workspace",
     startAccessible: "Create / open project",
     explore: "See the product",
@@ -145,13 +147,14 @@ const copy = {
       { icon: BookOpen, label: "Practice library", title: "Knowledge you can put to work", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} playbooks, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
     ],
     flowEyebrow: "ONE CONNECTED LOOP",
-    flowTitle: "From signal to outcome.",
-    flowLead: "Keep context together across reports, messages, and disconnected spreadsheets.",
+    flowTitle: "From signal to a verifiable result.",
+    flowLead: "One connected loop, grounded in records from the PMWORK demo project.",
     flow: [
-      ["Notice", "Today explains what needs attention and points to the source records."],
-      ["Decide", "Open a risk, blocker, or decision directly in the project context."],
-      ["Act", "Assign an owner and next step where the team already works."],
-      ["Review", "Compare schedule, budget, and milestones with recorded evidence."],
+      ["SIGNAL", "Today surfaces the Complete security review blocker and the reason it is waiting on an external decision."],
+      ["DECISION", "The decision log shows the open question: should legacy FAQ content be migrated?"],
+      ["ACTION", "The work record connects the blocker to its owner and the team's next step."],
+      ["CONTROL", "The Pilot ready milestone carries a forecast, status, and confidence value."],
+      ["RESULT", "The project has a testable objective: by Q1, resolve at least 60% of routine requests without an agent."],
     ],
     privacyEyebrow: "YOUR WORK IS YOURS",
     privacyTitle: "You stay in control from the very first click.",
@@ -189,6 +192,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const locale = raw as Locale;
   const ru = locale === "ru";
   const t = copy[locale];
+  const demo = demoWorkspace(locale);
+  const project = demo.projects.find((item) => item.id === "atlas");
+  if (!project) notFound();
+  const preview = {
+    project: { name: project.name, objective: project.objective },
+    work: demo.workItems.filter((item) => item.projectId === project.id && !item.archived).map(({ id, title, status, owner, dueDate, priority, blocked, blockerReason, done }) => ({ id, title, status, owner, dueDate, priority, blocked, blockerReason, done })),
+    risks: demo.risks.filter((item) => item.projectId === project.id).map(({ id, title, trigger, status }) => ({ id, title, trigger, status })),
+    decisions: demo.decisions.filter((item) => item.projectId === project.id).map(({ id, question, context, status }) => ({ id, question, context, status })),
+    milestones: demo.milestones.filter((item) => item.projectId === project.id).map(({ title, forecastDate, status, progress, confidence }) => ({ title, forecastDate, status, progress, confidence })),
+  };
   const featureLinks = t.features;
 
   return (
@@ -209,7 +222,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </ul>
             <p className="hero-author">{t.created} · <Link href={`/${locale}/about/`}>{ru ? "О продукте" : "About"}</Link></p>
           </div>
-          <ProductShowcase locale={locale} />
+          <ProductShowcase locale={locale} preview={preview} />
           <a className="hero-scroll-cue" href="#capabilities"><span>{t.scroll}</span><ArrowDown size={14} aria-hidden="true" /></a>
         </section>
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.0 — decision-led product experience (2026-10-04)
+
+- Sharpened the landing promise around moving from project noise to a clear next decision, and made the five-step Signal → Decision → Action → Control → Result cycle explicit.
+- Rebuilt the interactive product preview from the bundled demo workspace records. Counts, work items, blocker, decision, risk, owners, and milestone now come from the same source data and are labeled as demo content.
+- Updated Next.js to 16.3.8, the current patch release, without changing the local-first architecture or workspace schema.
+- Patched the unmaintained `braces` lint-toolchain dependency with a nesting-depth guard; dependency audit now passes without changing the quality gate.
+
 ## 2.7.0 — 2026-09-29
 
 - Reorganized the global visual system into named CSS cascade layers with a shared semantic foundation for surfaces, type, accents, motion, layout and overlays.
