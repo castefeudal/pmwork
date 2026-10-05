@@ -24,6 +24,6 @@ export function recordRelations(workspace:Workspace,kind:string,id:string):Recor
 }
 export function relationPath(row:RecordRelation,locale:string) {
   const params=new URLSearchParams(row.scope.kind==="project"?{project:row.scope.id,view:row.view,item:row.id,kind:row.kind}:{view:row.scope.kind==="program"?"program":"operations",context:row.scope.id,register:row.view,item:row.id,kind:row.kind});
-  if(["review","metric","control","incident","benefit","program"].includes(row.kind)){params.delete("item");params.delete("kind");}
+  if(["review","metric","control","incident","benefit","program"].includes(row.kind)){params.delete("item");params.delete("kind");params.set("evidence",row.id);}
   return `/${locale}/workspace/?${params}#evidence-${row.scope.id}-${row.id}`;
 }

@@ -76,3 +76,5 @@ Work blockage intervals are prospective observations with optional end timestamp
 Optional work recurrence records cadence, monthly anchor and predecessor occurrence. Completing an occurrence creates at most one next occurrence; completed effort, blockage and rework observations are not copied into the next occurrence. Outcome observations carry actual value, measurement date and field history. Parent/child links and measurement-date requirements are checked on import.
 
 Program benefit `measuredAt` is optional to preserve older records; missing/future-dated actual observations remain insufficient evidence. Program/Operation optional `currency` uses an editable three-letter uppercase ISO code for scoped budgets; the creation default is USD. Component financial roll-up retains each project currency.
+
+Native register/history pagination only limits rendered rows, never stored arrays. Native evidence URLs carry `evidence=<record ID>` and reveal the page containing that record. Operational review archives remain addressable after newer reviews are recorded.
