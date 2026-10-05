@@ -283,7 +283,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   if (!project) return <ContextWorkspaceShell workspace={workspace} locale={locale} onChange={next=>setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)))} onExport={()=>exportWorkspace(workspace)} onRestore={()=>fileRef.current?.click()} onCreateProject={()=>setDialog("project")} palette={palette} onClosePalette={()=>setPalette(false)}><input hidden ref={fileRef} type="file" accept="application/json" onChange={event=>void stageImport(event.target.files?.[0],true)}/>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));if(id)setProjectId(id);}}/>}{recoveryDialog}</ContextWorkspaceShell>;
 
   const commit = (next: Workspace) => { try { setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next))); } catch { setToast(ru ? "Изменение не применено: нарушена целостность связанных данных" : "Change was not applied because related data would become inconsistent"); } };
-  const selectProject = (id: string) => { const url=new URL(window.location.href);for(const key of ["context","register","item","kind","create"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));if(view==="program"||view==="operations")setView("overview");setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
+  const selectProject = (id: string) => { const url=new URL(window.location.href);for(const key of ["context","register","item","kind","create","evidence"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));if(view==="program"||view==="operations")setView("overview");setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
   const openRecord = (kind: EditableKind, id: string) => {
     const record={kind,id};
     const next=workspaceRecordUrl(window.location.href,record);
@@ -299,18 +299,19 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   const navigateView=(destination:WorkspaceView)=>{
     const context=managementRecord??workspace.programs.find(row=>row.id===contextId)??workspace.operations.find(row=>row.id===contextId);
     if(context&&["work","board","planning","raid","people","finance","control","documents"].includes(destination)) {
-      const url=new URL(window.location.href);url.searchParams.set("view","outcome" in context?"program":"operations");url.searchParams.set("context",context.id);url.searchParams.set("register",destination);for(const key of ["item","kind","create"])url.searchParams.delete(key);history.pushState(null,"",url);setView("outcome" in context?"program":"operations");dispatchEvent(new Event("pmwork-url"));return;
+      const url=new URL(window.location.href);url.searchParams.set("view","outcome" in context?"program":"operations");url.searchParams.set("context",context.id);url.searchParams.set("register",destination);for(const key of ["item","kind","create","evidence"])url.searchParams.delete(key);history.pushState(null,"",url);setView("outcome" in context?"program":"operations");dispatchEvent(new Event("pmwork-url"));return;
     }
     if(destination==="program"||destination==="operations"){
-      const url=new URL(window.location.href);for(const key of ["register","item","kind","create"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));
+      const url=new URL(window.location.href);for(const key of ["register","item","kind","create","evidence"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));
     }
     setView(destination);
   };
   const createRecord=(type:CreateType)=>{
     if(type!=="project"&&(view==="program"||view==="operations")) {
       if(!managementRecord){setToast(ru?"Сначала создайте или выберите рабочий контекст.":"Create or select a working context first.");return;}
-      const url=new URL(window.location.href);url.searchParams.set("context",managementRecord.id);url.searchParams.set("create",type);url.searchParams.set("register",registerForCreate(type));history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));return;
+      const url=new URL(window.location.href);url.searchParams.set("context",managementRecord.id);url.searchParams.set("create",type);for(const key of ["item","kind","evidence"])url.searchParams.delete(key);url.hash="";url.searchParams.set("register",registerForCreate(type));history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));return;
     }
+    if(editor)closeRecord();
     setDialog(type);
   };
   const common: ViewProps = {workspace,project,locale,onView:navigateView,onCreate:createRecord,onEdit:openRecord,onChange:commit,onProject:selectProject};

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { programSchema, operationSchema, type Program, type Operation } from "@/domain/management-entities";
 import { managementSignals } from "@/domain/management-signals";
@@ -27,6 +27,7 @@ export function ManagementCenter({workspace,locale,onChange,kind}:{workspace:Wor
   const operation=kind==="operations"?record as Operation|undefined:undefined;
   const [sourceEvidence,clearEvidence]=useUrlValue("evidence");
   const clearFocus=()=>clearEvidence("");
+  useEffect(()=>{if(sourceEvidence&&record){const frame=requestAnimationFrame(()=>document.getElementById(`evidence-${record.id}-${sourceEvidence}`)?.scrollIntoView({block:"start"}));return()=>cancelAnimationFrame(frame);}},[sourceEvidence,record]);
   const benefitRows=usePagedRecords(program?.benefits??[],sourceEvidence,clearFocus,record?.id??"");
   const metricRows=usePagedRecords(operation?.metrics??[],sourceEvidence,clearFocus,record?.id??"");
   const controlRows=usePagedRecords(operation?.controls??[],sourceEvidence,clearFocus,record?.id??"");
