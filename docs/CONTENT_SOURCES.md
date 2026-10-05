@@ -2,7 +2,7 @@
 
 Sources are registered in `src/content/catalog.ts` with organization, edition/version, publication date, checked date, authority type, URL, and copyright note.
 
-The official public pages for the following references were checked on 2026-10-06. This verifies publication metadata, not the full text of paid standards. Agile Practice Guide retains its previously recorded review date.
+The official public pages for the following references were checked on 2026-10-06. This verifies publication metadata, not the full text of paid standards.
 
 - PMI, PMBOK Guide and The Standard for Project Management, 8th edition.
 - PMI, The Standard for Program Management, 5th edition (March 2024).
