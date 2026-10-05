@@ -2,6 +2,8 @@
 
 ## 2.9.0 — Management role foundation
 
+- Traceable outcomes with dated actual observations, incoming/outgoing record links, explicit rework and prospective blocked-time evidence.
+- Operational reviews create linked actions and decisions; recurring work and controls preserve scheduled occurrences, including month-end anchors.
 - Shared context registers for Programs and Operations, Decision Center with evidence/history/revisit, recurring control evidence, and context-aware deterministic scenario tools.
 - Progressive disclosure in record editors and bilingual positioning/author text for four management roles.
 
