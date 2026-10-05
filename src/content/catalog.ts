@@ -49,8 +49,8 @@ export const sources: Source[] = [
     title: "Agile Practice Guide",
     organization: "Project Management Institute",
     version: "2nd edition",
-    published: "2025",
-    checked: "2026-09-05",
+    published: "2026-07",
+    checked: "2026-10-06",
     url: "https://www.pmi.org/standards/agile",
     authority: "Official Guide",
     notes: {

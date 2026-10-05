@@ -16,3 +16,5 @@ The official public pages for the following references were checked on 2026-10-0
 - W3C WCAG 2.2.
 
 PMWORK provides original explanations and short definitions. It does not reproduce paid standards or imply affiliation with framework owners.
+
+Agile Practice Guide second edition: official PMI public specifications verified 2026-10-06, publication July 2026. Paid full text was not reviewed or reproduced.
