@@ -149,7 +149,7 @@ test("program navigation keeps work in the selected shared context",async({page}
 
 test("Today opens the exact shared program source record",async({page})=>{
  const w=emptyWorkspace("en");w.managementRole="program";w.projects=demoWorkspace("en").projects.slice(0,1);w.programs=[programSchema.parse({id:"shared",name:"Shared program",outcome:"Reduce waiting",projectIds:[w.projects[0].id]})];
- w.workItems=[workItemSchema.parse({id:"handoff",projectId:"@program/shared",workScope:{kind:"program",id:"shared"},title:"Resolve shared handoff",owner:"Alex",status:"ready",dueDate:"2026-10-01"})];
+ w.workItems=[workItemSchema.parse({id:"handoff",projectId:"@program/shared",workScope:{kind:"program",id:"shared"},title:"Resolve shared handoff",type:"task",priority:"high",createdAt:"2026-09-25T12:00:00Z",updatedAt:"2026-09-25T12:00:00Z",owner:"Alex",status:"ready",dueDate:"2026-10-01"})];
  await page.clock.setFixedTime(new Date("2026-10-06T12:00:00Z"));await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
  await page.goto(route("/en/workspace/?view=overview"));await expect(page.locator(".priority-focus")).toContainText("Resolve shared handoff");await page.getByRole("button",{name:"Open source",exact:true}).click();
  await expect(page.getByRole("dialog",{name:"Edit work item"}).getByLabel("Title",{exact:true})).toHaveValue("Resolve shared handoff");
