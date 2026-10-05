@@ -10,7 +10,7 @@ export function contextProject(workspace:Workspace,scope:Scope):Project {
   if(!record)throw Error("Unknown operating context");
   const key=scopeKey(scope);
   if(workspace.projects.some(project=>project.id===key))throw Error("Scope key collides with a project id");
-  return {id:key,name:record.name,status:"status" in record?record.status:"active",owner:record.owner,sponsor:"sponsor" in record?record.sponsor:"",approach:scope.kind==="operation"?"flow":"hybrid",governance:"standard",type:scope.kind==="operation"?"operations":"transformation",startDate:"",targetDate:"",purpose:"purpose" in record?record.purpose:record.outcome,objective:"purpose" in record?record.purpose:record.outcome,successMeasures:[],health:{},demo:false,currency:"USD",scopeIn:"scope" in record?record.scope:"",scopeOut:"",constraints:"",definitionOfDone:""};
+  return {id:key,name:record.name,status:"status" in record?record.status:"active",owner:record.owner,sponsor:"sponsor" in record?record.sponsor:"",approach:scope.kind==="operation"?"flow":"hybrid",governance:"standard",type:scope.kind==="operation"?"operations":"transformation",startDate:"",targetDate:"",purpose:"purpose" in record?record.purpose:record.outcome,objective:"purpose" in record?record.purpose:record.outcome,successMeasures:[],health:{},demo:false,currency:record.currency??"USD",scopeIn:"scope" in record?record.scope:"",scopeOut:"",constraints:"",definitionOfDone:""};
 }
 /** Temporary UI adapter. The synthetic context descriptor is never persisted as a project. */
 export function contextWorkspace(workspace:Workspace,scope:Scope):Workspace {

@@ -58,3 +58,10 @@ describe("management operating contexts",()=>{
     expect(managementSignals(w,"en","2026-10-06")[0].confidence).toBe("insufficient-evidence");
   });
 });
+
+it("keeps undated and future program benefit observations unknown",()=>{
+ const w=emptyWorkspace("en");w.programs=[programSchema.parse({id:"p",name:"Service change",outcome:"Reduce waiting",benefits:[{id:"b",name:"Waiting time",owner:"Alex",unit:"h",baseline:8,target:4,actual:3,measurementPlan:"Monthly customer sample",reviewDate:"2026-10-06"}]})];
+ expect(managementSignals(w,"en","2026-10-06")[0].missingEvidence).toContain("measuredAt");
+ w.programs[0].benefits[0].measuredAt="2026-10-07";expect(managementSignals(w,"en","2026-10-06")[0].confidence).toBe("insufficient-evidence");
+ w.programs[0].benefits[0].measuredAt="2026-10-05";expect(managementSignals(w,"en","2026-10-06")[0].confidence).toBe("known");
+});
