@@ -7,6 +7,9 @@
 - Shared context registers for Programs and Operations, Decision Center with evidence/history/revisit, recurring control evidence, and context-aware deterministic scenario tools.
 - Progressive disclosure in record editors and bilingual positioning/author text for four management roles.
 
+- Keep Program/Operation context through navigation and typed Today links; role-specific mobile menus retain five destinations.
+- Bound native registers and evidence histories without truncating stored data; keep archive links addressable.
+- Add catalog provenance/applicability disclosure and apply templates/playbooks to all contexts.
 - Separate primary management role and additional lenses from guidance and interface density.
 - Add versioned v7 migration for roles, programs and ongoing operations, preserving older backups and recovery behavior.
 - Add Program, Delivery and Operations centers, plus Today across all work.
