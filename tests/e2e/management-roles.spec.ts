@@ -37,7 +37,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await expect(page.locator(".management-center")).toContainText(ru?"Выполнено":"Completed");
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-    await page.screenshot({path:testInfo.outputPath(`operations-${locale}.png`),fullPage:true});
+    await page.screenshot({path:testInfo.outputPath(`operations-${locale}.png`),fullPage:true,animations:"disabled"});
     await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).operations[0].metrics[0].observations.length;})).toBe(1);
     await page.reload();
     await expect(page.locator(".management-center")).toContainText("6 h > 4 h");
@@ -80,7 +80,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await expect(page.getByRole("checkbox",{name:w.projects[0].name,exact:true})).toBeChecked();
     await expect(page.locator(".management-center")).toContainText(ru?"Недостаточно данных":"insufficient evidence");
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
-    await page.screenshot({path:testInfo.outputPath(`program-${locale}.png`),fullPage:true});
+    await page.screenshot({path:testInfo.outputPath(`program-${locale}.png`),fullPage:true,animations:"disabled"});
   });
 });
 

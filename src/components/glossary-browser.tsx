@@ -1,4 +1,5 @@
 "use client";
+import {ContentBasis} from "./content-basis";
 import Link from 'next/link';
 import Fuse from 'fuse.js';
 import { useMemo, useState } from 'react';
@@ -15,7 +16,7 @@ export function GlossaryDetail({term, terms, locale}: {term:GlossaryTerm; terms:
   <h3>{ru?'Когда применяется':'When used'}</h3><p>{term.whenUsed[locale]}</p>
   {term.aliases.length>0&&<p><strong>{ru?'Также ищут: ':'Also known as: '}</strong>{term.aliases.join(' · ')}</p>}
   {(['confusedWith','related'] as const).map(key=>term[key].length>0&&<section key={key}><h3>{key==='confusedWith'?(ru?'Не путать с':'Do not confuse with'):(ru?'Связанные термины':'Related terms')}</h3><div className="button-row">{term[key].map(id=><Link className="button small" key={id} href={`/${locale}/glossary/${id}/`}>{terms.find(t=>t.slug===id)?.[ru?'ruTerm':'term']}</Link>)}</div></section>)}
-  <h3>{ru?'Применить в проекте':'Use in your project'}</h3><div className="button-row">{term.workspaceLinks.map(view=><Link className="button" key={view} href={`/${locale}/workspace/?view=${view}`}>{ru?'Открыть рабочий раздел':'Open workspace section'}</Link>)}</div>
+  <ContentBasis locale={locale} sourceIds={term.sourceIds}/><h3>{ru?'Применить в работе':'Use in your work'}</h3><div className="button-row">{term.workspaceLinks.map(view=><Link className="button" key={view} href={`/${locale}/workspace/?view=${view}`}>{ru?'Открыть рабочий раздел':'Open workspace section'}</Link>)}</div>
   <div className="button-row">{term.templateLinks.map(id=><Link key={id} className="button small" href={`/${locale}/templates/?q=${id.split('-').join(' ')}`}>{ru?'Связанный шаблон':'Related template'}</Link>)}{term.toolLinks.map(id=><Link key={id} className="button small" href={`/${locale}/tools/?tool=${id}`}>{ru?'Открыть инструмент':'Open tool'}</Link>)}</div>
   <p className="muted">{ru?'Оригинальное объяснение PMWORK. Проверено: ':'Original PMWORK explanation. Reviewed: '}{new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeZone:'UTC'}).format(new Date(term.reviewedAt))}</p>
  </article>;

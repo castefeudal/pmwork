@@ -1,3 +1,4 @@
+import {ContentBasis} from "@/components/content-basis";
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import {templates} from '@/content/catalog';
@@ -24,6 +25,7 @@ export default async function Page({params}:{params:Promise<{locale:string;slug:
    <section><h2>{ru?'Как заполнять':'Guidance'}</h2><p>{t.guidance[l]}</p></section>
    <section><h2>{ru?'Типичная ошибка':'Common mistake'}</h2><p>{t.antiPattern[l]}</p></section>
    {example&&<section><h2>{ru?'Заполненный пример':'Completed example'}</h2><p>{example}</p><p className="muted">{ru?'Пример использует вымышленные данные.':'Example uses fictional data.'}</p></section>}
+   <ContentBasis locale={l}/>
   </article><aside className="article-aside panel"><h2>{ru?'Следующий шаг':'Next step'}</h2><p>{ru?'Примените шаблон к конкретному проекту: PMWORK создаст документ, который можно открыть, изменить и экспортировать.':'Apply the template to a specific project. PMWORK creates an editable, exportable document.'}</p><TemplateApply template={t} locale={l}/></aside></div>
  </main><Footer locale={l}/></div>
 }

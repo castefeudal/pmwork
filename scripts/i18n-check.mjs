@@ -45,6 +45,7 @@ const userFacing = [
   "src/components/project-data-source.tsx",
   "src/components/tools-lab.tsx",
   "src/components/catalog-page.tsx",
+  "src/components/content-basis.tsx",
   "src/components/template-apply.tsx",
   "src/components/playbook-action.tsx",
   "src/components/public-header.tsx",

@@ -8,6 +8,7 @@ import { useUrlValue } from "./use-url-state";
 import { TemplateApply } from "./template-apply";
 import { MethodCompare } from "./method-compare";
 import { knowledgeGuides } from "@/content/knowledge";
+import {ContentBasis} from "./content-basis";
 import {RoleKnowledge} from "./role-knowledge";
 import {
   BookOpen,
@@ -160,7 +161,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                 <h2>{pick(x.title, locale)}</h2>
                 <p>{pick(x.summary, locale)}</p>
               </summary>
-              {([['origin','Допущения','Assumptions'],['roles','Роли','Roles'],['artifacts','Артефакты','Artifacts'],['cadence','Каденция','Cadence'],['metrics','Метрики','Metrics'],['prerequisites','Предпосылки','Prerequisites'],['combinations','Совместимые сочетания','Compatible combinations']] as const).map(([field,r,e]) => <section key={field}><h3>{ru?r:e}</h3><p>{x[field][locale]}</p></section>)}
+              <ContentBasis locale={locale} sourceIds={x.sourceIds}/>{([['origin','Допущения','Assumptions'],['roles','Роли','Roles'],['artifacts','Артефакты','Artifacts'],['cadence','Каденция','Cadence'],['metrics','Метрики','Metrics'],['prerequisites','Предпосылки','Prerequisites'],['combinations','Совместимые сочетания','Compatible combinations']] as const).map(([field,r,e]) => <section key={field}><h3>{ru?r:e}</h3><p>{x[field][locale]}</p></section>)}
               <h3>{ru ? "Как течёт работа" : "How work flows"}</h3>
               <p>{pick(x.flow, locale)}</p>
               <h3>{ru ? "Лучший контекст" : "Best fit"}</h3>
@@ -237,7 +238,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                   {pick(x.antiPattern, locale)}
                 </p>
               </details>
-              {templateExamples[x.slug]&&<details><summary>{ru?"Заполненный пример · вымышленные данные":"Completed example · fictional data"}</summary><p>{templateExamples[x.slug][locale]}</p></details>}
+              <ContentBasis locale={locale}/>{templateExamples[x.slug]&&<details><summary>{ru?"Заполненный пример · вымышленные данные":"Completed example · fictional data"}</summary><p>{templateExamples[x.slug][locale]}</p></details>}
               <div className="card-foot">
                 <TemplateApply template={x} locale={locale} />
                 <details><summary aria-label={ru ? "Другие действия" : "More actions"}>…</summary>
@@ -285,7 +286,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                 <summary>
                   {ru ? "Открыть практический сценарий" : "Open playbook"}
                 </summary>
-                <h3>{ru ? "Сразу" : "Immediate"}</h3>
+                <ContentBasis locale={locale}/><h3>{ru ? "Сразу" : "Immediate"}</h3>
                 <ol>
                   {x.immediate.map((y) => (
                     <li key={pick(y, locale)}>{pick(y, locale)}</li>
