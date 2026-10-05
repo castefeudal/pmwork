@@ -1,6 +1,12 @@
 # Data schema and migrations
 
-Current payload schema: **v6**. The browser discovery key remains `pmwork:workspace:v3`; changing that key would orphan existing local data.
+Current payload schema: **v7**. The browser discovery key remains `pmwork:workspace:v3`; changing that key would orphan existing local data.
+
+## v7 management contexts
+
+`managementRole` is project/program/delivery/operations and defaults to project for older backups. `roleLenses` contains additional views over the same records. Neither changes experience nor density. `programs` link existing project IDs, outcomes, benefits with baseline/target/actual and measurement plan, program milestones, cross-project handoffs, resource conflicts and history. `operations` represent ongoing services/processes without a project ID or end date: purpose, customer, scope, inputs/outputs, demand/capacity with shared units, dated metric observations, controls, incidents, improvements, reviews and history.
+
+v6 → v7 preserves every existing field and adds empty program/operation collections and default role preferences. v1–v5 retain the previous estimate/milestone migration before reaching v7. Unknown fields, future schemas, invalid dates, duplicated nested IDs and invalid program component references fail closed before persistence. No reset is performed. Full JSON backups include both contexts; recovery previews show program and operation counts.
 
 ## Additive v6 records
 
@@ -12,7 +18,7 @@ Current payload schema: **v6**. The browser discovery key remains `pmwork:worksp
 
 ## Migration behavior
 
-`migrateWorkspace` accepts v1–v5 and produces a strictly parsed v6 payload. Legacy estimates become original/current baselines with a migration history entry. Legacy milestone `date` becomes both baseline and forecast. Existing IDs, projects, links, records, owner text/IDs, saved views, preferences, locale, and any already-stored prospective work status evidence are preserved. Missing collections receive safe defaults. Future versions and malformed required fields are rejected.
+`migrateWorkspace` accepts v1–v6 and produces a strictly parsed v7 payload. Legacy estimates become original/current baselines with a migration history entry. Legacy milestone `date` becomes both baseline and forecast. Existing IDs, projects, links, records, owner text/IDs, saved views, preferences, locale, and any already-stored prospective work status evidence are preserved. Missing collections receive safe defaults. Future versions and malformed required fields are rejected.
 
 Crucially, migration does **not** infer `startedAt` or `statusHistory` for old work. An active legacy item with no stored start evidence remains unknown for cycle-time purposes.
 

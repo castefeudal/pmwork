@@ -4,7 +4,7 @@ Status: **not yet executed**. Automated browser tests are not substitutes for pr
 
 ## Participants and setup
 
-Recruit at least five practicing project managers spanning Foundation, Practitioner, and Advanced experience. Use each participant's normal laptop and at least two real mobile devices. Start with an empty browser profile and a fictional but realistic brief; do not expose test selectors or implementation vocabulary. Obtain consent and record no real confidential project data.
+Recruit at least twelve practicing managers: Project, Program, Delivery, and Operations, with Foundation, Practitioner, and Advanced represented in each role. Use each participant's normal laptop and at least two real mobile devices. Start with an empty browser profile and a fictional but realistic brief; do not expose test selectors or implementation vocabulary. Obtain consent and record no real confidential work data. Recruitment and live sessions require actual participants; no automated result can satisfy this requirement.
 
 ## Tasks
 
@@ -22,6 +22,10 @@ Recruit at least five practicing project managers spanning Foundation, Practitio
 Repeat tasks 2, 3, 6, and 9 at 390px/mobile. Include one keyboard-only run and one screen-reader-assisted run with a participant who regularly uses that technology.
 
 ## Measures
+
+Role tasks: Program managers link two projects, record a measurable benefit and resolve a cross-project handoff; Delivery managers explain baseline/forecast/actual and the insufficient-data percentile state; Operations managers create an ongoing service without a project/end date, record a metric breach, complete a control and save a daily/weekly/monthly review. Every participant must explain the source and rule behind the highest Today signal.
+
+For a competitor comparison, use the same brief and outcome in a currently available tool selected by the participant. Counterbalance order, record product/version/date, and report per-role results. Do not claim comparative superiority before sessions are executed.
 
 For every task record completion, elapsed time, wrong turns, moderator assistance, confidence (1–5), and comprehension answer. Capture the first point of hesitation and the label/action expected by the participant. Suggested targets: ≥90% unassisted completion for core tasks; median ≤180 s for project setup, ≤60 s for work creation, ≤90 s for risk and backup tasks, and ≤30 s to identify Today's priority.
 

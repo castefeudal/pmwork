@@ -333,7 +333,11 @@ export function demoWorkspace(locale: Locale): Workspace {
     }),
   );
   return {
-    schemaVersion: 6,
+    schemaVersion: 7,
+    managementRole: "project",
+    roleLenses: [],
+    programs: [],
+    operations: [],
     savedWorkViews: [],
     workViewPreferences: [],
     id: "pmwork-demo",

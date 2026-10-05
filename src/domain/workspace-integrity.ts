@@ -32,6 +32,8 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
 
   const idCollections: Array<[string, readonly unknown[]]> = [
     ["projects", workspace.projects],
+    ["programs", workspace.programs],
+    ["operations", workspace.operations],
     ["workItems", workspace.workItems],
     ["risks", workspace.risks],
     ["decisions", workspace.decisions],
@@ -102,6 +104,29 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
       if (!projectById.has(row.projectId)) add("missing-project", `${name}[${index}].projectId`, `Unknown project: ${row.projectId}`);
     });
   }
+
+  workspace.programs.forEach((program, index) => {
+    const components = new Set(program.projectIds);
+    if (components.size !== program.projectIds.length) add("duplicate-component", `programs[${index}].projectIds`, "Program components must be unique");
+    program.projectIds.forEach(id => { if (!projectById.has(id)) add("missing-project", `programs[${index}].projectIds`, `Unknown project: ${id}`); });
+    for (const row of [...program.benefits, ...program.resourceConflicts]) for (const id of row.projectIds) if (!components.has(id)) add("missing-component", `programs[${index}]`, `Project ${id} is outside the program`);
+    for (const dependency of program.dependencies) {
+      if (!components.has(dependency.fromProjectId) || !components.has(dependency.toProjectId)) add("missing-component", `programs[${index}].dependencies`, "Dependency must link program components");
+      if (dependency.fromProjectId === dependency.toProjectId) add("self-dependency", `programs[${index}].dependencies`, "A cross-project dependency needs two different components");
+    }
+    for (const [name, rows] of [["benefits",program.benefits],["milestones",program.milestones],["dependencies",program.dependencies],["resourceConflicts",program.resourceConflicts]] as const) {
+      if (new Set(rows.map(row=>row.id)).size !== rows.length) add("duplicate-id", `programs[${index}].${name}`, "Nested record ids must be unique");
+    }
+  });
+  workspace.operations.forEach((operation, index) => {
+    for (const [name, rows] of [["metrics",operation.metrics],["controls",operation.controls],["incidents",operation.incidents],["improvements",operation.improvements],["reviews",operation.reviews]] as const) {
+      if (new Set(rows.map(row=>row.id)).size !== rows.length) add("duplicate-id", `operations[${index}].${name}`, "Nested record ids must be unique");
+    }
+    for (const metric of operation.metrics) {
+      if (new Set(metric.observations.map(row=>row.at)).size !== metric.observations.length) add("duplicate-observation", `operations[${index}].metrics`, "One observation per metric per day");
+    }
+    for (const incident of operation.incidents) if (incident.resolvedAt && incident.resolvedAt < incident.openedAt) add("date-order", `operations[${index}].incidents`, "Resolution precedes incident opening");
+  });
 
   const sameProject = <T extends { projectId: string }>(
     map: Map<string, T>,

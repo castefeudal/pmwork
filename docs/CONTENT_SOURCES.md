@@ -2,9 +2,11 @@
 
 Sources are registered in `src/content/catalog.ts` with organization, edition/version, publication date, checked date, authority type, URL, and copyright note.
 
-Current primary references checked on 2026-09-04:
+The official public pages for the following references were checked on 2026-10-06. This verifies publication metadata, not the full text of paid standards. Agile Practice Guide retains its previously recorded review date.
 
 - PMI, PMBOK Guide and The Standard for Project Management, 8th edition.
+- PMI, The Standard for Program Management, 5th edition (March 2024).
+- PMI, official 2026 release announcement for The Standard for Artificial Intelligence in Portfolio, Program, and Project Management.
 - PMI, Agile Practice Guide, 2nd edition.
 - Scrum Guide, November 2020.
 - The Kanban Guide, May 2025.

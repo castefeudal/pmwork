@@ -21,7 +21,7 @@ export function workspaceRecordUrl(url: string, record: {kind:EditableKind;id:st
  else {next.searchParams.delete('item');next.searchParams.delete('kind');}
  return next;
 }
-const views: WorkspaceView[] = ['portfolio','overview','guide','work','board','planning','raid','people','finance','control','documents','setup'];
+const views: WorkspaceView[] = ['program','delivery','operations','portfolio','overview','guide','work','board','planning','raid','people','finance','control','documents','setup'];
 export function readWorkspaceUrl(search: string, workspace: Workspace) {
   const params = new URLSearchParams(search);
   const requested = params.get('view') as WorkspaceView;

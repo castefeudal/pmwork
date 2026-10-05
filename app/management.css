@@ -1,0 +1,22 @@
+@layer workspace {
+  .management-center { display: grid; gap: 1rem; min-width: 0; }
+  @media (min-width: 901px) {
+    .workspace-shell.sidebar-collapsed { grid-template-columns: 76px minmax(0,1fr); }
+    .sidebar-collapsed .sidebar { padding-inline: .5rem; }
+    .sidebar-collapsed .sidebar .brand, .sidebar-collapsed .project-switch, .sidebar-collapsed .nav-group > small, .sidebar-collapsed .side-nav button > span, .sidebar-collapsed .side-foot span { display: none; }
+    .sidebar-collapsed .side-nav button { justify-content: center; }
+  }
+  .management-center .panel { min-width: 0; }
+  .management-center form { margin-block: 1rem; }
+  .management-center details > summary { cursor: pointer; padding-block: .75rem; }
+  .management-center .table-scroll { overflow-x: auto; }
+  .management-center table { width: 100%; border-collapse: collapse; }
+  .management-center th, .management-center td { text-align: start; padding: .75rem; border-bottom: 1px solid var(--border-default); vertical-align: top; }
+  .management-center caption { text-align: start; color: var(--text-secondary); padding-block: .75rem; }
+  .management-metrics { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: .75rem; }
+  .management-metrics dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .program-roadmap { display: flex; flex-wrap: wrap; list-style: none; padding: 0; gap: 1rem; }
+  .program-roadmap li { display: grid; gap: .4rem; flex: 1 1 12rem; border-top: 2px solid var(--accent-primary); padding-block: 1rem; }
+  .management-center p, .management-center li { overflow-wrap: anywhere; }
+  @media (max-width: 600px) { .management-metrics { grid-template-columns: 1fr; } .management-metrics dd { margin-bottom: .75rem; } }
+}

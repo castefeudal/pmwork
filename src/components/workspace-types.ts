@@ -1,4 +1,7 @@
 export type WorkspaceView =
+  | "program"
+  | "delivery"
+  | "operations"
   | "portfolio"
   | "overview"
   | "guide"

@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { managementRoles } from "./management-role";
+import { programSchema, operationSchema } from "./management-entities";
+export const managementRoleSchema = z.enum(managementRoles);
 export const localeSchema = z.enum(["ru", "en"]);
 export type Locale = z.infer<typeof localeSchema>;
 export const statusSchema = z.enum([
@@ -428,7 +431,11 @@ export const toolRunSchema = z.object({
   appliedRecordIds: z.array(z.string()).default([]),
 });
 export const workspaceSchema = z.object({
-  schemaVersion: z.literal(6),
+  schemaVersion: z.literal(7),
+  managementRole: managementRoleSchema.default("project"),
+  roleLenses: z.array(managementRoleSchema).default([]),
+  programs: z.array(programSchema).default([]),
+  operations: z.array(operationSchema).default([]),
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
   workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),

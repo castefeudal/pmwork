@@ -82,7 +82,7 @@ export function migrateWorkspace(value: unknown): Workspace {
     ? workspaceSchema.parse({
         ...emptyV3,
         ...record,
-        schemaVersion: 6,
+        schemaVersion: 7,
         toolRuns: Array.isArray(record.toolRuns) ? record.toolRuns : [],
         workItems: (Array.isArray(record.workItems) ? record.workItems : []).map((raw) => {
           const item = raw as Record<string, unknown>;
@@ -138,7 +138,7 @@ export function migrateWorkspace(value: unknown): Workspace {
           };
         }),
       })
-    : workspaceSchema.parse(value);
+    : workspaceSchema.parse(version === 6 ? { ...record, schemaVersion: 7 } : value);
 
   assertNoUnknownBackupFields(value, migrated);
 
@@ -152,7 +152,7 @@ export function migrateWorkspace(value: unknown): Workspace {
       project.name = project.name.replace("Atlas", "MARKOVMADE");
   }
 
-  if (![4, 5, 6].includes(version)) {
+  if (![4, 5, 6, 7].includes(version)) {
     migrated = {
       ...migrated,
       workItems: migrated.workItems.map((item) => {
@@ -400,10 +400,12 @@ export function exportWorkspace(workspace: Workspace) {
         {
           product: "PMWORK",
           schemaVersion: valid.schemaVersion,
-          appVersion: "2.3.0",
+          appVersion: "2.9.0",
           exportedAt: new Date().toISOString(),
           summary: {
             projects: valid.projects.length,
+            programs: valid.programs.length,
+            operations: valid.operations.length,
             workItems: valid.workItems.length,
             risks: valid.risks.length,
           },

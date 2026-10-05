@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.9.0 — Management role foundation
+
+- Separate primary management role and additional lenses from guidance and interface density.
+- Add versioned v7 migration for roles, programs and ongoing operations, preserving older backups and recovery behavior.
+- Add Program, Delivery and Operations centers, plus Today across all work.
+- Add program benefit evidence, cross-project handoffs, roadmap, resource conflicts and financial roll-up without merging currencies.
+- Add dated operating metrics, required controls, incidents and daily/weekly/monthly reviews without requiring a project or end date.
+- Load editors and role centers on demand to retain route transfer budgets.
+- Add bilingual role workflows, domain integrity coverage and four-role human usability protocol.
+
+This is the first role-focused increment. See `docs/MANAGEMENT_OS_STATUS.md` for the remaining transformation scope and validation limits.
+
 ## 2.8.0 — decision-led product experience (2026-10-04)
 
 - Sharpened the landing promise around moving from project noise to a clear next decision, and made the five-step Signal → Decision → Action → Control → Result cycle explicit.

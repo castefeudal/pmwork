@@ -1,0 +1,13 @@
+# Management OS 2.9 evidence and scope
+
+This release is a management-role foundation, not completion of the full 25-section transformation brief. Verification is recorded separately from implementation and from human validation.
+
+Implemented: independent primary role and additional lenses, minimal first-run role/priority choices, role navigation with five mobile destinations, sidebar collapse, lazy-loaded editors and centers, v7 compatibility migration, Program components/outcome/benefits/dependencies/roadmap/resource conflicts/currency-separated financial roll-up, ongoing Operation contexts with metric evidence/controls/incidents/cadence reviews, Delivery commitment and observed flow/readiness view, and Today across work with deterministic rules and links back to source contexts. Source registry adds Program Management fifth edition and the official PMI AI standard release notice.
+
+Existing project lifecycle, work status evidence, data recovery, offline PWA, bilingual catalogs and deterministic tools remain shared. Statistical delivery percentiles are suppressed below ten observed cycle samples; missing start dates and operational observations remain unknown. Program projects are references, not copies.
+
+Still required for the complete brief: fully shared scoped work/RAID/people/document/tool models for operations and program-level records; editable program milestone lifecycle and strategic objectives; benefit-to-component editing; service SOP/vendor/cost/compliance/recurrence workflows; blocked-duration and rework evidence; explicit delivery review persistence; a dedicated Decision Center with revisit/history; generalized backlinks and outcome chains; problem-oriented Knowledge for all roles; expanded tools that load/apply to program and operation records; complete content provenance/role annotations; full semantic CSS decomposition; role-specific large-workspace indexing and pixel regression baselines.
+
+Human evidence: sessions with practicing managers have not been conducted. The protocol covers four roles and three experience levels, identical competitor briefs, unassisted completion, time, wrong turns, assistance, comprehension, confidence and hesitation. NVDA/VoiceOver, physical devices, Windows High Contrast and zoom still require manual review. Automated axe and browser coverage must not be represented as usability completion, WCAG certification or field Core Web Vitals.
+
+Production publication must use an exact-commit export after the complete quality gate passes. A candidate branch or successful local build alone is not deployment evidence.

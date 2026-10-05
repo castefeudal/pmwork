@@ -20,6 +20,7 @@ import type { Locale } from "@/domain/schemas";
 import { contentCounts } from "@/content/catalog";
 import { demoWorkspace } from "@/data/demo";
 import { PublicHeader } from "@/components/public-header";
+import { RoleShowcase } from "@/components/role-showcase";
 import { ProductShowcase } from "@/components/product-showcase";
 import { Footer } from "@/components/footer";
 
@@ -226,6 +227,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <a className="hero-scroll-cue" href="#capabilities"><span>{t.scroll}</span><ArrowDown size={14} aria-hidden="true" /></a>
         </section>
 
+        <RoleShowcase locale={locale}/>
         <section className="proof-ribbon" aria-label={ru ? "Библиотека PMWORK" : "PMWORK library"}>
           <div className="proof-ribbon-inner">
             <div className="proof-ribbon-intro"><Sparkles size={17} aria-hidden="true" /><span>{ru ? "СИЛЬНАЯ ПРАКТИЧЕСКАЯ БАЗА" : "A PRACTICAL FOUNDATION"}</span></div>
