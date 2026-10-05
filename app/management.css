@@ -1,4 +1,5 @@
 @layer workspace {
+  @media (max-width: 900px) { .workspace-shell .workspace-top h1.management-context-heading { display: block; flex: 1 0 100%; width: 100%; margin: 0; font-size: 1rem; order: 1; } }
   .management-center { display: grid; gap: 1rem; min-width: 0; }
   @media (min-width: 901px) {
     .workspace-shell.sidebar-collapsed { grid-template-columns: 76px minmax(0,1fr); }
