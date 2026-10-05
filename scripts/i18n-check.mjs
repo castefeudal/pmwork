@@ -35,6 +35,8 @@ const userFacing = [
   "src/components/decision-center.tsx",
   "src/components/today-across-work.tsx",
   "src/components/role-showcase.tsx",
+  "src/components/role-knowledge.tsx",
+  "src/components/command-menu.tsx",
   "src/components/project-tools.tsx",
   "src/components/tools-lab.tsx",
   "src/components/catalog-page.tsx",

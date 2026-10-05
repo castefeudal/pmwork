@@ -45,10 +45,16 @@ for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])tes
   roles.managementRole='program';roles.roleLenses=['delivery','operations'];
   roles.programs=[programSchema.parse({id:'service-program',name:locale==='ru'?'Трансформация сервиса':'Service transformation',outcome:locale==='ru'?'Сократить время ожидания':'Reduce waiting time',projectIds:roles.projects.slice(0,2).map(project=>project.id),benefits:[{id:'waiting',name:locale==='ru'?'Время ожидания':'Waiting time'}]})];
   roles.operations=[operationSchema.parse({id:'support',name:locale==='ru'?'Поддержка клиентов':'Customer support',purpose:locale==='ru'?'Восстановление сервиса':'Restore service',metrics:[{id:'response',name:locale==='ru'?'Время ответа':'Response time',unit:'h',target:4,direction:'at-most',observations:[{at:'2026-09-24',value:6}]}],controls:[{id:'queue',name:locale==='ru'?'Проверка очереди':'Queue check',dueDate:'2026-09-24'}]})];
-  await page.evaluate(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),roles);
+  // Seed both storage layers consistently. An older IDB envelope otherwise wins
+  // over an undated localStorage fixture and hides the very role records under review.
+  await page.evaluate(async w=>{
+    await new Promise<void>((resolve,reject)=>{const request=indexedDB.deleteDatabase('pmwork-local');request.onsuccess=()=>resolve();request.onerror=()=>reject(request.error);request.onblocked=()=>reject(Error('Fixture database remains open'));});
+    localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w));
+  },roles);
   for(const view of ['program','delivery','operations']) {
     await page.goto(route(`/${locale}/workspace/?project=atlas&view=${view}`));
     await expect(page.locator('.management-center')).toBeVisible();
+    if(view==='program'||view==='operations')await expect(page.getByRole('heading',{name:view==='program'?roles.programs[0].name:roles.operations[0].name,exact:true})).toBeVisible();
     await expect(page.locator('.workspace-top')).toContainText(locale==='ru'?'Сохранено локально':'Saved locally');
     await capture(view);
   }

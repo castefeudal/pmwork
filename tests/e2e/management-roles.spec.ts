@@ -58,7 +58,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     expect(stored.projects).toEqual([]);expect(stored.workItems[0].workScope).toEqual({kind:"operation",id:"service"});
     await page.reload();
     await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
-    await expect(page.getByText("Resolve customer request",{exact:true})).toBeVisible();
+    await expect(page.getByRole("button",{name:"Resolve customer request",exact:true})).toBeVisible();
     expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
   });
   test(`program links shared projects and explains missing benefit evidence ${locale}`,async({page},testInfo)=>{

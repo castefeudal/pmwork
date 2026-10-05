@@ -69,7 +69,7 @@ describe("workspace interactions", () => {
     await openDemo();
     await screen.findAllByRole("button", { name: "Work" });
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
-    expect(screen.getByRole("dialog", { name: "Command palette" })).toBeTruthy();
+    expect(await screen.findByRole("dialog", { name: "Command palette" })).toBeTruthy();
   });
 
   it("keeps Settings focused on settings rather than operational record creation", async () => {

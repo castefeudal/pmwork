@@ -8,6 +8,7 @@ import { useUrlValue } from "./use-url-state";
 import { TemplateApply } from "./template-apply";
 import { MethodCompare } from "./method-compare";
 import { knowledgeGuides } from "@/content/knowledge";
+import {RoleKnowledge} from "./role-knowledge";
 import {
   BookOpen,
   Copy,
@@ -149,6 +150,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
       {kind === "methods" && <MethodCompare methods={methods} locale={locale} />}
       {kind === "templates" && <nav className="public-container button-row" aria-label={ru ? "Коллекции" : "Collections"}>{[["all","Все","All"],["core","Запустить проект","Start a project"],["planning","Спланировать","Plan"],["control","Еженедельный контроль","Weekly control"],["risk","Риски и решения","Risks and decisions"],["people","Люди и коммуникации","People and communication"],["delivery","Выполнение","Delivery"],["closure","Закрытие","Close"]].map(([id,r,e]) => <button className="button" aria-pressed={collection === id} onClick={() => setCollection(id)} key={id}>{ru?r:e}</button>)}</nav>}
       {kind === "knowledge" && <section className="public-container"><h2>{ru ? "Основы: путь от цели до закрытия" : "Foundation: from purpose to closure"}</h2><ol className="learning-path">{["Fundamentals","Value","Scope","Requirements","Schedule","Risk","Stakeholders","Governance","Closure"].map(domain => <li key={domain}><button className="button" onClick={() => setQuery(knowledgeDomains.find(d => d.en === domain)?.[locale] ?? domain)}>{knowledgeDomains.find(d => d.en === domain)?.[locale]}</button></li>)}</ol></section>}
+      {kind==="knowledge"&&<RoleKnowledge locale={locale}/>}
       <section id="catalog-results" className="catalog-grid" aria-live="polite">
         {kind === "methods" &&
           (data as typeof methods).map((x) => (

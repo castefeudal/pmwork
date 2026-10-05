@@ -1864,4 +1864,4 @@ function TextArea({
     </div>
   );
 }
-export { CommandMenu as CommandPalette } from "./command-menu";
+export const CommandPalette=dynamic(()=>import("./command-menu").then(module=>module.CommandMenu));

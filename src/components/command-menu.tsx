@@ -1,11 +1,14 @@
 "use client";
 import { useId, useMemo, useState, useSyncExternalStore } from "react";
 import Fuse from "fuse.js";
+import {commandIntents,toolIntents} from "@/domain/command-intents";
 import { Search, X } from "lucide-react";
 import { useDialogFocus } from "./use-dialog-focus";
 import type { ViewProps } from "./workspace-views";
 import type { CreateType, WorkspaceView } from "./workspace-types";
 import type { EditableKind } from "./record-editor";
+import {playbooks,templates} from "@/content/catalog";
+import {glossaryTerms} from "@/content/glossary";
 const recentStorageKey = "pmwork:command-recent:v1";
 const subscribeRecent = (notify: () => void) => {
   window.addEventListener("storage", notify);
@@ -31,14 +34,20 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
   },[recentSnapshot]);
   const entries = useMemo(() => {
     const rows: {id:string; label:string; meta:string; search?:string; run:()=>void}[] = [];
-    const intent:Partial<Record<WorkspaceView,string>>={overview:"today сейчас главное приоритет сигнал",work:"task задача работа backlog бэклог",planning:"deadline срок успеем прогноз forecast milestone веха",raid:"risk риск денег EMV решение decision",people:"owner владелец кто отвечает ответственность",finance:"budget бюджет деньги cost стоимость",control:"status статус change изменение quality качество",guide:"guide помощь подход method"};
+    const intent:Partial<Record<WorkspaceView,string>>=commandIntents;
     const views: [WorkspaceView,string,string][] = [["program","Программы","Programs"],["delivery","Поставка","Delivery"],["operations","Операции","Operations"],["overview","Обзор","Overview"],["work","Работа","Work"],["board","Доска","Board"],["planning","Планирование","Planning"],["raid","RAID","RAID"],["people","Люди","People"],["finance","Финансы","Finance"],["control","Контроль","Control"],["documents","Документы","Documents"],["portfolio","Портфель","Portfolio"],["guide","Проведи меня","Guide me"],["setup","Настройка","Setup"]];
     views.forEach(([id,r,e]) => rows.push({id,label:ru?r:e,meta:ru?"Раздел":"View",search:intent[id],run:()=>onView(id)}));
     const creates: [CreateType,string,string][] = [["work","Создать работу","Create work"],["risk","Создать риск","Create risk"],["issue","Создать проблему","Create issue"],["decision","Создать решение","Create decision"],["milestone","Создать контрольную точку","Create milestone"],["document","Создать документ","Create document"]];
     creates.forEach(([id,r,e]) => rows.push({id:`create-${id}`,label:ru?r:e,meta:ru?"Действие":"Action",run:()=>onCreate(id)}));
     workspace.projects.forEach(p => rows.push({id:`project-${p.id}`,label:p.name,meta:ru?"Переключить проект":"Switch project",run:()=>{onProject(p.id);onView("overview");}}));
     for(const [collection,view,label] of [[workspace.programs,"program",ru?"Программа":"Program"],[workspace.operations,"operations",ru?"Процесс":"Operation"]] as const) collection.forEach(record=>rows.push({id:`${view}-${record.id}`,label:record.name,meta:label,run:()=>{const url=new URL(window.location.href);url.searchParams.set("context",record.id);history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));onView(view);}}));
-    const add = (kind:EditableKind,id:string,label:string,pid:string) => rows.push({id:`${kind}-${id}`,label,meta:`${id} · ${workspace.projects.find(p=>p.id===pid)?.name ?? ""}`,run:()=>{onProject(pid);onEdit(kind,id);}});
+    const add = (kind:EditableKind,id:string,label:string,pid:string) => {
+      const context=workspace.programs.find(row=>pid===`@program/${row.id}`)??workspace.operations.find(row=>pid===`@operation/${row.id}`);
+      rows.push({id:`${kind}-${id}`,label,meta:`${id} · ${context?.name??workspace.projects.find(p=>p.id===pid)?.name??""}`,run:()=>{
+        if(context){const url=new URL(window.location.href);url.searchParams.set("context",context.id);url.searchParams.set("item",id);url.searchParams.set("kind",kind);url.searchParams.set("register",kind==="work"?"work":kind==="document"?"documents":kind==="milestone"?"planning":"raid");history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));onView(pid.startsWith("@program/")?"program":"operations");}
+        else {onProject(pid);onEdit(kind,id);}
+      }});
+    };
     workspace.workItems.filter(x=>!x.archived).forEach(x=>add("work",x.id,x.title,x.projectId));
     workspace.risks.forEach(x=>add("risk",x.id,x.title,x.projectId));
     workspace.issues.forEach(x=>add("issue",x.id,x.title,x.projectId));
@@ -46,17 +55,24 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
     workspace.milestones.forEach(x=>add("milestone",x.id,x.title,x.projectId));
     workspace.documents.forEach(x=>add("document",x.id,x.title,x.projectId));
     const tools=[
-      ["deadline","Deadline confidence","срок успеем deadline forecast прогноз P50 P80 P90"],
-      ["emv","Risk EMV","риск денег monetary contingency резерв EMV"],
-      ["capacity","Capacity & WIP","загрузка команды capacity WIP мощность"],
-      ["ownership","Ownership coverage","кто отвечает owner владелец ответственность"],
-      ["markovmade","MARKOVMADE priority","ограничение constraint приоритет evidence ROI"],
+      ["deadline",ru?"Оценка срока":"Deadline confidence",toolIntents.deadline],
+      ["emv",ru?"Денежный риск":"Risk EMV",toolIntents.emv],
+      ["capacity",ru?"Мощность и незавершённая работа":"Capacity & WIP",toolIntents.capacity],
+      ["ownership",ru?"Ясность ответственности":"Ownership coverage",toolIntents.ownership],
+      ["markovmade",ru?"Приоритет MARKOVMADE":"MARKOVMADE priority",toolIntents.markovmade],
     ];
     tools.forEach(([id,label,search])=>rows.push({id:`tool-${id}`,label,meta:ru?"Инструмент":"Tool",search,run:()=>{
       // A full navigation intentionally leaves the workspace application for the public tools bundle.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.assign(`${base}/${locale}/tools/?tool=${id}`);
     }}));
+    const visit=(path:string)=>{
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign(`${base}/${locale}/${path}`);
+    };
+    playbooks.forEach(row=>rows.push({id:`playbook-${row.slug}`,label:row.title[locale],meta:ru?"Практический сценарий":"Playbook",search:row.diagnose.map(text=>text[locale]).join(" "),run:()=>visit(`playbooks/?q=${encodeURIComponent(row.title[locale])}`)}));
+    templates.forEach(row=>rows.push({id:`template-${row.slug}`,label:row.title[locale],meta:ru?"Шаблон":"Template",search:row.purpose[locale],run:()=>visit(`templates/${row.slug}/`)}));
+    glossaryTerms.forEach(row=>rows.push({id:`term-${row.slug}`,label:ru?row.ruTerm:row.term,meta:ru?"Термин":"Term",search:[row.term,...row.aliases,row.definition[locale]].join(" "),run:()=>visit(`glossary/${row.slug}/`)}));
     return rows;
   },[workspace,ru,onView,onCreate,onProject,onEdit,base,locale]);
   const index = useMemo(()=>new Fuse(entries,{keys:[{name:"label",weight:2},"meta","search"],threshold:.4,ignoreLocation:true}),[entries]);

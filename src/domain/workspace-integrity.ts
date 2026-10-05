@@ -234,6 +234,16 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     }
   };
   [workspace.workItems, workspace.risks, workspace.decisions, workspace.stakeholders, workspace.budgets, workspace.documents, workspace.milestones, workspace.issues, workspace.objectives, workspace.assumptions, workspace.dependencies, workspace.iterations, workspace.teamMembers, workspace.capacityAllocations, workspace.changes, workspace.vendors, workspace.meetings, workspace.statusReports, workspace.lessons, workspace.communications, workspace.qualityGates, workspace.activities, workspace.toolRuns].forEach(addProjectEntities);
+  for(const program of workspace.programs) {
+    const key=`@program/${program.id}`,ids=projectEntities.get(key)??new Set<string>();
+    for(const row of [...program.benefits,...program.milestones,...program.dependencies,...program.resourceConflicts])ids.add(row.id);
+    program.projectIds.forEach(id=>ids.add(id));projectEntities.set(key,ids);
+  }
+  for(const operation of workspace.operations) {
+    const key=`@operation/${operation.id}`,ids=projectEntities.get(key)??new Set<string>();
+    for(const row of [...operation.metrics,...operation.controls,...operation.incidents,...operation.improvements,...operation.reviews])ids.add(row.id);
+    projectEntities.set(key,ids);
+  }
   workspace.documents.forEach((document, index) => document.relatedIds.forEach((id, refIndex) => {
     if (!(projectEntities.get(document.projectId)?.has(id))) add("missing-related-entity", `documents[${index}].relatedIds[${refIndex}]`, `Unknown related entity: ${id}`);
   }));
