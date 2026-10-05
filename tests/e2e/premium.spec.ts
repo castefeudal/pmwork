@@ -146,7 +146,7 @@ test("Pages navigation keeps prefix and both fonts actually load",async({page})=
   await page.goto(route("/ru/"));await page.evaluate(()=>document.fonts.ready);
   const fonts=await page.evaluate(()=>Array.from(document.fonts).filter(f=>f.status==="loaded").map(f=>f.family));
   expect(fonts.some(f=>/inter/i.test(f))).toBe(true);expect(fonts.some(f=>/manrope/i.test(f))).toBe(true);
-  await page.getByRole("link",{name:"Создать / открыть проект",exact:true}).click();
+  await page.getByRole("link",{name:"Открыть рабочее пространство",exact:true}).click();
   const home=page.getByRole("link",{name:"PMWORK — главная",exact:true});await expect(home).toBeVisible();await expect(home).toHaveAttribute("href",route("/ru/"));
   await home.click();await expect(page).toHaveURL(new RegExp(`${route("/ru/")}$`));
 });

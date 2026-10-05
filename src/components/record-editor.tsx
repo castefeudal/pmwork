@@ -436,6 +436,9 @@ function fieldsFor(
         text("participants", "Участники", "Participants", "list"),
         text("consequences", "Последствия", "Consequences", "textarea"),
         text("revisitTrigger", "Условие пересмотра", "Revisit trigger"),
+        text("revisitDate", "Дата пересмотра", "Revisit date", "date"),
+        text("evidenceIds", "Подтверждения — ID записей", "Evidence record IDs", "list"),
+        text("affectedIds", "Затронутые записи — ID", "Affected record IDs", "list"),
         text("date", "Дата", "Date", "date"),
         {
           ...text("status", "Статус", "Status", "select"),
@@ -656,7 +659,7 @@ export function RecordEditor({
                 .split(/\n|,/)
                 .map((item) => item.trim())
                 .filter(Boolean)
-            : (["actualDate", "forecastReason", "currency"].includes(field.name) && raw === "" ? undefined : raw);
+            : (["actualDate", "forecastReason", "currency", "revisitDate"].includes(field.name) && raw === "" ? undefined : raw);
     }
     if (kind === "dependency") {
       const predecessor = String(nextRecord.predecessorId),
@@ -717,6 +720,12 @@ export function RecordEditor({
       nextRecord.history=[...(record.history as unknown[]),...additions];
     }
     if (kind === "document") nextRecord.updatedAt = new Date().toISOString();
+    if (kind === "decision") {
+      const at=new Date().toISOString(),tracked=["question","alternatives","criteria","decision","rationale","owner","date","status","consequences","revisitTrigger","revisitDate","evidenceIds","affectedIds"];
+      if(nextRecord.status==="decided"&&record.status!=="decided")nextRecord.decidedAt=at;
+      const changes=tracked.flatMap(field=>JSON.stringify(nextRecord[field])!==JSON.stringify(record[field])?[{at,field,from:record[field]??null,to:nextRecord[field]??null}]:[]);
+      nextRecord.history=[...((record.history as unknown[]|undefined)??[]),...changes];
+    }
     const validation = workspaceSchema.safeParse({
       ...workspace,
       [collection]: records.map((item) =>
@@ -727,6 +736,7 @@ export function RecordEditor({
       setError(ru ? "Проверьте обязательные поля и допустимые значения." : "Check required fields and allowed values.");
       return;
     }
+    try {
     if(kind === "work") {
       const updated=validation.data.workItems.find(item=>item.id===id)!;
       const {ownerId: _ownerId, ...patch}=updated;
@@ -734,6 +744,9 @@ export function RecordEditor({
       onChange(updateWork(workspace,id,patch));
     } else onChange(validation.data);
     onClose();
+    } catch {
+      setError(ru ? "Изменение не сохранено: проверьте связанные записи." : "Change was not saved. Check linked records.");
+    }
   };
   const performRemove = () => {
     if (kind === "project") {
@@ -760,6 +773,43 @@ export function RecordEditor({
     }
   };
   const remove = () => setConfirming(kind === "project" ? "project" : "record");
+  const basicFields=new Set(["name","title","question","text","owner","status","date","dueDate","reviewDate","baselineDate","forecastDate","actualDate","priority","predecessorId","successorId","type","startDate","endDate","body","criteria","evidence"]);
+  const renderField = (field:Field) => (
+            <div
+              className={`field ${field.type === "textarea" || field.type === "list" ? "wide" : ""}`}
+              key={field.name}
+            >
+              <label htmlFor={`${prefix}-${field.name}`}>{field.label}</label>
+              {kind === "document" && field.name === "body" ? <DocumentBodyField id={`${prefix}-${field.name}`} name={field.name} value={String(valueOf(field))} ru={ru}/> : field.type === "textarea" || field.type === "list" ? (
+                <textarea
+                  id={`${prefix}-${field.name}`}
+                  name={field.name}
+                  defaultValue={valueOf(field)}
+                />
+              ) : field.type === "select" ? (
+                <select
+                  id={`${prefix}-${field.name}`}
+                  name={field.name}
+                  defaultValue={valueOf(field)}
+                >
+                  {field.options?.map((option) => (
+                    <option value={option.value} key={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  id={`${prefix}-${field.name}`}
+                  name={field.name}
+                  type={field.type ?? "text"}
+                  min={field.min}
+                  max={field.max}
+                  defaultValue={valueOf(field)}
+                />
+              )}
+            </div>
+  );
   return (
     <>
     <div
@@ -795,43 +845,10 @@ export function RecordEditor({
           </button>
         </div>
         <form action={submit} className="form-grid">
+          {kind === "decision" && <details className="wide"><summary>{ru ? "История решения" : "Decision history"} ({((record.history as unknown[]|undefined)??[]).length})</summary><p>{ru ? "Зафиксировано" : "Recorded"}: {String(record.decidedAt??"—")}</p><ul>{((record.history as Array<{at:string;field:string;from:unknown;to:unknown}>|undefined)??[]).slice(-30).reverse().map((entry,index)=><li key={index}>{entry.at} · {entry.field}: {JSON.stringify(entry.from)} → {JSON.stringify(entry.to)}</li>)}</ul></details>}
           {kind === "work" && <div className="notice wide"><strong>{ru ? "Оценки: исходная → текущая → факт" : "Estimates: original → current → actual"}</strong><p>{String(record.originalEstimate ?? "—")} → {String(record.currentEstimate ?? record.estimate ?? "—")} → {String(record.actualEffort ?? "—")}</p><small>{ru ? `Изменений: ${(record.estimateHistory as unknown[]).length}` : `Changes: ${(record.estimateHistory as unknown[]).length}`}</small></div>}
-          {fields.map((field) => (
-            <div
-              className={`field ${field.type === "textarea" || field.type === "list" ? "wide" : ""}`}
-              key={field.name}
-            >
-              <label htmlFor={`${prefix}-${field.name}`}>{field.label}</label>
-              {kind === "document" && field.name === "body" ? <DocumentBodyField id={`${prefix}-${field.name}`} name={field.name} value={String(valueOf(field))} ru={ru}/> : field.type === "textarea" || field.type === "list" ? (
-                <textarea
-                  id={`${prefix}-${field.name}`}
-                  name={field.name}
-                  defaultValue={valueOf(field)}
-                />
-              ) : field.type === "select" ? (
-                <select
-                  id={`${prefix}-${field.name}`}
-                  name={field.name}
-                  defaultValue={valueOf(field)}
-                >
-                  {field.options?.map((option) => (
-                    <option value={option.value} key={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  id={`${prefix}-${field.name}`}
-                  name={field.name}
-                  type={field.type ?? "text"}
-                  min={field.min}
-                  max={field.max}
-                  defaultValue={valueOf(field)}
-                />
-              )}
-            </div>
-          ))}
+          {fields.filter(field=>basicFields.has(field.name)).map(renderField)}
+          {fields.some(field=>!basicFields.has(field.name))&&<details className="wide"><summary>{ru ? "Дополнительные сведения" : "More details"}</summary><div className="form-grid">{fields.filter(field=>!basicFields.has(field.name)).map(renderField)}</div></details>}
           {error && (
             <p className="form-error wide" role="alert">
               {error}

@@ -1,7 +1,7 @@
 "use client";
 import { ProjectSetup } from "./project-setup";
 import { useDialogFocus } from "./use-dialog-focus";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { X } from "lucide-react";
 import type { Locale, Workspace, WorkItem } from "@/domain/schemas";
 import {
@@ -77,6 +77,7 @@ export function WorkspaceDialog({
   onCommit: (workspace: Workspace, projectId?: string) => void;
 }) {
   const dialogRef = useDialogFocus();
+  const [error,setError]=useState("");
   const ru = locale === "ru",
     prefix = useId(),
     today = new Date().toISOString().slice(0, 10),
@@ -718,8 +719,8 @@ export function WorkspaceDialog({
           ),
         ],
       };
-    onCommit(next);
-    onClose();
+    try { onCommit(next); onClose(); }
+    catch { setError(ru ? "Проверьте обязательные данные и связи записей." : "Check required evidence and linked records."); }
   };
   const workOptions = workspace.workItems.filter(
     (item) => item.projectId === projectId && !item.archived,
@@ -1142,6 +1143,7 @@ export function WorkspaceDialog({
               {field("evidence", ru ? "Подтверждения" : "Evidence", "textarea")}
             </>
           )}
+          {error&&<p role="alert" className="form-error wide">{error}</p>}
           <div className="button-row wide">
             <button type="button" className="button" onClick={onClose}>
               {ru ? "Отмена" : "Cancel"}

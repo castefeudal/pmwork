@@ -2,6 +2,9 @@ import { z } from "zod";
 import { managementRoles } from "./management-role";
 import { programSchema, operationSchema } from "./management-entities";
 export const managementRoleSchema = z.enum(managementRoles);
+export const scopeSchema = z.object({ kind: z.enum(["project", "program", "operation"]), id: z.string().min(1) });
+export type Scope = z.infer<typeof scopeSchema>;
+const scopedFields = { projectId: z.string(), workScope: scopeSchema.optional() };
 export const localeSchema = z.enum(["ru", "en"]);
 export type Locale = z.infer<typeof localeSchema>;
 export const statusSchema = z.enum([
@@ -26,7 +29,7 @@ export const workStatusHistoryEntrySchema = z.object({
 export const healthSchema = z.enum(["green", "amber", "red", "unknown"]);
 export const workItemSchema = z.object({
   id: z.string().min(1),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string().min(2),
   description: z.string().default(""),
   type: z.enum([
@@ -81,7 +84,7 @@ export const workItemSchema = z.object({
 });
 export const riskSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string().min(2),
   category: z.string(),
   description: z.string(),
@@ -145,7 +148,7 @@ export const projectSchema = z.object({
 });
 export const decisionSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   question: z.string(),
   context: z.string(),
   alternatives: z.array(z.string()),
@@ -157,11 +160,16 @@ export const decisionSchema = z.object({
   participants: z.array(z.string()),
   consequences: z.string(),
   revisitTrigger: z.string(),
+  revisitDate: z.iso.date().optional(),
+  decidedAt: z.iso.datetime().optional(),
+  evidenceIds: z.array(z.string()).optional(),
+  affectedIds: z.array(z.string()).optional(),
+  history: z.array(z.object({ at: z.iso.datetime(), field: z.string(), from: z.unknown(), to: z.unknown() })).optional(),
   status: z.enum(["pending", "decided", "superseded"]),
 });
 export const stakeholderSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   name: z.string(),
   role: z.string(),
   influence: z.number().min(1).max(5),
@@ -174,7 +182,7 @@ export const stakeholderSchema = z.object({
 });
 export const budgetEntrySchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   category: z.string(),
   planned: z.number().nonnegative(),
   actual: z.number().nonnegative(),
@@ -183,7 +191,7 @@ export const budgetEntrySchema = z.object({
 });
 export const documentSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string(),
   type: z.string(),
   body: z.string(),
@@ -193,7 +201,7 @@ export const documentSchema = z.object({
 });
 export const milestoneSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string(),
   /** @deprecated Kept for v1–v5 backup compatibility; mirrors forecastDate. */
   date: z.string(),
@@ -217,7 +225,7 @@ export const milestoneSchema = z.object({
 });
 export const issueSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string(),
   description: z.string(),
   impact: z.number().min(1).max(5),
@@ -232,7 +240,7 @@ export const issueSchema = z.object({
 });
 export const objectiveSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   description: z.string(),
   type: z.enum(["objective", "output", "outcome", "benefit", "kpi"]),
   baseline: z.string(),
@@ -245,7 +253,7 @@ export const objectiveSchema = z.object({
 });
 export const iterationSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string(),
   goal: z.string(),
   startDate: z.string(),
@@ -256,7 +264,7 @@ export const iterationSchema = z.object({
 });
 export const dependencySchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   predecessorId: z.string(),
   successorId: z.string(),
   type: z.enum(["FS", "SS", "FF", "SF"]),
@@ -267,7 +275,7 @@ export const dependencySchema = z.object({
 });
 export const assumptionSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   text: z.string(),
   rationale: z.string(),
   owner: z.string(),
@@ -278,7 +286,7 @@ export const assumptionSchema = z.object({
 });
 export const changeRequestSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   change: z.string(),
   requester: z.string(),
   reason: z.string(),
@@ -295,7 +303,7 @@ export const changeRequestSchema = z.object({
 });
 export const teamMemberSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   name: z.string(),
   role: z.string(),
   responsibility: z.string(),
@@ -305,14 +313,14 @@ export const teamMemberSchema = z.object({
 });
 export const capacityAllocationSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   memberId: z.string(),
   week: z.string(),
   planned: z.number().nonnegative(),
 });
 export const vendorSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   name: z.string(),
   scope: z.string(),
   owner: z.string(),
@@ -326,7 +334,7 @@ export const vendorSchema = z.object({
 });
 export const meetingSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string(),
   date: z.string(),
   attendees: z.array(z.string()),
@@ -336,7 +344,7 @@ export const meetingSchema = z.object({
 });
 export const statusReportSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   period: z.string(),
   overall: healthSchema,
   accomplishments: z.array(z.string()),
@@ -348,7 +356,7 @@ export const statusReportSchema = z.object({
 });
 export const lessonSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   situation: z.string(),
   insight: z.string(),
   recommendation: z.string(),
@@ -356,7 +364,7 @@ export const lessonSchema = z.object({
 });
 export const communicationSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   audience: z.string(),
   purpose: z.string(),
   channel: z.string(),
@@ -366,7 +374,7 @@ export const communicationSchema = z.object({
 });
 export const qualityGateSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   title: z.string(),
   criteria: z.array(z.string()),
   owner: z.string(),
@@ -388,13 +396,13 @@ export const closureRecordSchema = z.object({
 });
 export const activitySchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  ...scopedFields,
   at: z.string(),
   type: z.string(),
   message: z.string(),
 });
 export const projectSettingsSchema = z.object({
-  projectId: z.string(),
+  ...scopedFields,
   localMemberId: z.string().optional(),
   context: z.object({uncertainty:z.number().min(1).max(5),volatility:z.number().min(1).max(5),feedback:z.number().min(1).max(5),frequency:z.number().min(1).max(5),compliance:z.number().min(1).max(5),dependencies:z.number().min(1).max(5),autonomy:z.number().min(1).max(5),scopeRigidity:z.number().min(1).max(5),deadlineRigidity:z.number().min(1).max(5),stakeholders:z.number().min(1).max(5)}).optional(),
   enabledTypes: z.array(workItemSchema.shape.type),
@@ -415,11 +423,11 @@ export const workViewConfigSchema = z.object({
 });
 export type WorkViewConfig = z.infer<typeof workViewConfigSchema>;
 export const savedWorkViewSchema = z.object({
-  id: z.string(), projectId: z.string(), name: z.string().min(1).max(80), config: workViewConfigSchema,
+  id: z.string(), ...scopedFields, name: z.string().min(1).max(80), config: workViewConfigSchema,
 });
 export const toolRunSchema = z.object({
   id: z.string().min(1),
-  projectId: z.string().min(1),
+  ...scopedFields,
   tool: z.enum(["deadline", "emv", "capacity", "matrix", "ownership", "change", "calibration", "markovmade"]),
   createdAt: z.string(),
   source: z.string().min(1),
@@ -438,7 +446,7 @@ export const workspaceSchema = z.object({
   operations: z.array(operationSchema).default([]),
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
-  workViewPreferences: z.array(z.object({ projectId: z.string(), config: workViewConfigSchema })).default([]),
+  workViewPreferences: z.array(z.object({ ...scopedFields, config: workViewConfigSchema })).default([]),
   id: z.string(),
   name: z.string(),
   locale: localeSchema,

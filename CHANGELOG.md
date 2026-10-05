@@ -2,6 +2,9 @@
 
 ## 2.9.0 — Management role foundation
 
+- Shared context registers for Programs and Operations, Decision Center with evidence/history/revisit, recurring control evidence, and context-aware deterministic scenario tools.
+- Progressive disclosure in record editors and bilingual positioning/author text for four management roles.
+
 - Separate primary management role and additional lenses from guidance and interface density.
 - Add versioned v7 migration for roles, programs and ongoing operations, preserving older backups and recovery behavior.
 - Add Program, Delivery and Operations centers, plus Today across all work.

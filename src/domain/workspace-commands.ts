@@ -146,6 +146,7 @@ export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:st
  }
 
  next={...next,
+  decisions:next.decisions.map(decision=>({...decision,evidenceIds:decision.evidenceIds?.filter(ref=>ref!==id),affectedIds:decision.affectedIds?.filter(ref=>ref!==id)})),
   documents:next.documents.map(document=>({...document,relatedIds:document.relatedIds.filter(ref=>ref!==id)})),
   toolRuns:next.toolRuns.map(run=>({...run,appliedRecordIds:run.appliedRecordIds.filter(ref=>ref!==id)})),
  };

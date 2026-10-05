@@ -42,6 +42,25 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.reload();
     await expect(page.locator(".management-center")).toContainText("6 h > 4 h");
   });
+  test(`operation shared work persists without project ${locale}`,async({page})=>{
+    const w=emptyWorkspace(locale);w.managementRole="operations";
+    w.operations=[operationSchema.parse({id:"service",name:"Customer support",purpose:"Restore service"})];
+    await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+    await page.goto(route(`/${locale}/workspace/?view=operations&context=service`));
+    await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
+    await page.getByRole("button",{name:ru?"Добавить рабочий элемент":"Add work item",exact:true}).click();
+    const dialog=page.getByRole("dialog",{name:ru?"Новый рабочий элемент":"New work item"});
+    await dialog.getByLabel(ru?"Название":"Title",{exact:true}).fill("Resolve customer request");
+    await dialog.getByRole("button",{name:ru?"Создать":"Create",exact:true}).click();
+    await expect(dialog).toBeHidden();
+    await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.length;})).toBe(1);
+    const stored=await page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return raw.workspace??raw;});
+    expect(stored.projects).toEqual([]);expect(stored.workItems[0].workScope).toEqual({kind:"operation",id:"service"});
+    await page.reload();
+    await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
+    await expect(page.getByText("Resolve customer request",{exact:true})).toBeVisible();
+    expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
+  });
   test(`program links shared projects and explains missing benefit evidence ${locale}`,async({page},testInfo)=>{
     const w=demoWorkspace(locale);w.managementRole="program";
     w.programs=[programSchema.parse({id:"transformation",name:ru?"Трансформация сервиса":"Service transformation",outcome:ru?"Сократить время ожидания":"Reduce waiting time",projectIds:w.projects.slice(0,2).map(row=>row.id),benefits:[{id:"waiting",name:ru?"Время ожидания":"Waiting time"}]})];

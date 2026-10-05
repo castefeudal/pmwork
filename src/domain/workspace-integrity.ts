@@ -1,4 +1,4 @@
-import type { Workspace } from "./schemas";
+import type { Scope, Workspace } from "./schemas";
 
 export type WorkspaceIntegrityIssue = {
   code: string;
@@ -70,7 +70,7 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     });
   }
 
-  const scopedRows: Array<[string, readonly { projectId: string }[]]> = [
+  const scopedRows: Array<[string, readonly { projectId: string; workScope?:Scope }[]]> = [
     ["workItems", workspace.workItems],
     ["risks", workspace.risks],
     ["decisions", workspace.decisions],
@@ -101,7 +101,12 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
   ];
   for (const [name, rows] of scopedRows) {
     rows.forEach((row, index) => {
-      if (!projectById.has(row.projectId)) add("missing-project", `${name}[${index}].projectId`, `Unknown project: ${row.projectId}`);
+      if(row.workScope) {
+        const scope=row.workScope,key=scope.kind==="project"?scope.id:`@${scope.kind}/${scope.id}`;
+        if(row.projectId!==key)add("scope-mirror",`${name}[${index}].workScope`,"Context key must match the recorded scope");
+        const exists=scope.kind==="project"?projectById.has(scope.id):scope.kind==="program"?workspace.programs.some(program=>program.id===scope.id):workspace.operations.some(operation=>operation.id===scope.id);
+        if(!exists)add("missing-scope",`${name}[${index}].workScope`,"Unknown operating context");
+      } else if (!projectById.has(row.projectId)) add("missing-project", `${name}[${index}].projectId`, `Unknown project: ${row.projectId}`);
     });
   }
 
@@ -232,6 +237,12 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
   workspace.documents.forEach((document, index) => document.relatedIds.forEach((id, refIndex) => {
     if (!(projectEntities.get(document.projectId)?.has(id))) add("missing-related-entity", `documents[${index}].relatedIds[${refIndex}]`, `Unknown related entity: ${id}`);
   }));
+  workspace.decisions.forEach((decision,index)=>{
+    for(const field of ["evidenceIds","affectedIds"] as const) for(const id of decision[field]??[]) {
+      if(!projectEntities.get(decision.projectId)?.has(id))add("missing-decision-link",`decisions[${index}].${field}`,`Unknown context record: ${id}`);
+      if(id===decision.id)add("self-decision-link",`decisions[${index}].${field}`,"A decision cannot use itself as supporting evidence");
+    }
+  });
   workspace.toolRuns.forEach((run, index) => run.appliedRecordIds.forEach((id, refIndex) => {
     if (!(projectEntities.get(run.projectId)?.has(id))) add("missing-applied-entity", `toolRuns[${index}].appliedRecordIds[${refIndex}]`, `Unknown applied record: ${id}`);
   }));

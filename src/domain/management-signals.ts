@@ -1,9 +1,12 @@
 import type { Locale, Workspace } from "./schemas";
+import { type SignalSource } from "./action-signals";
+import { contextProject } from "./work-scope";
+import { acrossContextSignals } from "./across-work-signals";
 
 export type ManagementSignal = {
   id: string; group: "decide" | "act" | "check"; priority: number;
   title: string; why: string; action: string; owner: string; dueDate?: string;
-  source: { collection: "programs" | "operations"; id: string; recordId?: string };
+  source: { collection: "programs" | "operations"; id: string; recordId?: string; kind?:SignalSource["kind"]; register?:string };
   rule: string; asOf: string; missingEvidence: string[]; confidence: "known" | "insufficient-evidence";
 };
 /** Rules are product heuristics, never probabilities. Caller supplies the observation day. */
@@ -11,6 +14,13 @@ export function managementSignals(workspace: Workspace, locale: Locale, asOf: st
   if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf) || !Number.isFinite(Date.parse(asOf)) || new Date(asOf).toISOString().slice(0,10)!==asOf) throw new Error("Invalid signal date");
   const ru = locale === "ru", signals: ManagementSignal[] = [];
   const add = (signal: Omit<ManagementSignal, "asOf">) => signals.push({ ...signal, asOf });
+  const scopes=[...workspace.programs.map(row=>({kind:"program" as const,id:row.id})),...workspace.operations.map(row=>({kind:"operation" as const,id:row.id}))];
+  const projects=scopes.map(scope=>contextProject(workspace,scope));
+  const scopeByKey=new Map(projects.map((project,index)=>[project.id,scopes[index]]));
+  for(const {project,signal} of acrossContextSignals(workspace,projects,locale,asOf)) {
+    const scope=scopeByKey.get(project.id)!;
+    add({id:`${scope.kind}-${scope.id}-${signal.id}`,group:signal.category==="decision"?"decide":signal.category==="review"||signal.category==="control"?"check":"act",priority:signal.severity==="critical"?100:signal.severity==="high"?80:40,title:`${project.name} · ${signal.title}`,why:signal.why,action:signal.action,owner:signal.source?.owner??"",dueDate:signal.dueDate,source:{collection:scope.kind==="program"?"programs":"operations",id:scope.id,recordId:signal.source?.id,kind:signal.source?.kind,register:signal.view},rule:signal.evidence.rule,missingEvidence:signal.evidence.missing,confidence:signal.evidence.missing.length?"insufficient-evidence":"known"});
+  }
   for (const program of workspace.programs) {
     const source = { collection: "programs" as const, id: program.id };
     for (const benefit of program.benefits) {

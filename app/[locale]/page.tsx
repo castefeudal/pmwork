@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const ru = locale === "ru";
   const title = ru
-    ? "PMWORK — ясность в сложных проектах"
-    : "PMWORK — clarity for complex projects";
+    ? "PMWORK — ясность в управлении работой"
+    : "PMWORK — clarity for complex work";
   const description = ru
     ? "Ведите работу, риски, решения и сроки в одной практической системе. Без аккаунта: данные проекта остаются на вашем устройстве."
     : "Bring work, risks, decisions, and schedules into one practical system. No account: your project data stays on your device.";
@@ -66,12 +66,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const copy = {
   ru: {
-    kicker: "ПРАКТИЧЕСКАЯ СИСТЕМА РУКОВОДИТЕЛЯ ПРОЕКТА",
-    titleTop: "От хаоса проекта",
-    titleBottom: "— к ясному следующему решению.",
-    lead: "PMWORK связывает реальные сигналы проекта с решениями, действиями и контролем результата. Рабочие данные остаются на вашем устройстве.",
+    kicker: "PROJECT · PROGRAM · DELIVERY · OPERATIONS",
+    titleTop: "Видеть главное.",
+    titleBottom: "Принимать решения. Доводить до результата.",
+    lead: "PMWORK связывает сигналы проектов, программ, поставки и процессов с решениями, действиями и контролем результата. Рабочие данные остаются на вашем устройстве.",
     start: "Открыть рабочее пространство",
-    startAccessible: "Создать / открыть проект",
+    startAccessible: "Открыть рабочее пространство",
     explore: "Посмотреть продукт",
     value: ["Без аккаунта и обязательного сервера", "Работает офлайн", "Проект хранится у вас"],
     created: "Независимый продукт Павла Маркова",
@@ -126,12 +126,12 @@ const copy = {
     noSetup: "Данные останутся на этом устройстве",
   },
   en: {
-    kicker: "THE PRACTICAL OPERATING SYSTEM FOR PROJECT MANAGERS",
-    titleTop: "From project noise",
-    titleBottom: "to a clear next decision.",
-    lead: "PMWORK connects real project signals to decisions, actions, and outcome control. Your working data stays on your device.",
+    kicker: "PROJECT · PROGRAM · DELIVERY · OPERATIONS",
+    titleTop: "See what matters.",
+    titleBottom: "Decide. Act. Check the result.",
+    lead: "PMWORK connects signals from projects, programs, delivery and operations to decisions, actions, and outcome control. Your working data stays on your device.",
     start: "Open your workspace",
-    startAccessible: "Create / open project",
+    startAccessible: "Open workspace",
     explore: "See the product",
     value: ["No account or required server", "Works offline", "Your project stays yours"],
     created: "An independent product by Pavel Markov",
