@@ -131,3 +131,16 @@ test("operational review creates traceable actions and recurring work",async({pa
   await card.getByRole("link",{name:"Open issue",exact:true}).click();
   await expect(page.getByRole("dialog",{name:"Edit issue"})).toBeVisible();
 });
+
+
+test("program navigation keeps work in the selected shared context",async({page})=>{
+ const w=demoWorkspace("en");w.managementRole="program";w.programs=[programSchema.parse({id:"coordination",name:"Service program",outcome:"Reduce waiting",projectIds:[w.projects[0].id]})];
+ await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+ await page.goto(route("/en/workspace/?view=program&context=coordination"));
+ await navigateWorkspace(page,"Work");await expect(page).toHaveURL(/view=program.*register=work/);
+ await page.getByRole("button",{name:"Add work item",exact:true}).click();
+ const create=page.getByRole("dialog",{name:"New work item"});await create.getByLabel("Title",{exact:true}).fill("Coordinate shared benefit measurement");await create.getByRole("button",{name:"Create",exact:true}).click();
+ await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.find((row:{title:string})=>row.title==="Coordinate shared benefit measurement")?.workScope;})).toEqual({kind:"program",id:"coordination"});
+ await navigateWorkspace(page,"Plan");await expect(page).toHaveURL(/view=program.*register=planning/);
+ await page.reload();await expect(page.getByRole("group",{name:"Context registers"})).toBeVisible();await expect(page.getByRole("heading",{name:"Service program",exact:true})).toBeVisible();
+});

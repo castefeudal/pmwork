@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
-import { managementRoles, roleLabels, roleQuestions, type ManagementRole } from "@/domain/management-role";
+import { managementRoles, roleMobileViews, roleLabels, roleQuestions, type ManagementRole } from "@/domain/management-role";
 import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
 import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
 import { displayLabel } from "@/content/workspace-i18n";
@@ -282,7 +282,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   if (!project) return <ContextWorkspaceShell workspace={workspace} locale={locale} onChange={next=>setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)))} onExport={()=>exportWorkspace(workspace)} onRestore={()=>fileRef.current?.click()} onCreateProject={()=>setDialog("project")} palette={palette} onClosePalette={()=>setPalette(false)}><input hidden ref={fileRef} type="file" accept="application/json" onChange={event=>void stageImport(event.target.files?.[0],true)}/>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));if(id)setProjectId(id);}}/>}{recoveryDialog}</ContextWorkspaceShell>;
 
   const commit = (next: Workspace) => { try { setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next))); } catch { setToast(ru ? "Изменение не применено: нарушена целостность связанных данных" : "Change was not applied because related data would become inconsistent"); } };
-  const selectProject = (id: string) => { setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
+  const selectProject = (id: string) => { const url=new URL(window.location.href);for(const key of ["context","register","item","kind","create"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));if(view==="program"||view==="operations")setView("overview");setProjectId(id); try { sessionStorage.setItem("pmwork-project", id); } catch {} };
   const openRecord = (kind: EditableKind, id: string) => {
     const record={kind,id};
     const next=workspaceRecordUrl(window.location.href,record);
@@ -294,6 +294,16 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     setEditor(null);
   };
   const managementRecord=view==="program"?(workspace.programs.find(row=>row.id===contextId)??workspace.programs[0]):view==="operations"?(workspace.operations.find(row=>row.id===contextId)??workspace.operations[0]):undefined;
+  const navigateView=(destination:WorkspaceView)=>{
+    const context=managementRecord??workspace.programs.find(row=>row.id===contextId)??workspace.operations.find(row=>row.id===contextId);
+    if(context&&["work","board","planning","raid","people","finance","control","documents"].includes(destination)) {
+      const url=new URL(window.location.href);url.searchParams.set("view","outcome" in context?"program":"operations");url.searchParams.set("context",context.id);url.searchParams.set("register",destination);for(const key of ["item","kind","create"])url.searchParams.delete(key);history.pushState(null,"",url);setView("outcome" in context?"program":"operations");dispatchEvent(new Event("pmwork-url"));return;
+    }
+    if(destination==="program"||destination==="operations"){
+      const url=new URL(window.location.href);for(const key of ["register","item","kind","create"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));
+    }
+    setView(destination);
+  };
   const createRecord=(type:CreateType)=>{
     if(type!=="project"&&(view==="program"||view==="operations")) {
       if(!managementRecord){setToast(ru?"Сначала создайте или выберите рабочий контекст.":"Create or select a working context first.");return;}
@@ -301,7 +311,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     }
     setDialog(type);
   };
-  const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:createRecord,onEdit:openRecord,onChange:commit,onProject:selectProject};
+  const common: ViewProps = {workspace,project,locale,onView:navigateView,onCreate:createRecord,onEdit:openRecord,onChange:commit,onProject:selectProject};
   const render = () => {
     switch (view) {
       case "program": return <ManagementCenter workspace={workspace} locale={locale} onChange={commit} kind="program"/>;
@@ -342,18 +352,18 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         <button className="button small sidebar-toggle" aria-label={ru?"Свернуть / развернуть меню":"Collapse / expand sidebar"} aria-expanded={!sidebarCollapsed} onClick={()=>setSidebarCollapsed(!sidebarCollapsed)}>{sidebarCollapsed?"→":"←"}</button>
         <Link href={`/${locale}`} aria-label={ru ? "PMWORK — главная" : "PMWORK home"}><Brand/></Link>
         <select className="project-switch" value={project.id} onChange={(e)=>selectProject(e.target.value)} aria-label={ru?"Выбрать проект":"Select project"}>{workspace.projects.map(p=><option value={p.id} key={p.id}>{p.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{p.name}</option>)}</select>
-        <nav className="side-nav" aria-label={ru?"Разделы рабочего пространства":"Workspace sections"}>{navGroups.map(([label,ids])=><div className="nav-group" key={label}><small>{label}</small>{ids.map(id=>{const Icon=navIcons[id];return <button key={id} aria-label={navLabels[locale][id]} className={view===id||(id==="work"&&view==="board")?"active":""} onClick={()=>setView(id)} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined}><Icon size={19}/><span>{navLabels[locale][id]}</span></button>})}</div>)}</nav>
+        <nav className="side-nav" aria-label={ru?"Разделы рабочего пространства":"Workspace sections"}>{navGroups.map(([label,ids])=><div className="nav-group" key={label}><small>{label}</small>{ids.map(id=>{const Icon=navIcons[id];return <button key={id} aria-label={navLabels[locale][id]} className={view===id||(id==="work"&&view==="board")?"active":""} onClick={()=>navigateView(id)} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined}><Icon size={19}/><span>{navLabels[locale][id]}</span></button>})}</div>)}</nav>
         <div className="side-foot"><Link className="button small" href={`/${locale}/knowledge`}><BookOpen size={16}/><span>{ru?"База знаний":"Knowledge"}</span></Link><button className="button small" onClick={()=>setDialog("project")}><Plus size={16}/><span>{ru?"Проект":"Project"}</span></button></div>
       </aside>
 
       <nav className="mobile-workspace-nav" aria-label={ru?"Рабочее пространство":"Workspace"}>
-        {(["overview","work","planning","control"] as WorkspaceView[]).map((id,index)=>{
-          const Icon=[Home,ListChecks,CalendarDays,ClipboardCheck][index];
-          return <button key={id} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined} onClick={()=>setView(id)}><Icon size={19} aria-hidden="true"/><span>{id==="overview"?(ru?"Сейчас":"Today"):id==="planning"?(ru?"План":"Plan"):navLabels[locale][id]}</span></button>;
+        {roleMobileViews[workspace.managementRole].map((id)=>{
+          const Icon=id==="overview"?Home:navIcons[id];
+          return <button key={id} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined} onClick={()=>navigateView(id)}><Icon size={19} aria-hidden="true"/><span>{id==="overview"?(ru?"Сейчас":"Today"):id==="planning"?(ru?"План":"Plan"):navLabels[locale][id]}</span></button>;
         })}
         <button onClick={()=>setMore(true)} aria-haspopup="dialog"><Plus size={19} aria-hidden="true"/><span>{ru?"Ещё":"More"}</span></button>
       </nav>
-      {more&&<WorkspaceMore title={ru?"Ещё":"More"} onClose={()=>setMore(false)}>{([...lensViews,"raid","people","finance","documents","guide","portfolio","setup"] as WorkspaceView[]).map(id=><button className="button" key={id} onClick={()=>{setView(id);setMore(false)}}>{navLabels[locale][id]}</button>)}<Link className="button" href={`/${locale}/knowledge`}>{ru?"База знаний":"Knowledge"}</Link></WorkspaceMore>}
+      {more&&<WorkspaceMore title={ru?"Ещё":"More"} onClose={()=>setMore(false)}>{[...new Set([...lensViews,"planning","raid","people","finance","control","documents","guide","portfolio","setup"] as WorkspaceView[])].filter(id=>!(roleMobileViews[workspace.managementRole] as readonly WorkspaceView[]).includes(id)).map(id=><button className="button" key={id} onClick={()=>{navigateView(id);setMore(false)}}>{navLabels[locale][id]}</button>)}<Link className="button" href={`/${locale}/knowledge`}>{ru?"База знаний":"Knowledge"}</Link></WorkspaceMore>}
       {addMenu&&<WorkspaceMore title={ru?"Добавить":"Add"} onClose={()=>setAddMenu(false)}><div className="global-add-grid">{addGroups.map(group=><section key={group.id}><h3>{ru?({work:"Работа",plan:"Планирование",raid:"Риски и решения",people:"Люди",control:"Контроль",document:"Документы"} as Record<string,string>)[group.id]:({work:"Work",plan:"Planning",raid:"Risks & decisions",people:"People",control:"Control",document:"Documents"} as Record<string,string>)[group.id]}</h3><div className="button-row">{group.types.map(type=><button className="button" key={type} onClick={()=>{setAddMenu(false);createRecord(type)}}>{createLabels[locale][type as keyof typeof createLabels[typeof locale]]}</button>)}</div></section>)}</div></WorkspaceMore>}
 
       <main className="workspace-main">
@@ -379,7 +389,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       </main>
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
       {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
-      {palette&&<CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/>} 
+      {palette&&<CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={navigateView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/>} 
       {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}
     </div>
