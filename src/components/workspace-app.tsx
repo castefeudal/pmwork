@@ -314,7 +314,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     if(editor)closeRecord();
     setDialog(type);
   };
-  const common: ViewProps = {workspace,project,locale,onView:navigateView,onCreate:createRecord,onEdit:openRecord,onChange:commit,onProject:selectProject};
+  const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:createRecord,onEdit:openRecord,onChange:commit,onProject:selectProject};
   const render = () => {
     switch (view) {
       case "program": return <ManagementCenter workspace={workspace} locale={locale} onChange={commit} kind="program"/>;

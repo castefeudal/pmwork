@@ -2,6 +2,7 @@ import {test,expect} from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import {demoWorkspace,emptyWorkspace} from "../../src/data/demo";
 import {programSchema,operationSchema} from "../../src/domain/management-entities";
+import {workItemSchema} from "../../src/domain/schemas";
 import {route,navigateWorkspace} from "./support";
 
 for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as const) test.describe(`${locale} ${theme}`,()=>{
@@ -143,4 +144,14 @@ test("program navigation keeps work in the selected shared context",async({page}
  await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.find((row:{title:string})=>row.title==="Coordinate shared benefit measurement")?.workScope;})).toEqual({kind:"program",id:"coordination"});
  await navigateWorkspace(page,"Plan");await expect(page).toHaveURL(/view=program.*register=planning/);
  await page.reload();await expect(page.getByRole("group",{name:"Context registers"})).toBeVisible();await expect(page.getByRole("heading",{name:"Service program",exact:true})).toBeVisible();
+});
+
+
+test("Today opens the exact shared program source record",async({page})=>{
+ const w=emptyWorkspace("en");w.managementRole="program";w.projects=demoWorkspace("en").projects.slice(0,1);w.programs=[programSchema.parse({id:"shared",name:"Shared program",outcome:"Reduce waiting",projectIds:[w.projects[0].id]})];
+ w.workItems=[workItemSchema.parse({id:"handoff",projectId:"@program/shared",workScope:{kind:"program",id:"shared"},title:"Resolve shared handoff",owner:"Alex",status:"ready",dueDate:"2026-10-01"})];
+ await page.clock.setFixedTime(new Date("2026-10-06T12:00:00Z"));await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+ await page.goto(route("/en/workspace/?view=overview"));await expect(page.locator(".priority-focus")).toContainText("Resolve shared handoff");await page.getByRole("button",{name:"Open source",exact:true}).click();
+ await expect(page.getByRole("dialog",{name:"Edit work item"}).getByLabel("Title",{exact:true})).toHaveValue("Resolve shared handoff");
+ await expect(page).toHaveURL(/context=shared/);await expect(page).toHaveURL(/item=handoff/);
 });
