@@ -70,3 +70,5 @@ Exports contain `product`, `schemaVersion`, `appVersion`, `exportedAt`, project/
 Important: snapshots and IndexedDB are device-local, not cloud backup. Users should download JSON before clearing browser storage or changing origins.
 
 Shared records may contain `workScope: {kind: project|program|operation, id}`. Legacy `projectId` remains the compatibility key: project ID, `@program/<id>` or `@operation/<id>`. The graph validates both parent existence and the key mirror. Context descriptors used by shared UI are ephemeral and never saved in `projects`. Import/export preserve scopes. Decisions add optional evidence/affected IDs, revisit date, decidedAt and field history; operational controls add recurrence and occurrence completion evidence.
+
+Work blockage intervals are prospective observations with optional end timestamps. Imports never reconstruct old blocked duration. Explicit rework evidence stores observation timestamp and reason. Operation reviews may link to shared work/decision IDs in their own context. Safe deletion detaches review links while preserving the original narrative.

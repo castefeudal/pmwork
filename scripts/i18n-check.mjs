@@ -32,6 +32,7 @@ const userFacing = [
   "src/components/program-plan.tsx",
   "src/components/delivery-center.tsx",
   "src/components/scoped-registers.tsx",
+  "src/components/context-workspace-shell.tsx",
   "src/components/decision-center.tsx",
   "src/components/today-across-work.tsx",
   "src/components/role-showcase.tsx",

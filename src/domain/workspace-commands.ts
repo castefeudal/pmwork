@@ -20,6 +20,10 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
   else {ownerPatch.ownerId=undefined;ownerPatch.ownerLabel=ownerPatch.owner??item.ownerLabel??item.owner;}
  }
  const at=new Date().toISOString(),status=patch.status??item.status,statusChanged=status!==item.status;
+ if(patch.blocked!==undefined&&patch.blocked!==item.blocked) {
+  if(patch.blocked)ownerPatch.blockedIntervals=[...(item.blockedIntervals??[]),{from:at}];
+  else if(item.blockedIntervals?.at(-1)&&!item.blockedIntervals.at(-1)!.to)ownerPatch.blockedIntervals=item.blockedIntervals.map((entry,index)=>index===item.blockedIntervals!.length-1?{...entry,to:at}:entry);
+ }
  const requestedEstimate=patch.currentEstimate??patch.estimate;
  if(requestedEstimate!==undefined&&requestedEstimate!==item.currentEstimate){
   ownerPatch.originalEstimate=item.originalEstimate??item.currentEstimate??item.estimate??requestedEstimate;
@@ -146,6 +150,7 @@ export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:st
  }
 
  next={...next,
+  operations:next.operations.map(operation=>({...operation,reviews:operation.reviews.map(review=>({...review,workItemId:review.workItemId===id?undefined:review.workItemId,decisionId:review.decisionId===id?undefined:review.decisionId}))})),
   decisions:next.decisions.map(decision=>({...decision,evidenceIds:decision.evidenceIds?.filter(ref=>ref!==id),affectedIds:decision.affectedIds?.filter(ref=>ref!==id)})),
   documents:next.documents.map(document=>({...document,relatedIds:document.relatedIds.filter(ref=>ref!==id)})),
   toolRuns:next.toolRuns.map(run=>({...run,appliedRecordIds:run.appliedRecordIds.filter(ref=>ref!==id)})),

@@ -6,6 +6,7 @@ const history = z.array(z.object({ at: z.iso.datetime(), summary: z.string().min
 export const programSchema = z.object({
   id, name: z.string().min(2), owner: z.string().default(""), sponsor: z.string().default(""),
   outcome: z.string().min(2), projectIds: z.array(id).default([]),
+  status:z.enum(["planned","active","on-hold","completed"]).default("active"),
   governanceCadence: z.string().default(""), strategicObjectives: z.array(z.string()).default([]),
   benefits: z.array(z.object({
     id, name: z.string().min(2), owner: z.string().default(""), unit: z.string().default(""),
@@ -29,7 +30,7 @@ export const operationSchema = z.object({
   controls: z.array(z.object({ id, name: z.string().min(2), owner: z.string().default(""), dueDate: date, completedAt: date.optional(), runbook: z.string().default(""), recurrence:z.enum(["once","daily","weekly","monthly"]).default("once"), completions:z.array(z.object({dueDate:date,completedAt:date})).default([]) })).default([]),
   incidents: z.array(z.object({ id, title: z.string().min(2), owner: z.string().default(""), openedAt: date, resolvedAt: date.optional(), recurring: z.boolean().default(false), correctiveAction: z.string().default("") })).default([]),
   improvements: z.array(z.object({ id, title: z.string().min(2), owner: z.string().default(""), status: z.enum(["open", "active", "done"]), expectedOutcome: z.string().default("") })).default([]),
-  reviews: z.array(z.object({ id, at: date, cadence: z.enum(["daily", "weekly", "monthly"]), findings: z.string().min(2), decision: z.string().default(""), nextAction: z.string().default(""), owner: z.string().default("") })).default([]),
+  reviews: z.array(z.object({ id, at: date, cadence: z.enum(["daily", "weekly", "monthly"]), findings: z.string().min(2), decision: z.string().default(""), nextAction: z.string().default(""), owner: z.string().default(""),workItemId:id.optional(),decisionId:id.optional() })).default([]),
   history,
 });
 export type Program = z.infer<typeof programSchema>;

@@ -70,6 +70,8 @@ export const workItemSchema = z.object({
   done: z.boolean().default(false),
   blocked: z.boolean().default(false),
   blockerReason: z.string().optional(),
+  blockedIntervals:z.array(z.object({from:z.iso.datetime(),to:z.iso.datetime().optional()})).optional(),
+  reworkEvidence:z.array(z.object({at:z.iso.datetime(),reason:z.string().min(2)})).optional(),
   riskIds: z.array(z.string()).default([]),
   objectiveIds: z.array(z.string()).default([]),
   order: z.number().default(0),

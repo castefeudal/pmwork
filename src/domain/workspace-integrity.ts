@@ -24,6 +24,7 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
   const projectById = new Map(workspace.projects.map((project) => [project.id, project]));
   const workById = new Map(workspace.workItems.map((item) => [item.id, item]));
   const riskById = new Map(workspace.risks.map((item) => [item.id, item]));
+  const decisionById = new Map(workspace.decisions.map((item) => [item.id, item]));
   const objectiveById = new Map(workspace.objectives.map((item) => [item.id, item]));
   const milestoneById = new Map(workspace.milestones.map((item) => [item.id, item]));
   const iterationById = new Map(workspace.iterations.map((item) => [item.id, item]));
@@ -124,6 +125,10 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     }
   });
   workspace.operations.forEach((operation, index) => {
+    for(const review of operation.reviews)for(const [field,map] of [["workItemId",workById],["decisionId",decisionById]] as const) {
+      const id=review[field];if(!id)continue;const target=map.get(id);
+      if(!target||target.projectId!==`@operation/${operation.id}`)add("missing-review-link",`operations[${index}].reviews`,"Review action or decision must exist in its operating context");
+    }
     for (const [name, rows] of [["metrics",operation.metrics],["controls",operation.controls],["incidents",operation.incidents],["improvements",operation.improvements],["reviews",operation.reviews]] as const) {
       if (new Set(rows.map(row=>row.id)).size !== rows.length) add("duplicate-id", `operations[${index}].${name}`, "Nested record ids must be unique");
     }
@@ -176,6 +181,14 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
       if(at!==null)previousHistoryAt=at;
     });
     const lastTransition=item.statusHistory?.at(-1);
+    let previousBlockedEnd:number|null=null;
+    item.blockedIntervals?.forEach((interval,intervalIndex)=>{
+      const from=parseDate(interval.from)!,to=interval.to?parseDate(interval.to)!:null;
+      if(to!==null&&to<from)add("blocked-date-order",`workItems[${index}].blockedIntervals[${intervalIndex}]`,"Blockage cannot end before it starts");
+      if(previousBlockedEnd!==null&&from<previousBlockedEnd)add("blocked-overlap",`workItems[${index}].blockedIntervals[${intervalIndex}]`,"Blocked intervals must not overlap");
+      if(to===null&&(intervalIndex!==item.blockedIntervals!.length-1||!item.blocked))add("blocked-open-state",`workItems[${index}].blockedIntervals[${intervalIndex}]`,"Only the last interval of a blocked item may remain open");
+      previousBlockedEnd=to??Infinity;
+    });
     if(lastTransition&&lastTransition.to!==item.status)add("status-history-state",`workItems[${index}].statusHistory`,"Last status transition must match current status");
   });
 

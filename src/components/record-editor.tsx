@@ -7,6 +7,7 @@ import { useId, useState } from "react";
 import { Trash2, X } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
+import {assertWorkspaceGraph} from "@/domain/workspace-integrity";
 import { displayLabel } from "@/content/workspace-i18n";
 import { ConfirmationDialog } from "./confirmation-dialog";
 
@@ -202,6 +203,7 @@ function fieldsFor(
         },
         text("owner", "Владелец", "Owner"),
         text("contributors", "Участники", "Contributors", "list"),
+        text("newReworkReason", "Записать повторную работу — причина", "Record rework — reason", "textarea"),
         text("labels", "Метки", "Labels", "list"),
         text("startDate", "Дата начала", "Start date", "date"),
         text("dueDate", "Срок", "Due date", "date"),
@@ -704,6 +706,8 @@ export function RecordEditor({
     const start = String(nextRecord.startDate || ""), end = String(nextRecord.dueDate || nextRecord.endDate || nextRecord.targetDate || "");
     if (start && end && end < start) return setError(ru ? "Дата окончания не может быть раньше начала." : "End date cannot precede start date.");
     if (kind === "work") {
+      if(String(nextRecord.newReworkReason??"").trim())nextRecord.reworkEvidence=[...((record.reworkEvidence as unknown[]|undefined)??[]),{at:new Date().toISOString(),reason:String(nextRecord.newReworkReason).trim()}];
+      delete nextRecord.newReworkReason;
       const done = nextRecord.status === "done";
       nextRecord.done = done;
       nextRecord.completedAt = done
@@ -742,7 +746,7 @@ export function RecordEditor({
       const {ownerId: _ownerId, ...patch}=updated;
       void _ownerId;
       onChange(updateWork(workspace,id,patch));
-    } else onChange(validation.data);
+    } else onChange(assertWorkspaceGraph(validation.data));
     onClose();
     } catch {
       setError(ru ? "Изменение не сохранено: проверьте связанные записи." : "Change was not saved. Check linked records.");

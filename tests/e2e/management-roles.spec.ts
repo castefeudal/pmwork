@@ -60,6 +60,16 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
     await expect(page.getByRole("button",{name:"Resolve customer request",exact:true})).toBeVisible();
     expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
+    await page.getByRole("button",{name:ru?"Настройки":"Settings",exact:true}).click();
+    await page.getByLabel(ru?"Опыт":"Experience",{exact:true}).selectOption("advanced");
+    await page.getByLabel(ru?"Плотность":"Density",{exact:true}).selectOption("compact");
+    await page.keyboard.press("Control+k");
+    const palette=page.getByRole("dialog",{name:ru?"Командная палитра":"Command palette"});
+    await palette.getByRole("combobox").fill("Resolve customer request");
+    await palette.getByRole("option",{name:/Resolve customer request/}).click();
+    await expect(page.getByRole("dialog",{name:ru?"Изменить: рабочий элемент":"Edit work item"})).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toBeHidden();
   });
   test(`program links shared projects and explains missing benefit evidence ${locale}`,async({page},testInfo)=>{
     const w=demoWorkspace(locale);w.managementRole="program";
