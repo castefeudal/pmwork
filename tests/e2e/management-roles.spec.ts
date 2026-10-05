@@ -4,8 +4,9 @@ import {demoWorkspace,emptyWorkspace} from "../../src/data/demo";
 import {programSchema,operationSchema} from "../../src/domain/management-entities";
 import {route,navigateWorkspace} from "./support";
 
-for(const locale of ["ru","en"] as const) {
+for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as const) test.describe(`${locale} ${theme}`,()=>{
   const ru=locale==="ru";
+  test.beforeEach(async({page})=>{await page.emulateMedia({colorScheme:theme});await page.addInitScript(theme=>localStorage.setItem("pmwork-theme",theme),theme);});
   test(`role personalization remains independent ${locale}`,async({page})=>{
     const w=demoWorkspace(locale);
     await page.addInitScript(w=>localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w)),w);
@@ -52,4 +53,4 @@ for(const locale of ["ru","en"] as const) {
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
     await page.screenshot({path:testInfo.outputPath(`program-${locale}.png`),fullPage:true});
   });
-}
+});
