@@ -142,6 +142,7 @@ const RecordEditor = dynamic(()=>import("./record-editor").then(module=>module.R
 
 export function WorkspaceApp({ locale }: { locale: Locale }) {
   const [contextId]=useUrlValue("context");
+  const [contextRegister]=useUrlValue("register");
   const ru = locale === "ru",
     [workspace, setWorkspace] = useState<Workspace>(() => demoWorkspace(locale)),
     [projectId, setProjectId] = useState("atlas"),
@@ -294,6 +295,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     setEditor(null);
   };
   const managementRecord=view==="program"?(workspace.programs.find(row=>row.id===contextId)??workspace.programs[0]):view==="operations"?(workspace.operations.find(row=>row.id===contextId)??workspace.operations[0]):undefined;
+  const activeNavigation=managementRecord&&contextRegister?contextRegister:view;
   const navigateView=(destination:WorkspaceView)=>{
     const context=managementRecord??workspace.programs.find(row=>row.id===contextId)??workspace.operations.find(row=>row.id===contextId);
     if(context&&["work","board","planning","raid","people","finance","control","documents"].includes(destination)) {
@@ -352,14 +354,14 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         <button className="button small sidebar-toggle" aria-label={ru?"Свернуть / развернуть меню":"Collapse / expand sidebar"} aria-expanded={!sidebarCollapsed} onClick={()=>setSidebarCollapsed(!sidebarCollapsed)}>{sidebarCollapsed?"→":"←"}</button>
         <Link href={`/${locale}`} aria-label={ru ? "PMWORK — главная" : "PMWORK home"}><Brand/></Link>
         <select className="project-switch" value={project.id} onChange={(e)=>selectProject(e.target.value)} aria-label={ru?"Выбрать проект":"Select project"}>{workspace.projects.map(p=><option value={p.id} key={p.id}>{p.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{p.name}</option>)}</select>
-        <nav className="side-nav" aria-label={ru?"Разделы рабочего пространства":"Workspace sections"}>{navGroups.map(([label,ids])=><div className="nav-group" key={label}><small>{label}</small>{ids.map(id=>{const Icon=navIcons[id];return <button key={id} aria-label={navLabels[locale][id]} className={view===id||(id==="work"&&view==="board")?"active":""} onClick={()=>navigateView(id)} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined}><Icon size={19}/><span>{navLabels[locale][id]}</span></button>})}</div>)}</nav>
+        <nav className="side-nav" aria-label={ru?"Разделы рабочего пространства":"Workspace sections"}>{navGroups.map(([label,ids])=><div className="nav-group" key={label}><small>{label}</small>{ids.map(id=>{const Icon=navIcons[id];return <button key={id} aria-label={navLabels[locale][id]} className={activeNavigation===id||(id==="work"&&activeNavigation==="board")?"active":""} onClick={()=>navigateView(id)} aria-current={activeNavigation===id||(id==="work"&&activeNavigation==="board")?"page":undefined}><Icon size={19}/><span>{navLabels[locale][id]}</span></button>})}</div>)}</nav>
         <div className="side-foot"><Link className="button small" href={`/${locale}/knowledge`}><BookOpen size={16}/><span>{ru?"База знаний":"Knowledge"}</span></Link><button className="button small" onClick={()=>setDialog("project")}><Plus size={16}/><span>{ru?"Проект":"Project"}</span></button></div>
       </aside>
 
       <nav className="mobile-workspace-nav" aria-label={ru?"Рабочее пространство":"Workspace"}>
         {roleMobileViews[workspace.managementRole].map((id)=>{
           const Icon=id==="overview"?Home:navIcons[id];
-          return <button key={id} aria-current={view===id||(id==="work"&&view==="board")?"page":undefined} onClick={()=>navigateView(id)}><Icon size={19} aria-hidden="true"/><span>{id==="overview"?(ru?"Сейчас":"Today"):id==="planning"?(ru?"План":"Plan"):navLabels[locale][id]}</span></button>;
+          return <button key={id} aria-current={activeNavigation===id||(id==="work"&&activeNavigation==="board")?"page":undefined} onClick={()=>navigateView(id)}><Icon size={19} aria-hidden="true"/><span>{id==="overview"?(ru?"Сейчас":"Today"):id==="planning"?(ru?"План":"Plan"):navLabels[locale][id]}</span></button>;
         })}
         <button onClick={()=>setMore(true)} aria-haspopup="dialog"><Plus size={19} aria-hidden="true"/><span>{ru?"Ещё":"More"}</span></button>
       </nav>
