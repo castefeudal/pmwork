@@ -54,6 +54,7 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
     workspace.decisions.forEach(x=>add("decision",x.id,x.question,x.projectId));
     workspace.milestones.forEach(x=>add("milestone",x.id,x.title,x.projectId));
     workspace.documents.forEach(x=>add("document",x.id,x.title,x.projectId));
+    workspace.objectives.forEach(x=>add("objective",x.id,x.description,x.projectId));
     const tools=[
       ["deadline",ru?"Оценка срока":"Deadline confidence",toolIntents.deadline],
       ["emv",ru?"Денежный риск":"Risk EMV",toolIntents.emv],

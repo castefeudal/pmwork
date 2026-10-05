@@ -58,7 +58,7 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     expect(stored.projects).toEqual([]);expect(stored.workItems[0].workScope).toEqual({kind:"operation",id:"service"});
     await page.reload();
     await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
-    await expect(page.getByRole("button",{name:"Resolve customer request",exact:true})).toBeVisible();
+    await expect(page.getByRole("button",{name:/Resolve customer request/}).filter({visible:true})).toBeVisible();
     expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
     await page.getByRole("button",{name:ru?"Настройки":"Settings",exact:true}).click();
     await page.getByLabel(ru?"Опыт":"Experience",{exact:true}).selectOption("advanced");
@@ -82,4 +82,36 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
     await page.screenshot({path:testInfo.outputPath(`program-${locale}.png`),fullPage:true});
   });
+});
+
+
+test("operational review creates traceable actions and recurring work",async({page})=>{
+  const workspace=emptyWorkspace("en");workspace.managementRole="operations";
+  workspace.operations=[operationSchema.parse({id:"queue",name:"Customer queue",purpose:"Restore service"})];
+  await page.clock.setFixedTime(new Date("2026-10-06T12:00:00Z"));
+  await page.addInitScript(workspace=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(workspace));},workspace);
+  await page.goto(route("/en/workspace/?view=operations&context=queue"));
+  await page.getByText("Record operations review",{exact:true}).click();
+  await page.getByLabel("Evidence-based findings",{exact:true}).fill("Repeated queue response delays");
+  await page.getByLabel("Open decision question",{exact:true}).fill("Increase daily capacity?");
+  await page.getByLabel("Next action",{exact:true}).fill("Investigate repeated queue delay");
+  await page.getByLabel("Action owner",{exact:true}).fill("Alex");
+  await page.getByRole("button",{name:"Save review and linked records",exact:true}).click();
+  await page.getByRole("button",{name:"Open action",exact:true}).click();
+  const editor=page.getByRole("dialog",{name:"Edit work item"});
+  await editor.getByLabel("Due date",{exact:true}).fill("2026-10-07");
+  await editor.getByText("More details",{exact:true}).click();
+  await editor.getByLabel("Repeat after completion",{exact:true}).selectOption("weekly");
+  await editor.getByLabel("Record rework — reason",{exact:true}).fill("Repeated verification after defect");
+  await editor.getByRole("button",{name:"Save",exact:true}).click();
+  await expect(editor).toBeHidden();
+  await page.getByRole("button",{name:"Open action",exact:true}).click();
+  await editor.getByLabel("Status",{exact:true}).selectOption("done");
+  await editor.getByRole("button",{name:"Save",exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.length;})).toBe(2);
+  const stored=await page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return raw.workspace??raw;});
+  expect(stored.projects).toEqual([]);expect(stored.decisions[0].evidenceIds).toEqual([stored.operations[0].reviews[0].id]);
+  const original=stored.workItems.find((row:{done:boolean})=>row.done),next=stored.workItems.find((row:{done:boolean})=>!row.done);
+  expect(next.recurrenceOf).toBe(original.id);expect(next.dueDate).toBe("2026-10-14");expect(original.reworkEvidence[0].reason).toBe("Repeated verification after defect");
+  await page.reload();await expect(page.getByRole("heading",{name:"Customer queue"})).toBeVisible();
 });

@@ -45,6 +45,9 @@ import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
 import { DocumentCenter } from "./document-center";
 import type { EditableKind } from "./record-editor";
+import {useUrlValue} from "./use-url-state";
+import {registerForCreate} from "./workspace-types";
+import {contextProject} from "@/domain/work-scope";
 import type { CreateType, WorkspaceView } from "./workspace-types";
 import {
   BoardView,
@@ -138,6 +141,7 @@ const WorkspaceDialog = dynamic(()=>import("./workspace-dialog").then(module=>mo
 const RecordEditor = dynamic(()=>import("./record-editor").then(module=>module.RecordEditor),{loading:()=> <p role="status">…</p>});
 
 export function WorkspaceApp({ locale }: { locale: Locale }) {
+  const [contextId]=useUrlValue("context");
   const ru = locale === "ru",
     [workspace, setWorkspace] = useState<Workspace>(() => demoWorkspace(locale)),
     [projectId, setProjectId] = useState("atlas"),
@@ -289,7 +293,15 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     history.replaceState(null,"",workspaceRecordUrl(window.location.href,null));
     setEditor(null);
   };
-  const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:setDialog,onEdit:openRecord,onChange:commit,onProject:selectProject};
+  const managementRecord=view==="program"?(workspace.programs.find(row=>row.id===contextId)??workspace.programs[0]):view==="operations"?(workspace.operations.find(row=>row.id===contextId)??workspace.operations[0]):undefined;
+  const createRecord=(type:CreateType)=>{
+    if(type!=="project"&&(view==="program"||view==="operations")) {
+      if(!managementRecord){setToast(ru?"Сначала создайте или выберите рабочий контекст.":"Create or select a working context first.");return;}
+      const url=new URL(window.location.href);url.searchParams.set("context",managementRecord.id);url.searchParams.set("create",type);url.searchParams.set("register",registerForCreate(type));history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));return;
+    }
+    setDialog(type);
+  };
+  const common: ViewProps = {workspace,project,locale,onView:setView,onCreate:createRecord,onEdit:openRecord,onChange:commit,onProject:selectProject};
   const render = () => {
     switch (view) {
       case "program": return <ManagementCenter workspace={workspace} locale={locale} onChange={commit} kind="program"/>;
@@ -342,13 +354,13 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         <button onClick={()=>setMore(true)} aria-haspopup="dialog"><Plus size={19} aria-hidden="true"/><span>{ru?"Ещё":"More"}</span></button>
       </nav>
       {more&&<WorkspaceMore title={ru?"Ещё":"More"} onClose={()=>setMore(false)}>{([...lensViews,"raid","people","finance","documents","guide","portfolio","setup"] as WorkspaceView[]).map(id=><button className="button" key={id} onClick={()=>{setView(id);setMore(false)}}>{navLabels[locale][id]}</button>)}<Link className="button" href={`/${locale}/knowledge`}>{ru?"База знаний":"Knowledge"}</Link></WorkspaceMore>}
-      {addMenu&&<WorkspaceMore title={ru?"Добавить":"Add"} onClose={()=>setAddMenu(false)}><div className="global-add-grid">{addGroups.map(group=><section key={group.id}><h3>{ru?({work:"Работа",plan:"Планирование",raid:"Риски и решения",people:"Люди",control:"Контроль",document:"Документы"} as Record<string,string>)[group.id]:({work:"Work",plan:"Planning",raid:"Risks & decisions",people:"People",control:"Control",document:"Documents"} as Record<string,string>)[group.id]}</h3><div className="button-row">{group.types.map(type=><button className="button" key={type} onClick={()=>{setAddMenu(false);setDialog(type)}}>{createLabels[locale][type as keyof typeof createLabels[typeof locale]]}</button>)}</div></section>)}</div></WorkspaceMore>}
+      {addMenu&&<WorkspaceMore title={ru?"Добавить":"Add"} onClose={()=>setAddMenu(false)}><div className="global-add-grid">{addGroups.map(group=><section key={group.id}><h3>{ru?({work:"Работа",plan:"Планирование",raid:"Риски и решения",people:"Люди",control:"Контроль",document:"Документы"} as Record<string,string>)[group.id]:({work:"Work",plan:"Planning",raid:"Risks & decisions",people:"People",control:"Control",document:"Documents"} as Record<string,string>)[group.id]}</h3><div className="button-row">{group.types.map(type=><button className="button" key={type} onClick={()=>{setAddMenu(false);createRecord(type)}}>{createLabels[locale][type as keyof typeof createLabels[typeof locale]]}</button>)}</div></section>)}</div></WorkspaceMore>}
 
       <main className="workspace-main">
         <header className="workspace-top">
           <Link className="button small workspace-home-mobile" href={`/${locale}/`} aria-label={ru?"PMWORK — главная":"PMWORK home"}><Home size={18} aria-hidden="true"/></Link>
           <select className="input mobile-project-switch" value={project.id} onChange={(e)=>selectProject(e.target.value)} aria-label={ru?"Выбрать проект":"Select project"}>{workspace.projects.map(p=><option value={p.id} key={p.id}>{p.name}</option>)}</select>
-          <h1>{project.name}</h1><span className="status info"><span className="sr-only">{ru?"Статус проекта: ":"Project status: "}</span>{displayLabel(locale,"projectStatus",project.status)}</span><div className="spacer"/>
+          <h1>{managementRecord?.name??project.name}</h1><span className="status info"><span className="sr-only">{ru?"Состояние: ":"Status: "}</span>{managementRecord?("status" in managementRecord?displayLabel(locale,"projectStatus",managementRecord.status):(ru?"Постоянный процесс":"Ongoing process")):displayLabel(locale,"projectStatus",project.status)}</span><div className="spacer"/>
           <small className="muted desktop-only" title={lastSaved}>{recovery?(ru?"Сохранение приостановлено":"Autosave paused"):lastSaved?(ru?"Сохранено локально":"Saved locally"):(ru?"Локально":"Local")}</small>
           <button className="button small command-trigger" aria-label={ru?"Открыть поиск":"Open search"} onClick={()=>setPalette(true)}><Search size={16}/><span>{ru?"Поиск":"Search"}</span><kbd>Ctrl K</kbd></button>
           <button className="button small" onClick={async()=>{if(!recovery)await saveWorkspace(workspace);const next=workspaceUrl(window.location.href,project.id,view);next.pathname=next.pathname.replace(`/${locale}/workspace`,`/${ru?"en":"ru"}/workspace`);window.location.assign(next.href)}}>{ru?"EN":"RU"}</button>
@@ -360,14 +372,14 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         </header>
         <div className="workspace-content">
           {recovery&&<section className="recovery-banner" role="alert"><strong>{ru?"Автосохранение приостановлено":"Autosave paused"}</strong><p>{ru?"Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках.":"Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Settings."}</p><button className="button" onClick={()=>fileRef.current?.click()}>{ru?"Импортировать копию":"Import backup"}</button><button className="button" onClick={()=>setView("setup")}>{ru?"Снимки данных":"Recovery snapshots"}</button></section>}
-          {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{displayLabel(locale,"approach",project.approach)} · {displayLabel(locale,"governance",project.governance)}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2>{view==="overview"&&<p>{roleQuestions[locale][workspace.managementRole]}</p>}<p className="muted">{project.objective}</p></div>{(view==="work"||view==="board")&&<div className="button-row work-mode-switch"><button className={`button small ${view==="work"?"primary":""}`} aria-pressed={view==="work"} onClick={()=>setView("work")}>{ru?"Список":"List"}</button><button className={`button small ${view==="board"?"primary":""}`} aria-pressed={view==="board"} onClick={()=>setView("board")}>{ru?"Доска":"Board"}</button></div>}</div>}
-          {workspace.experience==="foundation"&&(()=>{const domain=({overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];const help=knowledgeGuides[domain]??knowledgeGuides.Fundamentals;return <details className="panel foundation-help"><summary>{ru?"Что сделать сейчас":"What to do now"}</summary><h3>{ru?"Зачем это нужно":"Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru?"Действие":"Action"}</h3><p>{help.steps[locale]}</p><h3>{ru?"Что получится":"Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru?"Типичная ошибка":"Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru?"Объяснения терминов":"Term explanations"}</Link></details>})()}
+          {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{displayLabel(locale,"approach",project.approach)} · {displayLabel(locale,"governance",project.governance)}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2>{view==="overview"&&<p>{roleQuestions[locale][workspace.managementRole]}</p>}<p className="muted">{managementRecord?("outcome" in managementRecord?managementRecord.outcome:managementRecord.purpose):project.objective}</p></div>{(view==="work"||view==="board")&&<div className="button-row work-mode-switch"><button className={`button small ${view==="work"?"primary":""}`} aria-pressed={view==="work"} onClick={()=>setView("work")}>{ru?"Список":"List"}</button><button className={`button small ${view==="board"?"primary":""}`} aria-pressed={view==="board"} onClick={()=>setView("board")}>{ru?"Доска":"Board"}</button></div>}</div>}
+          {workspace.experience==="foundation"&&(()=>{const domain=({program:"Program basics",operations:"Metrics",delivery:"Flow",overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];const help=knowledgeGuides[domain]??knowledgeGuides.Fundamentals;return <details className="panel foundation-help"><summary>{ru?"Что сделать сейчас":"What to do now"}</summary><h3>{ru?"Зачем это нужно":"Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru?"Действие":"Action"}</h3><p>{help.steps[locale]}</p><h3>{ru?"Что получится":"Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru?"Типичная ошибка":"Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru?"Объяснения терминов":"Term explanations"}</Link></details>})()}
           {render()}
         </div>
       </main>
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
       {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
-      {palette&&<CommandPalette workspace={workspace} project={project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={setDialog} onProject={selectProject} onEdit={openRecord}/>} 
+      {palette&&<CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={setView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/>} 
       {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}
     </div>

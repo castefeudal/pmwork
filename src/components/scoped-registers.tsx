@@ -5,6 +5,7 @@ import type { Locale, Scope, Workspace } from "@/domain/schemas";
 import { contextProject, contextWorkspace, applyContextWorkspace } from "@/domain/work-scope";
 import { useUrlChoice, useUrlValue } from "./use-url-state";
 import { workspaceRecordUrl, readWorkspaceRecord } from "@/domain/workspace-url";
+import {createTypes} from "./workspace-types";
 import type { CreateType, WorkspaceView } from "./workspace-types";
 import type { EditableKind } from "./record-editor";
 import { WorkView, BoardView, PlanningView, RaidView, PeopleView, FinanceView, ControlView, type ViewProps } from "./workspace-views";
@@ -17,7 +18,7 @@ export function ScopedRegisters({workspace,scope,locale,onChange}:{workspace:Wor
   const ru=locale==="ru",[register,setRegister]=useUrlChoice("register",registers,"work"),[localDialog,setDialog]=useState<CreateType|null>(null),[error,setError]=useState(""),[expanded,setExpanded]=useState(false);
   const [item]=useUrlValue("item"),[kind]=useUrlValue("kind");
   const [create,setCreate]=useUrlValue("create");
-  const dialog=localDialog??(["work","risk","issue","decision","milestone","document"].includes(create)?create as CreateType:null);
+  const dialog=localDialog??(createTypes.includes(create as CreateType)&&create!=="project"?create as CreateType:null);
   const closeCreate=()=>{setDialog(null);setCreate("");};
   useEffect(()=>{if(!dialog)return;const cancel=(event:KeyboardEvent)=>{if(event.key==="Escape"){setDialog(null);setCreate("");}};window.addEventListener("keydown",cancel);return()=>window.removeEventListener("keydown",cancel);},[dialog,setCreate]);
   const project=contextProject(workspace,scope),view=contextWorkspace(workspace,scope);

@@ -27,7 +27,7 @@ export const operationSchema = z.object({
     id, name: z.string().min(2), unit: z.string().min(1), target: z.number().finite(), direction: z.enum(["at-least", "at-most"]),
     observations: z.array(z.object({ at: date, value: z.number().finite() })).default([]), owner: z.string().default(""),
   })).default([]),
-  controls: z.array(z.object({ id, name: z.string().min(2), owner: z.string().default(""), dueDate: date, completedAt: date.optional(), runbook: z.string().default(""), recurrence:z.enum(["once","daily","weekly","monthly"]).default("once"), completions:z.array(z.object({dueDate:date,completedAt:date})).default([]) })).default([]),
+  controls: z.array(z.object({ id, name: z.string().min(2), owner: z.string().default(""), dueDate: date, completedAt: date.optional(), runbook: z.string().default(""), recurrence:z.enum(["once","daily","weekly","monthly"]).default("once"), completions:z.array(z.object({dueDate:date,completedAt:date})).default([]),anchorDay:z.number().int().min(1).max(31).optional() })).default([]),
   incidents: z.array(z.object({ id, title: z.string().min(2), owner: z.string().default(""), openedAt: date, resolvedAt: date.optional(), recurring: z.boolean().default(false), correctiveAction: z.string().default("") })).default([]),
   improvements: z.array(z.object({ id, title: z.string().min(2), owner: z.string().default(""), status: z.enum(["open", "active", "done"]), expectedOutcome: z.string().default("") })).default([]),
   reviews: z.array(z.object({ id, at: date, cadence: z.enum(["daily", "weekly", "monthly"]), findings: z.string().min(2), decision: z.string().default(""), nextAction: z.string().default(""), owner: z.string().default(""),workItemId:id.optional(),decisionId:id.optional() })).default([]),

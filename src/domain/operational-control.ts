@@ -1,3 +1,4 @@
+import {nextOccurrence} from "./recurrence";
 import type {Operation} from "./management-entities";
 /** Advance the scheduled occurrence, preserving missed dates and completion evidence. */
 export function completeControl(control:Operation["controls"][number],at:string):Operation["controls"][number] {
@@ -5,10 +6,6 @@ export function completeControl(control:Operation["controls"][number],at:string)
   if(control.completedAt)return control;
   const completions=[...control.completions,{dueDate:control.dueDate,completedAt:at}];
   if(control.recurrence==="once")return {...control,completedAt:at,completions};
-  const date=new Date(control.dueDate+"T00:00:00Z");
-  if(control.recurrence==="monthly") {
-    const day=date.getUTCDate();date.setUTCDate(1);date.setUTCMonth(date.getUTCMonth()+1);
-    const last=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,0)).getUTCDate();date.setUTCDate(Math.min(day,last));
-  } else date.setUTCDate(date.getUTCDate()+(control.recurrence==="weekly"?7:1));
-  return {...control,dueDate:date.toISOString().slice(0,10),completedAt:undefined,completions};
+  const anchorDay=control.anchorDay??Number(control.dueDate.slice(-2));
+  return {...control,dueDate:nextOccurrence(control.dueDate,control.recurrence,anchorDay),completedAt:undefined,completions,anchorDay};
 }

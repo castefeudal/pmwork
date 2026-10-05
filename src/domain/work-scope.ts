@@ -3,6 +3,7 @@ import { assertWorkspaceGraph } from "./workspace-integrity";
 
 export const scopedCollections = ["workItems","risks","decisions","stakeholders","budgets","documents","milestones","issues","objectives","assumptions","dependencies","iterations","teamMembers","capacityAllocations","changes","vendors","meetings","statusReports","lessons","communications","qualityGates","activities","toolRuns","projectSettings","savedWorkViews","workViewPreferences"] as const;
 export const scopeKey = (scope:Scope) => scope.kind==="project"?scope.id:`@${scope.kind}/${scope.id}`;
+export const workspaceScopes=(workspace:Workspace):Scope[]=>[...workspace.projects.map(row=>({kind:"project" as const,id:row.id})),...workspace.programs.map(row=>({kind:"program" as const,id:row.id})),...workspace.operations.map(row=>({kind:"operation" as const,id:row.id}))];
 export function contextProject(workspace:Workspace,scope:Scope):Project {
   if(scope.kind==="project") {const project=workspace.projects.find(row=>row.id===scope.id);if(!project)throw Error("Unknown project");return project;}
   const record=scope.kind==="program"?workspace.programs.find(row=>row.id===scope.id):workspace.operations.find(row=>row.id===scope.id);

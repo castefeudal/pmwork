@@ -1,5 +1,6 @@
 "use client";
 import {DocumentBodyField} from "./document-body-field";
+import {RecordRelations} from "./record-relations";
 import { useDialogFocus } from "./use-dialog-focus";
 import { removeWorkspaceRecord, updateWork } from "@/domain/workspace-commands";
 
@@ -13,6 +14,7 @@ import { ConfirmationDialog } from "./confirmation-dialog";
 
 export type EditableKind =
   | "project"
+  | "objective"
   | "work"
   | "dependency"
   | "milestone"
@@ -41,6 +43,7 @@ type Field = {
 
 const collectionByKind: Record<EditableKind, keyof Workspace> = {
   project: "projects",
+  objective: "objectives",
   work: "workItems",
   dependency: "dependencies",
   milestone: "milestones",
@@ -62,6 +65,7 @@ const collectionByKind: Record<EditableKind, keyof Workspace> = {
 const titleByKind = {
   ru: {
     project: "проект",
+    objective:"измеримый результат",
     work: "рабочий элемент",
     dependency: "зависимость",
     milestone: "контрольную точку",
@@ -81,6 +85,7 @@ const titleByKind = {
   },
   en: {
     project: "project",
+    objective:"outcome",
     work: "work item",
     dependency: "dependency",
     milestone: "milestone",
@@ -124,6 +129,7 @@ function fieldsFor(
     .filter((item) => item.projectId === projectId && !item.archived)
     .map((item) => ({ value: item.id, label: `${item.id} · ${item.title}` }));
   switch (kind) {
+    case "objective":return [text("description","Измеримый результат","Measurable outcome","textarea"),text("owner","Владелец","Owner"),text("baseline","Исходное значение","Baseline"),text("target","Целевое значение","Target"),text("measure","Способ и единица измерения","Measurement method and unit"),text("actual","Фактическое наблюдение","Actual observation"),text("measuredAt","Дата наблюдения","Observation date","date"),text("dueDate","Дата обзора","Review date","date"),text("deliverableIds","Связанные результаты работы — ID","Linked deliverable IDs","list"),{...text("status","Состояние результата","Outcome status","select"),options:["planned","tracking","achieved","missed"].map((value,index)=>({value,label:(ru?["Запланирован","Измеряется","Достигнут","Не достигнут"]:["Planned","Tracking","Achieved","Missed"])[index]}))}];
     case "project":
       return [
         text("name", "Название", "Name"),
@@ -204,6 +210,7 @@ function fieldsFor(
         text("owner", "Владелец", "Owner"),
         text("contributors", "Участники", "Contributors", "list"),
         text("newReworkReason", "Записать повторную работу — причина", "Record rework — reason", "textarea"),
+        {...text("recurrence","Повторение после выполнения","Repeat after completion","select"),options:["once","daily","weekly","monthly"].map((value,index)=>({value,label:(ru?["Однократно","Ежедневно","Еженедельно","Ежемесячно"]:["Once","Daily","Weekly","Monthly"])[index]}))},
         text("labels", "Метки", "Labels", "list"),
         text("startDate", "Дата начала", "Start date", "date"),
         text("dueDate", "Срок", "Due date", "date"),
@@ -661,7 +668,7 @@ export function RecordEditor({
                 .split(/\n|,/)
                 .map((item) => item.trim())
                 .filter(Boolean)
-            : (["actualDate", "forecastReason", "currency", "revisitDate"].includes(field.name) && raw === "" ? undefined : raw);
+            : (["actualDate", "forecastReason", "currency", "revisitDate","actual","measuredAt"].includes(field.name) && raw === "" ? undefined : raw);
     }
     if (kind === "dependency") {
       const predecessor = String(nextRecord.predecessorId),
@@ -724,9 +731,10 @@ export function RecordEditor({
       nextRecord.history=[...(record.history as unknown[]),...additions];
     }
     if (kind === "document") nextRecord.updatedAt = new Date().toISOString();
-    if (kind === "decision") {
-      const at=new Date().toISOString(),tracked=["question","alternatives","criteria","decision","rationale","owner","date","status","consequences","revisitTrigger","revisitDate","evidenceIds","affectedIds"];
-      if(nextRecord.status==="decided"&&record.status!=="decided")nextRecord.decidedAt=at;
+    if(kind==="objective"&&nextRecord.actual&&!nextRecord.measuredAt){setError(ru?"Укажите дату фактического наблюдения.":"Record the observation date.");return;}
+    if (kind === "decision"||kind==="objective") {
+      const at=new Date().toISOString(),tracked=kind==="decision"?["question","alternatives","criteria","decision","rationale","owner","date","status","consequences","revisitTrigger","revisitDate","evidenceIds","affectedIds"]:["description","owner","baseline","target","measure","actual","measuredAt","dueDate","deliverableIds","status"];
+      if(kind==="decision"&&nextRecord.status==="decided"&&record.status!=="decided")nextRecord.decidedAt=at;
       const changes=tracked.flatMap(field=>JSON.stringify(nextRecord[field])!==JSON.stringify(record[field])?[{at,field,from:record[field]??null,to:nextRecord[field]??null}]:[]);
       nextRecord.history=[...((record.history as unknown[]|undefined)??[]),...changes];
     }
@@ -778,6 +786,7 @@ export function RecordEditor({
   };
   const remove = () => setConfirming(kind === "project" ? "project" : "record");
   const basicFields=new Set(["name","title","question","text","owner","status","date","dueDate","reviewDate","baselineDate","forecastDate","actualDate","priority","predecessorId","successorId","type","startDate","endDate","body","criteria","evidence"]);
+  if(kind==="objective")basicFields.add("description");
   const renderField = (field:Field) => (
             <div
               className={`field ${field.type === "textarea" || field.type === "list" ? "wide" : ""}`}
@@ -848,8 +857,9 @@ export function RecordEditor({
             <X size={18} />
           </button>
         </div>
+        <RecordRelations workspace={workspace} locale={locale} kind={kind} id={id}/>
         <form action={submit} className="form-grid">
-          {kind === "decision" && <details className="wide"><summary>{ru ? "История решения" : "Decision history"} ({((record.history as unknown[]|undefined)??[]).length})</summary><p>{ru ? "Зафиксировано" : "Recorded"}: {String(record.decidedAt??"—")}</p><ul>{((record.history as Array<{at:string;field:string;from:unknown;to:unknown}>|undefined)??[]).slice(-30).reverse().map((entry,index)=><li key={index}>{entry.at} · {entry.field}: {JSON.stringify(entry.from)} → {JSON.stringify(entry.to)}</li>)}</ul></details>}
+          {(kind === "decision"||kind==="objective") && <details className="wide"><summary>{kind==="decision"?(ru ? "История решения" : "Decision history"):(ru?"История измерения":"Measurement history")} ({((record.history as unknown[]|undefined)??[]).length})</summary><p>{ru ? "Зафиксировано" : "Recorded"}: {String(record.decidedAt??record.measuredAt??"—")}</p><ul>{((record.history as Array<{at:string;field:string;from:unknown;to:unknown}>|undefined)??[]).slice(-30).reverse().map((entry,index)=><li key={index}>{entry.at} · {entry.field}: {JSON.stringify(entry.from)} → {JSON.stringify(entry.to)}</li>)}</ul></details>}
           {kind === "work" && <div className="notice wide"><strong>{ru ? "Оценки: исходная → текущая → факт" : "Estimates: original → current → actual"}</strong><p>{String(record.originalEstimate ?? "—")} → {String(record.currentEstimate ?? record.estimate ?? "—")} → {String(record.actualEffort ?? "—")}</p><small>{ru ? `Изменений: ${(record.estimateHistory as unknown[]).length}` : `Changes: ${(record.estimateHistory as unknown[]).length}`}</small></div>}
           {fields.filter(field=>basicFields.has(field.name)).map(renderField)}
           {fields.some(field=>!basicFields.has(field.name))&&<details className="wide"><summary>{ru ? "Дополнительные сведения" : "More details"}</summary><div className="form-grid">{fields.filter(field=>!basicFields.has(field.name)).map(renderField)}</div></details>}

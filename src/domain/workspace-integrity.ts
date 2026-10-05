@@ -9,6 +9,7 @@ export type WorkspaceIntegrityIssue = {
 const parseDate = (value: string | undefined) => {
   if (!value) return null;
   const timestamp = Date.parse(value.length === 10 ? `${value}T00:00:00Z` : value);
+  if(value.length===10&&Number.isFinite(timestamp)&&new Date(timestamp).toISOString().slice(0,10)!==value)return null;
   return Number.isFinite(timestamp) ? timestamp : null;
 };
 
@@ -153,6 +154,8 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
 
   workspace.workItems.forEach((item, index) => {
     sameProject(workById, item.parentId, item.projectId, `workItems[${index}].parentId`, "work");
+    sameProject(workById,item.recurrenceOf,item.projectId,`workItems[${index}].recurrenceOf`,"work");
+    if(item.recurrence&&item.recurrence!=="once"&&(!item.dueDate||!/^\d{4}-\d{2}-\d{2}$/.test(item.dueDate)))add("missing-recurrence-date",`workItems[${index}].dueDate`,"Recurring work needs a scheduled due date");
     sameProject(milestoneById, item.milestoneId, item.projectId, `workItems[${index}].milestoneId`, "milestone");
     sameProject(iterationById, item.iterationId, item.projectId, `workItems[${index}].iterationId`, "iteration");
     sameProject(memberById, item.ownerId, item.projectId, `workItems[${index}].ownerId`, "owner");
@@ -222,7 +225,10 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     sameProject(riskById, issue.relatedRiskId, issue.projectId, `issues[${index}].relatedRiskId`, "risk");
     issue.relatedWorkIds.forEach((id, refIndex) => sameProject(workById, id, issue.projectId, `issues[${index}].relatedWorkIds[${refIndex}]`, "work"));
   });
-  workspace.objectives.forEach((objective, index) => objective.deliverableIds.forEach((id, refIndex) => sameProject(workById, id, objective.projectId, `objectives[${index}].deliverableIds[${refIndex}]`, "work")));
+  workspace.objectives.forEach((objective, index) => {
+    objective.deliverableIds.forEach((id, refIndex) => sameProject(workById, id, objective.projectId, `objectives[${index}].deliverableIds[${refIndex}]`, "work"));
+    if(objective.actual&&!objective.measuredAt)add("missing-measurement-date",`objectives[${index}].measuredAt`,"An actual observation needs its measurement date");
+  });
   workspace.iterations.forEach((iteration, index) => {
     iteration.workItemIds.forEach((id, refIndex) => sameProject(workById, id, iteration.projectId, `iterations[${index}].workItemIds[${refIndex}]`, "work"));
     const start = parseDate(iteration.startDate), end = parseDate(iteration.endDate);
