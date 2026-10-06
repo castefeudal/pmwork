@@ -26,6 +26,7 @@ This is the first role-focused increment. See `docs/MANAGEMENT_OS_STATUS.md` for
 - Disable motion for diagnostic full-page captures and block skipped or flaky tests from producing release evidence.
 - Keep template application disabled until client hydration installs its event handler, preventing a lost first click on cold page loads.
 - Disable motion for all final production-evidence screenshots after the strict release gate caught a transient mobile Chromium capture retry.
+- Update Next.js's transitive `sharp` and libvips binaries to patched 0.35.5 after a newly published high-severity advisory; dependency audit is clean.
 
 ## 2.8.0 — decision-led product experience (2026-10-04)
 
