@@ -32,6 +32,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{__html:"try{var t=localStorage.getItem('pmwork-theme');document.documentElement.dataset.theme=t?(t==='dark'?'dark':'light'):(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}"}}/>
+      </head>
       <body className="local-fonts">
         {children}
         <PwaRegister />

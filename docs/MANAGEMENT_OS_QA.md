@@ -19,3 +19,5 @@ Local Windows candidate runs encountered two screenshot timeouts that passed on 
 ## Unfulfilled human evidence
 
 No practitioner sessions, comparative completion-rate findings, assistive-technology certification or field CWV measurements are claimed. [USABILITY_PROTOCOL.md](USABILITY_PROTOCOL.md) and [ACCESSIBILITY.md](ACCESSIBILITY.md) define the pending manual work.
+
+Theme boot repair: the saved/system theme is applied before first paint. This resolves WebKit retaining light panel backgrounds after hydration with dark foregrounds. Twelve repeated Program checks (RU/EN, light/dark) passed in desktop WebKit without retries. Local Windows mobile WebKit reports an additional 125% display scale (393px emulated viewport, 314px innerWidth, DPR 3.75); its overflow failure is recorded separately from Linux CI. Final publication still requires the full Linux matrix on the repaired commit.
