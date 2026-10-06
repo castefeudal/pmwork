@@ -173,7 +173,7 @@ test("project switching and validated backup replacement",async({page})=>{
 for(const locale of ["ru","en"]) {
  for(const path of ["","knowledge","methods","templates","tools"]) test(`public visual review ${locale} ${path||"landing"}`,async({page},testInfo)=>{
   await page.goto(route(`/${locale}/${path?path+"/":""}`));await expect(page.locator("main")).toBeVisible();
-  await page.screenshot({path:`test-results/public-${testInfo.project.name}-${locale}-${path||"landing"}.png`,fullPage:true});
+  await page.screenshot({path:`test-results/public-${testInfo.project.name}-${locale}-${path||"landing"}.png`,fullPage:true,animations:"disabled"});
   if(path === "knowledge") {
     const guide=page.locator("article").filter({has:page.getByRole("heading",{name:locale === "ru" ? "Основы" : "Fundamentals",exact:true})});
     await guide.getByRole("link",{name:locale === "ru" ? "Открыть рабочий модуль" : "Open working module"}).click();
