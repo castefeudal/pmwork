@@ -82,6 +82,13 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await expect(page.locator(".management-center")).toContainText(ru?"Недостаточно данных":"insufficient evidence");
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
     await page.screenshot({path:testInfo.outputPath(`program-${locale}.png`),fullPage:true,animations:"disabled"});
+    for(const next of [theme==="dark"?"light":"dark",theme]){
+      const toggle=page.getByRole("button",{name:/^(Светлая тема|Тёмная тема|Use light theme|Use dark theme)$/});
+      await toggle.focus();await page.keyboard.press("Enter");
+      await expect(page.locator("html")).toHaveAttribute("data-theme",next);
+      await expect(toggle).toBeFocused();
+      expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
+    }
   });
 });
 
