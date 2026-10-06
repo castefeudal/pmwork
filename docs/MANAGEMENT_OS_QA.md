@@ -33,3 +33,5 @@ The quality gate for PR source afc0235 passed on the GitHub merge candidate f41b
 The Pages gate now combines root cross-browser evidence from the same workflow SHA with the GitHub Pages tested export, and the live check requires that root result before a production run passes.
 
 The first Pages validation reported one mobile Chromium retry while capturing the full-page RU templates visual-review screenshot (`Page.captureScreenshot` transient protocol error; retry passed). Diagnostic screenshots now disable animations. Release evidence and the post-deployment check reject any skipped or flaky browser result so such retries cannot silently produce a release.
+
+The stricter gate then exposed an independent cold-load retry in the 360px template-document test: its first click could land before React hydration attached the template handler. Template application stays disabled until hydration completes; the targeted Chromium regression passed five consecutive runs locally.

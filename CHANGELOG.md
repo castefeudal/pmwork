@@ -24,6 +24,7 @@ This is the first role-focused increment. See `docs/MANAGEMENT_OS_STATUS.md` for
 - Update transitive `source-map-js` to patched 1.2.2; the high-severity dependency audit now passes.
 - Publish root cross-browser results alongside the GitHub Pages evidence and require them in the post-deployment live check.
 - Disable motion for diagnostic full-page captures and block skipped or flaky tests from producing release evidence.
+- Keep template application disabled until client hydration installs its event handler, preventing a lost first click on cold page loads.
 
 ## 2.8.0 — decision-led product experience (2026-10-04)
 
