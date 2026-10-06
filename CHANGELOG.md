@@ -20,6 +20,9 @@
 
 This is the first role-focused increment. See `docs/MANAGEMENT_OS_STATUS.md` for the remaining transformation scope and validation limits.
 
+- Apply the saved/system theme before first paint and refresh inherited theme styles on switch while restoring keyboard focus.
+- Update transitive `source-map-js` to patched 1.2.2; the high-severity dependency audit now passes.
+
 ## 2.8.0 — decision-led product experience (2026-10-04)
 
 - Sharpened the landing promise around moving from project noise to a clear next decision, and made the five-step Signal → Decision → Action → Control → Result cycle explicit.

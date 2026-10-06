@@ -27,3 +27,5 @@ Theme switching additionally rebuilds style inheritance synchronously and restor
 Visual review for c38108e: the fresh-context update plus two repeat comparisons completed successfully (16 expected, 0 unexpected, 0 flaky, 0 skipped). SHA-256 comparison of all 144 PNGs found exactly four changed references: the reviewed RU/EN desktop/mobile dark onboarding surfaces. Only those four dark-theme references were accepted; no threshold changed.
 
 Security maintenance: updated transitive source-map-js to patched 1.2.2 after GitHub Advisory GHSA-68fv-2mgg-jv7q blocked npm audit. npm audit --audit-level=high now reports zero vulnerabilities; installed Next/PostCSS and Vitest/Vite dependency trees resolve the patched release.
+
+The quality gate for PR source afc0235 passed on the GitHub merge candidate f41ba51ed1d562038ec239893e0d9c981b168689: 145/145 unit, 308/308 Chromium/mobile, and 66/66 Firefox/WebKit/mobile WebKit tests, all with zero skipped, unexpected or flaky results. Both root and `/pmwork` exports passed the static PWA validation and performance budgets. These PR candidate results do not substitute for the required production run on the resulting main commit.
