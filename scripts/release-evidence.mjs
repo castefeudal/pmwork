@@ -8,7 +8,7 @@ const unit=read('quality-evidence/unit.json');
 const e2e=read('quality-evidence/e2e.json');
 const performance=read('test-results/performance-bundles.json');
 const cross=fs.existsSync('quality-evidence/cross-browser.json')?read('quality-evidence/cross-browser.json'):null;
-if(!unit.success||unit.numFailedTests||e2e.stats.unexpected||(cross&&cross.stats.unexpected))throw Error('Failed tests cannot produce release evidence');
+if(!unit.success||unit.numFailedTests||e2e.stats.unexpected||e2e.stats.flaky||e2e.stats.skipped||(cross&&(cross.stats.unexpected||cross.stats.flaky||cross.stats.skipped)))throw Error('Failed, flaky or skipped tests cannot produce release evidence');
 const release=read('out/release.json');
 if(process.env.GITHUB_SHA&&release.commit!==sha)throw Error('Export belongs to a different commit');
 const lab=[];

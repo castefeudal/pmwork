@@ -31,3 +31,7 @@ Security maintenance: updated transitive source-map-js to patched 1.2.2 after Gi
 The quality gate for PR source afc0235 passed on the GitHub merge candidate f41ba51ed1d562038ec239893e0d9c981b168689: 145/145 unit, 308/308 Chromium/mobile, and 66/66 Firefox/WebKit/mobile WebKit tests, all with zero skipped, unexpected or flaky results. Both root and `/pmwork` exports passed the static PWA validation and performance budgets. These PR candidate results do not substitute for the required production run on the resulting main commit.
 
 The Pages gate now combines root cross-browser evidence from the same workflow SHA with the GitHub Pages tested export, and the live check requires that root result before a production run passes.
+
+The first Pages validation reported one mobile Chromium retry while capturing the full-page RU templates visual-review screenshot (`Page.captureScreenshot` transient protocol error; retry passed). Diagnostic screenshots now disable animations. Release evidence and the post-deployment check reject any skipped or flaky browser result so such retries cannot silently produce a release.
+
+The stricter gate then exposed an independent cold-load retry in the 360px template-document test: its first click could land before React hydration attached the template handler. Template application stays disabled until hydration completes; the targeted Chromium regression passed five consecutive runs locally.

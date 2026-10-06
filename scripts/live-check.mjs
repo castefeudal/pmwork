@@ -13,7 +13,7 @@ if (release?.commit !== process.env.GITHUB_SHA) throw new Error(`Live release do
 const evidenceResponse=await fetch(new URL(`quality-evidence.json?check=${Date.now()}`,base),{signal:AbortSignal.timeout(15000),cache:'no-store'});
 if(!evidenceResponse.ok)throw new Error('Published release evidence is unavailable');
 const evidence=await evidenceResponse.json();
-if(evidence.commit!==release.commit||evidence.unit.failed||evidence.browser.unexpected||!evidence.unit.passed||!evidence.browser.expected||evidence.crossBrowser?.base!=='root'||!evidence.crossBrowser.expected||evidence.crossBrowser.unexpected||evidence.crossBrowser.flaky||evidence.crossBrowser.skipped)throw new Error('Published evidence does not verify all production quality gates for this commit');
+if(evidence.commit!==release.commit||evidence.unit.failed||evidence.browser.unexpected||evidence.browser.flaky||evidence.browser.skipped||!evidence.unit.passed||!evidence.browser.expected||evidence.crossBrowser?.base!=='root'||!evidence.crossBrowser.expected||evidence.crossBrowser.unexpected||evidence.crossBrowser.flaky||evidence.crossBrowser.skipped)throw new Error('Published evidence does not verify all stable production quality gates for this commit');
 const workerResponse = await fetch(new URL(`sw.js?check=${Date.now()}`, base), {signal: AbortSignal.timeout(15000), cache:'no-store'});
 if (!workerResponse.ok) throw new Error(`Published service worker: ${workerResponse.status}`);
 const worker = await workerResponse.text();
