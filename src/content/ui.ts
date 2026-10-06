@@ -12,10 +12,10 @@ const translations = {
       about: "О проекте",
     },
     hero: {
-      eyebrow: "Практическая система руководителя проекта",
+      eyebrow: "Система управления проектами, программами, поставкой и операциями",
       title: "Понимайте, что происходит. Решайте, что делать дальше.",
       lead: "Ведите работу, принимайте решения, управляйте сроками, рисками и результатами. Выводы объяснимы, данные хранятся на вашем устройстве.",
-      open: "Создать / открыть проект",
+      open: "Открыть рабочее пространство",
       choose: "Подобрать подход",
     },
     workspace: {
@@ -60,10 +60,10 @@ const translations = {
       about: "About",
     },
     hero: {
-      eyebrow: "Practical PM operating system",
+      eyebrow: "Project, Program, Delivery & Operations Management",
       title: "Understand what is happening. Decide what to do next.",
       lead: "Manage work, make decisions, control schedule and risk, and learn from project evidence. No account or server required; data stays on your device.",
-      open: "Create / open project",
+      open: "Open workspace",
       choose: "Choose an approach",
     },
     workspace: {

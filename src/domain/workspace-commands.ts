@@ -1,4 +1,5 @@
-import { workspaceSchema,type Workspace,type WorkItem } from './schemas';
+import { workspaceSchema,workItemSchema,type Workspace,type WorkItem } from './schemas';
+import {nextOccurrence} from './recurrence';
 import { assertWorkspaceGraph } from './workspace-integrity';
 import { buildStatusReport } from './status-report';
 function finish(workspace:Workspace,projectId:string,type:string,message:string):Workspace {
@@ -20,6 +21,11 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
   else {ownerPatch.ownerId=undefined;ownerPatch.ownerLabel=ownerPatch.owner??item.ownerLabel??item.owner;}
  }
  const at=new Date().toISOString(),status=patch.status??item.status,statusChanged=status!==item.status;
+ const blocked=status==='done'?false:patch.blocked??item.blocked;ownerPatch.blocked=blocked;
+ if(blocked!==item.blocked) {
+  if(blocked)ownerPatch.blockedIntervals=[...(item.blockedIntervals??[]),{from:at}];
+  else if(item.blockedIntervals?.at(-1)&&!item.blockedIntervals.at(-1)!.to)ownerPatch.blockedIntervals=item.blockedIntervals.map((entry,index)=>index===item.blockedIntervals!.length-1?{...entry,to:at}:entry);
+ }
  const requestedEstimate=patch.currentEstimate??patch.estimate;
  if(requestedEstimate!==undefined&&requestedEstimate!==item.currentEstimate){
   ownerPatch.originalEstimate=item.originalEstimate??item.currentEstimate??item.estimate??requestedEstimate;
@@ -30,7 +36,14 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
  const enteredActive=statusChanged&&['in-progress','review'].includes(status);
  const startedAt=item.startedAt??(enteredActive?at:undefined);
  const statusHistory=statusChanged?[...(item.statusHistory??[]),{at,from:item.status,to:status}]:item.statusHistory;
- return finish({...workspace,workItems:workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,startedAt,statusHistory,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x)},item.projectId,'work-updated',item.title);
+ const updatedItems=workspace.workItems.map(x=>x.id===id?{...x,...ownerPatch,id:x.id,projectId:x.projectId,updatedAt:at,startedAt,statusHistory,done:status==='done',completedAt:status==='done'?x.completedAt??at:undefined}:x);
+ const updated=updatedItems.find(row=>row.id===id)!,cadence=updated.recurrence??'once';
+ if(statusChanged&&status==='done'&&cadence!=='once'&&!workspace.workItems.some(row=>row.recurrenceOf===id)) {
+  const anchor=updated.recurrenceAnchor??Number(updated.dueDate?.slice(-2));
+  const dueDate=nextOccurrence(updated.dueDate??'',cadence,anchor);
+  updatedItems.push(workItemSchema.parse({...updated,id:`WORK-${crypto.randomUUID()}`,status:'ready',done:false,blocked:false,blockerReason:undefined,blockedIntervals:undefined,reworkEvidence:undefined,actualEffort:undefined,completedAt:undefined,startedAt:undefined,statusHistory:[],estimateHistory:[],iterationId:undefined,createdAt:at,updatedAt:at,recurrenceOf:id,recurrenceAnchor:anchor,dueDate,archived:false}));
+ }
+ return finish({...workspace,workItems:updatedItems},item.projectId,'work-updated',item.title);
 }
 export const changeWorkStatus=(w:Workspace,id:string,status:WorkItem['status'])=>updateWork(w,id,{status});
 export const archiveWork=(w:Workspace,id:string)=>updateWork(w,id,{archived:true});
@@ -80,12 +93,12 @@ export function approveChange(w:Workspace,id:string,approver:string,decision:str
 
 
 export type RemovableRecordKind =
- | 'work' | 'dependency' | 'milestone' | 'iteration' | 'risk' | 'issue'
+ | 'work' | 'objective' | 'dependency' | 'milestone' | 'iteration' | 'risk' | 'issue'
  | 'assumption' | 'decision' | 'stakeholder' | 'team' | 'communication'
  | 'vendor' | 'budget' | 'change' | 'quality' | 'document';
 
 const removableCollectionByKind = {
- work:'workItems',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
+ work:'workItems',objective:'objectives',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
  risk:'risks',issue:'issues',assumption:'assumptions',decision:'decisions',
  stakeholder:'stakeholders',team:'teamMembers',communication:'communications',
  vendor:'vendors',budget:'budgets',change:'changes',quality:'qualityGates',document:'documents',
@@ -109,6 +122,7 @@ export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:st
    workItems:next.workItems.map(item=>({
     ...item,
     parentId:item.parentId===id?undefined:item.parentId,
+    recurrenceOf:item.recurrenceOf===id?undefined:item.recurrenceOf,
     dependencies:item.dependencies.filter(ref=>ref!==id),
    })),
    dependencies:next.dependencies.filter(dep=>!removedDependencyIds.has(dep.id)),
@@ -125,6 +139,7 @@ export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:st
    vendors:next.vendors.map(vendor=>({...vendor,riskIds:vendor.riskIds.filter(ref=>ref!==id)})),
   };
  }
+ if(kind==='objective')next={...next,workItems:next.workItems.map(item=>({...item,objectiveIds:item.objectiveIds.filter(ref=>ref!==id)}))};
  if(kind==='milestone'){
   next={...next,
    workItems:next.workItems.map(item=>item.milestoneId===id?{...item,milestoneId:undefined}:item),
@@ -146,6 +161,8 @@ export function removeWorkspaceRecord(w:Workspace,kind:RemovableRecordKind,id:st
  }
 
  next={...next,
+  operations:next.operations.map(operation=>({...operation,reviews:operation.reviews.map(review=>({...review,workItemId:review.workItemId===id?undefined:review.workItemId,decisionId:review.decisionId===id?undefined:review.decisionId}))})),
+  decisions:next.decisions.map(decision=>({...decision,evidenceIds:decision.evidenceIds?.filter(ref=>ref!==id),affectedIds:decision.affectedIds?.filter(ref=>ref!==id)})),
   documents:next.documents.map(document=>({...document,relatedIds:document.relatedIds.filter(ref=>ref!==id)})),
   toolRuns:next.toolRuns.map(run=>({...run,appliedRecordIds:run.appliedRecordIds.filter(ref=>ref!==id)})),
  };

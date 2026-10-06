@@ -22,7 +22,7 @@ describe("workspace interactions", () => {
     fireEvent(window, new Event("pagehide"));
     expect(localStorage.getItem("pmwork:workspace:v3")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /Start my project/i }));
-    expect(screen.getByRole("dialog", { name: "Create project" })).toBeTruthy();
+    expect(await screen.findByRole("dialog", { name: "Create project" })).toBeTruthy();
     expect(screen.queryByText("MARKOVMADE Digital Product Launch")).toBeNull();
   });
 
@@ -36,7 +36,7 @@ describe("workspace interactions", () => {
     fireEvent.click(addTrigger!);
     const add=screen.getByRole("dialog",{name:"Добавить"});
     fireEvent.click(within(add).getByRole("button",{name:"Работа"}));
-    fireEvent.change(screen.getByLabelText("Название"), {target: { value: "Component QA item" }});
+    fireEvent.change(await screen.findByLabelText("Название"), {target: { value: "Component QA item" }});
     fireEvent.click(screen.getByRole("button", { name: "Создать" }));
     await waitFor(() => expect(screen.getAllByText("Component QA item").length).toBeGreaterThan(0));
   });
@@ -69,7 +69,7 @@ describe("workspace interactions", () => {
     await openDemo();
     await screen.findAllByRole("button", { name: "Work" });
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
-    expect(screen.getByRole("dialog", { name: "Command palette" })).toBeTruthy();
+    expect(await screen.findByRole("dialog", { name: "Command palette" })).toBeTruthy();
   });
 
   it("keeps Settings focused on settings rather than operational record creation", async () => {
@@ -94,7 +94,7 @@ describe("workspace interactions", () => {
     await waitFor(() => expect(screen.getByText("Delivery lead")).toBeTruthy());
     const editButtons = screen.getAllByRole("button", { name: "Edit" });
     fireEvent.click(editButtons[editButtons.length - 1]!);
-    expect(screen.getByRole("dialog", { name: "Edit dependency" })).toBeTruthy();
+    expect(await screen.findByRole("dialog", { name: "Edit dependency" })).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Owner"), {target: { value: "Program lead" }});
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
     await waitFor(() => expect(screen.getByText("Program lead")).toBeTruthy());

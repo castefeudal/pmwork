@@ -44,7 +44,7 @@ test('template detail preserves destination, apply and undo',async({page})=>{
  await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:/Explore a completed example/}).click();await expect(page.locator('.workspace-shell')).toBeVisible();
  await page.goto(route('/en/templates/'));const card=page.locator('article.catalog-card').first();await card.getByRole('link',{name:'Open template'}).click();
  await expect(page).toHaveURL(/templates\/.+\/$/);await page.getByRole('button',{name:'Use template'}).first().click();
- const dialog=page.getByRole('dialog');await dialog.getByLabel('Project',{exact:true}).selectOption('campaign');await dialog.getByRole('button',{name:'Apply',exact:true}).click();
+ const dialog=page.getByRole('dialog');await dialog.getByLabel('Working context',{exact:true}).selectOption('campaign');await dialog.getByRole('button',{name:'Apply',exact:true}).click();
  await expect(page.getByRole('status')).toContainText('Autumn Education Campaign');await expect(page.getByRole('link',{name:'Open',exact:true})).toHaveAttribute('href',/project=campaign/);
  await page.getByRole('button',{name:'Undo',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Application undone');
 });

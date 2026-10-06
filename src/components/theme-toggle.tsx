@@ -1,6 +1,20 @@
 "use client";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+function applyTheme(dark: boolean) {
+  const root = document.documentElement;
+  const theme = dark ? "dark" : "light";
+  if (root.dataset.theme === theme) return;
+  const focused = document.activeElement;
+  const display = root.style.display;
+  root.dataset.theme = theme;
+  // Rebuild style inheritance: WebKit can retain light panel variables
+  // while updating descendant text after a theme attribute change.
+  root.style.display = "none";
+  void root.offsetHeight;
+  root.style.display = display;
+  if (focused instanceof HTMLElement) focused.focus({preventScroll:true});
+}
 export function ThemeToggle({locale = "en"}: {locale?: "ru" | "en"}) {
   const [dark, setDark] = useState(false);
   useEffect(() => {
@@ -13,7 +27,7 @@ export function ThemeToggle({locale = "en"}: {locale?: "ru" | "en"}) {
         typeof window.matchMedia === "function" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches,
       value = saved ? saved === "dark" : system;
-    document.documentElement.dataset.theme = value ? "dark" : "light";
+    applyTheme(value);
     const frame =
       typeof requestAnimationFrame === "function"
         ? requestAnimationFrame(() => setDark(value))
@@ -26,7 +40,7 @@ export function ThemeToggle({locale = "en"}: {locale?: "ru" | "en"}) {
   const toggle = () => {
     const value = !dark;
     setDark(value);
-    document.documentElement.dataset.theme = value ? "dark" : "light";
+    applyTheme(value);
     try {
       localStorage.setItem("pmwork-theme", value ? "dark" : "light");
     } catch {}

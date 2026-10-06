@@ -1,3 +1,4 @@
+import {ContentBasis} from "@/components/content-basis";
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import {methods,sources} from '@/content/catalog';
@@ -22,6 +23,7 @@ export default async function Page({params}:{params:Promise<{locale:string;slug:
    <section><h2>{ru?'Как адаптировать':'Tailoring'}</h2><p>{m.tailoring[l]}</p></section>
    <section><h2>{ru?'Сочетания':'Combinations'}</h2><p>{m.combinations[l]}</p></section>
    <section><h2>{ru?'Источники':'Sources'}</h2><ul>{m.sourceIds.map(id=>{const s=sources.find(x=>x.id===id);return s?<li key={id}><a href={s.url} target="_blank" rel="noreferrer">{s.organization} · {s.title} · {s.version}</a></li>:null})}</ul></section>
+   <ContentBasis locale={l} sourceIds={m.sourceIds}/>
   </article><aside className="article-aside panel"><h2>{ru?'Использовать в проекте':'Use in a project'}</h2><p>{ru?'Сначала проверьте контекст. Высокий score означает близость профиля проекта к допущениям подхода, а не прогноз успеха.':'Check context first. A high score means the project profile is close to the approach assumptions; it is not a success forecast.'}</p><Link className="button primary" href={`/${l}/tools/?tool=fit`}>{ru?'Сравнить подходы':'Compare approaches'}</Link><Link className="button" href={`/${l}/templates/`}>{ru?'Подобрать рабочий шаблон':'Choose a working template'}</Link></aside></div>
  </main><Footer locale={l}/></div>
 }

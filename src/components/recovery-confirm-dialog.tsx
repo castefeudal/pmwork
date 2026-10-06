@@ -23,6 +23,8 @@ export function RecoveryConfirmDialog({locale,candidate,snapshotLabel,replacing,
         <dl className="recovery-summary">
           <div><dt>{ru?"Схема":"Schema"}</dt><dd>v{candidate.schemaVersion}</dd></div>
           <div><dt>{ru?"Проекты":"Projects"}</dt><dd>{candidate.projects.length}</dd></div>
+          <div><dt>{ru?"Программы":"Programs"}</dt><dd>{candidate.programs.length}</dd></div>
+          <div><dt>{ru?"Операции":"Operations"}</dt><dd>{candidate.operations.length}</dd></div>
           <div><dt>{ru?"Работа":"Work items"}</dt><dd>{candidate.workItems.length}</dd></div>
           <div><dt>{ru?"Риски":"Risks"}</dt><dd>{candidate.risks.length}</dd></div>
         </dl>

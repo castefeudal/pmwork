@@ -1,0 +1,164 @@
+import {test,expect} from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import {demoWorkspace,emptyWorkspace} from "../../src/data/demo";
+import {programSchema,operationSchema} from "../../src/domain/management-entities";
+import {workItemSchema} from "../../src/domain/schemas";
+import {route,navigateWorkspace} from "./support";
+
+for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as const) test.describe(`${locale} ${theme}`,()=>{
+  const ru=locale==="ru";
+  test.beforeEach(async({page})=>{await page.emulateMedia({colorScheme:theme});await page.addInitScript(theme=>localStorage.setItem("pmwork-theme",theme),theme);});
+  test(`role personalization remains independent ${locale}`,async({page})=>{
+    const w=demoWorkspace(locale);
+    await page.addInitScript(w=>localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w)),w);
+    await page.goto(route(`/${locale}/workspace/?view=setup`));
+    await page.getByLabel(ru?"Основная роль":"Primary role",{exact:true}).selectOption("delivery");
+    await expect(page.locator(".workspace-shell")).toHaveClass(/experience-practitioner/);
+    await expect(page.locator(".workspace-shell")).toHaveClass(/density-comfortable/);
+    await navigateWorkspace(page,ru?"Поставка":"Delivery");
+    await expect(page.getByText(/n=0/)).toBeVisible();
+    await expect(page.locator(".management-center")).toContainText(ru?"Недостаточно данных":"Insufficient evidence");
+    await page.keyboard.press("Control+k");
+    await expect(page.getByRole("dialog",{name:ru?"Командная палитра":"Command palette"})).toBeVisible();
+    await page.keyboard.press("Escape");
+  });
+  test(`operation without artificial project supports evidence and controls ${locale}`,async({page},testInfo)=>{
+    const w=emptyWorkspace(locale);w.managementRole="operations";
+    w.operations=[operationSchema.parse({id:"support",name:ru?"Поддержка клиентов":"Customer support",purpose:ru?"Восстановление сервиса":"Restore service",metrics:[{id:"response",name:ru?"Время ответа":"Response time",unit:"h",target:4,direction:"at-most"}],controls:[{id:"audit",name:ru?"Проверка очереди":"Queue check",dueDate:"2026-10-01"}]})];
+    await page.clock.setFixedTime(new Date("2026-10-06T12:00:00Z"));
+    await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+    await page.goto(route(`/${locale}/workspace/`));
+    await expect(page.getByRole("heading",{name:w.operations[0].name})).toBeVisible();
+    await expect(page.locator(".management-center")).toContainText(ru?"Состояние неизвестно":"Status is unknown");
+    await page.getByText(`${w.operations[0].metrics[0].name} · ≤ 4 h`,{exact:true}).click();
+    await page.getByLabel(ru?"Значение":"Value",{exact:true}).fill("6");
+    await page.getByRole("button",{name:ru?"Записать измерение":"Record observation"}).click();
+    await expect(page.locator(".management-center")).toContainText("6 h > 4 h");
+    await page.getByRole("button",{name:ru?"Отметить выполнение":"Record completion"}).click();
+    await expect(page.locator(".management-center")).toContainText(ru?"Выполнено":"Completed");
+    const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await page.screenshot({path:testInfo.outputPath(`operations-${locale}.png`),fullPage:true,animations:"disabled"});
+    await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).operations[0].metrics[0].observations.length;})).toBe(1);
+    await page.reload();
+    await expect(page.locator(".management-center")).toContainText("6 h > 4 h");
+  });
+  test(`operation shared work persists without project ${locale}`,async({page})=>{
+    const w=emptyWorkspace(locale);w.managementRole="operations";
+    w.operations=[operationSchema.parse({id:"service",name:"Customer support",purpose:"Restore service"})];
+    await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+    await page.goto(route(`/${locale}/workspace/?view=operations&context=service`));
+    await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
+    await page.getByRole("button",{name:ru?"Добавить рабочий элемент":"Add work item",exact:true}).click();
+    const dialog=page.getByRole("dialog",{name:ru?"Новый рабочий элемент":"New work item"});
+    await dialog.getByLabel(ru?"Название":"Title",{exact:true}).fill("Resolve customer request");
+    await dialog.getByRole("button",{name:ru?"Создать":"Create",exact:true}).click();
+    await expect(dialog).toBeHidden();
+    await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.length;})).toBe(1);
+    const stored=await page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return raw.workspace??raw;});
+    expect(stored.projects).toEqual([]);expect(stored.workItems[0].workScope).toEqual({kind:"operation",id:"service"});
+    await page.reload();
+    await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
+    await expect(page.getByRole("button",{name:/Resolve customer request/}).filter({visible:true})).toBeVisible();
+    expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
+    await page.getByRole("button",{name:ru?"Настройки":"Settings",exact:true}).click();
+    await page.getByLabel(ru?"Опыт":"Experience",{exact:true}).selectOption("advanced");
+    await page.getByLabel(ru?"Плотность":"Density",{exact:true}).selectOption("compact");
+    await page.keyboard.press("Control+k");
+    const palette=page.getByRole("dialog",{name:ru?"Командная палитра":"Command palette"});
+    await palette.getByRole("combobox").fill("Resolve customer request");
+    await palette.getByRole("option",{name:/Resolve customer request/}).click();
+    await expect(page.getByRole("dialog",{name:ru?"Изменить: рабочий элемент":"Edit work item"})).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toBeHidden();
+  });
+  test(`program links shared projects and explains missing benefit evidence ${locale}`,async({page},testInfo)=>{
+    const w=demoWorkspace(locale);w.managementRole="program";
+    w.programs=[programSchema.parse({id:"transformation",name:ru?"Трансформация сервиса":"Service transformation",outcome:ru?"Сократить время ожидания":"Reduce waiting time",projectIds:w.projects.slice(0,2).map(row=>row.id),benefits:[{id:"waiting",name:ru?"Время ожидания":"Waiting time"}]})];
+    await page.addInitScript(w=>localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w)),w);
+    await page.goto(route(`/${locale}/workspace/?view=program&context=transformation`));
+    await expect(page.getByRole("heading",{name:w.programs[0].name})).toBeVisible();
+    await expect(page.getByRole("checkbox",{name:w.projects[0].name,exact:true})).toBeChecked();
+    await expect(page.locator(".management-center")).toContainText(ru?"Недостаточно данных":"insufficient evidence");
+    const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
+    await page.screenshot({path:testInfo.outputPath(`program-${locale}.png`),fullPage:true,animations:"disabled"});
+    for(const next of [theme==="dark"?"light":"dark",theme]){
+      const toggle=page.getByRole("button",{name:/^(Светлая тема|Тёмная тема|Use light theme|Use dark theme)$/});
+      await toggle.focus();await page.keyboard.press("Enter");
+      await expect(page.locator("html")).toHaveAttribute("data-theme",next);
+      await expect(toggle).toBeFocused();
+      expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze()).violations).toEqual([]);
+    }
+  });
+});
+
+
+test("operational review creates traceable actions and recurring work",async({page})=>{
+  const workspace=emptyWorkspace("en");workspace.managementRole="operations";
+  workspace.operations=[operationSchema.parse({id:"queue",name:"Customer queue",purpose:"Restore service"})];
+  await page.clock.setFixedTime(new Date("2026-10-06T12:00:00Z"));
+  await page.addInitScript(workspace=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(workspace));},workspace);
+  await page.goto(route("/en/workspace/?view=operations&context=queue"));
+  await page.getByText("Record operations review",{exact:true}).click();
+  await page.getByLabel("Evidence-based findings",{exact:true}).fill("Repeated queue response delays");
+  await page.getByLabel("Open decision question",{exact:true}).fill("Increase daily capacity?");
+  await page.getByLabel("Next action",{exact:true}).fill("Investigate repeated queue delay");
+  await page.getByLabel("Action owner",{exact:true}).fill("Alex");
+  await page.getByRole("button",{name:"Save review and linked records",exact:true}).click();
+  await page.getByRole("button",{name:"Open action",exact:true}).click();
+  const editor=page.getByRole("dialog",{name:"Edit work item"});
+  await editor.getByLabel("Due date",{exact:true}).fill("2026-10-07");
+  await editor.getByText("More details",{exact:true}).click();
+  await editor.getByLabel("Repeat after completion",{exact:true}).selectOption("weekly");
+  await editor.getByLabel("Record rework — reason",{exact:true}).fill("Repeated verification after defect");
+  await editor.getByRole("button",{name:"Save",exact:true}).click();
+  await expect(editor).toBeHidden();
+  await page.getByRole("button",{name:"Open action",exact:true}).click();
+  await editor.getByLabel("Status",{exact:true}).selectOption("done");
+  await editor.getByRole("button",{name:"Save",exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.length;})).toBe(2);
+  const stored=await page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return raw.workspace??raw;});
+  expect(stored.projects).toEqual([]);expect(stored.decisions[0].evidenceIds).toEqual([stored.operations[0].reviews[0].id]);
+  const original=stored.workItems.find((row:{done:boolean})=>row.done),next=stored.workItems.find((row:{done:boolean})=>!row.done);
+  expect(next.recurrenceOf).toBe(original.id);expect(next.dueDate).toBe("2026-10-14");expect(original.reworkEvidence[0].reason).toBe("Repeated verification after defect");
+  await page.reload();await expect(page.getByRole("heading",{name:"Customer queue"})).toBeVisible();
+  await page.goto(route("/en/templates/project-charter/"));
+  await page.getByRole("button",{name:"Use template",exact:true}).first().click();
+  const templateDialog=page.getByRole("dialog");
+  await expect(templateDialog.getByLabel("Working context",{exact:true})).toHaveValue("@operation/queue");
+  await expect(templateDialog).toContainText("Ongoing process; no end date required.");
+  await templateDialog.getByRole("button",{name:"Apply",exact:true}).click();
+  await page.getByRole("link",{name:"Open",exact:true}).click();
+  await expect(page.getByRole("dialog",{name:"Edit document"})).toBeVisible();
+  const withDocument=await page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return raw.workspace??raw;});
+  expect(withDocument.projects).toEqual([]);expect(withDocument.documents[0].workScope).toEqual({kind:"operation",id:"queue"});
+  await page.goto(route("/en/playbooks/?q=Project%20is%20late"));
+  const card=page.locator("article").first();
+  await card.getByRole("button",{name:"Apply to a work issue",exact:true}).click();
+  await page.getByRole("dialog").getByRole("button",{name:"Create issue",exact:true}).click();
+  await card.getByRole("link",{name:"Open issue",exact:true}).click();
+  await expect(page.getByRole("dialog",{name:"Edit issue"})).toBeVisible();
+});
+
+
+test("program navigation keeps work in the selected shared context",async({page})=>{
+ const w=demoWorkspace("en");w.managementRole="program";w.programs=[programSchema.parse({id:"coordination",name:"Service program",outcome:"Reduce waiting",projectIds:[w.projects[0].id]})];
+ await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+ await page.goto(route("/en/workspace/?view=program&context=coordination"));
+ await navigateWorkspace(page,"Work");await expect(page).toHaveURL(/view=program.*register=work/);
+ await page.getByRole("button",{name:"Add work item",exact:true}).click();
+ const create=page.getByRole("dialog",{name:"New work item"});await create.getByLabel("Title",{exact:true}).fill("Coordinate shared benefit measurement");await create.getByRole("button",{name:"Create",exact:true}).click();
+ await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.find((row:{title:string})=>row.title==="Coordinate shared benefit measurement")?.workScope;})).toEqual({kind:"program",id:"coordination"});
+ await navigateWorkspace(page,"Plan");await expect(page).toHaveURL(/view=program.*register=planning/);
+ await page.reload();await expect(page.getByRole("group",{name:"Context registers"})).toBeVisible();await expect(page.getByRole("heading",{name:"Service program",exact:true})).toBeVisible();
+});
+
+
+test("Today opens the exact shared program source record",async({page})=>{
+ const w=emptyWorkspace("en");w.managementRole="program";w.projects=demoWorkspace("en").projects.slice(0,1);w.programs=[programSchema.parse({id:"shared",name:"Shared program",outcome:"Reduce waiting",projectIds:[w.projects[0].id]})];
+ w.workItems=[workItemSchema.parse({id:"handoff",projectId:"@program/shared",workScope:{kind:"program",id:"shared"},title:"Resolve shared handoff",type:"task",priority:"high",createdAt:"2026-09-25T12:00:00Z",updatedAt:"2026-09-25T12:00:00Z",owner:"Alex",status:"ready",dueDate:"2026-10-01"})];
+ await page.clock.setFixedTime(new Date("2026-10-06T12:00:00Z"));await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},w);
+ await page.goto(route("/en/workspace/?view=overview"));await expect(page.locator(".priority-focus")).toContainText("Resolve shared handoff");await page.getByRole("button",{name:"Open source",exact:true}).click();
+ await expect(page.getByRole("dialog",{name:"Edit work item"}).getByLabel("Title",{exact:true})).toHaveValue("Resolve shared handoff");
+ await expect(page).toHaveURL(/context=shared/);await expect(page).toHaveURL(/item=handoff/);
+});

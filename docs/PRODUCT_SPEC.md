@@ -27,3 +27,7 @@ Historical prompts under `archive/` are superseded as descriptions of the curren
 ## Transformation scope
 
 See `UX_TRANSFORMATION_REPORT.md` for this measurable UX slice and `TRANSFORMATION_STATUS.md` for broader remaining acceptance gaps. New project context is persisted; Today links to records; tools can reuse compatible project data. This remains a personal, device-local PM workbench.
+
+## Management contexts (2.9)
+
+Primary management role, additional lenses, experience, context and density are independent. Program coordinates references to project components and dated benefits. Operations owns an ongoing process without a project or end date. Delivery reads shared commitments and observed flow. All contexts reuse scoped work, decisions, documents and evidence; UI adapters never persist synthetic projects. Missing observations are unknown, never healthy by default.

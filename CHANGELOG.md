@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.9.0 — Management role foundation
+
+- Traceable outcomes with dated actual observations, incoming/outgoing record links, explicit rework and prospective blocked-time evidence.
+- Operational reviews create linked actions and decisions; recurring work and controls preserve scheduled occurrences, including month-end anchors.
+- Shared context registers for Programs and Operations, Decision Center with evidence/history/revisit, recurring control evidence, and context-aware deterministic scenario tools.
+- Progressive disclosure in record editors and bilingual positioning/author text for four management roles.
+
+- Keep Program/Operation context through navigation and typed Today links; role-specific mobile menus retain five destinations.
+- Bound native registers and evidence histories without truncating stored data; keep archive links addressable.
+- Add catalog provenance/applicability disclosure and apply templates/playbooks to all contexts.
+- Separate primary management role and additional lenses from guidance and interface density.
+- Add versioned v7 migration for roles, programs and ongoing operations, preserving older backups and recovery behavior.
+- Add Program, Delivery and Operations centers, plus Today across all work.
+- Add program benefit evidence, cross-project handoffs, roadmap, resource conflicts and financial roll-up without merging currencies.
+- Add dated operating metrics, required controls, incidents and daily/weekly/monthly reviews without requiring a project or end date.
+- Load editors and role centers on demand to retain route transfer budgets.
+- Add bilingual role workflows, domain integrity coverage and four-role human usability protocol.
+
+This is the first role-focused increment. See `docs/MANAGEMENT_OS_STATUS.md` for the remaining transformation scope and validation limits.
+
+- Apply the saved/system theme before first paint and refresh inherited theme styles on switch while restoring keyboard focus.
+- Update transitive `source-map-js` to patched 1.2.2; the high-severity dependency audit now passes.
+
 ## 2.8.0 — decision-led product experience (2026-10-04)
 
 - Sharpened the landing promise around moving from project noise to a clear next decision, and made the five-step Signal → Decision → Action → Control → Result cycle explicit.

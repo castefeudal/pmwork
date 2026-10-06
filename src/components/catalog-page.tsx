@@ -8,6 +8,8 @@ import { useUrlValue } from "./use-url-state";
 import { TemplateApply } from "./template-apply";
 import { MethodCompare } from "./method-compare";
 import { knowledgeGuides } from "@/content/knowledge";
+import {ContentBasis} from "./content-basis";
+import {RoleKnowledge} from "./role-knowledge";
 import {
   BookOpen,
   Copy,
@@ -149,6 +151,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
       {kind === "methods" && <MethodCompare methods={methods} locale={locale} />}
       {kind === "templates" && <nav className="public-container button-row" aria-label={ru ? "Коллекции" : "Collections"}>{[["all","Все","All"],["core","Запустить проект","Start a project"],["planning","Спланировать","Plan"],["control","Еженедельный контроль","Weekly control"],["risk","Риски и решения","Risks and decisions"],["people","Люди и коммуникации","People and communication"],["delivery","Выполнение","Delivery"],["closure","Закрытие","Close"]].map(([id,r,e]) => <button className="button" aria-pressed={collection === id} onClick={() => setCollection(id)} key={id}>{ru?r:e}</button>)}</nav>}
       {kind === "knowledge" && <section className="public-container"><h2>{ru ? "Основы: путь от цели до закрытия" : "Foundation: from purpose to closure"}</h2><ol className="learning-path">{["Fundamentals","Value","Scope","Requirements","Schedule","Risk","Stakeholders","Governance","Closure"].map(domain => <li key={domain}><button className="button" onClick={() => setQuery(knowledgeDomains.find(d => d.en === domain)?.[locale] ?? domain)}>{knowledgeDomains.find(d => d.en === domain)?.[locale]}</button></li>)}</ol></section>}
+      {kind==="knowledge"&&<RoleKnowledge locale={locale}/>}
       <section id="catalog-results" className="catalog-grid" aria-live="polite">
         {kind === "methods" &&
           (data as typeof methods).map((x) => (
@@ -158,7 +161,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                 <h2>{pick(x.title, locale)}</h2>
                 <p>{pick(x.summary, locale)}</p>
               </summary>
-              {([['origin','Допущения','Assumptions'],['roles','Роли','Roles'],['artifacts','Артефакты','Artifacts'],['cadence','Каденция','Cadence'],['metrics','Метрики','Metrics'],['prerequisites','Предпосылки','Prerequisites'],['combinations','Совместимые сочетания','Compatible combinations']] as const).map(([field,r,e]) => <section key={field}><h3>{ru?r:e}</h3><p>{x[field][locale]}</p></section>)}
+              <ContentBasis locale={locale} sourceIds={x.sourceIds}/>{([['origin','Допущения','Assumptions'],['roles','Роли','Roles'],['artifacts','Артефакты','Artifacts'],['cadence','Каденция','Cadence'],['metrics','Метрики','Metrics'],['prerequisites','Предпосылки','Prerequisites'],['combinations','Совместимые сочетания','Compatible combinations']] as const).map(([field,r,e]) => <section key={field}><h3>{ru?r:e}</h3><p>{x[field][locale]}</p></section>)}
               <h3>{ru ? "Как течёт работа" : "How work flows"}</h3>
               <p>{pick(x.flow, locale)}</p>
               <h3>{ru ? "Лучший контекст" : "Best fit"}</h3>
@@ -235,7 +238,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                   {pick(x.antiPattern, locale)}
                 </p>
               </details>
-              {templateExamples[x.slug]&&<details><summary>{ru?"Заполненный пример · вымышленные данные":"Completed example · fictional data"}</summary><p>{templateExamples[x.slug][locale]}</p></details>}
+              <ContentBasis locale={locale}/>{templateExamples[x.slug]&&<details><summary>{ru?"Заполненный пример · вымышленные данные":"Completed example · fictional data"}</summary><p>{templateExamples[x.slug][locale]}</p></details>}
               <div className="card-foot">
                 <TemplateApply template={x} locale={locale} />
                 <details><summary aria-label={ru ? "Другие действия" : "More actions"}>…</summary>
@@ -283,7 +286,7 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
                 <summary>
                   {ru ? "Открыть практический сценарий" : "Open playbook"}
                 </summary>
-                <h3>{ru ? "Сразу" : "Immediate"}</h3>
+                <ContentBasis locale={locale}/><h3>{ru ? "Сразу" : "Immediate"}</h3>
                 <ol>
                   {x.immediate.map((y) => (
                     <li key={pick(y, locale)}>{pick(y, locale)}</li>

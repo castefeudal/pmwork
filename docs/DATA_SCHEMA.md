@@ -1,6 +1,12 @@
 # Data schema and migrations
 
-Current payload schema: **v6**. The browser discovery key remains `pmwork:workspace:v3`; changing that key would orphan existing local data.
+Current payload schema: **v7**. The browser discovery key remains `pmwork:workspace:v3`; changing that key would orphan existing local data.
+
+## v7 management contexts
+
+`managementRole` is project/program/delivery/operations and defaults to project for older backups. `roleLenses` contains additional views over the same records. Neither changes experience nor density. `programs` link existing project IDs, outcomes, benefits with baseline/target/actual and measurement plan, program milestones, cross-project handoffs, resource conflicts and history. `operations` represent ongoing services/processes without a project ID or end date: purpose, customer, scope, inputs/outputs, demand/capacity with shared units, dated metric observations, controls, incidents, improvements, reviews and history.
+
+v6 → v7 preserves every existing field and adds empty program/operation collections and default role preferences. v1–v5 retain the previous estimate/milestone migration before reaching v7. Unknown fields, future schemas, invalid dates, duplicated nested IDs and invalid program component references fail closed before persistence. No reset is performed. Full JSON backups include both contexts; recovery previews show program and operation counts.
 
 ## Additive v6 records
 
@@ -12,7 +18,7 @@ Current payload schema: **v6**. The browser discovery key remains `pmwork:worksp
 
 ## Migration behavior
 
-`migrateWorkspace` accepts v1–v5 and produces a strictly parsed v6 payload. Legacy estimates become original/current baselines with a migration history entry. Legacy milestone `date` becomes both baseline and forecast. Existing IDs, projects, links, records, owner text/IDs, saved views, preferences, locale, and any already-stored prospective work status evidence are preserved. Missing collections receive safe defaults. Future versions and malformed required fields are rejected.
+`migrateWorkspace` accepts v1–v6 and produces a strictly parsed v7 payload. Legacy estimates become original/current baselines with a migration history entry. Legacy milestone `date` becomes both baseline and forecast. Existing IDs, projects, links, records, owner text/IDs, saved views, preferences, locale, and any already-stored prospective work status evidence are preserved. Missing collections receive safe defaults. Future versions and malformed required fields are rejected.
 
 Crucially, migration does **not** infer `startedAt` or `statusHistory` for old work. An active legacy item with no stored start evidence remains unknown for cycle-time purposes.
 
@@ -62,3 +68,13 @@ PMWORK distinguishes the evidence it actually stores:
 Exports contain `product`, `schemaVersion`, `appVersion`, `exportedAt`, project/work/risk counts, and `workspace`. Import is limited to 10 MB and completes parsing, migration, backup-fidelity validation and graph validation before replacement is offered. The UI previews schema and counts in an accessible PMWORK dialog and creates a forced local safety snapshot before replacing healthy current data. The dialog also offers an explicit **Download current backup** action when there is a healthy current workspace to preserve.
 
 Important: snapshots and IndexedDB are device-local, not cloud backup. Users should download JSON before clearing browser storage or changing origins.
+
+Shared records may contain `workScope: {kind: project|program|operation, id}`. Legacy `projectId` remains the compatibility key: project ID, `@program/<id>` or `@operation/<id>`. The graph validates both parent existence and the key mirror. Context descriptors used by shared UI are ephemeral and never saved in `projects`. Import/export preserve scopes. Decisions add optional evidence/affected IDs, revisit date, decidedAt and field history; operational controls add recurrence and occurrence completion evidence.
+
+Work blockage intervals are prospective observations with optional end timestamps. Imports never reconstruct old blocked duration. Explicit rework evidence stores observation timestamp and reason. Operation reviews may link to shared work/decision IDs in their own context. Safe deletion detaches review links while preserving the original narrative.
+
+Optional work recurrence records cadence, monthly anchor and predecessor occurrence. Completing an occurrence creates at most one next occurrence; completed effort, blockage and rework observations are not copied into the next occurrence. Outcome observations carry actual value, measurement date and field history. Parent/child links and measurement-date requirements are checked on import.
+
+Program benefit `measuredAt` is optional to preserve older records; missing/future-dated actual observations remain insufficient evidence. Program/Operation optional `currency` uses an editable three-letter uppercase ISO code for scoped budgets; the creation default is USD. Component financial roll-up retains each project currency.
+
+Native register/history pagination only limits rendered rows, never stored arrays. Native evidence URLs carry `evidence=<record ID>` and reveal the page containing that record. Operational review archives remain addressable after newer reviews are recorded.

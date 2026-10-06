@@ -2,7 +2,7 @@ import type { Workspace } from './schemas';
 import type { WorkspaceView } from '@/components/workspace-types';
 import type { EditableKind } from '@/components/record-editor';
 const recordCollections = {
- project:'projects',work:'workItems',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
+ project:'projects',objective:'objectives',work:'workItems',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
  risk:'risks',issue:'issues',assumption:'assumptions',decision:'decisions',stakeholder:'stakeholders',team:'teamMembers',
  communication:'communications',vendor:'vendors',budget:'budgets',change:'changes',quality:'qualityGates',document:'documents',
 } as const satisfies Record<EditableKind,keyof Workspace>;
@@ -21,7 +21,7 @@ export function workspaceRecordUrl(url: string, record: {kind:EditableKind;id:st
  else {next.searchParams.delete('item');next.searchParams.delete('kind');}
  return next;
 }
-const views: WorkspaceView[] = ['portfolio','overview','guide','work','board','planning','raid','people','finance','control','documents','setup'];
+const views: WorkspaceView[] = ['program','delivery','operations','portfolio','overview','guide','work','board','planning','raid','people','finance','control','documents','setup'];
 export function readWorkspaceUrl(search: string, workspace: Workspace) {
   const params = new URLSearchParams(search);
   const requested = params.get('view') as WorkspaceView;

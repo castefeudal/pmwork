@@ -1,6 +1,8 @@
-# PMWORK 2.8
+# PMWORK 2.9
 
 PMWORK is a bilingual, local-first Project Management Operating System: project data becomes an explained signal, a decision or action, a persisted change, and a new feedback signal. The application is a Next.js static export with no account, backend, cloud sync, AI chat, analytics, or trackers.
+
+See [Management OS scope and remaining work](docs/MANAGEMENT_OS_STATUS.md). Version 2.9 adds independent management roles and Program, Delivery, and Operations centers; it does not claim completion of the full transformation brief.
 
 ## Product surfaces
 
@@ -16,7 +18,7 @@ PMWORK is a bilingual, local-first Project Management Operating System: project 
 
 ## Data, privacy, and offline
 
-Schema v6 is stored in IndexedDB with a timestamped localStorage mirror. Migrations accept v1–v5 workspaces without resetting records. JSON backup includes schema/app version, export time, and record counts; import performs size check, parse, migration, strict validation, preview, confirmation, a safety snapshot, then persistence. Unknown future schemas are rejected.
+Schema v7 is stored in IndexedDB with a timestamped localStorage mirror. Migrations accept v1–v6 workspaces without resetting records. JSON backup includes schema/app version, export time, and record counts; import performs size check, parse, migration, strict validation, preview, confirmation, a safety snapshot, then persistence. Unknown future schemas are rejected.
 
 The production service worker precaches the application shell, routes, scripts, styles, fonts, and PWA assets with a content-derived cache version. Updates require a user action. Project data stays in the current browser origin; clearing browser storage removes it unless the user exported a backup.
 

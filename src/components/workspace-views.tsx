@@ -4,6 +4,7 @@ const ScheduleScenarios=dynamic(()=>import("./schedule-scenarios"));
 import { projectFinancials } from "@/domain/finance";
 import { projectCalendarIcs, projectCsv, type CsvCollection } from "@/domain/exports";
 import { CollectionPager } from "./collection-pager";
+import { DecisionCenter } from "./decision-center";
 import { formatDate } from "@/domain/format-date";
 import { ProjectHealth } from "./project-health";
 import { convertRiskToIssue, generateStatusDraft, updateWork } from "@/domain/workspace-commands";
@@ -1024,19 +1025,7 @@ export function RaidView({
         />
       )}{" "}
       {tab === "decision" && (
-        <EntityTable
-          rows={map.decision.map((x) => ({
-            id: x.id,
-            title: x.question,
-            meta: x.date,
-            owner: x.owner,
-            status: displayLabel(locale, "decisionStatus", x.status),
-            detail: x.context,
-          }))}
-          locale={locale}
-          onEdit={(id) => onEdit("decision", id)}
-          onDelete={(id) => archive(tab, id)}
-        />
+        <DecisionCenter decisions={map.decision} locale={locale} onEdit={id=>onEdit("decision",id)}/>
       )}
     </>
   );
@@ -1361,7 +1350,7 @@ export function ControlView({
   onEdit,
 }: ViewProps) {
   const ru = locale === "ru",
-    [tab, setTab] = useUrlChoice("tab",["status","charter","change","quality","closure"],"status"),
+    [tab, setTab] = useUrlChoice("tab",project.id.startsWith("@")?["status","change","quality"]:["status","charter","change","quality","closure"],"status"),
     items = workspace.workItems.filter(
       (x) => x.projectId === project.id && !x.archived,
     ),
@@ -1439,7 +1428,7 @@ export function ControlView({
           ["change", ru ? "Изменения" : "Change"],
           ["quality", ru ? "Качество" : "Quality"],
           ["closure", ru ? "Закрытие" : "Closure"],
-        ].map(([id, label]) => (
+        ].filter(([id])=>!project.id.startsWith("@")||id!=="closure"&&id!=="charter").map(([id, label]) => (
           <button
             key={id}
             className={tab === id ? "active" : ""}
@@ -1875,4 +1864,4 @@ function TextArea({
     </div>
   );
 }
-export { CommandMenu as CommandPalette } from "./command-menu";
+export const CommandPalette=dynamic(()=>import("./command-menu").then(module=>module.CommandMenu));

@@ -19,12 +19,24 @@ export type Source = {
 
 export const sources: Source[] = [
   {
+    id: "program5", title: "The Standard for Program Management", organization: "Project Management Institute",
+    version: "5th edition", published: "2024-03", checked: "2026-10-06", authority: "Standard",
+    url: "https://www.pmi.org/standards/program-management-fifth-edition",
+    notes: { ru: "Официальный стандарт PMI. PMWORK использует оригинальные объяснения; защищённый текст не воспроизводится.", en: "Official PMI standard. PMWORK uses original explanations and does not reproduce copyrighted text." },
+  },
+  {
+    id: "pmi-ai2026", title: "The Standard for Artificial Intelligence in Portfolio, Program, and Project Management", organization: "Project Management Institute",
+    version: "2026", published: "2026", checked: "2026-10-06", authority: "Standard",
+    url: "https://www.pmi.org/about/press-media/2026/pmi-publishes-worlds-first-global-standard-for-ai-in-project-work",
+    notes: { ru: "Проверена официальная публикация о выпуске; полный платный стандарт не проверялся и не воспроизводится. AI в PMWORK не обязателен.", en: "Official release announcement verified; the full paid standard was not reviewed or reproduced. AI is not required in PMWORK." },
+  },
+  {
     id: "pmbok8",
     title: "PMBOK® Guide and The Standard for Project Management",
     organization: "Project Management Institute",
     version: "8th edition",
     published: "2025",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://www.pmi.org/standards/pmbok",
     authority: "Standard",
     notes: {
@@ -37,8 +49,8 @@ export const sources: Source[] = [
     title: "Agile Practice Guide",
     organization: "Project Management Institute",
     version: "2nd edition",
-    published: "2025",
-    checked: "2026-09-05",
+    published: "2026-07",
+    checked: "2026-10-06",
     url: "https://www.pmi.org/standards/agile",
     authority: "Official Guide",
     notes: {
@@ -52,7 +64,7 @@ export const sources: Source[] = [
     organization: "Scrum.org / Scrum Inc.",
     version: "November 2020",
     published: "2020-11",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://scrumguides.org/scrum-guide.html",
     authority: "Official Guide",
     notes: {
@@ -66,7 +78,7 @@ export const sources: Source[] = [
     organization: "Kanban Guides",
     version: "May 2025",
     published: "2025-05",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://kanbanguides.org/the-kanban-guide/2025.5/",
     authority: "Official Guide",
     notes: {
@@ -80,7 +92,7 @@ export const sources: Source[] = [
     organization: "PeopleCert",
     version: "Version 7",
     published: "2023",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://www.peoplecert.org/browse-certifications/project-programme-and-portfolio-management/PRINCE2-2",
     authority: "Official Guide",
     notes: {
@@ -95,7 +107,7 @@ export const sources: Source[] = [
     organization: "ISO",
     version: "ISO 21502:2020",
     published: "2020",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://www.iso.org/standard/74947.html",
     authority: "Standard",
     notes: {
@@ -109,7 +121,7 @@ export const sources: Source[] = [
     organization: "Agile Manifesto authors",
     version: "2001",
     published: "2001",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://agilemanifesto.org/",
     authority: "Official Guide",
     notes: {
@@ -123,7 +135,7 @@ export const sources: Source[] = [
     organization: "W3C",
     version: "WCAG 2.2",
     published: "2023",
-    checked: "2026-09-05",
+    checked: "2026-10-06",
     url: "https://www.w3.org/TR/WCAG22/",
     authority: "Standard",
     notes: {

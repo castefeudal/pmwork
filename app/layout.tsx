@@ -7,6 +7,7 @@ import "./editorial.css";
 import "./ux-transformation.css";
 import "./workspace.css";
 import "./excellence.css";
+import "./management.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
@@ -31,6 +32,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{__html:"try{var t=localStorage.getItem('pmwork-theme');document.documentElement.dataset.theme=t?(t==='dark'?'dark':'light'):(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}"}}/>
+      </head>
       <body className="local-fonts">
         {children}
         <PwaRegister />

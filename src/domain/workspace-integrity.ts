@@ -1,4 +1,4 @@
-import type { Workspace } from "./schemas";
+import type { Scope, Workspace } from "./schemas";
 
 export type WorkspaceIntegrityIssue = {
   code: string;
@@ -9,6 +9,7 @@ export type WorkspaceIntegrityIssue = {
 const parseDate = (value: string | undefined) => {
   if (!value) return null;
   const timestamp = Date.parse(value.length === 10 ? `${value}T00:00:00Z` : value);
+  if(value.length===10&&Number.isFinite(timestamp)&&new Date(timestamp).toISOString().slice(0,10)!==value)return null;
   return Number.isFinite(timestamp) ? timestamp : null;
 };
 
@@ -24,6 +25,7 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
   const projectById = new Map(workspace.projects.map((project) => [project.id, project]));
   const workById = new Map(workspace.workItems.map((item) => [item.id, item]));
   const riskById = new Map(workspace.risks.map((item) => [item.id, item]));
+  const decisionById = new Map(workspace.decisions.map((item) => [item.id, item]));
   const objectiveById = new Map(workspace.objectives.map((item) => [item.id, item]));
   const milestoneById = new Map(workspace.milestones.map((item) => [item.id, item]));
   const iterationById = new Map(workspace.iterations.map((item) => [item.id, item]));
@@ -32,6 +34,8 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
 
   const idCollections: Array<[string, readonly unknown[]]> = [
     ["projects", workspace.projects],
+    ["programs", workspace.programs],
+    ["operations", workspace.operations],
     ["workItems", workspace.workItems],
     ["risks", workspace.risks],
     ["decisions", workspace.decisions],
@@ -68,7 +72,7 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     });
   }
 
-  const scopedRows: Array<[string, readonly { projectId: string }[]]> = [
+  const scopedRows: Array<[string, readonly { projectId: string; workScope?:Scope }[]]> = [
     ["workItems", workspace.workItems],
     ["risks", workspace.risks],
     ["decisions", workspace.decisions],
@@ -99,9 +103,41 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
   ];
   for (const [name, rows] of scopedRows) {
     rows.forEach((row, index) => {
-      if (!projectById.has(row.projectId)) add("missing-project", `${name}[${index}].projectId`, `Unknown project: ${row.projectId}`);
+      if(row.workScope) {
+        const scope=row.workScope,key=scope.kind==="project"?scope.id:`@${scope.kind}/${scope.id}`;
+        if(row.projectId!==key)add("scope-mirror",`${name}[${index}].workScope`,"Context key must match the recorded scope");
+        const exists=scope.kind==="project"?projectById.has(scope.id):scope.kind==="program"?workspace.programs.some(program=>program.id===scope.id):workspace.operations.some(operation=>operation.id===scope.id);
+        if(!exists)add("missing-scope",`${name}[${index}].workScope`,"Unknown operating context");
+      } else if (!projectById.has(row.projectId)) add("missing-project", `${name}[${index}].projectId`, `Unknown project: ${row.projectId}`);
     });
   }
+
+  workspace.programs.forEach((program, index) => {
+    const components = new Set(program.projectIds);
+    if (components.size !== program.projectIds.length) add("duplicate-component", `programs[${index}].projectIds`, "Program components must be unique");
+    program.projectIds.forEach(id => { if (!projectById.has(id)) add("missing-project", `programs[${index}].projectIds`, `Unknown project: ${id}`); });
+    for (const row of [...program.benefits, ...program.resourceConflicts]) for (const id of row.projectIds) if (!components.has(id)) add("missing-component", `programs[${index}]`, `Project ${id} is outside the program`);
+    for (const dependency of program.dependencies) {
+      if (!components.has(dependency.fromProjectId) || !components.has(dependency.toProjectId)) add("missing-component", `programs[${index}].dependencies`, "Dependency must link program components");
+      if (dependency.fromProjectId === dependency.toProjectId) add("self-dependency", `programs[${index}].dependencies`, "A cross-project dependency needs two different components");
+    }
+    for (const [name, rows] of [["benefits",program.benefits],["milestones",program.milestones],["dependencies",program.dependencies],["resourceConflicts",program.resourceConflicts]] as const) {
+      if (new Set(rows.map(row=>row.id)).size !== rows.length) add("duplicate-id", `programs[${index}].${name}`, "Nested record ids must be unique");
+    }
+  });
+  workspace.operations.forEach((operation, index) => {
+    for(const review of operation.reviews)for(const [field,map] of [["workItemId",workById],["decisionId",decisionById]] as const) {
+      const id=review[field];if(!id)continue;const target=map.get(id);
+      if(!target||target.projectId!==`@operation/${operation.id}`)add("missing-review-link",`operations[${index}].reviews`,"Review action or decision must exist in its operating context");
+    }
+    for (const [name, rows] of [["metrics",operation.metrics],["controls",operation.controls],["incidents",operation.incidents],["improvements",operation.improvements],["reviews",operation.reviews]] as const) {
+      if (new Set(rows.map(row=>row.id)).size !== rows.length) add("duplicate-id", `operations[${index}].${name}`, "Nested record ids must be unique");
+    }
+    for (const metric of operation.metrics) {
+      if (new Set(metric.observations.map(row=>row.at)).size !== metric.observations.length) add("duplicate-observation", `operations[${index}].metrics`, "One observation per metric per day");
+    }
+    for (const incident of operation.incidents) if (incident.resolvedAt && incident.resolvedAt < incident.openedAt) add("date-order", `operations[${index}].incidents`, "Resolution precedes incident opening");
+  });
 
   const sameProject = <T extends { projectId: string }>(
     map: Map<string, T>,
@@ -118,6 +154,8 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
 
   workspace.workItems.forEach((item, index) => {
     sameProject(workById, item.parentId, item.projectId, `workItems[${index}].parentId`, "work");
+    sameProject(workById,item.recurrenceOf,item.projectId,`workItems[${index}].recurrenceOf`,"work");
+    if(item.recurrence&&item.recurrence!=="once"&&(!item.dueDate||!/^\d{4}-\d{2}-\d{2}$/.test(item.dueDate)))add("missing-recurrence-date",`workItems[${index}].dueDate`,"Recurring work needs a scheduled due date");
     sameProject(milestoneById, item.milestoneId, item.projectId, `workItems[${index}].milestoneId`, "milestone");
     sameProject(iterationById, item.iterationId, item.projectId, `workItems[${index}].iterationId`, "iteration");
     sameProject(memberById, item.ownerId, item.projectId, `workItems[${index}].ownerId`, "owner");
@@ -146,6 +184,14 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
       if(at!==null)previousHistoryAt=at;
     });
     const lastTransition=item.statusHistory?.at(-1);
+    let previousBlockedEnd:number|null=null;
+    item.blockedIntervals?.forEach((interval,intervalIndex)=>{
+      const from=parseDate(interval.from)!,to=interval.to?parseDate(interval.to)!:null;
+      if(to!==null&&to<from)add("blocked-date-order",`workItems[${index}].blockedIntervals[${intervalIndex}]`,"Blockage cannot end before it starts");
+      if(previousBlockedEnd!==null&&from<previousBlockedEnd)add("blocked-overlap",`workItems[${index}].blockedIntervals[${intervalIndex}]`,"Blocked intervals must not overlap");
+      if(to===null&&(intervalIndex!==item.blockedIntervals!.length-1||!item.blocked))add("blocked-open-state",`workItems[${index}].blockedIntervals[${intervalIndex}]`,"Only the last interval of a blocked item may remain open");
+      previousBlockedEnd=to??Infinity;
+    });
     if(lastTransition&&lastTransition.to!==item.status)add("status-history-state",`workItems[${index}].statusHistory`,"Last status transition must match current status");
   });
 
@@ -179,7 +225,10 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     sameProject(riskById, issue.relatedRiskId, issue.projectId, `issues[${index}].relatedRiskId`, "risk");
     issue.relatedWorkIds.forEach((id, refIndex) => sameProject(workById, id, issue.projectId, `issues[${index}].relatedWorkIds[${refIndex}]`, "work"));
   });
-  workspace.objectives.forEach((objective, index) => objective.deliverableIds.forEach((id, refIndex) => sameProject(workById, id, objective.projectId, `objectives[${index}].deliverableIds[${refIndex}]`, "work")));
+  workspace.objectives.forEach((objective, index) => {
+    objective.deliverableIds.forEach((id, refIndex) => sameProject(workById, id, objective.projectId, `objectives[${index}].deliverableIds[${refIndex}]`, "work"));
+    if(objective.actual&&!objective.measuredAt)add("missing-measurement-date",`objectives[${index}].measuredAt`,"An actual observation needs its measurement date");
+  });
   workspace.iterations.forEach((iteration, index) => {
     iteration.workItemIds.forEach((id, refIndex) => sameProject(workById, id, iteration.projectId, `iterations[${index}].workItemIds[${refIndex}]`, "work"));
     const start = parseDate(iteration.startDate), end = parseDate(iteration.endDate);
@@ -204,9 +253,25 @@ export function validateWorkspaceGraph(workspace: Workspace): WorkspaceIntegrity
     }
   };
   [workspace.workItems, workspace.risks, workspace.decisions, workspace.stakeholders, workspace.budgets, workspace.documents, workspace.milestones, workspace.issues, workspace.objectives, workspace.assumptions, workspace.dependencies, workspace.iterations, workspace.teamMembers, workspace.capacityAllocations, workspace.changes, workspace.vendors, workspace.meetings, workspace.statusReports, workspace.lessons, workspace.communications, workspace.qualityGates, workspace.activities, workspace.toolRuns].forEach(addProjectEntities);
+  for(const program of workspace.programs) {
+    const key=`@program/${program.id}`,ids=projectEntities.get(key)??new Set<string>();
+    for(const row of [...program.benefits,...program.milestones,...program.dependencies,...program.resourceConflicts])ids.add(row.id);
+    program.projectIds.forEach(id=>ids.add(id));projectEntities.set(key,ids);
+  }
+  for(const operation of workspace.operations) {
+    const key=`@operation/${operation.id}`,ids=projectEntities.get(key)??new Set<string>();
+    for(const row of [...operation.metrics,...operation.controls,...operation.incidents,...operation.improvements,...operation.reviews])ids.add(row.id);
+    projectEntities.set(key,ids);
+  }
   workspace.documents.forEach((document, index) => document.relatedIds.forEach((id, refIndex) => {
     if (!(projectEntities.get(document.projectId)?.has(id))) add("missing-related-entity", `documents[${index}].relatedIds[${refIndex}]`, `Unknown related entity: ${id}`);
   }));
+  workspace.decisions.forEach((decision,index)=>{
+    for(const field of ["evidenceIds","affectedIds"] as const) for(const id of decision[field]??[]) {
+      if(!projectEntities.get(decision.projectId)?.has(id))add("missing-decision-link",`decisions[${index}].${field}`,`Unknown context record: ${id}`);
+      if(id===decision.id)add("self-decision-link",`decisions[${index}].${field}`,"A decision cannot use itself as supporting evidence");
+    }
+  });
   workspace.toolRuns.forEach((run, index) => run.appliedRecordIds.forEach((id, refIndex) => {
     if (!(projectEntities.get(run.projectId)?.has(id))) add("missing-applied-entity", `toolRuns[${index}].appliedRecordIds[${refIndex}]`, `Unknown applied record: ${id}`);
   }));
