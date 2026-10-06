@@ -25,6 +25,12 @@ jobs:
         with:
           name: tested-site-${{ github.sha }}
           path: out
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-evidence-root-${{ github.sha }}
+          path: quality-evidence-root
+      - name: Include root cross-browser results in public evidence
+        run: node scripts/merge-release-evidence.mjs
       - name: Verify artifact commit before publishing
         run: node -e "const r=require('./out/release.json');const e=require('./out/quality-evidence.json');if(r.commit!==process.env.GITHUB_SHA||e.commit!==r.commit)throw Error('Artifact commit mismatch')"
       - uses: actions/upload-pages-artifact@v5
