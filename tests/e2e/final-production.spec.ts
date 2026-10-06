@@ -6,7 +6,7 @@ test('explicit first run, URL history, locale and independent preferences',async
  await page.goto(route('/en/workspace/'));
  await expect(page.getByRole('heading',{name:'Start with what matters.'})).toBeVisible();
  expect(await page.evaluate(()=>localStorage.getItem('pmwork:workspace:v3'))).toBeNull();
- await page.screenshot({path:`test-results/first-run-${test.info().project.name}.png`,fullPage:true});
+ await page.screenshot({path:`test-results/first-run-${test.info().project.name}.png`,fullPage:true,animations:'disabled'});
  await page.getByRole('button',{name:/Explore a completed example/}).click();
  await navigateWorkspace(page,'Work');await expect(page).toHaveURL(/view=work/);
  await navigateWorkspace(page,'Plan');await expect(page).toHaveURL(/view=planning/);
@@ -21,7 +21,7 @@ test('glossary aliases, detail links, filter and accessibility',async({page})=>{
  await expect(page.locator('.glossary-row')).toHaveCount(1);await page.locator('.glossary-row').click();await expect(page.getByRole('dialog')).toContainText('Work Breakdown Structure');
  await page.getByRole('link',{name:'Открыть страницу термина'}).click();await expect(page).toHaveURL(/work-breakdown-structure/);
  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href',/work-breakdown-structure/);
- await page.screenshot({path:`test-results/glossary-term-${test.info().project.name}.png`,fullPage:true});
+ await page.screenshot({path:`test-results/glossary-term-${test.info().project.name}.png`,fullPage:true,animations:'disabled'});
  const results=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(results.violations).toEqual([]);
 });
 test('public search opens term with keyboard',async({page})=>{
@@ -30,7 +30,7 @@ test('public search opens term with keyboard',async({page})=>{
 test('root entry offers accessible language routes',async({page})=>{
  await page.goto(route('/'));await expect(page.getByRole('heading',{name:'Make the next move the right one.'})).toBeVisible();
  await expect(page.getByRole('link',{name:/Русский/})).toHaveAttribute('href',/\/ru\/$/);await expect(page.getByRole('link',{name:/English/})).toHaveAttribute('href',/\/en\/$/);
- await page.screenshot({path:`test-results/root-entry-${test.info().project.name}.png`,fullPage:true});
+ await page.screenshot({path:`test-results/root-entry-${test.info().project.name}.png`,fullPage:true,animations:'disabled'});
  const results=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(results.violations).toEqual([]);
 });
 test('clean project creation leaves demo behind',async({page})=>{
@@ -60,11 +60,11 @@ test('My work uses local member identity and editor reassignment clears it',asyn
  const card=page.locator('.work-title-button,.mobile-work-card').filter({hasText:'Identity-linked work',visible:true});await expect(card).toBeVisible();await expect(page.getByText('Same name, different member',{exact:true})).toHaveCount(0);await card.click();const editor=page.getByRole('dialog');await editor.getByLabel('Owner',{exact:true}).fill('External partner');await editor.getByRole('button',{name:'Save',exact:true}).click();await expect(card).toHaveCount(0);await page.getByRole('button',{name:'All work',exact:true}).click();await expect(card).toBeVisible();
 });
 for(const surface of ['glossary','playbooks','knowledge','methods','templates']) test(`catalog visual evidence ${surface}`,async({page},testInfo)=>{
- await page.goto(route(`/ru/${surface}/`));await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:`test-results/final-${surface}-${testInfo.project.name}.png`,fullPage:true});expect(await page.evaluate(()=>document.body.scrollWidth)).toBeLessThanOrEqual((page.viewportSize()?.width??1280)+1);
+ await page.goto(route(`/ru/${surface}/`));await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:`test-results/final-${surface}-${testInfo.project.name}.png`,fullPage:true,animations:'disabled'});expect(await page.evaluate(()=>document.body.scrollWidth)).toBeLessThanOrEqual((page.viewportSize()?.width??1280)+1);
  if(surface==='methods'){await expect(page.getByRole('heading',{name:'Выберите способ работы по контексту'})).toBeVisible();const first=page.locator('article.catalog-card').first().getByRole('link',{name:'Разобрать метод'});await first.click();await expect(page.getByRole('heading',{name:'Минимальная рабочая версия'})).toBeVisible();}
  if(surface==='templates'){await expect(page.getByRole('heading',{name:'Что вы хотите подготовить?'})).toBeVisible();expect(await page.locator('article.catalog-card').count()).toBeLessThanOrEqual(12);}
 });
 test('guide and More menu visual evidence',async({page},testInfo)=>{
- await page.goto(route('/ru/workspace/'));await page.getByRole('button',{name:/Посмотреть готовый пример/}).click();await navigateWorkspace(page,'Проведи меня');await page.screenshot({path:`test-results/guide-${testInfo.project.name}.png`,fullPage:true});
- if(testInfo.project.name.includes('mobile')){await page.getByRole('button',{name:'Ещё',exact:true}).click();await expect(page.getByRole('dialog')).toBeVisible();await page.screenshot({path:'test-results/mobile-more.png',fullPage:true});const violations=(await new AxeBuilder({page:page as never}).analyze()).violations;expect(violations).toEqual([]);await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Ещё',exact:true})).toBeFocused();}
+ await page.goto(route('/ru/workspace/'));await page.getByRole('button',{name:/Посмотреть готовый пример/}).click();await navigateWorkspace(page,'Проведи меня');await page.screenshot({path:`test-results/guide-${testInfo.project.name}.png`,fullPage:true,animations:'disabled'});
+ if(testInfo.project.name.includes('mobile')){await page.getByRole('button',{name:'Ещё',exact:true}).click();await expect(page.getByRole('dialog')).toBeVisible();await page.screenshot({path:'test-results/mobile-more.png',fullPage:true,animations:'disabled'});const violations=(await new AxeBuilder({page:page as never}).analyze()).violations;expect(violations).toEqual([]);await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Ещё',exact:true})).toBeFocused();}
 });
