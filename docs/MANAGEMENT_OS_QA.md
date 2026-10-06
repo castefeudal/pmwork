@@ -25,3 +25,5 @@ Theme boot repair: the saved/system theme is applied before first paint. This re
 Theme switching additionally rebuilds style inheritance synchronously and restores keyboard focus; WebKit otherwise retained stale inherited panel colors. Program browser coverage now switches themes twice and checks axe/focus after each switch. The first-run screen also honors the saved/system theme before hydration; its four dark reference images require reviewed updates.
 
 Visual review for c38108e: the fresh-context update plus two repeat comparisons completed successfully (16 expected, 0 unexpected, 0 flaky, 0 skipped). SHA-256 comparison of all 144 PNGs found exactly four changed references: the reviewed RU/EN desktop/mobile dark onboarding surfaces. Only those four dark-theme references were accepted; no threshold changed.
+
+Security maintenance: updated transitive source-map-js to patched 1.2.2 after GitHub Advisory GHSA-68fv-2mgg-jv7q blocked npm audit. npm audit --audit-level=high now reports zero vulnerabilities; installed Next/PostCSS and Vitest/Vite dependency trees resolve the patched release.
