@@ -31,6 +31,14 @@ test("localized static documents declare language before hydration", async ({ re
   }
 });
 
+test("client-side locale navigation updates the document language", async ({ page }) => {
+  await page.goto(route("/ru/"));
+  await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+  await page.getByRole("link", { name: "Switch to English" }).click();
+  await expect(page).toHaveURL(/\/en\/$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+});
+
 test("workspace surfaces reflow across the supported viewport matrix", async ({ page }) => {
   test.setTimeout(120_000);
   await page.addInitScript((workspace) => {
