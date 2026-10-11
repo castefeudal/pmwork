@@ -36,6 +36,13 @@ test("landing has no serious accessibility violations", async ({ page }) => {
   const results = await new AxeBuilder({ page: page as never }).analyze();
   expect(results.violations.filter((v) => ["serious", "critical"].includes(v.impact ?? ""))).toEqual([]);
 });
+test("desktop landing keeps its primary action in the first viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(route("/ru/"));
+  const action = page.locator(".marketing-hero .button.primary");
+  await expect(action).toBeVisible();
+  expect(await action.evaluate((element) => element.getBoundingClientRect().bottom)).toBeLessThanOrEqual(900);
+});
 test("responsive public navigation works", async ({ page }, testInfo) => {
   await page.goto(route("/ru/"));
   if (testInfo.project.name.includes("mobile")) {

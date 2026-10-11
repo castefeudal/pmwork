@@ -8,6 +8,7 @@ import "./ux-transformation.css";
 import "./workspace.css";
 import "./excellence.css";
 import "./management.css";
+import "./refinement.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
@@ -27,11 +28,20 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  params,
+}: Readonly<{
+  children: React.ReactNode;
+  params: Promise<{ locale?: string }>;
+}>) {
+  const { locale } = await params;
+  return <RootDocument locale={locale === "en" ? "en" : "ru"}>{children}</RootDocument>;
+}
+
+function RootDocument({ children, locale }: { children: React.ReactNode; locale: "ru" | "en" }) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{__html:"try{var t=localStorage.getItem('pmwork-theme');document.documentElement.dataset.theme=t?(t==='dark'?'dark':'light'):(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}"}}/>
       </head>
