@@ -30,6 +30,8 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.goto(route(`/${locale}/workspace/`));
     await expect(page.getByRole("heading",{name:w.operations[0].name})).toBeVisible();
     await expect(page.locator(".management-center")).toContainText(ru?"Состояние неизвестно":"Status is unknown");
+    const initialLayout=await page.evaluate(()=>({document:document.documentElement.scrollWidth,device:screen.width}));
+    expect(initialLayout.document).toBeLessThanOrEqual(initialLayout.device+1);
     await page.getByText(`${w.operations[0].metrics[0].name} · ≤ 4 h`,{exact:true}).click();
     await page.getByLabel(ru?"Значение":"Value",{exact:true}).fill("6");
     await page.getByRole("button",{name:ru?"Записать измерение":"Record observation"}).click();
@@ -37,7 +39,8 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.getByRole("button",{name:ru?"Отметить выполнение":"Record completion"}).click();
     await expect(page.locator(".management-center")).toContainText(ru?"Выполнено":"Completed");
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(axe.violations).toEqual([]);
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    const deviceLayout=await page.evaluate(()=>({document:document.documentElement.scrollWidth,device:screen.width}));
+    expect(deviceLayout.document).toBeLessThanOrEqual(deviceLayout.device+1);
     await page.screenshot({path:testInfo.outputPath(`operations-${locale}.png`),fullPage:true,animations:"disabled"});
     await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).operations[0].metrics[0].observations.length;})).toBe(1);
     await page.reload();

@@ -1,0 +1,122 @@
+@layer utilities {
+  :root {
+    --reading-measure: 68ch;
+    --control-height: 44px;
+    --type-caption: .8125rem;
+    --type-label: .875rem;
+  }
+
+  html {
+    min-width: 320px;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-block: 1rem;
+  }
+
+  body {
+    min-width: 320px;
+    font-family: var(--font-sans);
+    font-size: var(--type-body);
+    line-height: var(--leading-body);
+    font-kerning: normal;
+    font-variant-numeric: proportional-nums;
+    font-synthesis: none;
+  }
+
+  :where(p, li, dd, blockquote) { text-wrap: pretty; }
+  :where(h1, h2, h3, h4) {
+    font-family: var(--font-display);
+    font-synthesis: none;
+    font-kerning: normal;
+    text-wrap: balance;
+  }
+
+  :where(button, input, select, textarea) { font: inherit; }
+  :where(button, [role="button"], input, select, textarea, summary) { touch-action: manipulation; }
+  :where(button, input, select, textarea, summary, a[href], [tabindex]):focus-visible {
+    outline: 3px solid var(--border-focus);
+    outline-offset: 3px;
+  }
+
+  :where(.workspace-shell, .workspace-main, .workspace-content, .management-center,
+    .panel, .card, .project-card, .dashboard-grid > *, .today-layout > *) { min-width: 0; }
+  :where(.workspace-content, .management-center, .panel, .card, .article-body) {
+    overflow-wrap: break-word;
+  }
+  :where(.workspace-content table, .management-center table) { font-size: .875rem; }
+  :where(.workspace-content button, .workspace-content select, .workspace-content input,
+    .workspace-content summary, .site-shell a.button, .site-shell button.button) {
+    min-height: var(--control-height);
+  }
+
+  .workspace-content.density-compact { --density-control-gap: .5rem; }
+  .workspace-content.density-compact :where(.panel, .metric-card) { line-height: 1.45; }
+  .workspace-content.density-compact :where(.muted, small, .eyebrow) { font-size: max(12px, .8125rem); }
+
+  .site-shell :where(.hero-kicker, .hero-value-list, .marketing-hero .hero-author,
+    .capability-card p, .flow-step p, .privacy-lead, .privacy-copy ul,
+    .approach-heading > p:last-child, .closing-section > p:not(.eyebrow)) {
+    font-size: max(14px, 1em);
+  }
+
+  @media (min-width: 901px) {
+    .marketing-hero h1 { font-size: clamp(3.5rem, 5.4vw, 5.5rem); }
+  }
+
+  .mobile-workspace-nav { padding-bottom: max(.5rem, env(safe-area-inset-bottom)); }
+  .workspace-content { padding-bottom: max(3.5rem, env(safe-area-inset-bottom)); }
+
+  @media (max-width: 700px) {
+    html { scroll-padding-block-end: calc(180px + env(safe-area-inset-bottom)); }
+    :where(input:not([type="range"]), select, textarea) {
+      font-size: 16px;
+      font-size-adjust: none;
+    }
+    .workspace-content { width: 100%; padding-inline: max(16px, env(safe-area-inset-left)); }
+    .workspace-top { padding-inline: max(16px, env(safe-area-inset-left)); }
+    .workspace-content > .button-row { min-width: 0; flex-wrap: wrap; }
+    .workspace-content > .button-row > button { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+    .workspace-content > .tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      min-width: 0;
+      max-width: 100%;
+      overflow: visible;
+    }
+    .workspace-content > .tabs > button { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+    .coverage-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .coverage-heading { grid-column: 1 / -1; }
+    .coverage-complete { grid-column: 1 / -1; }
+    .project-card { grid-template-columns: minmax(0, 1fr); }
+    .project-card .card-foot { justify-content: start; flex-wrap: wrap; }
+    .project-card .button { min-height: 44px; }
+  }
+
+  @media (max-width: 380px) {
+    .workspace-content { padding-inline: 12px; }
+    .workspace-top { padding-inline: 12px; }
+    .entry-header { align-items: flex-start; gap: .75rem; }
+    .entry-local { max-width: 44%; white-space: normal; line-height: 1.4; }
+    .entry-choice { padding-inline: 1rem; }
+    .entry-language { min-width: 0; }
+    .entry-language small { white-space: normal; }
+    .metric-cards, .project-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .calendar-layout { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :where(button, a, input, select, textarea, summary):focus-visible {
+      outline: 2px solid Highlight;
+    }
+    .side-nav button.active { border: 1px solid Highlight; }
+  }
+}

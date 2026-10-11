@@ -14,6 +14,23 @@ const surfaces = [
   ["documents", "view=documents"],
 ] as const;
 
+test("localized static documents declare language before hydration", async ({ request, page }) => {
+  for (const locale of ["ru", "en"] as const) {
+    const response = await request.get(route(`/${locale}/`));
+    expect(response.ok()).toBeTruthy();
+    expect(await response.text()).toMatch(new RegExp(`<html[^>]*lang="${locale}"`));
+    await page.goto(route(`/${locale}/`));
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await page.evaluate(async () => { await document.fonts.ready; });
+    const typography = await page.locator("body").evaluate((body) => ({
+      family: getComputedStyle(body).fontFamily,
+      localInterLoaded: document.fonts.check('16px "Inter Variable"'),
+    }));
+    expect(typography.family).toContain("Inter Variable");
+    expect(typography.localInterLoaded).toBeTruthy();
+  }
+});
+
 test("workspace surfaces reflow across the supported viewport matrix", async ({ page }) => {
   test.setTimeout(120_000);
   await page.addInitScript((workspace) => {
