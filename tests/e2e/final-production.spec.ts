@@ -4,7 +4,7 @@ import { route,navigateWorkspace } from './support';
 import { demoWorkspace } from '../../src/data/demo';
 test('explicit first run, URL history, locale and independent preferences',async({page})=>{
  await page.goto(route('/en/workspace/'));
- await expect(page.getByRole('heading',{name:'Start with what matters.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Create a project or open the example'})).toBeVisible();
  expect(await page.evaluate(()=>localStorage.getItem('pmwork:workspace:v3'))).toBeNull();
  await page.screenshot({path:`test-results/first-run-${test.info().project.name}.png`,fullPage:true,animations:'disabled'});
  await page.getByRole('button',{name:/Explore a completed example/}).click();
@@ -34,7 +34,7 @@ test('root entry offers accessible language routes',async({page})=>{
  const results=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(results.violations).toEqual([]);
 });
 test('clean project creation leaves demo behind',async({page})=>{
- await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:/Start my project/}).click();
+ await page.goto(route('/en/workspace/'));await page.getByRole('button',{name:/Create an empty project/}).click();
  const dialog=page.getByRole('dialog');await dialog.getByLabel('Project title',{exact:true}).fill('My first project');
  await dialog.getByLabel('Measurable outcome',{exact:true}).fill('Deliver the agreed pilot');
  await dialog.getByRole('button',{name:'Next',exact:true}).click();await dialog.getByRole('button',{name:'Show recommendations',exact:true}).click();await dialog.getByRole('button',{name:'Create project and start',exact:true}).click();await expect(page.locator('.page-context').getByRole('heading',{name:'Today',exact:true})).toBeVisible();

@@ -14,6 +14,28 @@ const surfaces = [
   ["documents", "view=documents"],
 ] as const;
 
+test("language entry explains PMWORK and opens the selected interface", async ({ page }) => {
+  await page.goto(route("/"));
+  await expect(page.getByRole("heading", { name: "Tasks, deadlines and decisions in one place." })).toBeVisible();
+  await expect(page.getByText("No account · Works offline")).toBeVisible();
+  await page.getByRole("link", { name: /Русский/ }).click();
+  await expect(page).toHaveURL(/\/ru\/?$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+});
+
+for (const locale of ["ru", "en"] as const) {
+  test(`homepage interactive sample switches to project records ${locale}`, async ({ page }) => {
+    await page.goto(route(`/${locale}/`));
+    await page.getByRole("link", { name: locale === "ru" ? "Интерактивный пример" : "Interactive example", exact: true }).click();
+    await expect(page.locator("#product-preview")).toBeInViewport();
+    const sample = page.getByRole("group", { name: locale === "ru" ? "Раздел демо-проекта" : "Demo project view" });
+    await sample.getByRole("button", { name: locale === "ru" ? "Работа" : "Work" }).click();
+    await expect(page.locator(".showcase-board")).toBeVisible();
+    await sample.getByRole("button", { name: locale === "ru" ? "Решения" : "Decisions" }).click();
+    await expect(page.locator(".showcase-decision-list")).toBeVisible();
+  });
+}
+
 test("localized static documents declare language before hydration", async ({ request, page }) => {
   for (const locale of ["ru", "en"] as const) {
     const response = await request.get(route(`/${locale}/`));

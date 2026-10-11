@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const copy = {
   ru: {
-    kicker: "ПРОЕКТЫ · ПРОГРАММЫ · ПОСТАВКА · ОПЕРАЦИИ",
+    kicker: "ПРОЕКТЫ И ОПЕРАЦИИ",
     titleTop: "Задачи, сроки",
     titleBottom: "и решения — в одном месте.",
     lead: "Ведите работу, фиксируйте риски и решения, следите за сроками. PMWORK связывает записи и показывает, что требует внимания. Данные хранятся в браузере — аккаунт не нужен.",
@@ -114,7 +114,7 @@ const copy = {
     noSetup: "Без регистрации",
   },
   en: {
-    kicker: "PROJECTS · PROGRAMS · DELIVERY · OPERATIONS",
+    kicker: "PROJECTS & OPERATIONS",
     titleTop: "Work, deadlines,",
     titleBottom: "and decisions in one place.",
     lead: "Track work, risks, decisions, and dates. PMWORK links related records and shows what needs attention. Your data stays in this browser; no account is required.",

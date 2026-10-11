@@ -12,6 +12,7 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ClipboardCheck,
+  Database,
   Download,
   FileText,
   Home,
@@ -24,7 +25,6 @@ import {
   Upload,
   Users,
   WalletCards,
-  WandSparkles,
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
@@ -69,7 +69,7 @@ const navIcons = {
   operations: ClipboardCheck,
   portfolio: BriefcaseBusiness,
   overview: LayoutDashboard,
-  guide: WandSparkles,
+  guide: BookOpen,
   work: ListChecks,
   board: ListChecks,
   planning: CalendarDays,
@@ -278,7 +278,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">i</span><span><strong>{ru ? "Выберите, с чего начать" : "Choose how to start"}</strong><small>{ru ? "Создайте свой проект или откройте пример с готовыми записями." : "Create your own project or open the sample with example records."}</small></span></div>
       <div className="first-run-actions">
         <button className="button primary first-run-option" onClick={() => { setWorkspace({...emptyWorkspace(locale),managementRole:firstRole}); if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project"); }}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{firstRunStartLabel}</strong><small>{firstRunStartHint}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <button className="button first-run-option" onClick={() => { setWorkspace({...demoWorkspace(locale),managementRole:firstRole}); setProjectId("atlas"); setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true">✳</span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <button className="button first-run-option" onClick={() => { setWorkspace({...demoWorkspace(locale),managementRole:firstRole}); setProjectId("atlas"); setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true"><Database size={17}/></span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
         <details className="first-run-preferences">
           <summary>{ru ? "Дополнительно: выбрать рабочий раздел" : "Optional: choose a starting section"}</summary>
           <p>{ru ? `Эта настройка не обязательна. ${firstRunPreferencesHint}` : `These settings are optional. ${firstRunPreferencesHint}`}</p>
