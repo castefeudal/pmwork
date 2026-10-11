@@ -41,7 +41,7 @@
   :where(.workspace-shell, .workspace-main, .workspace-content, .management-center,
     .panel, .card, .project-card, .dashboard-grid > *, .today-layout > *) { min-width: 0; }
   :where(.workspace-content, .management-center, .panel, .card, .article-body) {
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   :where(.workspace-content table, .management-center table) { font-size: .875rem; }
   :where(.workspace-content button, .workspace-content select, .workspace-content input,
