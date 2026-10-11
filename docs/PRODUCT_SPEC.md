@@ -4,7 +4,7 @@ PMWORK connects understand → decide → do → control → learn in one device
 
 ## Current behavior
 
-The public RU/EN landing page explains the daily signal → decision → action → control loop, makes local/offline operation and Pavel Markov authorship visible, and links directly into the workspace. Content-library counts are derived from the bilingual source collections.
+The public RU/EN landing page shows an interactive sample, describes concrete workspace actions, explains browser-local storage and backup, and links directly into the workspace. Content-library counts are derived from the bilingual source collections. First-run keeps project/sample/backup actions visible and makes role and starting-view choices optional.
 
 1. First run is value-first: start a real project, explicitly explore the demo, or restore a validated backup. No automatic demo persistence.
 2. All levels start at Today. Today isolates the highest-priority current signal and then groups remaining decisions, actions and checks. Foundation keeps expandable purpose/action/output/mistake explanations.

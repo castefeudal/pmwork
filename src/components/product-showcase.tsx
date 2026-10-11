@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import { ArrowUpRight, CalendarDays, Check, CircleAlert, CircleCheck, Clock3, Command, FileText, LayoutDashboard, ListChecks, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Check, CircleAlert, CircleCheck, Clock3, Command, Database, FileText, LayoutDashboard, ListChecks, ShieldCheck } from "lucide-react";
 import type { Decision, Locale, Risk, WorkItem, Workspace } from "@/domain/schemas";
 import { formatDate } from "@/domain/format-date";
 import { displayLabel } from "@/content/workspace-i18n";
@@ -25,7 +25,7 @@ const viewCopy = {
     owner: "Владелец", noOwner: "Не назначен", objective: "Цель проекта",
     columns: ["Следующая", "В работе", "Готово"], statuses: ["backlog", "in-progress", "done"],
     waiting: "Ожидает решения", pending: "Ожидает решения", recorded: "Исходная запись демо-проекта",
-    insight: "Демо-проект · каждый сигнал ведёт к исходной записи.", local: "Локально и приватно",
+    insight: "Пример проекта · записи задач, рисков и решений.", local: "Работает офлайн",
     sample: "ДЕМО · ПРОЕКТНЫЕ ДАННЫЕ", date: "СРОК", noMilestone: "Контрольная точка не задана",
   },
   en: {
@@ -36,7 +36,7 @@ const viewCopy = {
     owner: "Owner", noOwner: "Unassigned", objective: "Project objective",
     columns: ["Up next", "In progress", "Done"], statuses: ["backlog", "in-progress", "done"],
     waiting: "Waiting for a decision", pending: "Pending", recorded: "Source record from the demo project",
-    insight: "Demo project · every signal links to a source record.", local: "Local by design",
+    insight: "Sample project · work, risks, and decisions.", local: "Works offline",
     sample: "DEMO · PROJECT DATA", date: "DUE", noMilestone: "No milestone recorded",
   },
 } as const;
@@ -133,7 +133,7 @@ export function ProductShowcase({ locale, preview }: { locale: Locale; preview: 
           </div>
         </div>
       </div>
-      <div className="showcase-foot"><Sparkles size={14} /><span>{t.insight}</span><span className="showcase-foot-link"><Check size={13} />{t.local}</span></div>
+      <div className="showcase-foot"><Database size={14} /><span>{t.insight}</span><span className="showcase-foot-link"><Check size={13} />{t.local}</span></div>
     </div>
   );
 }

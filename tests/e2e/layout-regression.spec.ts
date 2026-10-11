@@ -104,6 +104,28 @@ test("first-run actions remain reachable on narrow phones and small laptops", as
 });
 
 for (const locale of ["ru", "en"] as const) {
+  test(`first-run keeps the main choices visible and role setup optional ${locale}`, async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem("pmwork:workspace:v3"));
+    await page.goto(route(`/${locale}/workspace/`));
+    await expect(page.locator(".first-run-gate")).toBeVisible();
+    await expect(page.locator(".first-run-gate h1")).toContainText(locale === "ru" ? "Создайте проект" : "Create a project");
+
+    const preferences = page.locator(".first-run-preferences");
+    await expect(preferences).not.toHaveAttribute("open", "");
+    await expect(page.getByRole("button", { name: locale === "ru" ? /Создать пустой проект/ : /Create an empty project/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: locale === "ru" ? /Посмотреть готовый пример/ : /Explore a completed example/ })).toBeVisible();
+
+    await preferences.locator("summary").click();
+    await page.getByLabel(locale === "ru" ? "Тип работы" : "Type of work").selectOption("operations");
+    const operations = page.getByRole("button", { name: locale === "ru" ? /Открыть операционную работу/ : /Open operations/ });
+    await expect(operations).toBeVisible();
+    await operations.click();
+    await expect(page.locator(".first-run-gate")).toHaveCount(0);
+    await expect(page.locator(".workspace-content h1")).toHaveText(locale === "ru" ? "Постоянные операции" : "Ongoing operations");
+  });
+}
+
+for (const locale of ["ru", "en"] as const) {
   test(`${locale} command palette groups matches and remembers recent navigation`, async ({ page }) => {
     await page.addInitScript((workspace) => localStorage.setItem("pmwork:workspace:v3", JSON.stringify(workspace)), demoWorkspace(locale));
     await page.goto(route(`/${locale}/workspace/`));

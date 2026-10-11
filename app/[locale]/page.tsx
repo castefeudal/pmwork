@@ -6,12 +6,10 @@ import {
   BookOpen,
   ChartNoAxesCombined,
   Check,
-  CircleDot,
   Compass,
   LayoutDashboard,
   LockKeyhole,
   ShieldCheck,
-  Sparkles,
   Workflow,
 } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -66,124 +64,104 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const copy = {
   ru: {
-    kicker: "PROJECT · PROGRAM · DELIVERY · OPERATIONS",
-    titleTop: "Видеть главное.",
-    titleBottom: "Принимать решения. Доводить до результата.",
-    lead: "PMWORK связывает сигналы проектов, программ, поставки и процессов с решениями, действиями и контролем результата. Рабочие данные остаются на вашем устройстве.",
+    kicker: "ПРОЕКТЫ · ПРОГРАММЫ · ПОСТАВКА · ОПЕРАЦИИ",
+    titleTop: "Задачи, сроки",
+    titleBottom: "и решения — в одном месте.",
+    lead: "Ведите работу, фиксируйте риски и решения, следите за сроками. PMWORK связывает записи и показывает, что требует внимания. Данные хранятся в браузере — аккаунт не нужен.",
     start: "Открыть рабочее пространство",
     startAccessible: "Открыть рабочее пространство",
-    explore: "Посмотреть продукт",
-    value: ["Без аккаунта и обязательного сервера", "Работает офлайн", "Проект хранится у вас"],
+    explore: "Интерактивный пример",
+    value: ["Без аккаунта", "Работает офлайн", "Резервную копию можно скачать"],
     created: "Независимый продукт Павла Маркова",
-    scroll: "ПРОДУКТ, КОТОРЫЙ ДУМАЕТ ВМЕСТЕ С ВАМИ",
+    scroll: "ИНТЕРАКТИВНЫЙ ПРИМЕР PMWORK",
     libraryLabel: "ИНСТРУМЕНТЫ И ЗНАНИЯ",
-    capabilityTitle: "Всё необходимое — в одном рабочем ритме.",
-    capabilityLead: "Не ещё одна доска задач. Связанный контур от сигнала до решения и следующего действия.",
+    capabilityTitle: "Что можно делать в PMWORK",
+    capabilityLead: "Создавайте задачи, следите за сроками, связывайте риски и решения. В сводке видны блокеры и ближайшие контрольные точки.",
     features: [
-      { icon: LayoutDashboard, label: "Обзор проекта", title: "Важное видно сразу", body: "Сроки, контрольные точки, блокеры и здоровье проекта — с объяснением каждого сигнала.", href: "/workspace/", link: "Посмотреть обзор" },
-      { icon: Workflow, label: "Ежедневная работа", title: "План становится движением", body: "Бэклог, Kanban, список и календарь связаны с исходными записями и зависимостями.", href: "/workspace/", link: "Войти в работу" },
-      { icon: ShieldCheck, label: "Риски и решения", title: "Ничего важного не теряется", body: "RAID, владельцы, триггеры и история решений рядом с действиями команды.", href: "/workspace/", link: "Открыть управление" },
-      { icon: ChartNoAxesCombined, label: "Расчёты и выбор", title: "Математика без чёрного ящика", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo — с видимыми допущениями.", href: "/tools/", link: "Изучить инструменты" },
-      { icon: Compass, label: "Выбор подхода", title: "Практика под контекст", body: "Сопоставляйте ограничения, ритм поставки и потребности команды.", href: "/methods/", link: "Сравнить подходы" },
-      { icon: BookOpen, label: "База практик", title: "Знания, которые можно применить", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
+      { icon: LayoutDashboard, label: "Сводка", title: "Найдите блокеры и ближайшие сроки", body: "Смотрите задачи, контрольные точки и причины задержек. Сигналы ведут к исходным записям.", href: "/workspace/", link: "Открыть пример" },
+      { icon: Workflow, label: "Работа", title: "Ведите задачи списком, на доске или в календаре", body: "Это одни и те же записи: смените вид, чтобы спланировать неделю или разобрать очередь.", href: "/workspace/", link: "Посмотреть задачи" },
+      { icon: ShieldCheck, label: "Риски и решения", title: "Назначайте владельцев и фиксируйте договорённости", body: "Укажите, что может случиться, по какому признаку действовать и какое решение принято.", href: "/workspace/", link: "Посмотреть управление" },
+      { icon: ChartNoAxesCombined, label: "Расчёты", title: "Проверяйте сроки и оценки", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo. Расчёты показывают исходные данные и допущения.", href: "/tools/", link: "Открыть инструменты" },
+      { icon: Compass, label: "Методы", title: "Выбирайте способ работы по условиям проекта", body: "Сравните подходы по стабильности требований, срокам, зависимостям и частоте обратной связи.", href: "/methods/", link: "Сравнить методы" },
+      { icon: BookOpen, label: "Шаблоны и инструкции", title: "Начните с готовой структуры", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} практических сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
     ],
-    flowEyebrow: "ОДИН СВЯЗАННЫЙ ЦИКЛ",
-    flowTitle: "От сигнала — к проверяемому результату.",
-    flowLead: "Один связанный цикл на примере записей демо-проекта PMWORK.",
-    flow: [
-      ["СИГНАЛ", "Today показывает блокер «Провести проверку безопасности» и причину ожидания внешнего решения."],
-      ["РЕШЕНИЕ", "В журнале виден открытый вопрос: переносить ли устаревший раздел вопросов и ответов."],
-      ["ДЕЙСТВИЕ", "Рабочая запись связывает блокер с владельцем и следующим шагом команды."],
-      ["КОНТРОЛЬ", "Контрольная точка готовности пилота содержит прогноз, статус и уверенность."],
-      ["РЕЗУЛЬТАТ", "У проекта есть проверяемая цель: к Q1 не менее 60% типовых запросов решаются без оператора."],
-    ],
-    privacyEyebrow: "ВАША РАБОТА — ВАША",
-    privacyTitle: "С самого начала всё под вашим контролем.",
-    privacyLead: "Рабочее пространство создаётся на устройстве. PMWORK не просит регистрацию, не отправляет проект на обязательный сервер и продолжает работать без сети.",
-    privacyPoints: ["Автоматическое локальное сохранение", "Экспортируемые резервные копии", "Импорт с предварительной проверкой", "Связи и историю можно перенести"],
+    privacyEyebrow: "ХРАНЕНИЕ ДАННЫХ",
+    privacyTitle: "Проект хранится в этом браузере",
+    privacyLead: "PMWORK работает без аккаунта и сети. Данные сохраняются на устройстве; для переноса скачайте резервную копию и восстановите её в другом браузере.",
+    privacyPoints: ["Автоматическое сохранение на устройстве", "Скачивание резервной копии", "Проверка файла перед восстановлением", "Перенос связей и истории записей"],
     privacyBadge: "ЛОКАЛЬНОЕ ХРАНЕНИЕ",
     privacyStatus: "Устройство · доступно офлайн",
     privacyHint: "Данные не покидают браузер без вашего действия",
-    libraryEyebrow: "БИБЛИОТЕКА PMWORK",
-    librarySectionTitle: "Учитесь на практике. Действуйте увереннее.",
-    libraryLead: "От точного термина — к методу, шаблону и действию в проекте.",
+    libraryEyebrow: "СПРАВОЧНИКИ И ШАБЛОНЫ",
+    librarySectionTitle: "Материалы для повседневной работы",
+    libraryLead: "Откройте нужный раздел, чтобы сравнить методы, взять шаблон или найти определение.",
     library: [
       ["Методы", `${contentCounts.methods}`, "Выбрать, сравнить и адаптировать", "/methods/"],
       ["Шаблоны", `${contentCounts.templates}`, "Начать с хорошей структуры", "/templates/"],
       ["Практические сценарии", `${contentCounts.playbooks}`, "Разобрать реальную ситуацию", "/playbooks/"],
       ["Глоссарий", `${contentCounts.glossary}`, "Говорить с командой точнее", "/glossary/"],
     ],
-    approachEyebrow: "КОНТЕКСТ ВАЖНЕЕ ДОГМЫ",
-    approachTitle: "Нет одной методологии для всех проектов.",
-    approachLead: "Соберите достаточный уровень управления из реальных ограничений, а не из модного названия.",
+    approachEyebrow: "ВЫБОР МЕТОДА",
+    approachTitle: "Выбирайте метод по условиям проекта",
+    approachLead: "Сравните, как разные подходы справляются с изменением требований, зависимостями и сроками. В описаниях указаны ограничения и варианты адаптации.",
     approaches: [["Предиктивный", "Стабильность"], ["Scrum", "Обратная связь"], ["Kanban", "Поток"], ["Гибридный", "Адаптация"], ["PRINCE2", "Управление"]],
-    principles: ["Ценность важнее активности.", "Прозрачность важнее бюрократии.", "Каждый критичный риск — с владельцем."],
-    finalEyebrow: "НАЧНИТЕ С ТОГО, ЧТО ЕСТЬ",
-    finalTitle: "Верните себе ясность в проекте.",
-    finalLead: "Посмотрите интерактивный обзор продукта или откройте своё рабочее пространство — без регистрации и лишней настройки.",
-    finalStart: "Открыть PMWORK",
-    finalDemo: "Посмотреть обзор продукта",
-    noSetup: "Данные останутся на этом устройстве",
+    principles: ["Требования стабильны — планируйте этапы и критерии приёмки.", "Нужна частая обратная связь — проверяйте результат короткими циклами.", "Работа идёт непрерывно — ограничьте число незавершённых задач."],
+    finalEyebrow: "НАЧАТЬ",
+    finalTitle: "Сначала посмотрите пример или создайте проект",
+    finalLead: "Откройте рабочее пространство: там можно выбрать демонстрационный проект, создать свой или восстановить резервную копию.",
+    finalStart: "Открыть рабочее пространство",
+    finalDemo: "Перейти к примеру",
+    noSetup: "Без регистрации",
   },
   en: {
-    kicker: "PROJECT · PROGRAM · DELIVERY · OPERATIONS",
-    titleTop: "See what matters.",
-    titleBottom: "Decide. Act. Check the result.",
-    lead: "PMWORK connects signals from projects, programs, delivery and operations to decisions, actions, and outcome control. Your working data stays on your device.",
+    kicker: "PROJECTS · PROGRAMS · DELIVERY · OPERATIONS",
+    titleTop: "Work, deadlines,",
+    titleBottom: "and decisions in one place.",
+    lead: "Track work, risks, decisions, and dates. PMWORK links related records and shows what needs attention. Your data stays in this browser; no account is required.",
     start: "Open your workspace",
     startAccessible: "Open workspace",
-    explore: "See the product",
-    value: ["No account or required server", "Works offline", "Your project stays yours"],
+    explore: "Interactive example",
+    value: ["No account", "Works offline", "Download a backup"],
     created: "An independent product by Pavel Markov",
-    scroll: "A PRODUCT THAT THINKS ALONG WITH YOU",
+    scroll: "INTERACTIVE PMWORK EXAMPLE",
     libraryLabel: "TOOLS AND KNOWLEDGE",
-    capabilityTitle: "Everything you need, in one working rhythm.",
-    capabilityLead: "More than another task board. One connected path from signal to decision to next action.",
+    capabilityTitle: "What you can do in PMWORK",
+    capabilityLead: "Create work items, track dates, and link risks to decisions. The overview shows blockers and upcoming milestones.",
     features: [
-      { icon: LayoutDashboard, label: "Project overview", title: "See what matters first", body: "Schedule, milestones, blockers, and project health, with every signal explained.", href: "/workspace/", link: "Explore the overview" },
-      { icon: Workflow, label: "Daily delivery", title: "Turn the plan into progress", body: "Backlog, Kanban, list, and calendar connect to source records and dependencies.", href: "/workspace/", link: "Open your work" },
-      { icon: ShieldCheck, label: "Risks and decisions", title: "Keep important things in view", body: "RAID, owners, triggers, and decision history stay close to the work.", href: "/workspace/", link: "Explore governance" },
-      { icon: ChartNoAxesCombined, label: "Models and estimates", title: "Math without the black box", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo, with assumptions in view.", href: "/tools/", link: "Explore the tools" },
-      { icon: Compass, label: "Approach fit", title: "Practice shaped around context", body: "Match constraints, delivery cadence, and team needs before choosing a method.", href: "/methods/", link: "Compare approaches" },
-      { icon: BookOpen, label: "Practice library", title: "Knowledge you can put to work", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} playbooks, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
+      { icon: LayoutDashboard, label: "Overview", title: "Find blockers and upcoming dates", body: "See work items, milestones, and reasons for delays. Signals link to their source records.", href: "/workspace/", link: "Open the example" },
+      { icon: Workflow, label: "Work", title: "Use a list, board, or calendar", body: "Each view shows the same work items. Switch views to plan a week or review the queue.", href: "/workspace/", link: "View work items" },
+      { icon: ShieldCheck, label: "Risks and decisions", title: "Assign owners and record decisions", body: "Note what could happen, what would trigger action, and which decision was made.", href: "/workspace/", link: "View risk management" },
+      { icon: ChartNoAxesCombined, label: "Calculations", title: "Check schedules and estimates", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo show their inputs and assumptions.", href: "/tools/", link: "Open the tools" },
+      { icon: Compass, label: "Methods", title: "Choose an approach for your constraints", body: "Compare methods by requirements stability, deadlines, dependencies, and feedback cadence.", href: "/methods/", link: "Compare methods" },
+      { icon: BookOpen, label: "Templates and guides", title: "Start with a working structure", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} practical guides, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
     ],
-    flowEyebrow: "ONE CONNECTED LOOP",
-    flowTitle: "From signal to a verifiable result.",
-    flowLead: "One connected loop, grounded in records from the PMWORK demo project.",
-    flow: [
-      ["SIGNAL", "Today surfaces the Complete security review blocker and the reason it is waiting on an external decision."],
-      ["DECISION", "The decision log shows the open question: should legacy FAQ content be migrated?"],
-      ["ACTION", "The work record connects the blocker to its owner and the team's next step."],
-      ["CONTROL", "The Pilot ready milestone carries a forecast, status, and confidence value."],
-      ["RESULT", "The project has a testable objective: by Q1, resolve at least 60% of routine requests without an agent."],
-    ],
-    privacyEyebrow: "YOUR WORK IS YOURS",
-    privacyTitle: "You stay in control from the very first click.",
-    privacyLead: "Your workspace lives on your device. PMWORK needs no account, sends no project to a required server, and keeps working offline.",
-    privacyPoints: ["Automatic local saving", "Portable backup exports", "Imports validated before replacement", "Relationships and history stay portable"],
+    privacyEyebrow: "DATA STORAGE",
+    privacyTitle: "Your project stays in this browser",
+    privacyLead: "PMWORK works without an account or network connection. Data is stored on this device. To move it, download a backup and restore it in another browser.",
+    privacyPoints: ["Automatic saving on this device", "Downloadable backups", "Backup checked before restore", "Record links and history are included"],
     privacyBadge: "LOCAL STORAGE",
     privacyStatus: "This device · available offline",
     privacyHint: "Your data stays in the browser until you choose to move it",
-    libraryEyebrow: "THE PMWORK LIBRARY",
-    librarySectionTitle: "Build expertise by putting it into practice.",
-    libraryLead: "Move from a useful term to a method, a template, and a next step in your project.",
+    libraryEyebrow: "REFERENCE AND TEMPLATES",
+    librarySectionTitle: "Material for everyday project work",
+    libraryLead: "Open a section to compare methods, use a template, work through a scenario, or look up a term.",
     library: [
       ["Methods", `${contentCounts.methods}`, "Choose, compare, and tailor", "/methods/"],
       ["Templates", `${contentCounts.templates}`, "Start with a strong structure", "/templates/"],
       ["Playbooks", `${contentCounts.playbooks}`, "Work through a real situation", "/playbooks/"],
       ["Glossary", `${contentCounts.glossary}`, "Give the team a shared language", "/glossary/"],
     ],
-    approachEyebrow: "CONTEXT OVER DOGMA",
-    approachTitle: "No single method fits every project.",
-    approachLead: "Build just enough governance from real constraints, not a fashionable label.",
+    approachEyebrow: "CHOOSING A METHOD",
+    approachTitle: "Choose a method for the project conditions",
+    approachLead: "Compare how approaches handle changing requirements, dependencies, and deadlines. Each guide covers limits and ways to adapt it.",
     approaches: [["Predictive", "Stability"], ["Scrum", "Feedback"], ["Kanban", "Flow"], ["Hybrid", "Adaptation"], ["PRINCE2", "Governance"]],
-    principles: ["Value over activity.", "Transparency over bureaucracy.", "Every critical risk has an owner."],
-    finalEyebrow: "START WHERE YOU ARE",
-    finalTitle: "Bring clarity back to your project.",
-    finalLead: "Explore the interactive product preview or open a workspace of your own. No signup and no setup overhead.",
-    finalStart: "Open PMWORK",
-    finalDemo: "See the product preview",
-    noSetup: "Your data stays on this device",
+    principles: ["Stable requirements: plan phases and acceptance criteria.", "Frequent feedback: review results in short cycles.", "Continuous flow: limit unfinished work."],
+    finalEyebrow: "GET STARTED",
+    finalTitle: "Open the example or create a project",
+    finalLead: "Open the workspace to choose a sample project, create your own, or restore a backup.",
+    finalStart: "Open the workspace",
+    finalDemo: "Go to the example",
+    noSetup: "No account required",
   },
 } as const;
 
@@ -228,18 +206,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </section>
 
         <RoleShowcase locale={locale}/>
-        <section className="proof-ribbon" aria-label={ru ? "Библиотека PMWORK" : "PMWORK library"}>
-          <div className="proof-ribbon-inner">
-            <div className="proof-ribbon-intro"><Sparkles size={17} aria-hidden="true" /><span>{ru ? "СИЛЬНАЯ ПРАКТИЧЕСКАЯ БАЗА" : "A PRACTICAL FOUNDATION"}</span></div>
-            {[
-              [contentCounts.methods, ru ? "методов" : "methods", "/methods/"],
-              [contentCounts.templates, ru ? "шаблонов" : "templates", "/templates/"],
-              [contentCounts.playbooks, ru ? "сценариев" : "playbooks", "/playbooks/"],
-              [contentCounts.glossary, ru ? "терминов" : "terms", "/glossary/"],
-            ].map(([value, label, href]) => <Link className="proof-ribbon-stat" href={`/${locale}${href}`} key={String(label)}><strong>{value}</strong><span>{label}</span><ArrowUpRight size={13} aria-hidden="true" /></Link>)}
-          </div>
-        </section>
-
         <section className="section marketing-section" id="capabilities">
           <div className="marketing-section-head">
             <div><p className="eyebrow">{t.libraryLabel}</p><h2>{t.capabilityTitle}</h2></div>
@@ -255,19 +221,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </Link>;
             })}
           </div>
-        </section>
-
-        <section className="section flow-section">
-          <div className="marketing-section-head flow-head">
-            <div><p className="eyebrow">{t.flowEyebrow}</p><h2>{t.flowTitle}</h2></div><p>{t.flowLead}</p>
-          </div>
-          <div className="flow-steps">
-            {t.flow.map(([title, body], i) => <article className="flow-step" key={title}>
-              <span className="flow-step-index"><span>0{i + 1}</span>{i < t.flow.length - 1 && <span className="flow-connector" aria-hidden="true" />}</span>
-              <h3>{title}</h3><p>{body}</p>
-            </article>)}
-          </div>
-          <div className="flow-proof"><span className="flow-proof-icon"><CircleDot size={18} /></span><p><strong>{ru ? "Каждый сигнал объясним." : "Every signal is explainable."}</strong> {ru ? "Каждый вывод ведёт к конкретной записи проекта, которую можно проверить и изменить." : "Every insight leads to a specific project record you can inspect and update."}</p><Link className="text-link" href={`/${locale}/workspace/`}>{ru ? "Посмотреть на примере" : "See it in the workspace"}<ArrowRight size={15} /></Link></div>
         </section>
 
         <section className="section privacy-section">
