@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/domain/schemas";
+import { LocaleLang } from "@/components/locale-lang";
 export function generateStaticParams() {
   return [{ locale: "ru" }, { locale: "en" }];
 }
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
   if (locale !== "ru" && locale !== "en") notFound();
   return (
     <div lang={locale as Locale}>
+      <LocaleLang locale={locale as Locale} />
       {children}
     </div>
   );
