@@ -13,6 +13,9 @@ export default defineConfig({
   reporter: [["list"], ["json", {outputFile:"quality-evidence/cross-browser.json"}]],
   use: {
     baseURL: "http://127.0.0.1:3000",
+    // PWA registration is covered by the dedicated Chromium test; keep UI smoke
+    // checks independent from browser-specific service-worker startup races.
+    serviceWorkers: "block",
     trace: "on-first-retry",
   },
   webServer: {

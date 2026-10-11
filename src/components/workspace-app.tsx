@@ -12,6 +12,7 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ClipboardCheck,
+  Database,
   Download,
   FileText,
   Home,
@@ -24,7 +25,6 @@ import {
   Upload,
   Users,
   WalletCards,
-  WandSparkles,
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
@@ -69,7 +69,7 @@ const navIcons = {
   operations: ClipboardCheck,
   portfolio: BriefcaseBusiness,
   overview: LayoutDashboard,
-  guide: WandSparkles,
+  guide: BookOpen,
   work: ListChecks,
   board: ListChecks,
   planning: CalendarDays,
@@ -163,6 +163,18 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [snapshots, setSnapshots] = useState<{key:string;at:string}[]>([]),
     [pendingRecovery,setPendingRecovery]=useState<PendingRecovery|null>(null),
     fileRef = useRef<HTMLInputElement>(null);
+  const firstRunStartLabel = ({
+    project: ru ? "Создать пустой проект" : "Create an empty project",
+    program: ru ? "Открыть программы" : "Open programs",
+    delivery: ru ? "Создать проект поставки" : "Create a delivery project",
+    operations: ru ? "Открыть операционную работу" : "Open operations",
+  } as const)[firstRole];
+  const firstRunStartHint = firstRole === "project" || firstRole === "delivery"
+    ? (ru ? "Задачи и сроки можно добавить позже." : "Add work items and dates when you are ready.")
+    : (ru ? "Раздел откроется без демо-записей." : "The section opens without sample records.");
+  const firstRunPreferencesHint = firstRole === "program" || firstRole === "operations"
+    ? (ru ? "Откроется соответствующий рабочий раздел." : "The matching work area opens by default.")
+    : (ru ? "По умолчанию откроется обзор проекта." : "The project overview opens by default.");
 
   useEffect(() => {
     loadWorkspace()
@@ -259,19 +271,25 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     <main className="language-gate first-run-gate">
       <Brand />
       <div className="first-run-hero">
-        <p className="eyebrow">{ru?"ВАШЕ ПРОСТРАНСТВО ГОТОВО":"YOUR SPACE IS READY"}</p>
-        <h1>{ru ? "Начнём с того, что важно." : "Start with what matters."}</h1>
-        <p className="lead">{ru ? "Создайте рабочий проект или сначала осмотритесь на живом примере. Ваш выбор можно изменить в любой момент." : "Create a working project, or explore a live example first. You can change your choice at any time."}</p>
+        <p className="eyebrow">{ru ? "НАЧАЛО РАБОТЫ" : "GET STARTED"}</p>
+        <h1>{ru ? "Создайте проект или откройте пример" : "Create a project or open the example"}</h1>
+        <p className="lead">{ru ? "Новый проект будет пустым. В демонстрационном уже есть задачи, сроки, риски и решения — на нём можно посмотреть, как устроен PMWORK." : "A new project starts empty. The sample includes work items, dates, risks, and decisions so you can see how PMWORK works."}</p>
       </div>
-      <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">✓</span><span><strong>{ru ? "Никакой настройки ради настройки" : "No setup for setup’s sake"}</strong><small>{ru ? "Только нужный контекст — можно перейти к работе сразу." : "Capture just enough context and move straight into the work."}</small></span><span className="first-run-time">{ru ? "≈ 2 МИН" : "≈ 2 MIN"}</span></div>
+      <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">i</span><span><strong>{ru ? "Выберите, с чего начать" : "Choose how to start"}</strong><small>{ru ? "Создайте свой проект или откройте пример с готовыми записями." : "Create your own project or open the sample with example records."}</small></span></div>
       <div className="first-run-actions">
-        <label className="field"><span>{ru?"Что вы управляете?":"What do you manage?"}</span><select value={firstRole} onChange={e=>setFirstRole(e.target.value as ManagementRole)}>{managementRoles.map(role=><option key={role} value={role}>{roleLabels[locale][role]}</option>)}</select></label>
-        <label className="field"><span>{ru?"Что вам сейчас важнее всего?":"What matters most right now?"}</span><select value={firstPriority} onChange={e=>setFirstPriority(e.target.value)}><option value="attention">{ru?"Понять, что требует внимания":"Understand what needs attention"}</option><option value="start">{ru?"Начать работу с нуля":"Start from scratch"}</option><option value="organize">{ru?"Привести работу в порядок":"Organize existing work"}</option><option value="deadline">{ru?"Проконтролировать срок":"Control a deadline"}</option><option value="learn">{ru?"Изучить профессию на практике":"Learn through practice"}</option></select></label>
-        <button className="button primary first-run-option" onClick={() => { setWorkspace({...emptyWorkspace(locale),managementRole:firstRole}); if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project"); }}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{firstRole==="project"?(ru?"Начать свой проект":"Start my project"):(ru?"Начать работу":"Start my work")}</strong><small>{ru?"Для работы с первого дня":"Make it useful from day one"}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <button className="button first-run-option" onClick={() => { setWorkspace({...demoWorkspace(locale),managementRole:firstRole}); setProjectId("atlas"); setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true">✳</span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru?"Живой проект, уже наполненный данными":"A complete, interactive sample project"}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <button className="button primary first-run-option" onClick={() => { setWorkspace({...emptyWorkspace(locale),managementRole:firstRole}); if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project"); }}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{firstRunStartLabel}</strong><small>{firstRunStartHint}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <button className="button first-run-option" onClick={() => { setWorkspace({...demoWorkspace(locale),managementRole:firstRole}); setProjectId("atlas"); setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true"><Database size={17}/></span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <details className="first-run-preferences">
+          <summary>{ru ? "Дополнительно: выбрать рабочий раздел" : "Optional: choose a starting section"}</summary>
+          <p>{ru ? `Эта настройка не обязательна. ${firstRunPreferencesHint}` : `These settings are optional. ${firstRunPreferencesHint}`}</p>
+          <div className="first-run-preference-fields">
+            <label className="field"><span>{ru ? "Тип работы" : "Type of work"}</span><select value={firstRole} onChange={e=>setFirstRole(e.target.value as ManagementRole)}>{managementRoles.map(role=><option key={role} value={role}>{roleLabels[locale][role]}</option>)}</select></label>
+            {firstRole !== "program" && firstRole !== "operations" && <label className="field"><span>{ru ? "Какой раздел открыть первым?" : "Which section should open first?"}</span><select value={firstPriority} onChange={e=>setFirstPriority(e.target.value)}><option value="attention">{ru ? "Обзор проекта" : "Project overview"}</option><option value="organize">{ru ? "Список задач" : "Work items"}</option><option value="deadline">{ru ? "Сроки и план" : "Schedule and plan"}</option><option value="learn">{ru ? "Обучающий обзор" : "Guided tour"}</option></select></label>}
+          </div>
+        </details>
         <button className="button ghost first-run-restore" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить из резервной копии" : "Restore from a backup"}</button>
       </div>
-      <p className="first-run-privacy"><span aria-hidden="true">⌑</span>{ru?"Локально и конфиденциально. Резервную копию можно скачать в настройках.":"Local and private. Export a backup anytime from Settings."}</p>
+      <p className="first-run-privacy"><span aria-hidden="true">⌑</span>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>void stageImport(e.target.files?.[0],false)}/>
       {toast&&<p role="alert">{toast}</p>}
       {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));setProjectId(id??"");setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview");setFirstRun(false);}}/>}

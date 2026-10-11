@@ -18,10 +18,10 @@ describe("workspace interactions", () => {
 
   it("does not persist demo before an explicit choice", async () => {
     render(<WorkspaceApp locale="en" />);
-    await screen.findByRole("heading", { name: "Start with what matters." });
+    await screen.findByRole("heading", { name: "Create a project or open the example" });
     fireEvent(window, new Event("pagehide"));
     expect(localStorage.getItem("pmwork:workspace:v3")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: /Start my project/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Create an empty project/i }));
     expect(await screen.findByRole("dialog", { name: "Create project" })).toBeTruthy();
     expect(screen.queryByText("MARKOVMADE Digital Product Launch")).toBeNull();
   });

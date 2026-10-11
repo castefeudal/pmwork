@@ -14,6 +14,28 @@ const surfaces = [
   ["documents", "view=documents"],
 ] as const;
 
+test("language entry explains PMWORK and opens the selected interface", async ({ page }) => {
+  await page.goto(route("/"));
+  await expect(page.getByRole("heading", { name: "Tasks, deadlines and decisions in one place." })).toBeVisible();
+  await expect(page.getByText("No account · Works offline")).toBeVisible();
+  await page.getByRole("link", { name: /Русский/ }).click();
+  await expect(page).toHaveURL(/\/ru\/?$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+});
+
+for (const locale of ["ru", "en"] as const) {
+  test(`homepage interactive sample switches to project records ${locale}`, async ({ page }) => {
+    await page.goto(route(`/${locale}/`));
+    await page.getByRole("link", { name: locale === "ru" ? "Интерактивный пример" : "Interactive example", exact: true }).click();
+    await expect(page.locator("#product-preview")).toBeInViewport();
+    const sample = page.getByRole("group", { name: locale === "ru" ? "Раздел демо-проекта" : "Demo project view" });
+    await sample.getByRole("button", { name: locale === "ru" ? "Работа" : "Work" }).click();
+    await expect(page.locator(".showcase-board")).toBeVisible();
+    await sample.getByRole("button", { name: locale === "ru" ? "Решения" : "Decisions" }).click();
+    await expect(page.locator(".showcase-decision-list")).toBeVisible();
+  });
+}
+
 test("localized static documents declare language before hydration", async ({ request, page }) => {
   for (const locale of ["ru", "en"] as const) {
     const response = await request.get(route(`/${locale}/`));
@@ -102,6 +124,28 @@ test("first-run actions remain reachable on narrow phones and small laptops", as
     }
   }
 });
+
+for (const locale of ["ru", "en"] as const) {
+  test(`first-run keeps the main choices visible and role setup optional ${locale}`, async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem("pmwork:workspace:v3"));
+    await page.goto(route(`/${locale}/workspace/`));
+    await expect(page.locator(".first-run-gate")).toBeVisible();
+    await expect(page.locator(".first-run-gate h1")).toContainText(locale === "ru" ? "Создайте проект" : "Create a project");
+
+    const preferences = page.locator(".first-run-preferences");
+    await expect(preferences).not.toHaveAttribute("open", "");
+    await expect(page.getByRole("button", { name: locale === "ru" ? /Создать пустой проект/ : /Create an empty project/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: locale === "ru" ? /Посмотреть готовый пример/ : /Explore a completed example/ })).toBeVisible();
+
+    await preferences.locator("summary").click();
+    await page.getByLabel(locale === "ru" ? "Тип работы" : "Type of work").selectOption("operations");
+    const operations = page.getByRole("button", { name: locale === "ru" ? /Открыть операционную работу/ : /Open operations/ });
+    await expect(operations).toBeVisible();
+    await operations.click();
+    await expect(page.locator(".first-run-gate")).toHaveCount(0);
+    await expect(page.locator(".workspace-content h1")).toHaveText(locale === "ru" ? "Постоянные операции" : "Ongoing operations");
+  });
+}
 
 for (const locale of ["ru", "en"] as const) {
   test(`${locale} command palette groups matches and remembers recent navigation`, async ({ page }) => {
