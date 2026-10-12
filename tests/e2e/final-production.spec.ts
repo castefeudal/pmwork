@@ -29,6 +29,7 @@ test('public search opens term with keyboard',async({page})=>{
 });
 test('landing example stays usable and accessible across viewport sizes',async({page},testInfo)=>{
  await page.goto(route('/ru/'));await expect(page.getByRole('heading',{name:'Задачи, сроки и решения — в одном месте.'})).toBeVisible();
+ if(page.viewportSize()!.width>=901){const actionBox=await page.locator('.hero-actions .button.primary').boundingBox();expect(actionBox).not.toBeNull();expect(actionBox!.y+actionBox!.height).toBeLessThanOrEqual(page.viewportSize()!.height);}
  const workTab=page.getByRole('button',{name:'Работа',exact:true});await workTab.click();await expect(workTab).toHaveAttribute('aria-pressed','true');await expect(page.locator('.showcase-board')).toBeVisible();
  const desktopA11y=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(desktopA11y.violations).toEqual([]);
  await page.screenshot({path:`test-results/landing-ru-${testInfo.project.name}.png`,fullPage:true,animations:'disabled'});

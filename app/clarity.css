@@ -208,6 +208,28 @@
 .record-editor .form-grid > details.wide[open] > summary { margin-bottom: .8rem; }
 .record-editor .form-grid > details.wide > .form-grid { padding-inline: .2rem; }
 
+/* Keep the first useful action in view on the most common laptop viewport. */
+@media (min-width: 901px) and (max-height: 820px) {
+  .site-shell .marketing-hero {
+    min-height: auto;
+    padding-top: clamp(1.5rem, 4vh, 2.5rem);
+    padding-bottom: 4rem;
+    grid-template-columns: minmax(0, .98fr) minmax(0, 1.02fr);
+    gap: clamp(1.5rem, 3vw, 2.8rem);
+  }
+
+  .site-shell .marketing-hero h1 {
+    max-width: 14ch;
+    font-size: clamp(3.35rem, 5.35vw, 4.55rem);
+    line-height: 1;
+  }
+
+  .site-shell .hero-kicker { margin-bottom: .9rem; }
+  .site-shell .marketing-hero .lead { margin-top: 1rem; font-size: 1rem; line-height: 1.55; }
+  .site-shell .hero-actions { margin-top: 1.05rem; }
+  .site-shell .hero-value-list { margin-top: .9rem; }
+}
+
 .dialog :is(input, select, textarea) {
   transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
