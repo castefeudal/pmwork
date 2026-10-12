@@ -1,4 +1,9 @@
 /* A quieter product surface: consistent hierarchy, clear controls, restrained motion. */
+.site-shell {
+  --text-secondary: #405456;
+  --text-tertiary: #647574;
+}
+
 .site-shell .marketing-hero {
   background:
     radial-gradient(ellipse at 82% 34%, color-mix(in srgb, var(--accent-primary) 7%, transparent), transparent 30rem),
