@@ -2,6 +2,7 @@
 .site-shell {
   --text-secondary: #405456;
   --text-tertiary: #647574;
+  --muted: var(--text-secondary);
 }
 
 .site-shell .marketing-hero {
