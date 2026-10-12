@@ -58,6 +58,17 @@
   box-shadow: 0 8px 19px color-mix(in srgb, var(--accent-primary) 22%, transparent);
 }
 
+[data-theme="dark"] .site-shell .marketing-hero .button.primary {
+  color: #f5fffc;
+  background: #087a70;
+  border-color: #075f57;
+}
+
+[data-theme="dark"] .site-shell .marketing-hero .button.primary:hover {
+  background: #076a62;
+  box-shadow: 0 8px 19px rgba(8, 122, 112, .3);
+}
+
 .site-shell .marketing-section { padding-block: clamp(4.2rem, 6vw, 6rem); }
 .site-shell .privacy-section { padding-block: clamp(4.5rem, 6vw, 6rem); }
 .site-shell .approach-section { padding-block: clamp(4rem, 5.5vw, 5.5rem); }
