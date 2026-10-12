@@ -5,6 +5,12 @@
   --muted: var(--text-secondary);
 }
 
+[data-theme="dark"] .site-shell {
+  --text-secondary: #b9cdca;
+  --text-tertiary: #9db3b0;
+  --muted: var(--text-secondary);
+}
+
 .site-shell .marketing-hero {
   background:
     radial-gradient(ellipse at 82% 34%, color-mix(in srgb, var(--accent-primary) 7%, transparent), transparent 30rem),

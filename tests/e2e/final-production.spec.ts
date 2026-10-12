@@ -35,6 +35,8 @@ test('landing example stays usable and accessible across viewport sizes',async({
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
  const mobileA11y=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(mobileA11y.violations).toEqual([]);
  await page.goto(route('/en/'));await expect(page.getByRole('heading',{name:'Work, deadlines, and decisions in one place.'})).toBeVisible();
+ await page.emulateMedia({colorScheme:'dark'});await page.reload();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+ const darkA11y=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(darkA11y.violations).toEqual([]);
 });
 test('root entry offers accessible language routes',async({page})=>{
  await page.goto(route('/'));await expect(page.getByRole('heading',{name:'Tasks, deadlines and decisions in one place.'})).toBeVisible();
