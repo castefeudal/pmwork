@@ -9,6 +9,7 @@ import "./workspace.css";
 import "./excellence.css";
 import "./management.css";
 import "./refinement.css";
+import "./clarity.css";
 import { PwaRegister } from "@/components/pwa-register";
 
 const publicBase = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";

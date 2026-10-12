@@ -27,6 +27,18 @@ test('glossary aliases, detail links, filter and accessibility',async({page})=>{
 test('public search opens term with keyboard',async({page})=>{
  await page.goto(route('/en/'));await page.keyboard.press('Control+k');await page.getByRole('searchbox').fill('WBS');await expect(page.locator('#public-result-0')).toContainText('Work Breakdown');await page.keyboard.press('Enter');await expect(page).toHaveURL(/glossary\/work-breakdown-structure/);
 });
+test('landing example stays usable and accessible across viewport sizes',async({page},testInfo)=>{
+ await page.goto(route('/ru/'));await expect(page.getByRole('heading',{name:'Задачи, сроки и решения — в одном месте.'})).toBeVisible();
+ if(page.viewportSize()!.width>=901){const actionBox=await page.locator('.hero-actions .button.primary').boundingBox();expect(actionBox).not.toBeNull();expect(actionBox!.y+actionBox!.height).toBeLessThanOrEqual(page.viewportSize()!.height);}
+ const workTab=page.getByRole('button',{name:'Работа',exact:true});await workTab.click();await expect(workTab).toHaveAttribute('aria-pressed','true');await expect(page.locator('.showcase-board')).toBeVisible();
+ const desktopA11y=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(desktopA11y.violations).toEqual([]);
+ await page.screenshot({path:`test-results/landing-ru-${testInfo.project.name}.png`,fullPage:true,animations:'disabled'});
+ await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
+ const mobileA11y=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(mobileA11y.violations).toEqual([]);
+ await page.goto(route('/en/'));await expect(page.getByRole('heading',{name:'Work, deadlines, and decisions in one place.'})).toBeVisible();
+ await page.emulateMedia({colorScheme:'dark'});await page.reload();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+ const darkA11y=await new AxeBuilder({page:page as never}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(darkA11y.violations).toEqual([]);
+});
 test('root entry offers accessible language routes',async({page})=>{
  await page.goto(route('/'));await expect(page.getByRole('heading',{name:'Tasks, deadlines and decisions in one place.'})).toBeVisible();
  await expect(page.getByRole('link',{name:/Русский/})).toHaveAttribute('href',/\/ru\/$/);await expect(page.getByRole('link',{name:/English/})).toHaveAttribute('href',/\/en\/$/);

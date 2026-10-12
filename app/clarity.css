@@ -1,0 +1,278 @@
+/* A quieter product surface: consistent hierarchy, clear controls, restrained motion. */
+.site-shell {
+  --text-secondary: #405456;
+  --text-tertiary: #647574;
+  --muted: var(--text-secondary);
+}
+
+[data-theme="dark"] .site-shell {
+  --text-secondary: #b9cdca;
+  --text-tertiary: #9db3b0;
+  --muted: var(--text-secondary);
+}
+
+.site-shell .marketing-hero {
+  background:
+    radial-gradient(ellipse at 82% 34%, color-mix(in srgb, var(--accent-primary) 7%, transparent), transparent 30rem),
+    var(--canvas);
+}
+
+.site-shell .marketing-hero::before {
+  width: 34rem;
+  height: 34rem;
+  top: 10%;
+  right: -14rem;
+  filter: blur(24px);
+  opacity: .36;
+  animation-duration: 24s;
+}
+
+.site-shell .marketing-hero::after { content: none; }
+.site-shell .hero-title-accent {
+  color: var(--accent-primary);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+[data-theme="dark"] .site-shell .hero-title-accent { color: #82d7ca; }
+
+.site-shell .marketing-hero h1 {
+  max-width: 13ch;
+  font-size: clamp(3.25rem, 6.2vw, 6rem);
+  line-height: 1.015;
+  letter-spacing: -.067em;
+  font-weight: 740;
+}
+
+.site-shell .hero-kicker {
+  background: var(--surface-solid);
+  box-shadow: 0 1px 2px rgba(18, 38, 39, .035);
+}
+
+.site-shell .marketing-hero .button.primary {
+  background: var(--accent-primary);
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--accent-primary) 18%, transparent);
+}
+
+.site-shell .marketing-hero .button.primary:hover {
+  background: color-mix(in srgb, var(--accent-primary) 88%, black);
+  box-shadow: 0 8px 19px color-mix(in srgb, var(--accent-primary) 22%, transparent);
+}
+
+[data-theme="dark"] .site-shell .marketing-hero .button.primary {
+  color: #f5fffc;
+  background: #087a70;
+  border-color: #075f57;
+}
+
+[data-theme="dark"] .site-shell .marketing-hero .button.primary:hover {
+  background: #076a62;
+  box-shadow: 0 8px 19px rgba(8, 122, 112, .3);
+}
+
+.site-shell .marketing-section { padding-block: clamp(4.2rem, 6vw, 6rem); }
+.site-shell .privacy-section { padding-block: clamp(4.5rem, 6vw, 6rem); }
+.site-shell .approach-section { padding-block: clamp(4rem, 5.5vw, 5.5rem); }
+
+.site-shell .product-showcase {
+  border-color: rgba(199, 223, 217, .2);
+  box-shadow: 0 24px 58px rgba(7, 26, 29, .16), 0 3px 10px rgba(7, 26, 29, .06);
+}
+
+.site-shell .product-showcase::before { display: none; }
+.site-shell .showcase-panel { animation-duration: 190ms; }
+.site-shell .showcase-tabs button { transition-duration: 150ms; }
+
+.site-shell .privacy-visual {
+  background: #12201f;
+  box-shadow: 0 14px 34px rgba(7, 26, 29, .1);
+}
+
+.site-shell .privacy-orbit,
+.site-shell .privacy-check { display: none; }
+
+.site-shell .privacy-device-card {
+  background: #1a2b29;
+  border-color: rgba(199, 223, 217, .13);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .1);
+  backdrop-filter: none;
+}
+
+.site-shell .section.role-showcase {
+  max-width: var(--marketing-max);
+  padding-block: clamp(2.5rem, 5vw, 4.25rem);
+}
+
+.role-showcase-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.1rem;
+}
+
+.role-showcase-heading h2 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(1.85rem, 3.2vw, 2.65rem);
+  line-height: 1.1;
+}
+
+.role-showcase-heading .button-row { justify-content: flex-end; gap: .45rem; }
+.role-showcase-heading .button { min-height: 40px; padding: .55rem .8rem; box-shadow: none; font-size: .84rem; }
+.role-showcase-heading .button[aria-pressed="true"] { color: var(--text-on-accent); border-color: var(--accent-primary); background: var(--accent-primary); }
+
+.role-showcase-panel { padding: clamp(1.15rem, 2.5vw, 1.8rem); }
+.role-showcase-panel > .eyebrow { margin: 0 0 .55rem; color: var(--accent-primary); }
+.role-showcase-panel > h3 { margin: 0; font-size: clamp(1.12rem, 2vw, 1.45rem); line-height: 1.35; letter-spacing: -.025em; }
+.role-showcase-panel dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1.1rem 0 0; }
+.role-showcase-panel dl > div { min-width: 0; padding: .8rem .9rem; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--surface-1); }
+.role-showcase-panel dt { margin-bottom: .35rem; color: var(--text-tertiary); font-size: .72rem; font-weight: 720; letter-spacing: .055em; text-transform: uppercase; }
+.role-showcase-panel dd { margin: 0; color: var(--text-primary); font-size: .9rem; line-height: 1.5; }
+
+.site-shell .capability-card,
+.site-shell .library-card,
+.site-shell .approach-item,
+.site-shell .flow-proof {
+  box-shadow: 0 1px 3px rgba(17, 45, 46, .035);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.site-shell .capability-card:hover,
+.site-shell .library-card:hover,
+.site-shell .approach-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(17, 45, 46, .065);
+}
+
+.site-shell .capability-card::after { display: none; }
+.site-shell .capability-icon { box-shadow: none; }
+
+/* Forms read as a short first step, with deeper planning available on demand. */
+.dialog .form-intro {
+  margin: -.15rem 0 .15rem;
+  max-width: 58ch;
+  color: var(--text-secondary);
+  font-size: .9rem;
+  line-height: 1.55;
+}
+
+.dialog .field:has(:required) label::after { content: " *"; color: var(--accent-primary); }
+.dialog .field { align-content: start; gap: .45rem; }
+.dialog .field label { color: var(--text-primary); font-size: .84rem; font-weight: 650; }
+.dialog .field input::placeholder,
+.dialog .field textarea::placeholder { color: var(--text-tertiary); opacity: .85; }
+
+.form-optional {
+  padding: .1rem 0 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.form-optional > summary {
+  width: fit-content;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  color: var(--text-secondary);
+  font-size: .85rem;
+  font-weight: 620;
+  cursor: pointer;
+  list-style: none;
+}
+
+.form-optional > summary::-webkit-details-marker { display: none; }
+.form-optional > summary::before {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--accent-primary);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.form-optional[open] > summary::before { content: "−"; }
+.form-optional > .form-grid { padding: .35rem 0 .25rem; animation: optional-fields-in 180ms ease both; }
+
+@keyframes optional-fields-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.record-editor .form-grid > details.wide { margin: .25rem 0; }
+.record-editor .form-grid > details.wide > summary {
+  min-height: 44px;
+  padding: .5rem .7rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+  background: var(--surface-1);
+  color: var(--text-secondary);
+  font-size: .85rem;
+  font-weight: 620;
+  cursor: pointer;
+}
+
+.record-editor .form-grid > details.wide[open] > summary { margin-bottom: .8rem; }
+.record-editor .form-grid > details.wide > .form-grid { padding-inline: .2rem; }
+
+/* Keep the first useful action in view on the most common laptop viewport. */
+@media (min-width: 901px) and (max-height: 820px) {
+  .site-shell .marketing-hero {
+    min-height: auto;
+    padding-top: clamp(1.5rem, 4vh, 2.5rem);
+    padding-bottom: 4rem;
+    grid-template-columns: minmax(0, .98fr) minmax(0, 1.02fr);
+    gap: clamp(1.5rem, 3vw, 2.8rem);
+  }
+
+  .site-shell .marketing-hero h1 {
+    max-width: 14ch;
+    font-size: clamp(3.35rem, 5.35vw, 4.55rem);
+    line-height: 1;
+  }
+
+  .site-shell .hero-kicker { margin-bottom: .9rem; }
+  .site-shell .marketing-hero .lead { margin-top: 1rem; font-size: 1rem; line-height: 1.55; }
+  .site-shell .hero-actions { margin-top: 1.05rem; }
+  .site-shell .hero-value-list { margin-top: .9rem; }
+}
+
+.dialog :is(input, select, textarea) {
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+.dialog :is(input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent-primary) 24%, transparent);
+  outline-offset: 1px;
+}
+
+.dialog .button.primary { box-shadow: 0 3px 10px color-mix(in srgb, var(--accent-primary) 16%, transparent); }
+.dialog .button.primary:hover { transform: translateY(-1px); }
+
+@media (max-width: 700px) {
+  .site-shell .marketing-hero h1 { font-size: clamp(3rem, 12.4vw, 5rem); }
+  .site-shell .marketing-section { padding-block: 3.5rem; }
+  .site-shell .privacy-section { padding-block: 3.6rem; }
+  .site-shell .approach-section { padding-block: 3.4rem; }
+  .role-showcase-heading { align-items: flex-start; flex-direction: column; gap: .85rem; }
+  .role-showcase-heading .button-row { justify-content: flex-start; }
+  .role-showcase-panel dl { grid-template-columns: minmax(0, 1fr); gap: .45rem; }
+  .form-optional > .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .record-editor .form-grid > details.wide > .form-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell .marketing-hero::before,
+  .site-shell .capability-card,
+  .site-shell .library-card,
+  .site-shell .approach-item,
+  .form-optional > .form-grid { animation: none !important; }
+  .site-shell .capability-card,
+  .site-shell .library-card,
+  .site-shell .approach-item,
+  .dialog :is(input, select, textarea) { transition: none !important; }
+}

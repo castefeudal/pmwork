@@ -54,12 +54,13 @@ for(const locale of ["ru","en"] as const) for(const theme of ["light","dark"] as
     await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
     await page.getByRole("button",{name:ru?"Добавить рабочий элемент":"Add work item",exact:true}).click();
     const dialog=page.getByRole("dialog",{name:ru?"Новый рабочий элемент":"New work item"});
+    await expect(dialog.locator("details.form-optional")).not.toHaveAttribute("open","");
     await dialog.getByLabel(ru?"Название":"Title",{exact:true}).fill("Resolve customer request");
     await dialog.getByRole("button",{name:ru?"Создать":"Create",exact:true}).click();
     await expect(dialog).toBeHidden();
     await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return(raw.workspace??raw).workItems.length;})).toBe(1);
     const stored=await page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);return raw.workspace??raw;});
-    expect(stored.projects).toEqual([]);expect(stored.workItems[0].workScope).toEqual({kind:"operation",id:"service"});
+    expect(stored.projects).toEqual([]);expect(stored.workItems[0].workScope).toEqual({kind:"operation",id:"service"});expect(stored.workItems[0].dueDate).toBeUndefined();
     await page.reload();
     await page.getByText(ru?"Работа, риски, люди и документы":"Work, risks, people and documents",{exact:true}).click();
     await expect(page.getByRole("button",{name:/Resolve customer request/}).filter({visible:true})).toBeVisible();
