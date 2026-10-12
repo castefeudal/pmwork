@@ -89,13 +89,24 @@ export function WorkspaceDialog({
     required = false,
   ) => {
     const id = `${prefix}-${name}`;
+    const placeholder = name === "title"
+      ? type === "work"
+        ? (ru ? "Например: согласовать план с командой" : "For example: agree the plan with the team")
+        : type === "risk"
+          ? (ru ? "Например: поставка может задержаться" : "For example: delivery may be delayed")
+          : (ru ? "Короткое и конкретное название" : "A short, specific name")
+      : name === "description"
+        ? (ru ? "Что важно знать, чтобы продолжить работу?" : "What should someone know to move this forward?")
+        : name === "owner"
+          ? (ru ? "Имя ответственного" : "Person responsible")
+          : undefined;
     return (
       <div className={`field ${kind === "textarea" ? "wide" : ""}`}>
         <label htmlFor={id}>{labelText}</label>
         {kind === "textarea" ? (
-          <textarea id={id} name={name} required={required} />
+          <textarea id={id} name={name} required={required} placeholder={placeholder} />
         ) : (
-          <input id={id} name={name} type={kind} required={required} />
+          <input id={id} name={name} type={kind} required={required} placeholder={placeholder} />
         )}
       </div>
     );
@@ -105,7 +116,7 @@ export function WorkspaceDialog({
       title = text(fd, "title"),
       owner = text(fd, "owner"),
       description = text(fd, "description"),
-      due = text(fd, "dueDate") || today;
+      due = text(fd, "dueDate");
     let next = { ...workspace };
     const activity = (message: string) => ({
       id: uid("ACT"),
@@ -753,6 +764,13 @@ export function WorkspaceDialog({
           </button>
         </div>
         <form action={submit} className="form-grid">
+          {type === "work" && (
+            <p className="form-intro wide">
+              {ru
+                ? "Достаточно указать название. Владелец и срок помогут команде понять следующий шаг; детали можно добавить позже."
+                : "Start with a title. An owner and due date help clarify the next step; you can add detail later."}
+            </p>
+          )}
           {type !== "dependency" &&
             field(
               "title",
@@ -825,7 +843,9 @@ export function WorkspaceDialog({
           ].includes(type) &&
             field(
               "dueDate",
-              ru
+              type === "work"
+                ? ru ? "Срок (необязательно)" : "Due date (optional)"
+                : ru
                   ? "Срок / дата пересмотра"
                   : "Due / review date",
               "date",
@@ -867,19 +887,28 @@ export function WorkspaceDialog({
                   )}
                 </select>
               </div>
-              {field("startDate", ru ? "Начало" : "Start", "date")}
-              {field(
-                "estimate",
-                ru ? "Оценка трудоёмкости" : "Effort estimate",
-                "number",
-              )}
-              {field(
-                "acceptance",
-                ru
-                  ? "Критерии приёмки — по строке"
-                  : "Acceptance criteria — one per line",
-                "textarea",
-              )}
+              <details className="form-optional wide">
+                <summary>
+                  {ru
+                    ? "Планирование и критерии — необязательно"
+                    : "Planning and acceptance criteria — optional"}
+                </summary>
+                <div className="form-grid">
+                  {field("startDate", ru ? "Начало" : "Start", "date")}
+                  {field(
+                    "estimate",
+                    ru ? "Оценка трудоёмкости" : "Effort estimate",
+                    "number",
+                  )}
+                  {field(
+                    "acceptance",
+                    ru
+                      ? "Критерии приёмки — один пункт на строку"
+                      : "Acceptance criteria — one item per line",
+                    "textarea",
+                  )}
+                </div>
+              </details>
             </>
           )}
           {type === "risk" && (
