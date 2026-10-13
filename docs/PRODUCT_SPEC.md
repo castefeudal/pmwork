@@ -21,6 +21,7 @@ The public RU/EN landing page shows an interactive sample, describes concrete wo
 13. Project health separates derived state from data confidence; missing records reduce confidence rather than being treated as positive evidence.
 14. Control generates an editable, source-linked status snapshot with a visible snapshot date and an explicit reporting-period reminder. CSV and iCalendar exports are built locally; CSV text is protected against spreadsheet-formula execution.
 15. The Documents view searches titles, content, type and linked IDs, supports category filters and pinned records, opens supported links, and downloads Markdown without rendering document HTML.
+16. Risk creation starts with a qualitative likelihood/impact rating; response planning and monetary exposure stay optional and separate. Monetary exposure is shown only when the required values are recorded and uses project currency by default.
 
 Historical prompts under `archive/` are superseded as descriptions of the current implementation. The user execution specification remains the acceptance target; a feature is only verified when its associated release evidence passes.
 

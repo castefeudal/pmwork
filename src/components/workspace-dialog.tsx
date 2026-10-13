@@ -87,6 +87,7 @@ export function WorkspaceDialog({
     labelText: string,
     kind: "text" | "textarea" | "date" | "number" = "text",
     required = false,
+    constraints: { min?: number; max?: number; step?: number | "any" } = {},
   ) => {
     const id = `${prefix}-${name}`;
     const placeholder = name === "title"
@@ -106,7 +107,7 @@ export function WorkspaceDialog({
         {kind === "textarea" ? (
           <textarea id={id} name={name} required={required} placeholder={placeholder} />
         ) : (
-          <input id={id} name={name} type={kind} required={required} placeholder={placeholder} />
+          <input id={id} name={name} type={kind} required={required} placeholder={placeholder} min={constraints.min} max={constraints.max} step={constraints.step} />
         )}
       </div>
     );
@@ -797,7 +798,9 @@ export function WorkspaceDialog({
           ) &&
             field(
               "description",
-              type === "meeting"
+              type === "risk"
+                ? ru ? "Контекст риска (необязательно)" : "Risk context (optional)"
+                : type === "meeting"
                 ? ru
                   ? "Повестка — один вопрос на строку"
                   : "Agenda — one question per line"
@@ -823,9 +826,9 @@ export function WorkspaceDialog({
           ].includes(type) &&
             field(
               "owner",
-              ru
-                  ? "Владелец"
-                  : "Owner",
+              type === "risk"
+                ? ru ? "Владелец (необязательно)" : "Owner (optional)"
+                : ru ? "Владелец" : "Owner",
             )}
           {[
             "work",
@@ -845,6 +848,8 @@ export function WorkspaceDialog({
               "dueDate",
               type === "work"
                 ? ru ? "Срок (необязательно)" : "Due date (optional)"
+                : type === "risk"
+                  ? ru ? "Дата пересмотра (необязательно)" : "Review date (optional)"
                 : ru
                   ? "Срок / дата пересмотра"
                   : "Due / review date",
@@ -913,25 +918,42 @@ export function WorkspaceDialog({
           )}
           {type === "risk" && (
             <>
-              {field("category", ru ? "Категория" : "Category")}
-              {field(
-                "probability",
-                ru ? "Вероятность 1–5" : "Probability 1–5",
-                "number",
-              )}
-              {field("impact", ru ? "Влияние 1–5" : "Impact 1–5", "number")}
-              {field("probabilityPct", ru ? "Денежная вероятность, % (необязательно)" : "Monetary probability, % (optional)", "number")}
-              {field("impactAmount", ru ? "Денежное влияние (необязательно)" : "Monetary impact (optional)", "number")}
-              {field("residualProbabilityPct", ru ? "Остаточная вероятность, %" : "Residual probability, %", "number")}
-              {field("residualImpactAmount", ru ? "Остаточное денежное влияние" : "Residual monetary impact", "number")}
-              {field("responseCost", ru ? "Стоимость реагирования" : "Response cost", "number")}
-              {field("currency", ru ? "Валюта проекта" : "Project currency")}
-              {field("trigger", ru ? "Триггер" : "Trigger")}
-              {field(
-                "actions",
-                ru ? "Меры реагирования" : "Response actions",
-                "textarea",
-              )}
+              <div className="field">
+                <label htmlFor={`${prefix}-category`}>{ru ? "Категория" : "Category"}</label>
+                <input id={`${prefix}-category`} name="category" type="text" placeholder={ru ? "Например: сроки, поставка, люди" : "For example: schedule, supplier, people"} />
+              </div>
+              <div className="form-note wide">
+                <strong>{ru ? "Качественная оценка" : "Qualitative assessment"}</strong>
+                <p>{ru ? "Выберите оценки по текущим данным. 3 — начальная оценка, которую стоит уточнить перед обзором." : "Rate from the evidence you have. 3 is a starting estimate to review before relying on it."}</p>
+              </div>
+              <div className="field">
+                <label htmlFor={`${prefix}-probability`}>{ru ? "Вероятность (1–5)" : "Likelihood (1–5)"}</label>
+                <input id={`${prefix}-probability`} name="probability" type="number" min={1} max={5} step={1} defaultValue={3} />
+                <small className="field-hint">{ru ? "1 — маловероятно · 5 — очень вероятно" : "1 — unlikely · 5 — very likely"}</small>
+              </div>
+              <div className="field">
+                <label htmlFor={`${prefix}-impact`}>{ru ? "Влияние (1–5)" : "Impact (1–5)"}</label>
+                <input id={`${prefix}-impact`} name="impact" type="number" min={1} max={5} step={1} defaultValue={3} />
+                <small className="field-hint">{ru ? "1 — ограниченное · 5 — серьёзное" : "1 — limited · 5 — severe"}</small>
+              </div>
+              <details className="form-optional wide">
+                <summary>{ru ? "План реагирования — необязательно" : "Response plan — optional"}</summary>
+                <div className="form-grid">
+                  {field("trigger", ru ? "Сигнал для пересмотра" : "Review trigger")}
+                  {field("actions", ru ? "Действия по снижению риска" : "Risk response actions", "textarea")}
+                </div>
+              </details>
+              <details className="form-optional wide">
+                <summary>{ru ? "Денежная оценка — необязательно" : "Financial estimate — optional"}</summary>
+                <p className="muted wide">{ru ? "Заполните вероятность и влияние вместе. Ожидаемое денежное влияние появится только при наличии обоих значений; суммы используют валюту проекта." : "Enter probability and impact together. Expected monetary exposure appears only when both are known; amounts use the project currency."}</p>
+                <div className="form-grid">
+                  {field("probabilityPct", ru ? "Вероятность, % (0–100)" : "Probability, % (0–100)", "number", false, { min: 0, max: 100, step: "any" })}
+                  {field("impactAmount", ru ? "Денежное влияние" : "Monetary impact", "number", false, { min: 0, step: "any" })}
+                  {field("residualProbabilityPct", ru ? "Остаточная вероятность, %" : "Residual probability, %", "number", false, { min: 0, max: 100, step: "any" })}
+                  {field("residualImpactAmount", ru ? "Остаточное денежное влияние" : "Residual monetary impact", "number", false, { min: 0, step: "any" })}
+                  {field("responseCost", ru ? "Стоимость реагирования" : "Response cost", "number", false, { min: 0, step: "any" })}
+                </div>
+              </details>
             </>
           )}
           {type === "milestone" && field("confidence", ru ? "Уверенность в прогнозе, %" : "Forecast confidence, %", "number")}

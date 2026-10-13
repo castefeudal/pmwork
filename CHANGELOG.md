@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.9.2 — clearer risk entry
+
+- Separate the quick qualitative risk assessment from optional response planning and financial exposure fields.
+- Explain the 1–5 likelihood/impact scales, keep their starting value visible, and constrain numeric inputs to valid ranges.
+- Explain when monetary exposure can be calculated and use the project currency by default.
+- Add Russian/English mobile coverage for accessible entry, validation, persistence and narrow-screen layout.
+
 ## 2.9.1 — faster mobile work updates
 
 - Change a work item’s status or complete/reopen it directly from its mobile card; open the title to reach full record details.

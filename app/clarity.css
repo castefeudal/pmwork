@@ -162,6 +162,26 @@
 .dialog .field input::placeholder,
 .dialog .field textarea::placeholder { color: var(--text-tertiary); opacity: .85; }
 
+.dialog .field-hint {
+  color: var(--text-secondary);
+  font-size: .74rem;
+  line-height: 1.45;
+}
+
+.dialog .form-note {
+  margin: 0;
+  padding: .7rem .8rem;
+  border-inline-start: 3px solid var(--accent-primary);
+  border-radius: 0 9px 9px 0;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+.dialog .form-note strong { color: var(--text-primary); }
+.dialog .form-note p { margin: .2rem 0 0; }
+
 .form-optional {
   padding: .1rem 0 0;
   border-top: 1px solid var(--border-subtle);
