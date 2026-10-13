@@ -375,7 +375,7 @@ td, th { font-variant-numeric: tabular-nums; }
   .mobile-work-item { min-width: 0; padding: 10px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--surface-0); box-shadow: var(--shadow-hairline); }
   .mobile-work-item > .mobile-work-card { gap: 6px; padding: 6px; border: 0; background: transparent; }
   .mobile-work-item > .mobile-work-card strong { font-size: 1rem; line-height: 1.35; }
-  .mobile-work-open-hint { color: var(--accent-primary) !important; font-weight: 650; }
+  .mobile-work-item > .mobile-work-card:hover strong { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
   .mobile-work-card-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 10px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border-subtle); }
   .mobile-work-card-actions label { display: grid; gap: 4px; min-width: 0; color: var(--text-secondary); font-size: .75rem; }
   .mobile-work-card-actions .input { width: 100%; min-height: 42px; }
