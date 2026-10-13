@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.1 — faster mobile work updates
+
+- Change a work item’s status or complete/reopen it directly from its mobile card; open the title to reach full record details.
+- Preserve the existing status-history, completion and recurrence rules for these quick actions, with Russian and English labels.
+- Add mobile browser coverage for persistence after reload and WCAG 2.2 AA automated checks.
+
 ## 2.9.0 — Management role foundation
 
 - Traceable outcomes with dated actual observations, incoming/outgoing record links, explicit rework and prospective blocked-time evidence.
