@@ -3,6 +3,9 @@ import { expect, test } from "@playwright/test";
 import { demoWorkspace, emptyWorkspace } from "../../src/data/demo";
 import { navigateWorkspace, route } from "./support";
 
+// Audit settled theme colors, rather than a frame during their transition.
+test.use({ reducedMotion: "reduce" });
+
 for (const locale of ["ru", "en"] as const) {
   const ru = locale === "ru";
   test(`empty work view offers a useful first step (${locale})`, async ({ page }) => {
