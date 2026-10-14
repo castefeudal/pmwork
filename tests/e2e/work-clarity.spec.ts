@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { demoWorkspace, emptyWorkspace } from "../../src/data/demo";
-import { route } from "./support";
+import { navigateWorkspace, route } from "./support";
 
 for (const locale of ["ru", "en"] as const) {
   const ru = locale === "ru";
@@ -13,7 +13,7 @@ for (const locale of ["ru", "en"] as const) {
     const empty = page.locator(".empty-state").filter({ has: page.getByRole("heading", { name: ru ? "Добавьте первую работу" : "Add your first work item" }) });
     await expect(empty).toBeVisible();
     await expect(empty.getByRole("button", { name: ru ? "Показать всё" : "Show all" })).toHaveCount(0);
-    await empty.getByRole("button", { name: ru ? "Добавить работу" : "Add work item", exact: true }).click();
+    await empty.getByRole("button", { name: ru ? "Добавить рабочий элемент" : "Add work item", exact: true }).click();
     await expect(page.getByRole("dialog", { name: ru ? "Новый рабочий элемент" : "New work item" })).toBeVisible();
   });
 
@@ -34,13 +34,17 @@ for (const locale of ["ru", "en"] as const) {
     await page.getByText(ru ? "Вид и сортировка" : "Display and sorting", { exact: true }).click();
     await page.locator(".work-filter-disclosure summary").click();
     await page.locator(".work-filter-panel").getByLabel(ru ? "Статус" : "Status", { exact: true }).selectOption("ready");
+    await page.locator(".work-filter-panel").getByLabel(ru ? "Владелец" : "Owner", { exact: true }).selectOption({ index: 1 });
     await page.locator(".work-filter-disclosure summary").click();
     const search = page.getByRole("textbox", { name: ru ? "Поиск работы" : "Search work" });
     await search.fill("unmatched-record-query");
     await expect(page.getByRole("heading", { name: ru ? "Нет подходящей работы" : "No matching work" })).toBeVisible();
     const filters = page.getByRole("group", { name: ru ? "Активные фильтры" : "Active filters" });
-    await expect(filters.getByRole("button")).toHaveCount(3);
+    await expect(filters.getByRole("button")).toHaveCount(4);
     await page.getByRole("button", { name: ru ? "Очистить поиск" : "Clear search", exact: true }).click();
+    await expect(search).toBeFocused();
+    await expect(filters.getByRole("button")).toHaveCount(3);
+    await filters.getByRole("button", { name: new RegExp(`^${ru ? "Убрать фильтр: Статус" : "Remove filter: Status"}:`) }).click();
     await expect(search).toBeFocused();
     await expect(filters.getByRole("button")).toHaveCount(2);
     await filters.getByRole("button", { name: ru ? "Сбросить фильтры" : "Reset filters", exact: true }).click();
@@ -52,6 +56,9 @@ for (const locale of ["ru", "en"] as const) {
     await expect(page.getByLabel(ru ? "Группировка списка" : "List grouping", { exact: true })).toHaveValue("owner");
     await expect(page.getByLabel(ru ? "Трудоёмкость" : "Effort", { exact: true })).toBeChecked();
     await page.getByText(ru ? "Вид и сортировка" : "Display and sorting", { exact: true }).click();
+    await navigateWorkspace(page, ru ? "Сейчас" : "Today");
+    await navigateWorkspace(page, ru ? "Работа" : "Work");
+    await expect(board).toHaveAttribute("aria-pressed", "true");
     await modes.getByRole("button", { name: ru ? "Список" : "List", exact: true }).click();
     await expect(page).toHaveURL(/layout=list/);
     await page.goBack();
@@ -68,8 +75,11 @@ for (const locale of ["ru", "en"] as const) {
     await expect(page).toHaveURL(/layout=board/);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(1);
-    const axe = await new AxeBuilder({ page: page as never }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
-    expect(axe.violations).toEqual([]);
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+      const axe = await new AxeBuilder({ page: page as never }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+      expect(axe.violations).toEqual([]);
+    }
     await page.screenshot({ path: testInfo.outputPath(`work-filters-${locale}.png`), animations: "disabled" });
   });
 
@@ -91,7 +101,7 @@ for (const locale of ["ru", "en"] as const) {
     await expect(card("Past deadline").locator(".work-card-deadline")).toContainText(ru ? "Просрочено" : "Overdue");
     await expect(card("Today deadline").locator(".work-card-deadline")).toContainText(ru ? "Сегодня" : "Due today");
     await expect(card("Completed deadline").locator(".work-card-deadline strong")).toHaveCount(0);
-    await page.emulateMedia({ colorScheme: "dark" });
+    await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
     const axe = await new AxeBuilder({ page: page as never }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
     expect(axe.violations).toEqual([]);
     await page.screenshot({ path: testInfo.outputPath(`work-deadlines-${locale}.png`), animations: "disabled" });

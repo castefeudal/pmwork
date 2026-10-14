@@ -321,7 +321,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     if(destination==="program"||destination==="operations"){
       const url=new URL(window.location.href);for(const key of ["register","item","kind","create","evidence"])url.searchParams.delete(key);history.replaceState(null,"",url);dispatchEvent(new Event("pmwork-url"));
     }
-    setView(destination);
+    const rememberedLayout = workspace.workViewPreferences.find(preference => preference.projectId === project.id)?.config.type;
+    setView(destination === "work" && rememberedLayout === "board" ? "board" : destination);
   };
   const createRecord=(type:CreateType)=>{
     if(type!=="project"&&(view==="program"||view==="operations")) {

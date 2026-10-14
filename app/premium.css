@@ -614,8 +614,7 @@ tbody tr:hover {
 .view-presets button:hover { background:var(--surface-2); color:var(--ink); }
 .view-presets button.active { color:var(--accent); border-color:var(--line-strong); background:var(--accent-soft); font-weight:650; }
 .work-toolbar { align-items:center; gap:.6rem; }
-.work-toolbar .search-input { flex:1 1 220px; margin:0; }
-.work-toolbar .search-input { position:relative; min-width:0; }
+.work-toolbar .search-input { position:relative; flex:1 1 220px; min-width:0; margin:0; }
 .work-toolbar .search-input:has(.work-search-clear) .input { padding-inline-end:2.8rem; }
 .work-search-clear { position:absolute; inset-inline-end:2px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:40px; height:40px; border:0; border-radius:var(--radius-sm); background:transparent; color:var(--text-secondary); cursor:pointer; }
 .work-search-clear:hover { background:var(--surface-2); color:var(--text-primary); }
@@ -665,7 +664,19 @@ tbody tr:hover {
 .range-endpoints { display:flex; justify-content:space-between; font-size:.8125rem; color:var(--muted); }
 input[type="range"] { min-height:44px; accent-color:var(--accent); }
 @keyframes drawer-enter { from { transform:translateX(24px); opacity:.5; } to { transform:translateX(0); opacity:1; } }
-@media (max-width:640px) { .work-toolbar>.button { width:100%; justify-content:center; } .work-filter-panel { display:grid; grid-template-columns:minmax(0,1fr); } .record-drawer { border-radius:0; padding:1rem; } .view-options-row { gap:.35rem; } .workspace-top h1 { overflow-wrap:anywhere; } }
+@media (max-width:640px) {
+  .work-toolbar { display:grid; grid-template-columns:minmax(0,1fr) auto; }
+  .work-toolbar .search-input { grid-column:1 / -1; }
+  .work-toolbar .work-view-toggle { justify-self:start; }
+  .work-toolbar .work-filter-disclosure { justify-self:end; }
+  .work-toolbar .work-filter-disclosure[open] { grid-column:1 / -1; justify-self:stretch; }
+  .work-toolbar .work-filter-disclosure summary { width:fit-content; }
+  .work-toolbar>.button { grid-column:1 / -1; width:100%; justify-content:center; }
+  .work-filter-panel { display:grid; grid-template-columns:minmax(0,1fr); }
+  .record-drawer { border-radius:0; padding:1rem; }
+  .view-options-row { gap:.35rem; }
+  .workspace-top h1 { overflow-wrap:anywhere; }
+}
 @media (prefers-reduced-motion:reduce) { .record-drawer { animation:none; } }
 .timeline-scroll { overflow:auto; max-height:65vh; margin-top:1.25rem; border:1px solid var(--line); border-radius:var(--radius); }
 .date-timeline { padding:.75rem; }
