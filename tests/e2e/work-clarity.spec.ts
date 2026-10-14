@@ -4,7 +4,9 @@ import { demoWorkspace, emptyWorkspace } from "../../src/data/demo";
 import { navigateWorkspace, route } from "./support";
 
 // Audit settled theme colors, rather than a frame during their transition.
-test.use({ reducedMotion: "reduce" });
+test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+});
 
 for (const locale of ["ru", "en"] as const) {
   const ru = locale === "ru";
