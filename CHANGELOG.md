@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.9.3 — one coherent Work view
+
+- Use one list/board switch and one shared toolbar for Work, including direct board URLs and browser history.
+- Show active filters as removable controls; clear search independently and reset filters without losing layout, sorting, grouping or selected columns.
+- Distinguish an empty project from a filtered result with no matches and offer the relevant next action.
+- Make overdue and today's deadlines explicit on mobile cards while keeping completed work free of overdue warnings.
+- Include visible disclosure summaries in modal keyboard focus handling.
+
 ## 2.9.2 — clearer risk entry
 
 - Separate the quick qualitative risk assessment from optional response planning and financial exposure fields.

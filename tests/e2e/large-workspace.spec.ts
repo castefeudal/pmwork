@@ -31,5 +31,5 @@ for(const [projects,count] of [[1,20],[10,1000],[50,10000]])test(`bounded work U
   const elapsed=Date.now()-started;
   await info.attach('large-workspace-lab',{body:JSON.stringify({projects,workItems:count,filterInteractionMs:elapsed,note:'Unthrottled lab interaction; not field INP.'}),contentType:'application/json'});
   expect(elapsed).toBeLessThan(3000);
-  await expect(page.locator('.work-title-button:visible, .mobile-work-card strong:visible')).toHaveText(target);
+  await expect(page.locator('.work-title-button:visible, .mobile-work-card > strong:visible')).toHaveText(target);
 });

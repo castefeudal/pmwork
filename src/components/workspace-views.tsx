@@ -583,18 +583,18 @@ export function BoardView({
         <span className="pill">
           {ru ? "Незавершено (WIP)" : "WIP"}{" "}
           {
-            items.filter((x) => ["in-progress", "review"].includes(x.status))
+            (visibleItems ?? items).filter((x) => ["in-progress", "review"].includes(x.status))
               .length
           }
         </span>
         <span className="pill">
           {ru ? "Заблокировано" : "Blocked"}{" "}
-          {items.filter((x) => x.blocked && !x.done).length}
+          {(visibleItems ?? items).filter((x) => x.blocked && !x.done).length}
         </span>
-        <button className="button primary" onClick={() => onCreate("work")}>
+        {!visibleItems && <button className="button primary" onClick={() => onCreate("work")}>
           <Plus size={17} />
           {ru ? "Новая работа" : "New work"}
-        </button>
+        </button>}
       </div>
       <div className="board">
         {columns.map((col, ci) => {
