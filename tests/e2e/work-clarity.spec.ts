@@ -78,8 +78,10 @@ for (const locale of ["ru", "en"] as const) {
     await search.fill("a".repeat(180));
     await expect(board).toHaveAttribute("aria-pressed", "true");
     await expect(page).toHaveURL(/layout=board/);
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(overflow).toBeLessThanOrEqual(1);
+    const layout = await page.evaluate(() => ({ document: document.documentElement.scrollWidth, viewport: window.innerWidth, screen: window.screen.width }));
+    // Mobile WebKit emulation can expose a narrower innerWidth than its CSS screen.
+    const viewport = testInfo.project.name === "mobile-webkit-smoke" ? layout.screen : layout.viewport;
+    expect(layout.document).toBeLessThanOrEqual(viewport + 1);
     for (const theme of ["light", "dark"]) {
       await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
       const axe = await new AxeBuilder({ page: page as never }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
