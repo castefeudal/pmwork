@@ -22,6 +22,7 @@ The public RU/EN landing page shows an interactive sample, describes concrete wo
 14. Control generates an editable, source-linked status snapshot with a visible snapshot date and an explicit reporting-period reminder. CSV and iCalendar exports are built locally; CSV text is protected against spreadsheet-formula execution.
 15. The Documents view searches titles, content, type and linked IDs, supports category filters and pinned records, opens supported links, and downloads Markdown without rendering document HTML.
 16. Risk creation starts with a qualitative likelihood/impact rating; response planning and monetary exposure stay optional and separate. Monetary exposure is shown only when the required values are recorded and uses project currency by default.
+17. Work uses one shared list/board surface, including direct URLs and browser history. Active filters can be removed individually; resetting filters preserves layout, sorting, grouping and selected columns. Empty projects and searches with no matches offer different next steps. Mobile deadline warnings apply only to unfinished work.
 
 Historical prompts under `archive/` are superseded as descriptions of the current implementation. The user execution specification remains the acceptance target; a feature is only verified when its associated release evidence passes.
 

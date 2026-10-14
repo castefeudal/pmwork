@@ -11,9 +11,10 @@ export function useDialogFocus() {
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const targets = () => Array.from(surface.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex="0"]',
-    )).filter((element) => element.getClientRects().length > 0);
-    (surface.querySelector<HTMLElement>('input:not([type="hidden"]), textarea') ?? targets()[0] ?? surface).focus();
+      'button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), a[href], summary, [tabindex="0"]',
+    )).filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
+    const visibleTargets = targets();
+    (visibleTargets.find(element => element.matches('input, textarea')) ?? visibleTargets[0] ?? surface).focus();
     const trap = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
       const list = targets();

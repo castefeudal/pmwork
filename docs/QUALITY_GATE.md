@@ -15,7 +15,7 @@ npm audit --audit-level=moderate
 
 The complete Playwright regression suite remains Chromium-based on desktop and Pixel 7 so the main gate stays bounded. Coverage includes RU/EN CRUD, project switching, URL state, backup validation/replacement, corruption recovery, keyboard palette, intent search, dialogs/focus, Kanban alternatives, starter-linked behavior, MARKOVMADE apply, deterministic tools, offline internal navigation, PWA fonts/assets, root/Pages path behavior, axe, and eight-width reflow. Representative screenshots are emitted to `test-results`; screenshot existence alone is not visual approval.
 
-A separate bounded smoke suite runs Firefox, desktop WebKit, and mobile WebKit. It covers public/workspace hydration, local-first demo persistence across reload, locale switching, and bilingual risk creation with qualitative and optional financial inputs. This is cross-browser regression evidence, not a substitute for physical-device Safari/Firefox review.
+A separate bounded smoke suite runs Firefox, desktop WebKit, and mobile WebKit. It covers public/workspace hydration, local-first demo persistence across reload, locale switching, bilingual risk creation, and Work filtering, layout/history consistency, empty states and mobile deadlines. This is cross-browser regression evidence, not a substitute for physical-device Safari/Firefox review.
 
 Performance gates enforce route-specific compressed transfer budgets derived from the previous production baseline with headroom for intentional change:
 
