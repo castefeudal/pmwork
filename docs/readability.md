@@ -8,7 +8,7 @@ Program and Operations overview counts describe records, not health scores. Meas
 
 ## Verification
 
-- `tests/e2e/readability.spec.ts` checks computed demo fonts, 44px demo controls, text contrast through axe, all ten supported widths, preference persistence, density independence, enlarged workspace text and 320 CSS-pixel reflow. A 320 CSS-pixel viewport represents reflow at 400% on a 1280px display; this is browser automation, not a human usability assessment.
+- `tests/e2e/readability.spec.ts` checks computed demo fonts, 44px demo controls, text contrast through axe, all ten supported widths, preference persistence, density independence, enlarged workspace text, public controls and mobile navigation with 200% text, and 320 CSS-pixel reflow. A 320 CSS-pixel viewport represents reflow at 400% on a 1280px display; this is browser automation, not a human usability assessment.
 - `tests/e2e/layout-regression.spec.ts` also checks control bounds, including controls that could escape a container without increasing document width. Wide tables retain local scrolling.
 - Unit tests cover unavailable preference storage, invalid external preferences, future observations and actual-date chart geometry.
 - Existing storage, migration, export, PWA, record editing and cross-browser scenarios remain release gates.

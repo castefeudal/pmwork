@@ -30,6 +30,54 @@ for (const locale of ["ru","en"] as const) {
       expect(axe.violations).toEqual([]);
     }
   });
+  test(`public controls remain reachable with 200 percent text (${locale})`,async({page})=>{
+    test.setTimeout(120000);
+    await page.emulateMedia({reducedMotion:"reduce"});
+    for(const width of [320,1280])for(const path of ["","methods","templates","playbooks","knowledge","glossary","tools"]) {
+      await page.setViewportSize({width,height:900});
+      await page.goto(route(`/${locale}/${path?`${path}/`:""}`));
+      await page.evaluate(()=>document.documentElement.style.fontSize="200%");
+      await page.evaluate(()=>document.fonts.ready);
+      if(width===320) {
+        await page.locator(".mobile-menu").click();
+        await expect(page.locator(".mobile-nav")).toBeVisible();
+        await expect.poll(()=>page.evaluate(()=>document.querySelector(".mobile-nav")!.getBoundingClientRect().top-document.querySelector(".topbar")!.getBoundingClientRect().bottom)).toBeGreaterThanOrEqual(-1);
+        await page.locator(".mobile-menu").click();
+      }
+      await page.locator(".appearance-settings>summary").click();
+      const outside=await page.locator("a,button,input,select,textarea,summary").evaluateAll(elements=>elements.filter(el=>{
+        if(!el.getClientRects().length||el.closest(".skip-link,.sr-only,[hidden]"))return false;
+        for(let p:Element|null=el;p&&p!==document.body;p=p.parentElement) {
+          if(getComputedStyle(p).visibility==="hidden"||getComputedStyle(p).display==="none")return false;
+          if(p instanceof HTMLDetailsElement&&!p.open&&!p.querySelector(":scope>summary")?.contains(el))return false;
+          if(p!==el&&["auto","scroll"].includes(getComputedStyle(p).overflowX))return false;
+        }
+        const rect=el.getBoundingClientRect();
+        return rect.width>0&&rect.height>0&&(rect.left < -1||rect.right>document.documentElement.clientWidth+1);
+      }).map(el=>`${el.tagName}: ${el.textContent?.trim().slice(0,40)}`));
+      expect(outside,`${locale}/${path} at ${width}px with 200% text`).toEqual([]);
+      const clippedText=await page.locator("main,footer").evaluateAll(roots=>{
+        const clipped:string[]=[];
+        for(const root of roots) {
+          const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+          while(walker.nextNode()) {
+            const node=walker.currentNode, el=node.parentElement;
+            if(!node.textContent?.trim()||!el||el.closest("svg,script,style,.sr-only,[aria-hidden=true]"))continue;
+            let skip=false;
+            for(let p:Element|null=el;p&&p!==document.body;p=p.parentElement) {
+              if(["auto","scroll"].includes(getComputedStyle(p).overflowX)||getComputedStyle(p).visibility==="hidden"||(p instanceof HTMLDetailsElement&&!p.open&&!p.querySelector(":scope>summary")?.contains(el))){skip=true;break;}
+            }
+            if(skip)continue;
+            const range=document.createRange();range.selectNodeContents(node);
+            if(Array.from(range.getClientRects()).some(rect=>rect.width>0&&rect.height>0&&(rect.left < -1||rect.right>document.documentElement.clientWidth+1)))clipped.push(node.textContent.trim().slice(0,70));
+          }
+        }
+        return clipped.slice(0,20);
+      });
+      expect(clippedText,`${locale}/${path} text bounds at ${width}px`).toEqual([]);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);
+    }
+  });
   test(`text preference survives reload and reflows independently of density (${locale})`,async({page})=>{
     test.setTimeout(90000);
     await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},demoWorkspace(locale));

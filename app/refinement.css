@@ -27,6 +27,7 @@
     font-synthesis: none;
     font-kerning: normal;
     text-wrap: balance;
+    overflow-wrap: anywhere;
   }
 
   :where(button, input, select, textarea) { font: inherit; }
@@ -123,10 +124,13 @@
 html { font-size:100%; }
 html[data-text-size="large"] { font-size:112.5%; }
 html[data-text-size="extra-large"] { font-size:125%; }
-.appearance-settings { min-width:12rem; }
+.appearance-settings { min-width:0; width:min(100%,12rem); }
 .appearance-settings summary { min-height:44px; cursor:pointer; }
 .appearance-settings .field { margin-block:.5rem; }
 
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { border-color:var(--border-control); }
 .showcase-tabs button,.showcase-statuses button { border-color:var(--border-control); transition:background var(--motion-fast),border-color var(--motion-fast); }
 .showcase-tabs button:hover,.showcase-statuses button:hover { background:var(--surface-selected); }
+
+.footer > * { min-width:0; max-width:100%; overflow-wrap:anywhere; }
+.appearance-settings select { width:100%; min-width:0; }

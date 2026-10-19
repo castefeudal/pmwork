@@ -10,6 +10,7 @@ html {
 }
 small, code, kbd, samp, sub, sup { font-size:var(--type-caption); }
 body {
+  overflow-wrap: anywhere;
   max-width: 100%;
   overflow-x: clip;
   margin: 0;
@@ -97,6 +98,10 @@ a {
   flex-wrap: wrap;
 }
 .button {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -145,8 +150,11 @@ a {
   position: sticky;
   top: 0;
   z-index: var(--z-topbar);
-  height: 64px;
+  --public-header-height: 64px;
+  height: auto;
+  min-height: var(--public-header-height);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   padding: 0 clamp(1rem, 3vw, 2.5rem);
@@ -170,6 +178,9 @@ a {
 }
 .topnav,
 .desktop-nav {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -207,6 +218,7 @@ a {
   backdrop-filter: blur(2px);
 }
 .mobile-nav {
+  grid-template-columns: minmax(0,1fr);
   position: fixed;
   z-index: 49;
   top: 64px;
@@ -222,6 +234,9 @@ a {
   display: grid;
 }
 .mobile-nav a {
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
   min-height: 52px;
   display: flex;
   align-items: center;
@@ -667,6 +682,8 @@ td:is(:nth-last-child(-n + 5)) {
   margin-bottom: 1rem;
 }
 .field {
+  grid-template-columns: minmax(0,1fr);
+  overflow-wrap: anywhere;
   display: grid;
   gap: 0.35rem;
 }
@@ -678,6 +695,8 @@ td:is(:nth-last-child(-n + 5)) {
 .field input,
 .field select,
 .field textarea {
+  min-width: 0;
+  max-width: 100%;
   width: 100%;
   min-height: 42px;
   padding: 0.6rem 0.7rem;
@@ -1714,6 +1733,7 @@ blockquote {
 .public-search-result small { color: var(--muted); }
 .public-search-result.active { background: var(--surface-2); outline: 2px solid var(--accent); outline-offset: -2px; }
 .mobile-work-list,.mobile-planning-agenda { display: none; }
+.learning-path > li { min-width:0; max-width:100%; }
 .learning-path { display: flex; flex-wrap: wrap; gap: 12px 30px; padding-left: 25px; }
 @media(max-width:767px) {
  .work-table { display: none; }

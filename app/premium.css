@@ -55,7 +55,7 @@ summary {
 }
 
 .topbar {
-  height: 72px;
+  --public-header-height: 72px;
   padding-inline: clamp(1rem, 3.5vw, 3rem);
   background: color-mix(in srgb, var(--bg) 76%, transparent);
   border-color: var(--line);
@@ -584,7 +584,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 720px) {
-  .topbar { height: 64px; }
+  .topbar { --public-header-height: 64px; }
   .hero { min-height: auto; padding-top: 4rem; }
   .hero h1 { font-size: clamp(3rem, 15vw, 5.2rem); }
   .cockpit-preview { border-radius: 18px; }
