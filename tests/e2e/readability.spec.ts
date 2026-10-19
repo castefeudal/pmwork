@@ -36,7 +36,9 @@ for (const locale of ["ru","en"] as const) {
     await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
     const select=page.getByRole("combobox",{name:locale==="ru"?"Размер текста":"Text size",exact:true});
     await select.selectOption("large");
+    await page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true}).selectOption("compact");
     await page.reload();
+    await expect(page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true})).toHaveValue("compact");
     await expect(select).toHaveValue("large");
     expect(await page.locator("html").evaluate(el=>getComputedStyle(el).fontSize)).toBe("18px");
     for(const view of ["overview","work","program","operations","documents"]) {
@@ -45,6 +47,8 @@ for (const locale of ["ru","en"] as const) {
         await page.setViewportSize({width,height:900});
         await page.evaluate(()=>document.fonts.ready);
         expect(await page.evaluate(()=>document.documentElement.scrollWidth),`${view} at ${width}`).toBeLessThanOrEqual(width+1);
+        const small=await page.locator(".workspace-content").locator("*").evaluateAll(elements=>elements.filter(el=>!el.closest("svg")&&el.getClientRects().length&&Array.from(el.childNodes).some(node=>node.nodeType===3&&node.textContent?.trim())&&parseFloat(getComputedStyle(el).fontSize)<15.7).map(el=>`${el.className}: ${getComputedStyle(el).fontSize}`));
+        expect(small).toEqual([]);
       }
     }
     // A 320 CSS-pixel viewport represents reflow at 400% on a 1280px display.

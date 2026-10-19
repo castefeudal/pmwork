@@ -66,7 +66,10 @@ for(const locale of ['ru','en'] as const) {
     await search.fill(item.title);
     const checkbox=page.getByRole('checkbox',{name:`${ru?'Выбрать':'Select'} ${item.title}`,exact:true}).filter({visible:true});
     const selectionMode=page.getByRole('button',{name:ru?'Выбрать работу':'Select work',exact:true});
-    if(await selectionMode.isVisible())await selectionMode.click();
+    if((await page.viewportSize())!.width<768){
+      await page.getByText(ru?'Вид и сортировка':'Display and sorting',{exact:true}).click();
+      await selectionMode.click();
+    }
     await checkbox.check();
     const actions=page.getByRole('group',{name:ru?'Действия с выбранной работой':'Selected work actions'});
     await actions.getByRole('button',{name:ru?'В архив':'Archive',exact:true}).click();

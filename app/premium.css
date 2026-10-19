@@ -688,9 +688,9 @@ input[type="range"] { min-height:44px; accent-color:var(--accent); }
 .date-bar.conflict { border:2px solid var(--bad); background:color-mix(in srgb,var(--bad) 14%,var(--surface-solid)); }
 .today-marker { position:absolute; top:0; bottom:0; width:2px; background:var(--accent); }
 .milestone-marker { position:absolute; top:12px; transform:translateX(-50%); background:var(--surface-solid); color:var(--accent); border:0; font-size:1.5rem; cursor:pointer; }
-.health-evidence { display:grid; gap:.35rem; margin:1rem 0; }
-.health-evidence>button { border:0; border-bottom:1px solid var(--line); background:transparent; padding:.65rem 0; text-align:left; color:var(--ink); cursor:pointer; }
-.health-evidence>button>span { display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+.health-evidence { display:grid; min-width:0; gap:.35rem; margin:1rem 0; }
+.health-evidence>button { min-width:0; width:100%; white-space:normal; overflow-wrap:anywhere; border:0; border-bottom:1px solid var(--line); background:transparent; padding:.65rem 0; text-align:left; color:var(--ink); cursor:pointer; }
+.health-evidence>button>span { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem; }
 .health-evidence small { display:block; color:var(--muted); line-height:1.5; margin-top:.35rem; font-size:0.875rem; }
 .health-evidence>button:hover { background:var(--accent-soft); }
 .hero h1 { font-size:clamp(2.5rem,4.5vw,4.5rem); line-height:1.06; letter-spacing:-.045em; }

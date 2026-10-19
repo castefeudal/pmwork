@@ -8,6 +8,7 @@ html {
   overflow-x: clip;
   scroll-behavior: smooth;
 }
+small, code, kbd, samp, sub, sup { font-size:var(--type-caption); }
 body {
   max-width: 100%;
   overflow-x: clip;

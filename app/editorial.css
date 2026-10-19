@@ -2,12 +2,12 @@
 /* Reading surfaces and viewport-owned overlays. */
 .catalog-card, .panel, .metric-card, .table-wrap { backdrop-filter: none; }
 .catalog-card:hover, .metric-card:hover, .method-strip div:hover { transform: none; box-shadow: var(--shadow-sm); }
-.catalog-grid { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: stretch; gap: 1.25rem; }
+.catalog-grid { grid-template-columns: repeat(auto-fit,minmax(min(100%,24rem),1fr)); align-items: stretch; gap: 1.25rem; }
 .catalog-card { min-width: 0; overflow: visible; padding: clamp(1rem,2.3vw,1.75rem); }
 .catalog-card h2 { font-size: clamp(1.25rem,2vw,1.65rem); line-height: 1.3; letter-spacing: -.025em; }
 .catalog-card p, .catalog-card li { line-height: 1.65; overflow-wrap: anywhere; }
 .catalog-card details { border-top: 1px solid var(--line); padding-top: .85rem; margin-top: .85rem; }
-.catalog-card summary { padding: .35rem 0; line-height: 1.5; }
+.catalog-card summary { min-height:44px; padding: .6rem 0; line-height: 1.5; }
 .catalog-card .card-foot { flex-wrap: wrap; align-items: flex-start; gap: .8rem; padding-top: 1rem; }
 .catalog-card .card-foot details { margin: 0; padding: 0; border: 0; }
 .catalog-hero { padding-top: clamp(2rem,5vw,4rem); padding-bottom: 1.5rem; }

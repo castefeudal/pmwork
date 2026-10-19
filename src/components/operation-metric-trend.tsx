@@ -13,7 +13,7 @@ export function OperationMetricTrend({ metric, locale, asOf }: { metric: Operati
   const y = (value: number) => 100 - (value - min) / range * 80;
   return <figure className="metric-trend">
     <figcaption><strong>{metric.name}</strong><span>{latest ? `${latest.value} ${metric.unit} · ${latest.at}` : (ru ? "Недостаточно данных" : "Insufficient evidence")}</span></figcaption>
-    {rows.length >= 2 ? <><svg viewBox="0 0 320 112" role="img" aria-label={`${metric.name}: ${rows.map(row => `${row.at}: ${row.value} ${metric.unit}`).join("; ")}`}>
+    {new Set(rows.map(row => row.at)).size >= 2 ? <><svg viewBox="0 0 320 112" role="img" aria-label={`${metric.name}: ${rows.map(row => `${row.at}: ${row.value} ${metric.unit}`).join("; ")}`}>
       <line x1="12" x2="308" y1={y(metric.target)} y2={y(metric.target)} stroke="var(--semantic-warning)" strokeDasharray="5 4"/>
       <polyline points={rows.map(row => `${x(row.at)},${y(row.value)}`).join(" ")} fill="none" stroke="var(--accent-primary)" strokeWidth="2"/>
       {rows.map((row, index) => <circle key={`${row.at}-${index}`} cx={x(row.at)} cy={y(row.value)} r="3" fill="var(--accent-primary)"/>)}
