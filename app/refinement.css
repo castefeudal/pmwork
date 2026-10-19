@@ -2,7 +2,7 @@
   :root {
     --reading-measure: 68ch;
     --control-height: 44px;
-    --type-caption: .8125rem;
+    --type-caption: .875rem;
     --type-label: .875rem;
   }
 
@@ -41,7 +41,7 @@
   :where(.workspace-content, .management-center, .panel, .card, .article-body) {
     overflow-wrap: break-word;
   }
-  :where(.workspace-content table, .management-center table) { font-size: .875rem; }
+  :where(.workspace-content table, .management-center table) { font-size: 0.875rem; }
   :where(.workspace-content button, .workspace-content select, .workspace-content input,
     .workspace-content summary, .site-shell a.button, .site-shell button.button) {
     min-height: var(--control-height);
@@ -49,12 +49,12 @@
 
   .workspace-content.density-compact { --density-control-gap: .5rem; }
   .workspace-content.density-compact :where(.panel, .metric-card) { line-height: 1.45; }
-  .workspace-content.density-compact :where(.muted, small, .eyebrow) { font-size: max(12px, .8125rem); }
+  .workspace-content.density-compact :where(.muted, small, .eyebrow) { font-size: .875rem; }
 
   .site-shell :where(.hero-kicker, .hero-value-list, .marketing-hero .hero-author,
     .capability-card p, .flow-step p, .privacy-lead, .privacy-copy ul,
     .approach-heading > p:last-child, .closing-section > p:not(.eyebrow)) {
-    font-size: max(14px, 1em);
+    font-size: max(0.875rem, 1em);
   }
 
   @media (min-width: 901px) {
@@ -67,7 +67,7 @@
   @media (max-width: 700px) {
     html { scroll-padding-block-end: calc(180px + env(safe-area-inset-bottom)); }
     :where(input:not([type="range"]), select, textarea) {
-      font-size: 16px;
+      font-size: 1rem;
       font-size-adjust: none;
     }
     .workspace-content { width: 100%; padding-inline: max(16px, env(safe-area-inset-left)); }
@@ -118,3 +118,15 @@
     .side-nav button.active { border: 1px solid Highlight; }
   }
 }
+
+/* Text size is independent from workspace density and browser zoom. */
+html { font-size:100%; }
+html[data-text-size="large"] { font-size:112.5%; }
+html[data-text-size="extra-large"] { font-size:125%; }
+.appearance-settings { min-width:12rem; }
+.appearance-settings summary { min-height:44px; cursor:pointer; }
+.appearance-settings .field { margin-block:.5rem; }
+
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { border-color:var(--border-control); }
+.showcase-tabs button,.showcase-statuses button { border-color:var(--border-control); transition:background var(--motion-fast),border-color var(--motion-fast); }
+.showcase-tabs button:hover,.showcase-statuses button:hover { background:var(--surface-selected); }

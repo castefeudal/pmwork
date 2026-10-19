@@ -1,3 +1,4 @@
+import { TextSizeSetting } from "./text-size-setting";
 import Link from "next/link";
 import type { Locale } from "@/domain/schemas";
 export function Footer({ locale }: { locale: Locale }) {
@@ -24,6 +25,6 @@ export function Footer({ locale }: { locale: Locale }) {
           {locale === "ru" ? "О проекте" : "About"}
         </Link>
       </span>
-    </footer>
+    <details className="appearance-settings"><summary>{locale === "ru" ? "Размер текста" : "Text size"}</summary><TextSizeSetting locale={locale}/></details></footer>
   );
 }

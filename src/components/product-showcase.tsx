@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
-import { ArrowUpRight, CalendarDays, Check, CircleAlert, CircleCheck, Clock3, Command, Database, FileText, LayoutDashboard, ListChecks, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { Check, CircleAlert, Database, FileText, LayoutDashboard, ListChecks } from "lucide-react";
 import type { Decision, Locale, Risk, WorkItem, Workspace } from "@/domain/schemas";
 import { formatDate } from "@/domain/format-date";
 import { displayLabel } from "@/content/workspace-i18n";
@@ -44,6 +44,7 @@ const viewCopy = {
 export function ProductShowcase({ locale, preview }: { locale: Locale; preview: ShowcasePreview }) {
   const t = viewCopy[locale];
   const [view, setView] = useState<ShowcaseView>("overview");
+  const [groupIndex, setGroupIndex] = useState(1);
   const { project, work, risks, decisions, milestones } = preview;
   const blocker = work.find((item) => item.blocked);
   const projectRisks = risks;
@@ -68,72 +69,28 @@ export function ProductShowcase({ locale, preview }: { locale: Locale; preview: 
   }
 
   return (
-    <div className="product-showcase" id="product-preview" aria-label={locale === "ru" ? "Интерактивный демо-проект PMWORK" : "Interactive PMWORK demo project"}>
-      <div className="showcase-windowbar" aria-hidden="true">
-        <div className="window-dots"><i /><i /><i /></div>
-        <span>PMWORK <span className="window-divider">/</span> {t.app}</span>
-        <span className="showcase-saved"><span />{t.saved}</span>
+    <section className="product-showcase" id="product-preview" aria-label={locale === "ru" ? "Интерактивный демо-проект PMWORK" : "Interactive PMWORK demo project"}>
+      <header className="showcase-projectline"><span className="showcase-mini-label">{t.sample}</span><h2>{project.name}</h2><p>{project.objective}</p></header>
+      <div className="showcase-tabs" role="group" aria-label={locale === "ru" ? "Раздел демо-проекта" : "Demo project view"}>
+        {options.map(({id,label,icon:Icon})=><button key={id} type="button" aria-pressed={view===id} onClick={()=>setView(id)}><Icon size={18} aria-hidden="true"/>{label}</button>)}
       </div>
-      <div className="showcase-workspace">
-        <aside className="showcase-sidebar" aria-hidden="true">
-          <div className="showcase-project-mark">M</div>
-          <span className="showcase-side-active"><LayoutDashboard size={16} /></span>
-          <span><ListChecks size={16} /></span>
-          <span><CalendarDays size={16} /></span>
-          <span><ShieldCheck size={16} /></span>
-          <span><FileText size={16} /></span>
-        </aside>
-        <div className="showcase-content">
-          <div className="showcase-projectline">
-            <div><span className="showcase-crumb">{project.name}</span><p>{t.sample}</p></div>
-            <span className="showcase-search"><Command size={13} /> K</span>
-          </div>
-          <div className="showcase-tabs" role="group" aria-label={locale === "ru" ? "Раздел демо-проекта" : "Demo project view"}>
-            {options.map(({ id, label, icon: Icon }) => (
-              <button key={id} type="button" className={view === id ? "active" : ""} aria-pressed={view === id} onClick={() => setView(id)}>
-                <Icon size={14} aria-hidden="true" />{label}
-              </button>
-            ))}
-          </div>
-          <div className="showcase-panel" key={view} aria-live="polite" aria-atomic="true">
-            {view === "overview" && <>
-              <div className="showcase-welcome"><div><h2>{project.name}</h2><p>{project.objective}</p></div><span className="showcase-date"><CalendarDays size={13} /> {t.sample}</span></div>
-              <div className="showcase-metrics">
-                {[
-                  { label: t.openWork, value: work.filter((item) => !item.done).length, note: `${work.length} ${t.records}`, color: "teal" },
-                  { label: t.blockers, value: work.filter((item) => item.blocked).length, note: t.signal, color: "amber" },
-                  { label: t.decisions, value: pendingDecisions.length, note: projectRisks.length ? `${projectRisks.length} ${t.risk.toLocaleLowerCase(locale)}` : t.pending, color: "blue" },
-                ].map((item) => <article className="showcase-metric" key={item.label}><span>{item.label}</span><div><strong>{item.value}</strong><small className={`metric-${item.color}`}>{item.note}</small></div></article>)}
-              </div>
-              <div className="showcase-lower-grid">
-                <article className="showcase-card showcase-workload">
-                  <div className="showcase-card-head"><div><strong>{t.byStatus}</strong><span>{work.length} {t.records}</span></div><span className="showcase-open" aria-hidden="true"><ArrowUpRight size={15} /></span></div>
-                  <div className="showcase-work-bars" role="img" aria-label={statusGroups.map((group) => `${group.label}: ${group.items.length}`).join(", ")}>
-                    {statusGroups.map((group) => <span key={group.label} style={{ "--bar": `${Math.max(10, (group.items.length / Math.max(1, work.length)) * 100)}%` } as CSSProperties} />)}
-                  </div>
-                  <div className="showcase-week">{statusGroups.map((group) => <span key={group.label}>{group.label} · {group.items.length}</span>)}</div>
-                </article>
-                <article className="showcase-card showcase-next"><span className="showcase-icon"><CalendarDays size={15} /></span><span className="showcase-mini-label">{t.milestone}</span><strong>{upcoming?.title ?? t.noMilestone}</strong><span className="showcase-date-note"><Clock3 size={12} />{t.forecast}: {upcoming ? formatDate(upcoming.forecastDate, locale) : "—"}</span><div className="showcase-progress"><span style={{ width: `${upcoming?.progress ?? 0}%` }} /></div><small>{upcoming ? `${displayLabel(locale, "milestoneStatus", upcoming.status)} · ${t.progress.toLocaleLowerCase(locale)} ${upcoming.progress}% · ${t.confidence.toLocaleLowerCase(locale)} ${upcoming.confidence ?? "—"}%` : t.noMilestone}</small></article>
-              </div>
-              {blocker && <div className="showcase-signal"><span className="showcase-alert-icon"><CircleAlert size={15} /></span><div><strong>{t.signal}: {blocker.title}</strong><span>{blocker.blockerReason}</span></div><span className="showcase-signal-tag">{displayLabel(locale, "priority", blocker.priority)}</span></div>}
-            </>}
-            {view === "delivery" && <>
-              <div className="showcase-welcome"><div><h2>{project.name}</h2><p>{t.objective}: {project.objective}</p></div><span className="showcase-date"><ListChecks size={13} /> {work.length} {t.records}</span></div>
-              <div className="showcase-board" role="region" tabIndex={0} aria-label={locale === "ru" ? "Доска задач; прокручивайте по горизонтали" : "Work board; scroll horizontally"}>{statusGroups.map((group) => <div className="showcase-board-column" key={group.label}><div className="showcase-board-label"><span>{group.label}</span><b>{group.items.length}</b></div>{group.items.slice(0, 3).map((item) => <div className={`showcase-board-card ${item.blocked ? "board-card-1" : item.done ? "board-card-2" : ""}`} key={item.id}><span>{item.blocked ? <CircleAlert size={13} /> : item.done ? <CircleCheck size={13} /> : <span className="showcase-card-dot" />}</span><strong>{item.title}</strong><div><i>{item.owner || t.noOwner}</i><small>{formatDate(item.dueDate, locale)}</small></div></div>)}</div>)}</div>
-              <div className="showcase-inline-note"><Check size={15} /><span>{locale === "ru" ? "Задачи, владельцы и сроки взяты из демо-проекта." : "Work items, owners, and dates come from the bundled demo project."}</span></div>
-            </>}
-            {view === "decisions" && <>
-              <div className="showcase-welcome"><div><h2>{locale === "ru" ? "Решения и основания" : "Decisions and evidence"}</h2><p>{project.name}</p></div><span className="showcase-date"><FileText size={13} /> {t.sample}</span></div>
-              <div className="showcase-decision-list">
-                {pendingDecisions.slice(0, 2).map((decision) => <article className="showcase-decision showcase-decision-open" key={decision.id}><span className="showcase-decision-icon"><Clock3 size={16} /></span><div><span className="showcase-mini-label">{decision.id} · {t.pending}</span><strong>{decision.question}</strong><p>{decision.context}</p></div><span className="showcase-decision-state">{t.pending}</span></article>)}
-                {projectRisks.slice(0, 1).map((risk) => <article className="showcase-decision" key={risk.id}><span className="showcase-decision-icon"><ShieldCheck size={16} /></span><div><span className="showcase-mini-label">{risk.id} · {t.risk}</span><strong>{risk.title}</strong><p>{risk.trigger}</p></div><span className="showcase-decision-state state-done">{displayLabel(locale, "riskStatus", risk.status)}</span></article>)}
-              </div>
-              <div className="showcase-inline-note"><ShieldCheck size={15} /><span>{t.recorded}</span></div>
-            </>}
-          </div>
-        </div>
+      <div className="showcase-panel" aria-live="polite">
+        {view==="overview"&&<>
+          <div className="showcase-metrics">{[{label:t.openWork,value:work.filter(item=>!item.done).length},{label:t.blockers,value:work.filter(item=>item.blocked).length},{label:t.decisions,value:pendingDecisions.length}].map(item=><article key={item.label}><strong>{item.value}</strong><span>{item.label}</span></article>)}</div>
+          {blocker&&<article className="showcase-signal"><CircleAlert size={22} aria-hidden="true"/><div><span className="showcase-mini-label">{t.signal} · {displayLabel(locale,"priority",blocker.priority)}</span><h3>{blocker.title}</h3><p>{blocker.blockerReason}</p><p className="showcase-meta">{t.owner}: {blocker.owner||t.noOwner} · {formatDate(blocker.dueDate,locale)}</p></div></article>}
+          <article className="showcase-card"><span className="showcase-mini-label">{t.milestone}</span><h3>{upcoming?.title??t.noMilestone}</h3>{upcoming&&<><p>{t.forecast}: {formatDate(upcoming.forecastDate,locale)}</p><progress max="100" value={upcoming.progress} aria-label={t.progress}/><p className="showcase-meta">{displayLabel(locale,"milestoneStatus",upcoming.status)} · {t.progress}: {upcoming.progress}% · {t.confidence}: {upcoming.confidence??"—"}%</p></>}</article>
+        </>}
+        {view==="delivery"&&<div className="showcase-board">
+          <div className="showcase-statuses" role="group" aria-label={t.byStatus}>{statusGroups.map((group,index)=><button type="button" key={group.label} aria-pressed={index===groupIndex} onClick={()=>setGroupIndex(index)}>{group.label} · {group.items.length}</button>)}</div>
+          <ul className="showcase-work-list">{statusGroups[groupIndex].items.map(item=><li key={item.id}><h3>{item.title}</h3><p className="showcase-meta">{t.owner}: {item.owner||t.noOwner} · {formatDate(item.dueDate,locale)}</p>{item.blocked&&<p className="showcase-blocker"><CircleAlert size={18} aria-hidden="true"/>{item.blockerReason}</p>}</li>)}</ul>
+          <p className="showcase-meta">{work.length} {t.records} · {t.recorded}</p>
+        </div>}
+        {view==="decisions"&&<div className="showcase-decision-list">
+          {pendingDecisions.slice(0,2).map(decision=><article className="showcase-card" key={decision.id}><span className="showcase-mini-label">{decision.id} · {t.pending}</span><h3>{decision.question}</h3><p>{decision.context}</p></article>)}
+          {projectRisks.slice(0,1).map(risk=><article className="showcase-card" key={risk.id}><span className="showcase-mini-label">{t.risk} · {displayLabel(locale,"riskStatus",risk.status)}</span><h3>{risk.title}</h3><p>{risk.trigger}</p></article>)}
+        </div>}
       </div>
-      <div className="showcase-foot"><Database size={14} /><span>{t.insight}</span><span className="showcase-foot-link"><Check size={13} />{t.local}</span></div>
-    </div>
+      <footer className="showcase-foot"><Database size={18} aria-hidden="true"/><span>{t.insight}</span><span><Check size={16} aria-hidden="true"/>{t.local}</span></footer>
+    </section>
   );
 }
