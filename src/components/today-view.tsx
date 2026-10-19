@@ -11,6 +11,7 @@ import { displayLabel } from '@/content/workspace-i18n';
 import { contextQuestions } from '@/content/project-context';
 import { localDay } from '@/domain/work-views';
 import { TodayAcrossWork } from './today-across-work';
+import { useUrlChoice } from './use-url-state';
 
 const actionLabel=(ru:boolean,id:string,hasRef:boolean)=>{
  if(id.startsWith('decision-')) return ru?'Принять решение':'Decide';
@@ -27,7 +28,8 @@ export function TodayView(props:ViewProps){
  const ru=locale==='ru',signals=projectActions(workspace,project.id,locale),foundation=workspace.experience==='foundation';
  const context=workspace.projectSettings.find(s=>s.projectId===project.id)?.context;
  const [pages, setPages] = useState<Record<string,number>>({});
- const [across,setAcross]=useState(workspace.managementRole==='program'||workspace.managementRole==='operations');
+ const [scope,setScope]=useUrlChoice('todayScope',['project','all'] as const,workspace.managementRole==='program'||workspace.managementRole==='operations'?'all':'project');
+ const across=scope==='all';
  const top=signals[0],topRef=top?.source,remaining=signals.slice(1);
  const categories=[['decision',ru?'Требуется решение':'Requires a decision'],['blocker',ru?'Блокеры':'Blockers'],['due',ru?'Сроки':'Due and overdue'],['review',ru?'Пересмотры':'Reviews'],['control',ru?'Контроль проекта':'Project controls']] as const;
  const groups=categories.map(([id,title])=>({id,title,items:remaining.filter(s=>s.category===id)})).filter(group=>group.items.length).map(group=>({...group,page:Math.min(pages[group.id]??0,Math.ceil(group.items.length/5)-1)}));
@@ -49,7 +51,7 @@ export function TodayView(props:ViewProps){
  ].filter((value):value is string=>Boolean(value));
  const openSignal=(signal:typeof signals[number])=>{const ref=signal.source;if(ref)onEdit(ref.kind,ref.id);else onView(signal.view)};
  return <>
-  <div className="button-row"><button className="button small" aria-pressed={!across} onClick={()=>setAcross(false)}>{ru?'Текущий проект':'Current project'}</button><button className="button small" aria-pressed={across} onClick={()=>setAcross(true)}>{ru?'Вся работа':'All work'}</button></div>
+  <div className="button-row" role="group" aria-label={ru?'Область обзора':'Review scope'}><button className="button small" aria-pressed={!across} onClick={()=>setScope('project')}>{ru?'Текущий проект':'Current project'}</button><button className="button small" aria-pressed={across} onClick={()=>setScope('all')}>{ru?'Вся работа':'All work'}</button></div>
   {across?<TodayAcrossWork {...props}/>:<>
   <h2 className="sr-only">{ru?"Приоритеты проекта":"Project priorities"}</h2>
   {!top&&<section className="panel"><h3>{ru?'Нет срочных сигналов по текущим записям':'No immediate signals in current records'}</h3><p>{ru?'Правила не нашли открытых вопросов, требующих действия. Проверьте актуальность работы и сроков: отсутствие сигнала не гарантирует, что всё идёт по плану.':'The rules found no open questions requiring action. Review work and dates for freshness: no signal does not guarantee the project is on track.'}</p><button className="button primary" onClick={()=>onView('work')}>{ru?'Проверить работу':'Review work'}</button></section>}

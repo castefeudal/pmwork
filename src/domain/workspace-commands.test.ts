@@ -1,8 +1,22 @@
 import { describe,it,expect } from 'vitest';
 import {demoWorkspace,emptyWorkspace} from '@/data/demo';
-import {convertRiskToIssue,generateStatusDraft,changeWorkStatus,createWork,removeWorkspaceRecord,updateWorkOwner,updateWork} from './workspace-commands';
+import {convertRiskToIssue,generateStatusDraft,changeWorkStatus,createWork,removeWorkspaceRecord,updateWorkOwner,updateWork,setWorkArchived} from './workspace-commands';
 import {migrateWorkspace} from '@/data/storage';
 describe('safe workspace commands',()=>{
+ it('archives a selection atomically and restores records without changing status evidence or links',()=>{
+  const w=demoWorkspace('en'),rows=w.workItems.filter(row=>row.projectId==='atlas').slice(0,2),ids=rows.map(row=>row.id);
+  const archived=setWorkArchived(w,ids,true);
+  expect(archived.activities).toHaveLength(w.activities.length+1);
+  expect(archived.dependencies).toEqual(w.dependencies);
+  for(const row of rows){
+   expect(archived.workItems.find(item=>item.id===row.id)).toEqual({...row,archived:true,updatedAt:expect.any(String)});
+  }
+  const restored=setWorkArchived(archived,ids,false);
+  for(const row of rows)expect(restored.workItems.find(item=>item.id===row.id)?.statusHistory).toEqual(row.statusHistory);
+  expect(restored.workItems.filter(row=>ids.includes(row.id)).every(row=>!row.archived)).toBe(true);
+  expect(()=>setWorkArchived(w,[ids[0],'missing'],true)).toThrow('Invalid work selection');
+  expect(w.workItems).toEqual(demoWorkspace('en').workItems);
+ });
  it('starts without demo records',()=>{const w=emptyWorkspace('en');for(const value of Object.values(w))if(Array.isArray(value))expect(value).toEqual([]);});
  it('migrates v3 preferences without coupling guidance and density',()=>{const old={...demoWorkspace('en'),schemaVersion:3,density:undefined,experience:'advanced'};const w=migrateWorkspace(old);expect(w.density).toBe('comfortable');expect(w.experience).toBe('advanced');expect(migrateWorkspace(JSON.parse(JSON.stringify(w)))).toEqual(w);});
  it('converts a risk once and retains source linkage',()=>{const w={...demoWorkspace('en'),issues:[]},risk=w.risks[0];const next=convertRiskToIssue(w,risk.id);expect(next.issues.find(i=>i.relatedRiskId===risk.id)?.title).toBe(risk.title);expect(convertRiskToIssue(next,risk.id)).toEqual(next);expect(w.risks[0].status).not.toBe('closed');});

@@ -156,3 +156,28 @@
   --shadow-overlay: 0 32px 100px rgba(0,0,0,.58);
 }
 }
+
+@layer utilities {
+  html[data-contrast="more"], html[data-contrast="more"] :is(.site-shell, .workspace-shell, .context-workspace) {
+    --text-primary: #091c25;
+    --text-secondary: #263e49;
+    --text-tertiary: #334a55;
+    --muted: var(--text-secondary);
+    --border-default: #687e88;
+    --border-subtle: #80949e;
+    --border-strong: #344f5c;
+    --line: var(--border-default);
+    --accent-primary: #006158;
+    --accent: var(--accent-primary);
+  }
+  html[data-theme="dark"][data-contrast="more"], html[data-theme="dark"][data-contrast="more"] :is(.site-shell, .workspace-shell, .context-workspace) {
+    --text-primary: #ffffff;
+    --text-secondary: #e4edf2;
+    --text-tertiary: #cbdbe4;
+    --border-default: #8babbc;
+    --border-subtle: #658496;
+    --border-strong: #bdd9e8;
+    --accent-primary: #8de9da;
+  }
+  html[data-contrast="more"] :focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+}
