@@ -77,3 +77,14 @@
  .mobile-work-card strong { font-size:1rem; line-height:1.45; }
  .mobile-work-card-actions { padding:.5rem .85rem .85rem; }
 }
+
+.benefit-summary { padding-block:.75rem; border-bottom:1px solid var(--border-default); }
+.benefit-summary h4 { font-size:1rem; margin:.25rem 0 .75rem; }
+.benefit-values { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; }
+.benefit-values dt { color:var(--text-secondary); font-size:.875rem; }
+.benefit-values dd { margin:.35rem 0 0; font-size:1.125rem; font-weight:600; }
+.management-center [id^="management-"] { scroll-margin-top:5rem; }
+@media(min-width:1200px) {
+ .delivery-dashboard { grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; }
+ .delivery-dashboard>.panel:nth-child(-n+3),.delivery-dashboard>.panel:last-child { grid-column:1 / -1; }
+}
