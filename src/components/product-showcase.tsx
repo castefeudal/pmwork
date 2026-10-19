@@ -74,7 +74,7 @@ export function ProductShowcase({ locale, preview }: { locale: Locale; preview: 
       <div className="showcase-tabs" role="group" aria-label={locale === "ru" ? "Раздел демо-проекта" : "Demo project view"}>
         {options.map(({id,label,icon:Icon})=><button key={id} type="button" aria-pressed={view===id} onClick={()=>setView(id)}><Icon size={18} aria-hidden="true"/>{label}</button>)}
       </div>
-      <div className="showcase-panel" aria-live="polite">
+      <div className="showcase-panel" key={view} aria-live="polite">
         {view==="overview"&&<>
           <div className="showcase-metrics">{[{label:t.openWork,value:work.filter(item=>!item.done).length},{label:t.blockers,value:work.filter(item=>item.blocked).length},{label:t.decisions,value:pendingDecisions.length}].map(item=><article key={item.label}><strong>{item.value}</strong><span>{item.label}</span></article>)}</div>
           {blocker&&<article className="showcase-signal"><CircleAlert size={22} aria-hidden="true"/><div><span className="showcase-mini-label">{t.signal} · {displayLabel(locale,"priority",blocker.priority)}</span><h3>{blocker.title}</h3><p>{blocker.blockerReason}</p><p className="showcase-meta">{t.owner}: {blocker.owner||t.noOwner} · {formatDate(blocker.dueDate,locale)}</p></div></article>}

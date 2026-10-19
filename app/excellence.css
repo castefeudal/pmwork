@@ -434,9 +434,7 @@ body { letter-spacing: -.006em; }
 
 @keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes copy-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes showcase-arrive { from { opacity: 0; transform: translateY(17px) scale(.992); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes panel-arrive { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes bar-rise { from { transform: scaleY(.2); opacity: .45; } to { transform: scaleY(1); opacity: 1; } }
 @keyframes atmosphere-drift { from { transform: translate3d(-8px,0,0) scale(.95); } to { transform: translate3d(12px,10px,0) scale(1.06); } }
 @keyframes cue-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 @keyframes orbit-turn { to { transform: rotate(360deg); } }
@@ -630,7 +628,7 @@ body { letter-spacing: -.006em; }
 .showcase-tabs { padding:0 1.5rem 1rem; border-bottom:1px solid var(--border-default); }
 .showcase-tabs button,.showcase-statuses button { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; min-height:44px; padding:.6rem .85rem; border:1px solid var(--border-default); border-radius:10px; background:var(--surface); color:var(--text-secondary); font-size:.875rem; font-weight:600; cursor:pointer; }
 .showcase-tabs button[aria-pressed=true],.showcase-statuses button[aria-pressed=true] { color:var(--accent); background:var(--accent-soft); border-color:var(--accent); }
-.showcase-panel { padding:1.25rem 1.5rem; display:grid; gap:1rem; min-width:0; }
+.showcase-panel { animation:panel-arrive 190ms var(--motion-ease) both; padding:1.25rem 1.5rem; display:grid; gap:1rem; min-width:0; }
 .showcase-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; }
 .showcase-metrics article { display:flex; flex-direction:column; gap:.35rem; }
 .showcase-metrics strong { font-size:1.75rem; line-height:1.2; font-variant-numeric:tabular-nums; }
@@ -650,7 +648,7 @@ body { letter-spacing: -.006em; }
  .showcase-projectline { padding:1rem 1rem .75rem; }
  .showcase-tabs { padding:0 1rem .75rem; }
  .showcase-tabs button { flex:1; padding:.5rem; }
- .showcase-panel { padding:1rem; }
+ .showcase-panel { animation:panel-arrive 190ms var(--motion-ease) both; padding:1rem; }
  .showcase-foot { padding:1rem; }
  .showcase-metrics { gap:.5rem; }
  .showcase-metrics strong { font-size:1.5rem; }

@@ -77,8 +77,8 @@ export function WorkSurface(props: ViewProps & { layout?: "list" | "board" }) {
     <div className="toolbar work-toolbar">
       <div className="search-input"><Search size={17} aria-hidden="true"/><input ref={searchRef} aria-label={ru ? "Поиск работы" : "Search work"} className="input" value={config.query} onChange={e => configure({query:e.target.value})} placeholder={ru ? "Название, ID, владелец, метка…" : "Title, ID, owner, label…"}/>{config.query && <button type="button" className="work-search-clear" aria-label={ru ? "Очистить поиск" : "Clear search"} onClick={() => { configure({query:""}); searchRef.current?.focus(); }}><X size={16} aria-hidden="true"/></button>}</div>
       <div className="work-view-toggle" role="group" aria-label={ru ? "Представление работы" : "Work view"}>
-        <button type="button" className={`button ${config.type === "list" ? "active" : ""}`} aria-pressed={config.type === "list"} onClick={() => {setCalendarOpen(false);configure({type:"list"});}}>{ru ? "Список" : "List"}</button>
-        <button type="button" className={`button ${config.type === "board" ? "active" : ""}`} aria-pressed={config.type === "board"} onClick={() => {setCalendarOpen(false);configure({type:"board"});}}>{ru ? "Доска" : "Board"}</button>
+        <button type="button" className={`button ${!calendarOpen && config.type === "list" ? "active" : ""}`} aria-pressed={!calendarOpen && config.type === "list"} onClick={() => {setCalendarOpen(false);configure({type:"list"});}}>{ru ? "Список" : "List"}</button>
+        <button type="button" className={`button ${!calendarOpen && config.type === "board" ? "active" : ""}`} aria-pressed={!calendarOpen && config.type === "board"} onClick={() => {setCalendarOpen(false);configure({type:"board"});}}>{ru ? "Доска" : "Board"}</button>
         <button type="button" className={`button small ${calendarOpen ? "primary" : ""}`} aria-pressed={calendarOpen} onClick={()=>setCalendarOpen(value=>!value)}>{calendarOpen ? (ru ? "К списку / доске" : "Back to list / board") : (ru ? "Календарь" : "Calendar")}</button>
       </div>
 
