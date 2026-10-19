@@ -45,7 +45,7 @@ for (const locale of ["ru","en"] as const) {
         await page.locator(".mobile-menu").click();
       }
       await page.locator(".appearance-settings>summary").click();
-      const outside=await page.locator("a,button,input,select,textarea,summary").evaluateAll(elements=>elements.filter(el=>{
+      const outside=await page.locator("a,button,input,select,textarea,summary").evaluateAll((elements,layoutWidth)=>elements.filter(el=>{
         if(!el.getClientRects().length||el.closest(".skip-link,.sr-only,[hidden]"))return false;
         for(let p:Element|null=el;p&&p!==document.body;p=p.parentElement) {
           if(getComputedStyle(p).visibility==="hidden"||getComputedStyle(p).display==="none")return false;
@@ -53,10 +53,13 @@ for (const locale of ["ru","en"] as const) {
           if(p!==el&&["auto","scroll"].includes(getComputedStyle(p).overflowX))return false;
         }
         const rect=el.getBoundingClientRect();
-        return rect.width>0&&rect.height>0&&(rect.left < -1||rect.right>document.documentElement.clientWidth+1);
-      }).map(el=>`${el.tagName}: ${el.textContent?.trim().slice(0,40)}`));
+        // Mobile WebKit may pan its visual viewport after scripted focus.
+        // Check document coordinates against the requested CSS layout width.
+        return rect.width>0&&rect.height>0&&(rect.left+scrollX < -1||rect.right+scrollX>layoutWidth+1);
+      }).map(el=>`${el.tagName}: ${el.textContent?.trim().slice(0,40)} ${JSON.stringify({left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,client:document.documentElement.clientWidth,screen:screen.width,x:scrollX,visual:visualViewport?.offsetLeft})}`),width);
+      if(outside.length)await page.screenshot({path:`quality-evidence/text-200-failure-${locale}-${width}.png`});
       expect(outside,`${locale}/${path} at ${width}px with 200% text`).toEqual([]);
-      const clippedText=await page.locator("main,footer").evaluateAll(roots=>{
+      const clippedText=await page.locator("main,footer").evaluateAll((roots,layoutWidth)=>{
         const clipped:string[]=[];
         for(const root of roots) {
           const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
@@ -69,11 +72,11 @@ for (const locale of ["ru","en"] as const) {
             }
             if(skip)continue;
             const range=document.createRange();range.selectNodeContents(node);
-            if(Array.from(range.getClientRects()).some(rect=>rect.width>0&&rect.height>0&&(rect.left < -1||rect.right>document.documentElement.clientWidth+1)))clipped.push(node.textContent.trim().slice(0,70));
+            if(Array.from(range.getClientRects()).some(rect=>rect.width>0&&rect.height>0&&(rect.left+scrollX < -1||rect.right+scrollX>layoutWidth+1)))clipped.push(node.textContent.trim().slice(0,70));
           }
         }
         return clipped.slice(0,20);
-      });
+      },width);
       expect(clippedText,`${locale}/${path} text bounds at ${width}px`).toEqual([]);
       expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);
     }

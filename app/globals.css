@@ -10,7 +10,6 @@ html {
 }
 small, code, kbd, samp, sub, sup { font-size:var(--type-caption); }
 body {
-  overflow-wrap: anywhere;
   max-width: 100%;
   overflow-x: clip;
   margin: 0;
@@ -98,10 +97,6 @@ a {
   flex-wrap: wrap;
 }
 .button {
-  min-width: 0;
-  max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -822,6 +817,9 @@ td:is(:nth-last-child(-n + 5)) {
 .risk-high {
   background: #ff8d91;
 }
+/* Public reading surfaces reflow long labels without changing table sizing in the workspace. */
+.site-shell, .catalog-layout { overflow-wrap:anywhere; }
+.site-shell .button, .catalog-layout .button { min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; }
 .catalog-layout {
   min-height: 100vh;
 }
