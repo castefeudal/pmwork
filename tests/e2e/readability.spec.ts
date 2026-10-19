@@ -33,7 +33,7 @@ for (const locale of ["ru","en"] as const) {
   test(`public controls remain reachable with 200 percent text (${locale})`,async({page})=>{
     test.setTimeout(120000);
     await page.emulateMedia({reducedMotion:"reduce"});
-    for(const width of [320,1280])for(const path of ["","methods","templates","playbooks","knowledge","glossary","tools"]) {
+    for(const width of [320,1280])for(const path of ["","methods","templates","playbooks","knowledge","glossary","tools","about","privacy","sources","glossary/acceptance-criteria"]) {
       await page.setViewportSize({width,height:900});
       await page.goto(route(`/${locale}/${path?`${path}/`:""}`));
       await page.evaluate(()=>document.documentElement.style.fontSize="200%");

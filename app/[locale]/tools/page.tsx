@@ -14,7 +14,7 @@ export default async function Page({
   const { locale } = await params;
   if (locale !== "ru" && locale !== "en") notFound();
   return (
-    <div>
+    <div className="catalog-layout">
       <PublicHeader locale={locale as Locale} />
       <main id="main">
         <ToolsLab locale={locale as Locale} />
