@@ -16,7 +16,7 @@ export default async function Page({
   const l = locale as Locale,
     ru = l === "ru";
   return (
-    <div>
+    <div className="catalog-layout">
       <PublicHeader locale={l} />
       <main id="main">
         <header className="catalog-hero">

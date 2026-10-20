@@ -44,7 +44,7 @@ function RootDocument({ children, locale }: { children: React.ReactNode; locale:
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{__html:"try{var t=localStorage.getItem('pmwork-theme');document.documentElement.dataset.theme=t?(t==='dark'?'dark':'light'):(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}"}}/>
+        <script dangerouslySetInnerHTML={{__html:"try{var z=localStorage.getItem('pmwork-text-size');document.documentElement.dataset.textSize=['large','extra-large'].includes(z)?z:'standard';document.documentElement.dataset.contrast=localStorage.getItem('pmwork-contrast')==='more'?'more':'standard';var t=localStorage.getItem('pmwork-theme');document.documentElement.dataset.theme=t?(t==='dark'?'dark':'light'):(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}"}}/>
       </head>
       <body className="local-fonts">
         {children}

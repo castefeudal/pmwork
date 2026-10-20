@@ -18,6 +18,14 @@ export function PublicHeader({ locale }: { locale: Locale }) {
     [open, setOpen] = useState(false),
     [search, setSearch] = useState(false),
     firstLink = useRef<HTMLAnchorElement>(null);
+  const header = useRef<HTMLElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(64);
+  useEffect(() => {
+    if (!header.current) return;
+    const observer = new ResizeObserver(([entry]) => setHeaderHeight(entry.target.getBoundingClientRect().height));
+    observer.observe(header.current);
+    return () => observer.disconnect();
+  }, []);
   const links = [
     [t.nav.methods, "methods"],
     [t.nav.templates, "templates"],
@@ -50,7 +58,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
       <a className="skip-link" href="#main">
         {locale === "ru" ? "К содержанию" : "Skip to content"}
       </a>
-      <header className="topbar">
+      <header className="topbar" ref={header}>
         <Link
           href={`/${locale}`}
           aria-label={locale === "ru" ? "PMWORK — главная" : "PMWORK home"}
@@ -106,6 +114,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           <button
             type="button"
             className="mobile-nav-backdrop"
+            style={{top:headerHeight}}
             aria-label={locale === "ru" ? "Закрыть меню" : "Close menu"}
             onClick={() => setOpen(false)}
           />
@@ -113,6 +122,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
             onClick={(event) => { if ((event.target as HTMLElement).closest("a")) setOpen(false); }}
             id="mobile-navigation"
             className="mobile-nav"
+            style={{top:headerHeight,maxHeight:`calc(100dvh - ${headerHeight}px)`}}
             aria-label={locale === "ru" ? "Мобильная навигация" : "Mobile navigation"}
           >
             <Link

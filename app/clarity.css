@@ -73,15 +73,6 @@
 .site-shell .privacy-section { padding-block: clamp(4.5rem, 6vw, 6rem); }
 .site-shell .approach-section { padding-block: clamp(4rem, 5.5vw, 5.5rem); }
 
-.site-shell .product-showcase {
-  border-color: rgba(199, 223, 217, .2);
-  box-shadow: 0 24px 58px rgba(7, 26, 29, .16), 0 3px 10px rgba(7, 26, 29, .06);
-}
-
-.site-shell .product-showcase::before { display: none; }
-.site-shell .showcase-panel { animation-duration: 190ms; }
-.site-shell .showcase-tabs button { transition-duration: 150ms; }
-
 .site-shell .privacy-visual {
   background: #12201f;
   box-shadow: 0 14px 34px rgba(7, 26, 29, .1);
@@ -118,7 +109,7 @@
 }
 
 .role-showcase-heading .button-row { justify-content: flex-end; gap: .45rem; }
-.role-showcase-heading .button { min-height: 40px; padding: .55rem .8rem; box-shadow: none; font-size: .84rem; }
+.role-showcase-heading .button { min-height: 40px; padding: .55rem .8rem; box-shadow: none; font-size: 0.875rem; }
 .role-showcase-heading .button[aria-pressed="true"] { color: var(--text-on-accent); border-color: var(--accent-primary); background: var(--accent-primary); }
 
 .role-showcase-panel { padding: clamp(1.15rem, 2.5vw, 1.8rem); }
@@ -126,8 +117,8 @@
 .role-showcase-panel > h3 { margin: 0; font-size: clamp(1.12rem, 2vw, 1.45rem); line-height: 1.35; letter-spacing: -.025em; }
 .role-showcase-panel dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1.1rem 0 0; }
 .role-showcase-panel dl > div { min-width: 0; padding: .8rem .9rem; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--surface-1); }
-.role-showcase-panel dt { margin-bottom: .35rem; color: var(--text-tertiary); font-size: .72rem; font-weight: 720; letter-spacing: .055em; text-transform: uppercase; }
-.role-showcase-panel dd { margin: 0; color: var(--text-primary); font-size: .9rem; line-height: 1.5; }
+.role-showcase-panel dt { margin-bottom: .35rem; color: var(--text-tertiary); font-size: 0.875rem; font-weight: 720; letter-spacing: .055em; text-transform: uppercase; }
+.role-showcase-panel dd { margin: 0; color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; }
 
 .site-shell .capability-card,
 .site-shell .library-card,
@@ -152,19 +143,19 @@
   margin: -.15rem 0 .15rem;
   max-width: 58ch;
   color: var(--text-secondary);
-  font-size: .9rem;
+  font-size: 0.9rem;
   line-height: 1.55;
 }
 
 .dialog .field:has(:required) label::after { content: " *"; color: var(--accent-primary); }
 .dialog .field { align-content: start; gap: .45rem; }
-.dialog .field label { color: var(--text-primary); font-size: .84rem; font-weight: 650; }
+.dialog .field label { color: var(--text-primary); font-size: 0.875rem; font-weight: 650; }
 .dialog .field input::placeholder,
 .dialog .field textarea::placeholder { color: var(--text-tertiary); opacity: .85; }
 
 .dialog .field-hint {
   color: var(--text-secondary);
-  font-size: .74rem;
+  font-size: 0.875rem;
   line-height: 1.45;
 }
 
@@ -175,7 +166,7 @@
   border-radius: 0 9px 9px 0;
   color: var(--text-secondary);
   background: var(--surface-2);
-  font-size: .8rem;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
@@ -194,7 +185,7 @@
   align-items: center;
   gap: .55rem;
   color: var(--text-secondary);
-  font-size: .85rem;
+  font-size: 0.875rem;
   font-weight: 620;
   cursor: pointer;
   list-style: none;
@@ -231,7 +222,7 @@
   border-radius: 9px;
   background: var(--surface-1);
   color: var(--text-secondary);
-  font-size: .85rem;
+  font-size: 0.875rem;
   font-weight: 620;
   cursor: pointer;
 }

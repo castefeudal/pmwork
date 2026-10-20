@@ -47,6 +47,15 @@ export function updateWork(workspace:Workspace,id:string,patch:Partial<WorkItem>
 }
 export const changeWorkStatus=(w:Workspace,id:string,status:WorkItem['status'])=>updateWork(w,id,{status});
 export const archiveWork=(w:Workspace,id:string)=>updateWork(w,id,{archived:true});
+/** Archive one project selection atomically; retain records, links and status evidence. */
+export function setWorkArchived(w:Workspace,ids:readonly string[],archived:boolean):Workspace {
+ const selected=new Set(ids);
+ if(!selected.size)return w;
+ const rows=w.workItems.filter(row=>selected.has(row.id));
+ if(rows.length!==selected.size||new Set(rows.map(row=>row.projectId)).size!==1)throw Error('Invalid work selection');
+ const at=new Date().toISOString();
+ return finish({...w,workItems:w.workItems.map(row=>selected.has(row.id)?{...row,archived,updatedAt:at}:row)},rows[0].projectId,archived?'work-archived':'work-restored',`${rows.length}: ${rows.map(row=>row.id).join(', ')}`);
+}
 export function updateWorkOwner(w:Workspace,id:string,ownerId:string|undefined,ownerLabel=''){
  const item=w.workItems.find(x=>x.id===id);if(!item)throw Error('Work item not found');
  const member=w.teamMembers.find(m=>m.id===ownerId&&m.projectId===item.projectId);
