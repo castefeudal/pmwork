@@ -1,5 +1,5 @@
 "use client";
-import { useId, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useMemo, useState, useSyncExternalStore } from "react";
 import Fuse from "fuse.js";
 import {commandIntents,toolIntents} from "@/domain/command-intents";
 import { Search, X } from "lucide-react";
@@ -85,6 +85,10 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
     return [...recent, ...suggestions];
   }, [entries,index,project.name,query,recentIds]);
   const active = Math.min(selected, Math.max(0,results.length-1));
+  const activeId = results.length ? `${prefix}-${active}` : undefined;
+  useEffect(() => {
+    if (activeId) document.getElementById(activeId)?.scrollIntoView?.({block:"nearest",behavior:"instant"});
+  }, [activeId,query]);
   const execute = (i:number) => { const item=results[i]; if(item){ const next=[item.id,...recentIds.filter(id=>id!==item.id)].slice(0,8);try{localStorage.setItem(recentStorageKey,JSON.stringify(next));window.dispatchEvent(new Event("pmwork:command-recent"));}catch{/* Recent navigation is best-effort only. */}onClose();item.run();} };
   const groups = useMemo(() => {
     const output: {label:string; items:{item:(typeof results)[number];index:number}[]}[]=[];

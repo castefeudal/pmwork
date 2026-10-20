@@ -7,13 +7,14 @@ export function selectWork(items: WorkItem[], config: WorkViewConfig, now = new 
   const today = localDay(now), next = new Date(now);
   next.setDate(next.getDate() + 7);
   const soon = localDay(next), recent = now.getTime() - 7 * 86400000;
+  const query = config.query.toLocaleLowerCase();
   return items.filter(x => {
     if (x.archived || (config.status !== "all" && x.status !== config.status)) return false;
     if (config.preset === "my") {
       // A stable identity must never fall back to an ambiguous display name.
       if (localOwnerId ? x.ownerId !== localOwnerId : (!config.owner || x.owner !== config.owner)) return false;
     } else if (config.owner && x.owner !== config.owner) return false;
-    if (!`${x.id} ${x.title} ${x.owner} ${x.labels.join(" ")}`.toLocaleLowerCase().includes(config.query.toLocaleLowerCase())) return false;
+    if (query && !`${x.id} ${x.title} ${x.owner} ${x.labels.join(" ")}`.toLocaleLowerCase().includes(query)) return false;
     const open = x.status !== "done", overdue = open && !!x.dueDate && x.dueDate < today;
     switch (config.preset) {
       case "my": return !!(localOwnerId || config.owner) && open;
