@@ -35,7 +35,7 @@ for (const locale of ["ru","en"] as const) for (const theme of ["light","dark"])
     await page.keyboard.press("Escape");
     await expect(page.locator(".workspace-top")).toContainText(ru?"Сохранено локально":"Saved locally");
     await page.reload();
-    await expect(page.getByRole("button",{name:"Acceptance evidence review",exact:true})).toBeVisible();
+    await expect(page.locator(".work-title-button:visible, .mobile-work-card:visible").filter({hasText:"Acceptance evidence review"})).toBeVisible();
   });
   test(`weekly review links to source records ${locale} ${theme}`,async({page},testInfo)=>{
     await page.clock.setFixedTime(new Date("2026-09-25T12:00:00Z"));
