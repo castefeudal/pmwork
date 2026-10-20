@@ -49,4 +49,25 @@ describe("work selection boundaries",()=>{
     fireEvent.click(within(result).getByRole("button",{name:"Add details"}));
     expect(props.onEdit).toHaveBeenCalledWith("work",item.id);
   });
+  it("retains the entered title when creation is rejected",()=>{
+    const props=setup();
+    vi.mocked(props.onChange).mockImplementation(()=>{throw Error("Rejected");});
+    render(<WorkSurface {...props}/>);
+    fireEvent.change(screen.getByLabelText("Task title"),{target:{value:"Keep this draft"}});
+    fireEvent.submit(screen.getByLabelText("Task title").closest("form")!);
+    expect((screen.getByLabelText("Task title") as HTMLInputElement).value).toBe("Keep this draft");
+    expect(screen.getByRole("alert").textContent).toContain("Your title is still here");
+    expect(screen.queryByText("Task added.")).toBeNull();
+  });
+  it("does not carry an archive undo action into another project",()=>{
+    const props=setup();
+    const view=render(<WorkSurface {...props}/>);
+    fireEvent.click(screen.getByRole("checkbox",{name:"Select current page"}));
+    fireEvent.click(within(screen.getByRole("group",{name:"Selected work actions"})).getByRole("button",{name:"Archive"}));
+    const next=vi.mocked(props.onChange).mock.calls[0][0];
+    view.rerender(<WorkSurface {...props} workspace={next}/>);
+    expect(screen.getByRole("button",{name:"Undo archive"})).toBeTruthy();
+    view.rerender(<WorkSurface {...props} workspace={next} project={props.workspace.projects[1]}/>);
+    expect(screen.queryByRole("button",{name:"Undo archive"})).toBeNull();
+  });
 });
