@@ -17,6 +17,14 @@ for (const locale of ["ru","en"] as const) for (const theme of ["light","dark"])
     await form.getByRole("textbox",{name:ru?"Название задачи":"Task title"}).fill("Acceptance evidence review");
     await form.getByRole("button",{name:ru?"Добавить задачу":"Add task",exact:true}).click();
     await expect(form.getByRole("status")).toHaveText(ru?"Задача добавлена.":"Task added.");
+    const originalViewport=page.viewportSize()!;
+    for(const width of [320,360,390,430,768,1024,1280,1440,1920,2560]) {
+      await page.setViewportSize({width,height:900});
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);
+      const controls=await form.locator("input,button").evaluateAll(elements=>elements.map(element=>({height:element.getBoundingClientRect().height,right:element.getBoundingClientRect().right})));
+      expect(controls.every(control=>control.height>=44&&control.right<=width+1)).toBe(true);
+    }
+    await page.setViewportSize(originalViewport);
     await page.evaluate(()=>document.fonts.ready);
     await page.screenshot({path:`test-results/quick-create-${testInfo.project.name}-${locale}-${theme}.png`,fullPage:true});
     const audit=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();
