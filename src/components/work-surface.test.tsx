@@ -17,11 +17,11 @@ describe("work selection boundaries",()=>{
     const view=render(<WorkSurface {...props}/>);
     fireEvent.click(screen.getByRole("checkbox",{name:"Select current page"}));
     expect(screen.getByRole("group",{name:"Selected work actions"})).toBeTruthy();
-    fireEvent.click(screen.getByRole("button",{name:"Blocked",exact:true}));
+    fireEvent.click(screen.getByRole("button",{name:"Blocked"}));
     const next=vi.mocked(props.onChange).mock.calls.at(-1)![0];
     view.rerender(<WorkSurface {...props} workspace={next}/>);
     expect(screen.queryByRole("group",{name:"Selected work actions"})).toBeNull();
-    fireEvent.click(screen.getByRole("button",{name:"All work",exact:true}));
+    fireEvent.click(screen.getByRole("button",{name:"All work"}));
     view.rerender(<WorkSurface {...props} workspace={vi.mocked(props.onChange).mock.calls.at(-1)![0]}/>);
     expect(screen.queryByRole("group",{name:"Selected work actions"})).toBeNull();
   });
