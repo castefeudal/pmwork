@@ -193,13 +193,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <h1><span>{t.titleTop}</span><span className="hero-title-accent">{t.titleBottom}</span></h1>
             <p className="lead">{t.lead}</p>
             <div className="button-row hero-actions">
-              <Link className="button primary" aria-label={t.startAccessible} href={`/${locale}/workspace/`}>{t.start}<ArrowRight size={17} aria-hidden="true" /></Link>
+              <Link prefetch={false} className="button primary" aria-label={t.startAccessible} href={`/${locale}/workspace/`}>{t.start}<ArrowRight size={17} aria-hidden="true" /></Link>
               <a className="button hero-secondary" href="#product-preview"><span className="hero-play" aria-hidden="true">▶</span>{t.explore}</a>
             </div>
             <ul className="hero-value-list">
               {t.value.map(item => <li key={item}><Check size={14} aria-hidden="true" />{item}</li>)}
             </ul>
-            <p className="hero-author">{t.created} · <Link href={`/${locale}/about/`}>{ru ? "О продукте" : "About"}</Link></p>
+            <p className="hero-author">{t.created} · <Link prefetch={false} href={`/${locale}/about/`}>{ru ? "О продукте" : "About"}</Link></p>
           </div>
           <ProductShowcase locale={locale} preview={preview} />
           <a className="hero-scroll-cue" href="#capabilities"><span>{t.scroll}</span><ArrowDown size={14} aria-hidden="true" /></a>
@@ -214,7 +214,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="capability-grid">
             {featureLinks.map((feature, i) => {
               const Icon = feature.icon;
-              return <Link className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
+              return <Link prefetch={false} className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
                 <div className="capability-topline"><span className="capability-icon"><Icon size={19} strokeWidth={1.8} aria-hidden="true" /></span><span className="capability-number">0{i + 1}</span></div>
                 <span className="capability-label">{feature.label}</span><h3>{feature.title}</h3><p>{feature.body}</p>
                 <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
@@ -224,7 +224,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </section>
 
         <section className="section privacy-section">
-          <div className="privacy-copy"><p className="eyebrow">{t.privacyEyebrow}</p><h2>{t.privacyTitle}</h2><p className="privacy-lead">{t.privacyLead}</p><ul>{t.privacyPoints.map(item => <li key={item}><Check size={16} aria-hidden="true" />{item}</li>)}</ul><Link className="text-link" href={`/${locale}/privacy/`}>{ru ? "Как PMWORK обращается с данными" : "How PMWORK handles data"}<ArrowRight size={15} /></Link></div>
+          <div className="privacy-copy"><p className="eyebrow">{t.privacyEyebrow}</p><h2>{t.privacyTitle}</h2><p className="privacy-lead">{t.privacyLead}</p><ul>{t.privacyPoints.map(item => <li key={item}><Check size={16} aria-hidden="true" />{item}</li>)}</ul><Link prefetch={false} className="text-link" href={`/${locale}/privacy/`}>{ru ? "Как PMWORK обращается с данными" : "How PMWORK handles data"}<ArrowRight size={15} /></Link></div>
           <div className="privacy-visual" aria-label={t.privacyStatus}>
             <div className="privacy-orbit privacy-orbit-one" /><div className="privacy-orbit privacy-orbit-two" />
             <div className="privacy-device-card"><span className="privacy-lock"><LockKeyhole size={19} /></span><span className="privacy-card-label">{t.privacyBadge}</span><strong>{t.privacyStatus}</strong><span className="privacy-card-divider" /><span className="privacy-device-row"><span className="privacy-device-led" />{t.privacyHint}</span><span className="privacy-device-meta"><span>PMWORK</span><span>{ru ? "БРАУЗЕРНОЕ ХРАНИЛИЩЕ" : "BROWSER STORAGE"}</span></span></div>
@@ -234,18 +234,18 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         <section className="section library-section">
           <div className="marketing-section-head"><div><p className="eyebrow">{t.libraryEyebrow}</p><h2>{t.librarySectionTitle}</h2></div><p>{t.libraryLead}</p></div>
-          <div className="library-grid">{t.library.map(([name, amount, description, href], i) => <Link className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span><span className="library-index">0{i + 1}</span></Link>)}</div>
+          <div className="library-grid">{t.library.map(([name, amount, description, href], i) => <Link prefetch={false} className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span><span className="library-index">0{i + 1}</span></Link>)}</div>
         </section>
 
         <section className="section approach-section">
           <div className="approach-heading"><p className="eyebrow">{t.approachEyebrow}</p><h2>{t.approachTitle}</h2><p>{t.approachLead}</p></div>
-          <div className="approach-content"><div className="approach-ribbon">{t.approaches.map(([title, quality], i) => <Link href={`/${locale}/methods/`} key={title} className="approach-item"><span className="approach-count">0{i + 1}</span><strong>{title}</strong><span>{quality}</span><ArrowUpRight size={14} aria-hidden="true" /></Link>)}</div><div className="approach-principles">{t.principles.map((principle, i) => <span key={principle}><span>0{i + 1}</span>{principle}</span>)}</div><Link className="text-link" href={`/${locale}/methods/`}>{ru ? "Найти подход для своего проекта" : "Find an approach for your project"}<ArrowRight size={15} /></Link></div>
+          <div className="approach-content"><div className="approach-ribbon">{t.approaches.map(([title, quality], i) => <Link prefetch={false} href={`/${locale}/methods/`} key={title} className="approach-item"><span className="approach-count">0{i + 1}</span><strong>{title}</strong><span>{quality}</span><ArrowUpRight size={14} aria-hidden="true" /></Link>)}</div><div className="approach-principles">{t.principles.map((principle, i) => <span key={principle}><span>0{i + 1}</span>{principle}</span>)}</div><Link prefetch={false} className="text-link" href={`/${locale}/methods/`}>{ru ? "Найти подход для своего проекта" : "Find an approach for your project"}<ArrowRight size={15} /></Link></div>
         </section>
 
         <section className="closing-section">
           <div className="closing-glow" aria-hidden="true" />
           <p className="eyebrow">{t.finalEyebrow}</p><h2>{t.finalTitle}</h2><p>{t.finalLead}</p>
-          <div className="button-row"><Link className="button primary" href={`/${locale}/workspace/`}>{t.finalStart}<ArrowRight size={17} aria-hidden="true" /></Link><a className="button closing-secondary" href="#product-preview">{t.finalDemo}<ArrowUpRight size={16} aria-hidden="true" /></a></div>
+          <div className="button-row"><Link prefetch={false} className="button primary" href={`/${locale}/workspace/`}>{t.finalStart}<ArrowRight size={17} aria-hidden="true" /></Link><a className="button closing-secondary" href="#product-preview">{t.finalDemo}<ArrowUpRight size={16} aria-hidden="true" /></a></div>
           <span className="closing-note"><LockKeyhole size={13} aria-hidden="true" />{t.noSetup}</span>
         </section>
       </main>

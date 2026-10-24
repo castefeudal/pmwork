@@ -60,7 +60,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
         {locale === "ru" ? "К содержанию" : "Skip to content"}
       </a>
       <header className="topbar" ref={header}>
-        <Link
+        <Link prefetch={false}
           href={`/${locale}`}
           aria-label={locale === "ru" ? "PMWORK — главная" : "PMWORK home"}
         >
@@ -71,17 +71,17 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           aria-label={locale === "ru" ? "Основная навигация" : "Primary navigation"}
         >
           <div className="desktop-nav">
-            {[[locale === "ru" ? "Изучить" : "Learn", ["knowledge", "methods", "glossary"]], [locale === "ru" ? "Практика" : "Practice", ["templates", "playbooks"]]].map(([title, slugs]) => <details className="public-nav-group" key={String(title)}><summary>{title}</summary><div>{links.filter(([,slug]) => (slugs as string[]).includes(slug)).map(([label,slug]) => <Link key={slug} href={`/${locale}/${slug}/`} aria-current={isActive(slug) ? "page" : undefined}>{label}</Link>)}</div></details>)}
-            <Link href={`/${locale}/tools/`}>{t.nav.tools}</Link>
+            {[[locale === "ru" ? "Изучить" : "Learn", ["knowledge", "methods", "glossary"]], [locale === "ru" ? "Практика" : "Practice", ["templates", "playbooks"]]].map(([title, slugs]) => <details className="public-nav-group" key={String(title)}><summary>{title}</summary><div>{links.filter(([,slug]) => (slugs as string[]).includes(slug)).map(([label,slug]) => <Link prefetch={false} key={slug} href={`/${locale}/${slug}/`} aria-current={isActive(slug) ? "page" : undefined}>{label}</Link>)}</div></details>)}
+            <Link prefetch={false} href={`/${locale}/tools/`}>{t.nav.tools}</Link>
           </div>
-          <Link
+          <Link prefetch={false}
             className="workspace-cta desktop-only"
             href={`/${locale}/workspace`}
             aria-current={workspaceActive ? "page" : undefined}
           >
             {t.nav.workspace}
           </Link>
-          <Link
+          <Link prefetch={false}
             className="language-link"
             href={switched}
             aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
@@ -126,7 +126,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
             style={{top:headerHeight,maxHeight:`calc(100dvh - ${headerHeight}px)`}}
             aria-label={locale === "ru" ? "Мобильная навигация" : "Mobile navigation"}
           >
-            <Link
+            <Link prefetch={false}
               ref={firstLink}
               href={`/${locale}/workspace`}
               aria-current={workspaceActive ? "page" : undefined}
@@ -135,7 +135,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
               <span aria-hidden="true">→</span>
             </Link>
             {links.map(([label, slug]) => (
-              <Link
+              <Link prefetch={false}
                 key={slug}
                 href={`/${locale}/${slug}`}
                 aria-current={isActive(slug) ? "page" : undefined}
@@ -144,7 +144,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
                 <span aria-hidden="true">→</span>
               </Link>
             ))}
-            <Link href={`/${locale}/about`} aria-current={isActive("about") ? "page" : undefined}>
+            <Link prefetch={false} href={`/${locale}/about`} aria-current={isActive("about") ? "page" : undefined}>
               {t.nav.about}
               <span aria-hidden="true">→</span>
             </Link>
