@@ -14,15 +14,19 @@ walk("out");
 files.sort();
 const exportPath = file => path.relative("out", file).split(path.sep).join("/");
 
-// Set route language before hashing so HTML and the offline cache agree.
-for (const file of files) {
-  const locale = exportPath(file).match(/^(ru|en)\/.*\.html$/)?.[1];
-  if (locale) fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/<html lang="[^"]*"/, `<html lang="${locale}"`));
-}
-
+// Transform and hash in one pass; avoid rewriting already-correct export pages.
 const hash=createHash("sha256");
 hash.update(fs.readFileSync("public/sw.js"));
-for(const file of files)hash.update(file).update(fs.readFileSync(file));
+for (const file of files) {
+  let bytes=fs.readFileSync(file);
+  const locale = exportPath(file).match(/^(ru|en)\/.*\.html$/)?.[1];
+  if (locale) {
+    const original=bytes.toString("utf8"),html=original.replace(/<html lang="[^"]*"/, `<html lang="${locale}"`);
+    if(html!==original){bytes=Buffer.from(html);fs.writeFileSync(file,bytes);}
+  }
+  hash.update(file).update(bytes);
+}
+
 const version=hash.digest("hex").slice(0,12);
 
 const detailRoute = /^(ru|en)\/(?:glossary|methods|templates)\/[^/]+\//;
