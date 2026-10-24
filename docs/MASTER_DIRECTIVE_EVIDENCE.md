@@ -43,3 +43,9 @@ Reviewed official documentation on 2026-10-25; these are interaction references,
 ## Outstanding acceptance evidence
 
 Do not call the complete directive finished from this increment. Manager sessions, independent design/uniqueness reviews, manual assistive-technology/physical-device checks, complete before/after matrix and field INP have not been supplied. No 90/100 claim is made. Final CI, visual review, laboratory results and live release identity are recorded after execution, not inferred from this document.
+
+## Visual reference review
+
+Candidate source: [workflow 40135643098](https://github.com/castefeudal/pmwork/actions/runs/40135643098), implementation `5214db8`. All 144 Linux references were generated; 16 fresh-context repeat tests passed with zero failed, skipped or flaky tests. 132 files changed from the previous release, primarily through shared navigation and typography.
+
+Agent visual inspection covered desktop EN/light landing and planning, mobile RU/dark landing and planning, desktop RU/light Today and Settings, mobile EN/dark Today and Operations, desktop EN/dark Work, mobile RU/light Work, desktop EN/light Program and desktop RU/dark Delivery. Checked hierarchy, date labels, theme contrast presentation, navigation visibility and primary actions. This is bounded agent visual inspection, not independent human scoring. Unchanged onboarding/desktop tools references were retained. The complete functional and pixel suite must pass again against accepted references before merge.
