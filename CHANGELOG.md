@@ -15,6 +15,7 @@
 - Demote the header workspace button to a quiet outline control so the hero owns the only filled primary action on the page; add a search icon to the header search control.
 - Tint the demo milestone progress bar by milestone status instead of always using the accent colour.
 - Add `npm run css:audit`, a cascade audit that reports shadowed declarations, duplicate selector blocks and raw hex values across the layered stylesheets.
+- Add `npm run shots`, a reproducible visual review harness: fixed clock, reduced motion, seeded demo project, desktop and mobile sizes, both themes and both locales, plus a report of failed responses and page errors (known static-export prefetch 404s are filtered).
 
 ## 2.9.3 — one coherent Work view
 

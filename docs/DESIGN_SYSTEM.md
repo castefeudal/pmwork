@@ -51,3 +51,5 @@ The planning timeline uses one scale model: `--timeline-label` (default 220px) s
 ## Change process
 
 Add or revise a semantic token first, then apply it to shared components and route-specific layouts. Validate RU and EN, light and dark themes, 320px and desktop widths, and the static export at both `/` and `/pmwork`. Keep screenshot baselines unchanged unless a reviewer has inspected and accepted the visual difference.
+
+For a design change, capture the surfaces with `npm run shots` (see `SHOTS` env vars in the script) before and after the edit and inspect the pairs in both themes at desktop and mobile width. The harness uses a fixed clock, reduced motion and the bundled demo project, so two runs differ only by what the code changed.
