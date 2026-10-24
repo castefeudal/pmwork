@@ -19,7 +19,7 @@ export function PwaRegister() {
   }};
   // Keep first installation and its precache requests out of initial rendering.
   const schedule=()=>{
-   if('requestIdleCallback' in window)idle=window.requestIdleCallback(register,{timeout:3000});
+   if(typeof window.requestIdleCallback==='function')idle=window.requestIdleCallback(register,{timeout:3000});
    else delay=window.setTimeout(register,0);
   };
   if(document.readyState==='complete')schedule();
