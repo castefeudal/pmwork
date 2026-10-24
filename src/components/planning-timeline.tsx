@@ -52,6 +52,8 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
   const items=workspace.workItems.filter(x=>x.projectId===project.id&&!x.archived);
   const scheduled=items.filter(x=>x.startDate||x.dueDate);
   const milestones=workspace.milestones.filter(x=>x.projectId===project.id);
+  // A milestone-only plan is still a valid schedule. Do not hide its timeline.
+  const hasTimelineRecords=scheduled.length>0||milestones.length>0;
   const conflicts=dependencyConflicts(workspace,project.id);
   const dates=[project.startDate,project.targetDate,...scheduled.flatMap(x=>[x.startDate,x.dueDate]),...milestones.map(x=>x.date)].filter((x):x is string=>!!x).map(Date.parse).filter(Number.isFinite);
   const start=Math.min(...dates), end=Math.max(start+MIN_SPAN_MS,...dates), days=Math.ceil((end-start)/DAY_MS)+1;
@@ -75,7 +77,7 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
     </div>
     {conflicts.length>0&&<div className="notice" role="status"><strong>{ru?"Конфликты зависимостей":"Dependency conflicts"} · {conflicts.length}</strong>{conflicts.map(c=><p key={c.id}><button className="work-title-button" onClick={()=>onEdit("dependency",c.id)}>{c.from} → {c.to} · {c.type}: {c.missing?(ru?"связанная работа недоступна":"linked work unavailable"):`${c.days} ${ru?"дн. нарушения связи":"days of timing conflict"}`}</button></p>)}</div>}
     <div className="mobile-planning-agenda"><h3>{ru ? "Ближайшая работа и контрольные точки" : "Upcoming work and milestones"}</h3>{[...scheduled.map(x=>({id:x.id,title:x.title,date:x.dueDate||x.startDate!,kind:"work" as const})),...milestones.map(x=>({id:x.id,title:x.title,date:x.date,kind:"milestone" as const}))].sort((a,b)=>a.date.localeCompare(b.date)).map(x=><button className="mobile-work-card" key={x.id} onClick={()=>onEdit(x.kind,x.id)}><small>{formatDate(x.date,locale)}</small><strong>{x.title}</strong></button>)}<button className="button" onClick={()=>setFull(!full)}>{full?(ru?"Скрыть timeline":"Hide timeline"):(ru?"Открыть полный timeline":"Open full timeline")}</button></div>
-    {scheduled.length?<div className={`timeline-scroll ${full ? "mobile-expanded" : ""}`}><div className="date-timeline" style={{minWidth:width}}>
+    {hasTimelineRecords?<div className={`timeline-scroll ${full ? "mobile-expanded" : ""}`}><div className="date-timeline" style={{minWidth:width}}>
       <div className="timeline-axis">
         <span className="timeline-axis-caption">{formatDate(new Date(start).toISOString(),locale)} — {formatDate(new Date(end).toISOString(),locale)}</span>
         <div className="timeline-axis-track" aria-hidden="true">
@@ -92,7 +94,7 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
         })}
         {milestones.map(m=><div className="date-timeline-row" key={m.id}><button className="work-title-button" onClick={()=>onEdit("milestone",m.id)}>{m.title}<span className="timeline-date-label">{formatDayMonth(m.date,locale)} · {m.progress}%</span></button><div className="date-track"><button className="milestone-marker" style={{left:`${position(m.date)}%`}} aria-label={`${m.title} ${m.date}`} title={`${m.title}: ${formatDate(m.date,locale)}`} onClick={()=>onEdit("milestone",m.id)}>◆</button></div></div>)}
       </div>
-    </div></div>:<div className="empty-state"><h3>{ru?"Нет запланированной работы":"No scheduled work"}</h3><p>{ru?"Задайте начало и срок работы, чтобы увидеть её на шкале.":"Set work start and due dates to see it on the timeline."}</p><button className="button" onClick={()=>onCreate("work")}>{ru?"Добавить работу":"Add work"}</button></div>}
+    </div></div>:<div className="empty-state"><h3>{ru?"Нет запланированных задач и вех":"No scheduled work or milestones"}</h3><p>{ru?"Добавьте сроки задач или контрольные точки, чтобы увидеть график.":"Add work dates or milestones to see the schedule."}</p><button className="button" onClick={()=>onCreate("work")}>{ru?"Добавить работу":"Add work"}</button></div>}
     <p className="muted compact">{ru?"Календарные дни. Связь FS допускает начало в день окончания предшественника; лаг добавляет дни. Линия «сегодня» отмечена на шкале. Работа без дат: ":"Calendar days. FS permits a same-day finish/start; lag adds days. The today line is marked on the scale. Unscheduled work: "}{items.length-scheduled.length}.</p>
   </section>;
 }
