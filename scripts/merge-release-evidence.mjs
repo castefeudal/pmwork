@@ -12,10 +12,18 @@ if (!release.commit || published.commit !== release.commit || root.commit !== re
   throw new Error('Root, GitHub Pages and public evidence must use the same commit');
 }
 
-if (!root.crossBrowser || root.crossBrowser.expected < 1 || root.crossBrowser.unexpected || root.crossBrowser.flaky || root.crossBrowser.skipped) {
-  throw new Error('A complete, stable root cross-browser run is required for public evidence');
+for (const evidence of [root, published]) {
+  if (!evidence.crossBrowser || evidence.crossBrowser.expected < 1 || evidence.crossBrowser.unexpected || evidence.crossBrowser.flaky || evidence.crossBrowser.skipped) {
+    throw new Error('Complete, stable cross-browser runs for both base paths are required');
+  }
+  if (!evidence.lighthouse || evidence.lighthouse.failures.length || evidence.lighthouse.groups.length !== 8 || evidence.lighthouse.groups.some(group =>
+    group.samples !== 3 || ![group.performance, group.accessibility, group.lcp, group.cls].every(Number.isFinite) || group.performance < 90 || group.accessibility < 90 || group.lcp <= 0 || group.lcp > 2500 || group.cls < 0 || group.cls > 0.1)) {
+    throw new Error('Complete Lighthouse budgets for both base paths are required');
+  }
 }
 
+published.crossBrowserByBase = { root: root.crossBrowser, github: published.crossBrowser };
+published.lighthouseByBase = { root: root.lighthouse, github: published.lighthouse };
 published.crossBrowser = { ...root.crossBrowser, base: root.base };
 fs.writeFileSync(publishedPath, `${JSON.stringify(published, null, 2)}\n`);
 console.log(`Included ${root.crossBrowser.expected} root cross-browser checks for ${root.commit}`);

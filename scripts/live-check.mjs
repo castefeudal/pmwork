@@ -14,6 +14,10 @@ const evidenceResponse=await fetch(new URL(`quality-evidence.json?check=${Date.n
 if(!evidenceResponse.ok)throw new Error('Published release evidence is unavailable');
 const evidence=await evidenceResponse.json();
 if(evidence.commit!==release.commit||evidence.unit.failed||evidence.browser.unexpected||evidence.browser.flaky||evidence.browser.skipped||!evidence.unit.passed||!evidence.browser.expected||evidence.crossBrowser?.base!=='root'||!evidence.crossBrowser.expected||evidence.crossBrowser.unexpected||evidence.crossBrowser.flaky||evidence.crossBrowser.skipped)throw new Error('Published evidence does not verify all stable production quality gates for this commit');
+for (const basePath of ['root', 'github']) {
+  const cross = evidence.crossBrowserByBase?.[basePath], lighthouse = evidence.lighthouseByBase?.[basePath];
+  if (!cross?.expected || cross.unexpected || cross.flaky || cross.skipped || !lighthouse || lighthouse.failures.length || lighthouse.groups.length !== 8 || lighthouse.groups.some(group => group.samples !== 3 || ![group.performance,group.accessibility,group.lcp,group.cls].every(Number.isFinite) || group.performance < 90 || group.accessibility < 90 || group.lcp <= 0 || group.lcp > 2500 || group.cls < 0 || group.cls > 0.1)) throw new Error(`Published ${basePath} browser/Lighthouse evidence is incomplete`);
+}
 const workerResponse = await fetch(new URL(`sw.js?check=${Date.now()}`, base), {signal: AbortSignal.timeout(15000), cache:'no-store'});
 if (!workerResponse.ok) throw new Error(`Published service worker: ${workerResponse.status}`);
 const worker = await workerResponse.text();
