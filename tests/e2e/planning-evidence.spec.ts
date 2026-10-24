@@ -28,7 +28,7 @@ for (const locale of ["ru", "en"] as const) test(`milestone-only planning preser
   await page.setViewportSize({ width: 390, height: 844 });
   const toggle = panel.getByRole("button", { name: ru ? "Открыть полный timeline" : "Open full timeline" });
   await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(panel.getByRole("button", { name: ru ? "Скрыть timeline" : "Hide timeline" })).toHaveAttribute("aria-expanded", "true");
   await expect(chart).toBeVisible();
   await expect(chart.locator(".timeline-axis-caption")).toContainText("2025");
   for (const scale of ["project", "week", "day"]) {
