@@ -129,8 +129,6 @@ html[data-text-size="extra-large"] { font-size:125%; }
 .appearance-settings .field { margin-block:.5rem; }
 
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { border-color:var(--border-control); }
-.showcase-tabs button,.showcase-statuses button { border-color:var(--border-control); transition:background var(--motion-fast),border-color var(--motion-fast); }
-.showcase-tabs button:hover,.showcase-statuses button:hover { background:var(--surface-selected); }
 
 .footer > * { min-width:0; max-width:100%; overflow-wrap:anywhere; }
 .appearance-settings select { width:100%; min-width:0; }

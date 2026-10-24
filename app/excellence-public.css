@@ -356,7 +356,7 @@
 .showcase-mini-label, .product-showcase .showcase-meta { font-size:.875rem; color:var(--text-secondary); line-height:1.5; }
 .showcase-tabs, .showcase-statuses { display:flex; gap:.35rem; flex-wrap:wrap; }
 .showcase-tabs { padding:0 1.5rem 1rem; border-bottom:1px solid var(--border-default); }
-.showcase-tabs button, .showcase-statuses button { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; min-height:44px; padding:.6rem .85rem; border:1px solid var(--border-default); border-radius:10px; background:var(--surface); color:var(--text-secondary); font-size:.875rem; font-weight:600; cursor:pointer; }
+.showcase-tabs button, .showcase-statuses button { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; min-height:44px; padding:.6rem .85rem; border:1px solid var(--border-control); border-radius:10px; background:var(--surface); color:var(--text-secondary); font-size:.875rem; font-weight:600; cursor:pointer; transition:background var(--motion-fast),border-color var(--motion-fast); }
 .showcase-tabs button[aria-pressed=true], .showcase-statuses button[aria-pressed=true] { color:var(--accent); background:var(--accent-soft); border-color:var(--accent); }
 .showcase-panel { animation:panel-arrive 190ms var(--motion-ease) both; padding:1.25rem 1.5rem; display:grid; gap:1rem; min-width:0; }
 .showcase-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; }
@@ -386,3 +386,5 @@
  .showcase-metrics strong { font-size:1.5rem; }
  .showcase-signal { padding:.75rem; }
 }
+
+.showcase-tabs button:hover,.showcase-statuses button:hover { background:var(--surface-selected); }
