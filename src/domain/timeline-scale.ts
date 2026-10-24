@@ -15,9 +15,10 @@ export function timelineTicks(start: number, end: number, unit: "month" | "week"
   if (unit === "month") {
     const last = new Date(end);
     const months = (last.getUTCFullYear() - date.getUTCFullYear()) * 12 + last.getUTCMonth() - date.getUTCMonth() + 1;
-    const stride = Math.max(1, Math.ceil(months / limit));
+    const monthLimit = months > 12 ? Math.max(2, Math.floor(width / 144)) : limit;
+    const stride = Math.max(1, Math.ceil(months / monthLimit));
     let cursor = start;
-    for (let index = 0; cursor <= end && index < limit; index++) {
+    for (let index = 0; cursor <= end && index < monthLimit; index++) {
       ticks.push({ key: `m${cursor}`, pos: position(cursor), label: formatMonth(cursor, locale, months > 12), strong: true });
       cursor = Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + (index + 1) * stride, 1);
     }

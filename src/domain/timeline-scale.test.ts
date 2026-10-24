@@ -21,6 +21,13 @@ describe("timeline calendar scale", () => {
     const ticks = timelineTicks(Date.parse("2024-02-28"), Date.parse("2024-03-01"), "day", "en", 920);
     expect(ticks.map(tick => tick.label)).toEqual(["Feb 28", "Feb 29", "Mar 1"]);
   });
+  it("reserves room for month and year labels on multi-year plans", () => {
+    const width = 920;
+    const ticks = timelineTicks(Date.parse("2000-01-01"), Date.parse("2100-01-01"), "month", "en", width);
+    for (let index = 1; index < ticks.length; index++) {
+      expect((ticks[index].pos - ticks[index - 1].pos) * width / 100).toBeGreaterThanOrEqual(120);
+    }
+  });
   it("rejects missing or inverted ranges", () => {
     expect(timelineTicks(Infinity, Infinity, "day", "en", 920)).toEqual([]);
     expect(timelineTicks(2, 1, "month", "ru", 920)).toEqual([]);
