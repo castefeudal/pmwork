@@ -162,6 +162,7 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
     [snapshots, setSnapshots] = useState<{key:string;at:string}[]>([]),
     [pendingRecovery,setPendingRecovery]=useState<PendingRecovery|null>(null),
     fileRef = useRef<HTMLInputElement>(null);
+  const intentConsumed=useRef(false);
 
   useEffect(() => {
     loadWorkspace()
@@ -177,6 +178,18 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
           const context = readWorkspaceUrl(window.location.search, value);
           setProjectId(context.project); setView(context.view);
           setEditor(readWorkspaceRecord(window.location.search, value, context.project));
+        } else if(initialIntent&&!intentConsumed.current) {
+          intentConsumed.current=true;
+    const {role,priority,kind,file}=initialIntent;
+    if(kind==="restore") {
+      if(file)void importWorkspace(file).then(candidate=>setPendingRecovery({kind:"import",candidate,replacing:false})).catch(()=>setToast(ru?"Файл не прошёл проверку":"File did not pass validation"));
+    } else {
+    setWorkspace({...(kind==="demo"?demoWorkspace(locale):emptyWorkspace(locale)),managementRole:role});
+    if(kind==="demo") {
+      setProjectId("atlas");setView(priority==="learn"?"guide":priority==="deadline"?"planning":priority==="organize"?"work":"overview");setFirstRun(false);
+    } else if(role==="operations"||role==="program") {setFirstRun(false);setView(role);}
+    else setDialog("project");
+    }
         }
         setReady(true);
         listSnapshots().then(setSnapshots).catch(() => undefined);
@@ -186,7 +199,7 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
         listSnapshots().then(setSnapshots).catch(() => undefined);
         setToast(ru ? "Локальные данные повреждены — открыт безопасный пример" : "Local data was invalid — safe demo opened");
       });
-  }, [locale, ru]);
+  }, [locale, ru, initialIntent]);
   useEffect(() => {
     if (!ready || recovery || firstRun) return;
     const id = setTimeout(() => saveWorkspace(workspace).then(() => setLastSaved(new Date().toLocaleTimeString(locale))).catch(() => setToast(ru ? "Не удалось сохранить" : "Could not save")),350);
@@ -237,22 +250,6 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
     }catch{setToast(ru?"Не удалось восстановить данные. Исходные данные не удалены.":"Could not restore data. Original data was not deleted.");}
   };
   const recoveryDialog=pendingRecovery&&<RecoveryConfirmDialog locale={locale} candidate={pendingRecovery.kind==="import"?pendingRecovery.candidate:undefined} snapshotLabel={pendingRecovery.kind==="snapshot"?pendingRecovery.label:undefined} replacing={pendingRecovery.kind==="snapshot"||pendingRecovery.replacing} canExportCurrent={(pendingRecovery.kind==="snapshot"||pendingRecovery.replacing)&&!recovery&&!firstRun} onExportCurrent={()=>exportWorkspace(workspace)} onCancel={()=>setPendingRecovery(null)} onConfirm={()=>void confirmRecovery()}/>;
-
-  const intentConsumed=useRef(false);
-  useEffect(()=>{
-    if(!ready||!firstRun||recovery||!initialIntent||intentConsumed.current)return;
-    intentConsumed.current=true;
-    const {role,priority,kind,file}=initialIntent;
-    if(kind==="restore") {
-      if(file)void importWorkspace(file).then(candidate=>setPendingRecovery({kind:"import",candidate,replacing:false})).catch(()=>setToast(ru?"Файл не прошёл проверку":"File did not pass validation"));
-      return;
-    }
-    setWorkspace({...(kind==="demo"?demoWorkspace(locale):emptyWorkspace(locale)),managementRole:role});
-    if(kind==="demo") {
-      setProjectId("atlas");setView(priority==="learn"?"guide":priority==="deadline"?"planning":priority==="organize"?"work":"overview");setFirstRun(false);
-    } else if(role==="operations"||role==="program") {setFirstRun(false);setView(role);}
-    else setDialog("project");
-  },[ready,firstRun,recovery,initialIntent,locale,ru]);
 
   if (!ready) return <WorkspaceBoot locale={locale}/>;
 
