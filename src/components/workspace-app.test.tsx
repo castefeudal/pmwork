@@ -76,7 +76,7 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
     fireEvent.click(within(desktopNav()).getByRole("button",{name:"Настройки"}));
-    expect(screen.getByRole("heading",{name:"Уровень подсказок"})).toBeTruthy();
+    expect(await screen.findByRole("heading",{name:"Уровень подсказок"})).toBeTruthy();
     expect(screen.queryByText("Создать связанную сущность")).toBeNull();
   });
 
@@ -84,7 +84,7 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="en" />);
     await openDemo();
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Plan" }));
-    fireEvent.click(screen.getByRole("button", { name: "Dependencies" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Dependencies" }));
     fireEvent.click(screen.getByRole("button", { name: "Add dependency" }));
     const successor = screen.getByLabelText("Successor") as HTMLSelectElement;
     expect(successor.options.length).toBeGreaterThan(1);
@@ -104,13 +104,13 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Контроль" }));
-    fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Закрытие" }));
     const acceptance = screen.getByLabelText("Финальная приёмка подтверждена") as HTMLInputElement;
     fireEvent.click(acceptance);
     expect(acceptance.checked).toBe(true);
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Сейчас" }));
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Контроль" }));
-    fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Закрытие" }));
     expect((screen.getByLabelText("Финальная приёмка подтверждена") as HTMLInputElement).checked).toBe(true);
   });
 });
