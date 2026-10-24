@@ -69,3 +69,7 @@ The first screen is real static onboarding HTML with an explicit checking status
 ### Public navigation transfer budget
 
 Cold Lighthouse traces on 2b36c7a showed automatic route prefetch loading the other locale, About, workspace RSC, entry styles and scripts while the landing page was still settling. Public header, footer and landing links now use `prefetch={false}` to reserve initial bandwidth for the requested page. Client navigation remains available on activation. The 2500 ms LCP gate is unchanged.
+
+### Single-family resource discovery
+
+The earlier four-file Inter/Manrope preload experiment was rejected. After consolidating to Manrope, a separate three-sample local diagnostic preloaded only the required two RU subsets: LCP 2747, 2265 and 2264 ms, CLS 0. The exported HTML now hints one EN or two RU font files at the start of the head, with the correct deployment base. This optimization is included before PWA hashing; the strict CI budgets still determine acceptance.

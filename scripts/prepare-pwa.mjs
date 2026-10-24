@@ -14,6 +14,15 @@ walk("out");
 files.sort();
 const exportPath = file => path.relative("out", file).split(path.sep).join("/");
 
+const basePath = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
+const fontPaths = files.filter(file => file.endsWith(".woff2")).map(exportPath);
+const fontPreloads = locale => (locale === "ru" ? ["latin", "cyrillic"] : ["latin"]).map(script => {
+  const stem = `manrope-${script}-wght-normal.`;
+  const file = fontPaths.find(file => path.posix.basename(file).startsWith(stem));
+  if (!file) throw Error(`Missing bundled font: ${stem}`);
+  return `<link data-pmwork-font-preload="" rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="${basePath}/${file}">`;
+}).join("");
+
 // Transform and hash in one pass; avoid rewriting already-correct export pages.
 const hash=createHash("sha256");
 hash.update(fs.readFileSync("public/sw.js"));
@@ -21,7 +30,9 @@ for (const file of files) {
   let bytes=fs.readFileSync(file);
   const locale = exportPath(file).match(/^(ru|en)\/.*\.html$/)?.[1];
   if (locale) {
-    const original=bytes.toString("utf8"),html=original.replace(/<html lang="[^"]*"/, `<html lang="${locale}"`);
+    const original=bytes.toString("utf8"),html=original.replace(/<html lang="[^"]*"/, `<html lang="${locale}"`)
+      .replace(/<link data-pmwork-font-preload=""[^>]*>/g, "")
+      .replace("<head>", `<head>${fontPreloads(locale)}`);
     if(html!==original){bytes=Buffer.from(html);fs.writeFileSync(file,bytes);}
   }
   hash.update(file).update(bytes);
