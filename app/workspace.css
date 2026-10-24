@@ -115,7 +115,6 @@
   white-space: nowrap;
 }
 .workspace-top .command-trigger kbd { white-space: nowrap; }
-.header-search { display: inline-flex; align-items: center; gap: .45rem; }
 .sidebar { overflow: hidden; }
 .sidebar .side-nav {
   flex: 1 1 auto;

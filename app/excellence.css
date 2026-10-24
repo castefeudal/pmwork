@@ -223,6 +223,8 @@ body { letter-spacing: -.006em; }
 .public-nav-group > div a { min-height: 42px; display: flex; align-items: center; border-radius: 9px; }
 .language-link { font-variant-numeric: tabular-nums; }
 
+.header-search { display: inline-flex; align-items: center; gap: .45rem; }
+
 /* Landing hero: one composition, one source of truth. */
 .marketing-home { --marketing-max: 1480px; }
 .marketing-hero {

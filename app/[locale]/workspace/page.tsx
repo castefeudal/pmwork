@@ -1,3 +1,5 @@
+import "../../workspace.css";
+import "../../management.css";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/domain/schemas";
 import { WorkspaceApp } from "@/components/workspace-app";

@@ -1,10 +1,8 @@
 "use client";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { TodayView } from "./today-view";
 import { readWorkspaceUrl, workspaceUrl, readWorkspaceRecord, workspaceRecordUrl } from "@/domain/workspace-url";
 import { WorkspaceMore } from "./workspace-more";
-import { WorkspaceSettingsView } from "./workspace-settings-view";
 import { RecoveryConfirmDialog } from "./recovery-confirm-dialog";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -43,24 +41,25 @@ import {
 import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
-import { DocumentCenter } from "./document-center";
 import type { EditableKind } from "./record-editor";
 import {useUrlValue} from "./use-url-state";
 import {registerForCreate} from "./workspace-types";
 import {contextProject} from "@/domain/work-scope";
 import type { CreateType, WorkspaceView } from "./workspace-types";
-import {
-  CommandPalette,
-  ControlView,
-  FinanceView,
-  GuideView,
-  PeopleView,
-  PlanningView,
-  PortfolioView,
-  RaidView,
-  WorkView,
-  type ViewProps,
-} from "./workspace-views";
+import type { ViewProps } from "./workspace-views";
+const TodayView = dynamic(()=>import("./today-view").then(module=>module.TodayView));
+const WorkspaceSettingsView = dynamic(()=>import("./workspace-settings-view").then(module=>module.WorkspaceSettingsView));
+const DocumentCenter = dynamic(()=>import("./document-center").then(module=>module.DocumentCenter));
+const CommandPalette = dynamic(()=>import("./command-menu").then(module=>module.CommandMenu));
+const ControlView = dynamic(()=>import("./workspace-views").then(module=>module.ControlView));
+const FinanceView = dynamic(()=>import("./workspace-views").then(module=>module.FinanceView));
+const GuideView = dynamic(()=>import("./workspace-views").then(module=>module.GuideView));
+const PeopleView = dynamic(()=>import("./workspace-views").then(module=>module.PeopleView));
+const PlanningView = dynamic(()=>import("./workspace-views").then(module=>module.PlanningView));
+const PortfolioView = dynamic(()=>import("./workspace-views").then(module=>module.PortfolioView));
+const RaidView = dynamic(()=>import("./workspace-views").then(module=>module.RaidView));
+const WorkView = dynamic(()=>import("./workspace-views").then(module=>module.WorkView));
+
 
 const navIcons = {
   program: BriefcaseBusiness,
