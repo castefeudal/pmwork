@@ -13,11 +13,28 @@ function walk(dir) {
 walk("out");
 files.sort();
 const exportPath = file => path.relative("out", file).split(path.sep).join("/");
+const basePath = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
+const fontPaths = files.filter(file => file.endsWith(".woff2")).map(exportPath);
+const fontPreloads = locale => {
+  const scripts = locale === "ru" ? ["latin", "cyrillic"] : ["latin"];
+  return scripts.flatMap(script => ["manrope", "inter"].map(family => {
+    const stem = `${family}-${script}-wght-normal.`;
+    const file = fontPaths.find(file => path.posix.basename(file).startsWith(stem));
+    if (!file) throw Error(`Missing bundled critical font: ${stem}`);
+    return `<link data-pmwork-font-preload="" rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="${basePath}/${file}">`;
+  })).join("");
+};
 
-// Set route language before hashing so HTML and the offline cache agree.
+// Language and self-hosted above-fold font hints must be hashed into offline HTML.
 for (const file of files) {
   const locale = exportPath(file).match(/^(ru|en)\/.*\.html$/)?.[1];
-  if (locale) fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/<html lang="[^"]*"/, `<html lang="${locale}"`));
+  if (locale) {
+    const html = fs.readFileSync(file, "utf8")
+      .replace(/<html lang="[^"]*"/, `<html lang="${locale}"`)
+      .replace(/<link data-pmwork-font-preload=""[^>]*>/g, "")
+      .replace("</head>", `${fontPreloads(locale)}</head>`);
+    fs.writeFileSync(file, html);
+  }
 }
 
 const hash=createHash("sha256");
