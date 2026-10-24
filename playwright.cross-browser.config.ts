@@ -6,7 +6,7 @@ process.env.no_proxy = [process.env.no_proxy, localBypass].filter(Boolean).join(
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  testMatch: ["cross-browser.spec.ts", "management-roles.spec.ts", "risk-form-usability.spec.ts", "work-clarity.spec.ts", "daily-decision-center.spec.ts", "readability.spec.ts", "workflow-excellence.spec.ts", "planning-evidence.spec.ts"],
+  testMatch: ["cross-browser.spec.ts", "management-roles.spec.ts", "risk-form-usability.spec.ts", "work-clarity.spec.ts", "daily-decision-center.spec.ts", "readability.spec.ts", "workflow-excellence.spec.ts", "planning-evidence.spec.ts", "workspace-entry.spec.ts"],
   fullyParallel: false,
   workers: 1,
   retries: 1,

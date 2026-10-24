@@ -10,7 +10,6 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ClipboardCheck,
-  Database,
   Download,
   FileText,
   Home,
@@ -26,7 +25,7 @@ import {
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
-import { managementRoles, roleMobileViews, roleLabels, roleQuestions, type ManagementRole } from "@/domain/management-role";
+import { roleMobileViews, roleQuestions, type ManagementRole } from "@/domain/management-role";
 import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
 import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
 import { displayLabel } from "@/content/workspace-i18n";
@@ -40,6 +39,8 @@ import {
 } from "@/data/storage";
 import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
+import { WorkspaceBoot } from "./workspace-boot";
+import { WorkspaceWelcome, type WorkspaceIntent } from "./workspace-welcome";
 import { ThemeToggle } from "./theme-toggle";
 import type { EditableKind } from "./record-editor";
 import {useUrlValue} from "./use-url-state";
@@ -138,7 +139,7 @@ const DeliveryCenter = dynamic(()=>import("./delivery-center").then(module=>modu
 const WorkspaceDialog = dynamic(()=>import("./workspace-dialog").then(module=>module.WorkspaceDialog),{loading:()=> <p role="status">…</p>});
 const RecordEditor = dynamic(()=>import("./record-editor").then(module=>module.RecordEditor),{loading:()=> <p role="status">…</p>});
 
-export function WorkspaceApp({ locale }: { locale: Locale }) {
+export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initialIntent?:WorkspaceIntent }) {
   const [contextId]=useUrlValue("context");
   const [contextRegister]=useUrlValue("register");
   const ru = locale === "ru",
@@ -148,8 +149,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [ready, setReady] = useState(false),
     [recovery, setRecovery] = useState(false),
     [firstRun, setFirstRun] = useState(true),
-    [firstRole, setFirstRole] = useState<ManagementRole>("project"),
-    [firstPriority, setFirstPriority] = useState("attention"),
+    [firstRole, setFirstRole] = useState<ManagementRole>(initialIntent?.role??"project"),
+    [firstPriority, setFirstPriority] = useState(initialIntent?.priority??"attention"),
     [dialog, setDialog] = useState<CreateType | null>(null),
     [editor, setEditor] = useState<{ kind: EditableKind; id: string } | null>(null),
     [palette, setPalette] = useState(false),
@@ -161,18 +162,6 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [snapshots, setSnapshots] = useState<{key:string;at:string}[]>([]),
     [pendingRecovery,setPendingRecovery]=useState<PendingRecovery|null>(null),
     fileRef = useRef<HTMLInputElement>(null);
-  const firstRunStartLabel = ({
-    project: ru ? "Создать пустой проект" : "Create an empty project",
-    program: ru ? "Открыть программы" : "Open programs",
-    delivery: ru ? "Создать проект поставки" : "Create a delivery project",
-    operations: ru ? "Открыть операционную работу" : "Open operations",
-  } as const)[firstRole];
-  const firstRunStartHint = firstRole === "project" || firstRole === "delivery"
-    ? (ru ? "Задачи и сроки можно добавить позже." : "Add work items and dates when you are ready.")
-    : (ru ? "Раздел откроется без демо-записей." : "The section opens without sample records.");
-  const firstRunPreferencesHint = firstRole === "program" || firstRole === "operations"
-    ? (ru ? "Откроется соответствующий рабочий раздел." : "The matching work area opens by default.")
-    : (ru ? "По умолчанию откроется обзор проекта." : "The project overview opens by default.");
 
   useEffect(() => {
     loadWorkspace()
@@ -249,51 +238,31 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   };
   const recoveryDialog=pendingRecovery&&<RecoveryConfirmDialog locale={locale} candidate={pendingRecovery.kind==="import"?pendingRecovery.candidate:undefined} snapshotLabel={pendingRecovery.kind==="snapshot"?pendingRecovery.label:undefined} replacing={pendingRecovery.kind==="snapshot"||pendingRecovery.replacing} canExportCurrent={(pendingRecovery.kind==="snapshot"||pendingRecovery.replacing)&&!recovery&&!firstRun} onExportCurrent={()=>exportWorkspace(workspace)} onCancel={()=>setPendingRecovery(null)} onConfirm={()=>void confirmRecovery()}/>;
 
-  if (!ready) return (
-    <main className="language-gate first-run-gate workspace-boot" aria-busy="true" aria-label={ru ? "Загрузка PMWORK" : "Loading PMWORK"}>
-      <div className="boot-glow" aria-hidden="true" />
-      <header className="boot-header"><Brand/><span><i />{ru ? "РАБОТАЕТ НА ЭТОМ УСТРОЙСТВЕ" : "RUNNING ON THIS DEVICE"}</span></header>
-      <section className="boot-center" aria-live="polite">
-        <div className="boot-orbit" aria-hidden="true"><span/><span/><span/><div><Brand/></div></div>
-        <p className="eyebrow">{ru ? "ПОДГОТАВЛИВАЕМ ВАШЕ ПРОСТРАНСТВО" : "PREPARING YOUR WORKSPACE"}</p>
-        <h1>{ru ? "Собираем всё в одну ясную картину." : "Bringing your work into focus."}</h1>
-        <p className="boot-status" role="status">{ru ? "Аккуратно проверяем локальные данные и контекст проекта" : "Checking your local data and project context"}</p>
-        <div className="boot-progress" aria-hidden="true"><span /></div>
-        <span className="boot-privacy">{ru ? "Ваши данные не покидают это устройство" : "Your data stays on this device"}</span>
-      </section>
-      <footer className="boot-footer"><span>PMWORK <i>·</i> PROJECT OPERATING SPACE</span><span>{ru ? "Приватно по умолчанию" : "Private by default"}</span></footer>
-    </main>
-  );
+  const intentConsumed=useRef(false);
+  useEffect(()=>{
+    if(!ready||!firstRun||recovery||!initialIntent||intentConsumed.current)return;
+    intentConsumed.current=true;
+    const {role,priority,kind,file}=initialIntent;
+    if(kind==="restore") {
+      if(file)void importWorkspace(file).then(candidate=>setPendingRecovery({kind:"import",candidate,replacing:false})).catch(()=>setToast(ru?"Файл не прошёл проверку":"File did not pass validation"));
+      return;
+    }
+    setWorkspace({...(kind==="demo"?demoWorkspace(locale):emptyWorkspace(locale)),managementRole:role});
+    if(kind==="demo") {
+      setProjectId("atlas");setView(priority==="learn"?"guide":priority==="deadline"?"planning":priority==="organize"?"work":"overview");setFirstRun(false);
+    } else if(role==="operations"||role==="program") {setFirstRun(false);setView(role);}
+    else setDialog("project");
+  },[ready,firstRun,recovery,initialIntent,locale,ru]);
 
-  if (firstRun) return (
-    <main className="language-gate first-run-gate">
-      <Brand />
-      <div className="first-run-hero">
-        <p className="eyebrow">{ru ? "НАЧАЛО РАБОТЫ" : "GET STARTED"}</p>
-        <h1>{ru ? "Создайте проект или откройте пример" : "Create a project or open the example"}</h1>
-        <p className="lead">{ru ? "Новый проект будет пустым. В демонстрационном уже есть задачи, сроки, риски и решения — на нём можно посмотреть, как устроен PMWORK." : "A new project starts empty. The sample includes work items, dates, risks, and decisions so you can see how PMWORK works."}</p>
-      </div>
-      <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">i</span><span><strong>{ru ? "Выберите, с чего начать" : "Choose how to start"}</strong><small>{ru ? "Создайте свой проект или откройте пример с готовыми записями." : "Create your own project or open the sample with example records."}</small></span></div>
-      <div className="first-run-actions">
-        <button className="button primary first-run-option" onClick={() => { setWorkspace({...emptyWorkspace(locale),managementRole:firstRole}); if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project"); }}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{firstRunStartLabel}</strong><small>{firstRunStartHint}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <button className="button first-run-option" onClick={() => { setWorkspace({...demoWorkspace(locale),managementRole:firstRole}); setProjectId("atlas"); setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true"><Database size={17}/></span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <details className="first-run-preferences">
-          <summary>{ru ? "Дополнительно: выбрать рабочий раздел" : "Optional: choose a starting section"}</summary>
-          <p>{ru ? `Эта настройка не обязательна. ${firstRunPreferencesHint}` : `These settings are optional. ${firstRunPreferencesHint}`}</p>
-          <div className="first-run-preference-fields">
-            <label className="field"><span>{ru ? "Тип работы" : "Type of work"}</span><select value={firstRole} onChange={e=>setFirstRole(e.target.value as ManagementRole)}>{managementRoles.map(role=><option key={role} value={role}>{roleLabels[locale][role]}</option>)}</select></label>
-            {firstRole !== "program" && firstRole !== "operations" && <label className="field"><span>{ru ? "Какой раздел открыть первым?" : "Which section should open first?"}</span><select value={firstPriority} onChange={e=>setFirstPriority(e.target.value)}><option value="attention">{ru ? "Обзор проекта" : "Project overview"}</option><option value="organize">{ru ? "Список задач" : "Work items"}</option><option value="deadline">{ru ? "Сроки и план" : "Schedule and plan"}</option><option value="learn">{ru ? "Обучающий обзор" : "Guided tour"}</option></select></label>}
-          </div>
-        </details>
-        <button className="button ghost first-run-restore" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить из резервной копии" : "Restore from a backup"}</button>
-      </div>
-      <p className="first-run-privacy"><span aria-hidden="true">⌑</span>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
-      <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>void stageImport(e.target.files?.[0],false)}/>
-      {toast&&<p role="alert">{toast}</p>}
+  if (!ready) return <WorkspaceBoot locale={locale}/>;
+
+  if (firstRun) return <WorkspaceWelcome locale={locale} role={firstRole} onRole={setFirstRole} priority={firstPriority} onPriority={setFirstPriority} notice={toast}
+    onCreate={()=>{setWorkspace({...emptyWorkspace(locale),managementRole:firstRole});if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project");}}
+    onDemo={()=>{setWorkspace({...demoWorkspace(locale),managementRole:firstRole});setProjectId("atlas");setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview");setFirstRun(false);}}
+    onImport={file=>void stageImport(file,false)}>
       {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));setProjectId(id??"");setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview");setFirstRun(false);}}/>}
-      {recoveryDialog}
-    </main>
-  );
+    {recoveryDialog}
+  </WorkspaceWelcome>;
 
   const project = workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
   if (!project) return <ContextWorkspaceShell workspace={workspace} locale={locale} onChange={next=>setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)))} onExport={()=>exportWorkspace(workspace)} onRestore={()=>fileRef.current?.click()} onCreateProject={()=>setDialog("project")} palette={palette} onClosePalette={()=>setPalette(false)}><input hidden ref={fileRef} type="file" accept="application/json" onChange={event=>void stageImport(event.target.files?.[0],true)}/>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));if(id)setProjectId(id);}}/>}{recoveryDialog}</ContextWorkspaceShell>;

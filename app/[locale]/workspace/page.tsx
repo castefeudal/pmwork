@@ -2,7 +2,7 @@ import "../../workspace.css";
 import "../../management.css";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/domain/schemas";
-import { WorkspaceApp } from "@/components/workspace-app";
+import { WorkspaceEntry } from "@/components/workspace-entry";
 export function generateStaticParams() {
   return [{ locale: "ru" }, { locale: "en" }];
 }
@@ -13,5 +13,5 @@ export default async function WorkspacePage({
 }) {
   const { locale } = await params;
   if (locale !== "ru" && locale !== "en") notFound();
-  return <WorkspaceApp locale={locale as Locale} />;
+  return <WorkspaceEntry locale={locale as Locale} />;
 }

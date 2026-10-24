@@ -25,6 +25,8 @@ const userFacing = [
   "src/content/ui.ts",
   "src/data/demo.ts",
   "src/components/workspace-app.tsx",
+  "src/components/workspace-boot.tsx",
+  "src/components/workspace-welcome.tsx",
   "src/components/workspace-dialog.tsx",
   "src/components/workspace-views.tsx",
   "src/components/record-editor.tsx",
