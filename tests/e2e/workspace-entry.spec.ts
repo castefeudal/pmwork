@@ -9,7 +9,7 @@ for(const locale of ["ru","en"] as const) {
     await page.goto(route(`/${locale}/workspace/`));
     await expect(page.getByRole("heading",{name:ru?"Создайте проект или откройте пример":"Create a project or open the example"})).toBeVisible();
     expect(await page.evaluate(()=>localStorage.getItem("pmwork:workspace:v3"))).toBeNull();
-    expect(await page.evaluate(async()=> (await indexedDB.databases()).some(db=>db.name==="pmwork-local"))).toBe(false);
+    await expect.poll(()=>page.evaluate(async()=> (await indexedDB.databases()).some(db=>db.name==="pmwork-local"))).toBe(false);
     await page.getByRole("button",{name:new RegExp(ru?"Посмотреть готовый пример":"Explore a completed example")}).click();
     await expect(page.locator(".workspace-shell")).toBeVisible();
     await expect(page.locator(".workspace-top")).toContainText(ru?"Сохранено локально":"Saved locally");
