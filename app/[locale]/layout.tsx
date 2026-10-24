@@ -27,8 +27,8 @@ export async function generateMetadata({
       icon: [
         { url: `${publicBase}/icon.svg`, type: "image/svg+xml" },
         {
-          url: `${publicBase}/icon-192.png`,
-          sizes: "192x192",
+          url: `${publicBase}/brand/favicon.png`,
+          sizes: "32x32",
           type: "image/png",
         },
       ],

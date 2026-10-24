@@ -4,10 +4,8 @@ export function WorkspaceBoot({locale}:{locale:Locale}) {
   const ru=locale==="ru";
   return (
     <main className="language-gate first-run-gate workspace-boot" aria-busy="true" aria-label={ru ? "Загрузка PMWORK" : "Loading PMWORK"}>
-      <div className="boot-glow" aria-hidden="true" />
       <header className="boot-header"><Brand/><span><i />{ru ? "РАБОТАЕТ НА ЭТОМ УСТРОЙСТВЕ" : "RUNNING ON THIS DEVICE"}</span></header>
       <section className="boot-center" aria-live="polite">
-        <div className="boot-orbit" aria-hidden="true"><span/><span/><span/><div><Brand/></div></div>
         <p className="eyebrow">{ru ? "ПОДГОТАВЛИВАЕМ ВАШЕ ПРОСТРАНСТВО" : "PREPARING YOUR WORKSPACE"}</p>
         <h1>{ru ? "Собираем всё в одну ясную картину." : "Bringing your work into focus."}</h1>
         <p className="boot-status" role="status">{ru ? "Аккуратно проверяем локальные данные и контекст проекта" : "Checking your local data and project context"}</p>

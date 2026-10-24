@@ -4,19 +4,32 @@ import { ConfirmationDialog } from "./confirmation-dialog";
 export function PwaRegister() {
  const [notice,setNotice]=useState(''),[waiting,setWaiting]=useState<ServiceWorker|null>(null),[confirmUpdate,setConfirmUpdate]=useState(false);
  useEffect(() => {
+  let idle:number|undefined,delay:number|undefined;
   const ru=location.pathname.includes('/ru/');
   const offline=()=>setNotice(ru?'Нет сети · изменения сохраняются локально':'Offline · changes save locally');
   const online=()=>setNotice(ru?'Подключение восстановлено':'Back online');
   addEventListener('offline',offline);addEventListener('online',online);
   if(!navigator.onLine)offline();
-  if(process.env.NODE_ENV==='production'&&'serviceWorker' in navigator){
+  const register=()=>{if(process.env.NODE_ENV==='production'&&'serviceWorker' in navigator){
    const base=location.pathname.startsWith('/pmwork/')?'/pmwork':'';
    navigator.serviceWorker.register(`${base}/sw.js`).then(reg=>{
     if(reg.waiting)setWaiting(reg.waiting);
     reg.addEventListener('updatefound',()=>{const worker=reg.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)setWaiting(worker);});});
    }).catch(()=>undefined);
-  }
-  return()=>{removeEventListener('offline',offline);removeEventListener('online',online);};
+  }};
+  // Keep first installation and its precache requests out of initial rendering.
+  const schedule=()=>{
+   if('requestIdleCallback' in window)idle=window.requestIdleCallback(register,{timeout:3000});
+   else delay=window.setTimeout(register,0);
+  };
+  if(document.readyState==='complete')schedule();
+  else window.addEventListener('load',schedule,{once:true});
+  return()=>{
+   removeEventListener('offline',offline);removeEventListener('online',online);
+   window.removeEventListener('load',schedule);
+   if(idle!==undefined)window.cancelIdleCallback(idle);
+   if(delay!==undefined)window.clearTimeout(delay);
+  };
  },[]);
  const ru=typeof location!=='undefined'&&location.pathname.includes('/ru/');
  if(!notice&&!waiting)return null;
