@@ -2,9 +2,13 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
+import { createGzip } from "node:zlib";
 
 const root = resolve("out");
 const basePath = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
+// Functional fixtures keep their historical no-store/uncompressed behavior.
+// Opt in explicitly for cold-site Lighthouse transfer measurements.
+const compress = process.env.PMWORK_HTTP_COMPRESSION === "gzip";
 const contentTypes = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -43,13 +47,24 @@ createServer(async (request, response) => {
       response.end("Not found");
       return;
     }
+    const acceptsGzip = (request.headers["accept-encoding"] ?? "").split(",").some(value => {
+      const [encoding, ...parameters] = value.trim().split(";");
+      return encoding === "gzip" && !parameters.some(parameter => /^q\s*=\s*0(?:\.0*)?$/.test(parameter.trim()));
+    });
+    const gzip = compress && acceptsGzip && /\.(?:html|css|js|json|svg|txt|xml|webmanifest)$/.test(file);
     response.writeHead(200, {
       "cache-control": "no-store",
       "content-type": contentTypes[extname(file)] ?? "application/octet-stream",
+      ...(compress ? { vary: "Accept-Encoding" } : {}),
+      ...(gzip ? { "content-encoding": "gzip" } : {}),
     });
-    createReadStream(file).pipe(response);
+    const stream = createReadStream(file);
+    if (gzip) stream.pipe(createGzip()).pipe(response);
+    else stream.pipe(response);
   } catch {
     response.writeHead(400, { "content-type": "text/plain; charset=utf-8" });
     response.end("Bad request");
   }
-}).listen(3000, "127.0.0.1");
+}).listen(Number(process.env.PORT ?? 3000), "127.0.0.1", () => {
+  if (compress) console.log("PMWORK_EXPORT_READY");
+});

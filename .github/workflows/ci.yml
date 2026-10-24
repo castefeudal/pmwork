@@ -10,7 +10,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -43,6 +43,7 @@ jobs:
       - name: Cross-browser smoke
         run: npm run test:cross-browser
       - run: npm run performance:check
+      - run: npm run lighthouse:check
       - run: npm run evidence:release
       - name: Preserve exact-commit evidence
         if: always()
