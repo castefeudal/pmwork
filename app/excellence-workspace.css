@@ -1,0 +1,31 @@
+/* workspace: preserved polish-layer rules, scoped to the surface that uses them. */
+@layer polish {
+.workspace-shell { background: radial-gradient(ellipse at 92% 0%,color-mix(in srgb,var(--accent) 5%,transparent),transparent 33rem),var(--bg); }
+.workspace-shell > .sidebar { width: var(--sidebar); padding: 1.05rem .82rem; background: linear-gradient(180deg,#0c171a,#0a1317 55%,#0c1718); border-right-color: rgba(224,241,233,.075); }
+.workspace-shell .sidebar .brand .brand-image { width: 37px; height: 37px; }
+.workspace-shell .side-nav { gap: .3rem; }
+.workspace-shell .side-nav button { min-height: 43px; border: 1px solid transparent; border-radius: 11px; font-size: 0.875rem; font-weight: 610; transition: color 160ms ease,background 160ms ease,border-color 160ms ease,transform 160ms ease; }
+.workspace-shell .side-nav button:hover { color: #effaf5; background: rgba(224,246,237,.065); border-color: rgba(224,246,237,.07); transform: translateX(2px); }
+.workspace-shell .side-nav button.active { color: #d8f5eb; background: linear-gradient(95deg,rgba(86,191,161,.15),rgba(86,191,161,.055)); border-color: rgba(105,207,177,.12); box-shadow: inset 2px 0 #76d3b4; }
+.workspace-shell .side-nav button.active svg { color: #84dbc0; }
+.workspace-shell .project-switch { border-radius: 11px; }
+.workspace-shell .workspace-top { min-height: 68px; border-bottom-color: var(--line); background: color-mix(in srgb,var(--bg) 83%,transparent); backdrop-filter: saturate(140%) blur(15px); -webkit-backdrop-filter: saturate(140%) blur(15px); }
+.workspace-shell .workspace-content { max-width: 1600px; }
+.workspace-shell .page-title { align-items: center; }
+.workspace-shell .page-title h2 { font-size: clamp(1.55rem, 2.05vw, 2.05rem); letter-spacing: -.035em; }
+.workspace-shell .panel, .workspace-shell .project-card, .workspace-shell .metric-card, .workspace-shell .catalog-card { border-radius: 16px; box-shadow: var(--shadow-hairline); }
+.workspace-shell .panel { padding: 1.2rem; }
+.workspace-shell .panel h3, .workspace-shell .project-card h3 { letter-spacing: -.025em; }
+.workspace-shell .button, .workspace-shell .input, .workspace-shell .field input, .workspace-shell .field select, .workspace-shell .field textarea { border-radius: 10px; }
+.workspace-shell .button { transition: transform 150ms ease,border-color 150ms ease,background-color 150ms ease,box-shadow 150ms ease; }
+.workspace-shell .button:hover { transform: translateY(-1px); }
+.workspace-shell .tabs { padding: .32rem; border-radius: 13px; background: color-mix(in srgb,var(--surface-solid) 75%,transparent); }
+.workspace-shell .tabs button { border-radius: 9px; }
+.workspace-shell .work-card { border-radius: 12px; box-shadow: 0 2px 7px rgba(13,38,39,.045); }
+.workspace-shell .work-card:hover { transform: translateY(-2px); }
+.workspace-shell .table-wrap { border-radius: 13px; box-shadow: var(--shadow-hairline); }
+.workspace-shell .mobile-workspace-nav { border-top: 1px solid var(--line); background: color-mix(in srgb,var(--surface-solid) 90%,transparent); backdrop-filter: saturate(150%) blur(15px); -webkit-backdrop-filter: saturate(150%) blur(15px); }
+.workspace-shell .mobile-workspace-nav button.active { color: var(--accent-hover); }
+.workspace-shell .mobile-workspace-nav button.active span { color: inherit; }
+
+}

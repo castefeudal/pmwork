@@ -1,5 +1,4 @@
-import "../../workspace.css";
-import "../../management.css";
+import "../../excellence-entry.css";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/domain/schemas";
 import { WorkspaceEntry } from "@/components/workspace-entry";

@@ -1,4 +1,5 @@
 "use client";
+import "../../app/excellence-public.css";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 const PublicSearch = dynamic(() => import("./public-search"), { ssr: false });

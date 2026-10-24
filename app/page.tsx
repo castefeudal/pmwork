@@ -1,3 +1,4 @@
+import "./excellence-entry.css";
 import Link from "next/link";
 import { ArrowRight, Globe2 } from "lucide-react";
 import { Brand } from "@/components/brand";

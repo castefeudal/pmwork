@@ -1,4 +1,7 @@
 "use client";
+import "../../app/workspace.css";
+import "../../app/management.css";
+import "../../app/excellence-workspace.css";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { readWorkspaceUrl, workspaceUrl, readWorkspaceRecord, workspaceRecordUrl } from "@/domain/workspace-url";
