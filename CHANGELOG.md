@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.10.0 — a readable schedule and a quieter shell
+
+- Give the planning timeline a labelled time axis: month, week or day ticks that match the selected scale, a caption with the full visible range, and a sticky axis while the schedule scrolls.
+- Label the today line in both the axis and a legend, and explain bar states (work, blocked, milestone) with a legend instead of colour alone.
+- Keep short bars readable: bar labels appear only when they fit, every bar carries its exact dates in a tooltip and accessible name, and the row labels stop repeating the year.
+- Tighten schedule rows from 64px to 52px and move the current-day line into a single overlay so vertical grid lines align with the axis ticks.
+- Cut workspace page headings to a tool-scale size, so a daily screen shows its first decision instead of a title block.
+- Keep the workspace top bar on one line: the project name truncates first, the save state never wraps into two lines.
+- Make the sidebar scroll its navigation between a fixed brand and a fixed footer instead of clipping the last sections.
+- Show full project names in the project switch; the demo disclosure stays in the page eyebrow and the control tooltip.
+- Stop clipping work-table statuses and the actions column, and reduce table row padding while keeping 44px controls.
+- Landing: fold the hero into a single source of truth, drop the animated blur orb, grid overlay and gradient headline, and size the composition so the primary action stays above the fold at 900px.
+- Demote the header workspace button to a quiet outline control so the hero owns the only filled primary action on the page; add a search icon to the header search control.
+- Tint the demo milestone progress bar by milestone status instead of always using the accent colour.
+- Add `npm run css:audit`, a cascade audit that reports shadowed declarations, duplicate selector blocks and raw hex values across the layered stylesheets.
+- Add `npm run shots`, a reproducible visual review harness: fixed clock, reduced motion, seeded demo project, desktop and mobile sizes, both themes and both locales, plus a report of failed responses and page errors (known static-export prefetch 404s are filtered).
+
 ## 2.9.3 — one coherent Work view
 
 - Use one list/board switch and one shared toolbar for Work, including direct board URLs and browser history.

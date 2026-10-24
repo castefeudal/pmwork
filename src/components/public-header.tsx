@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 const PublicSearch = dynamic(() => import("./public-search"), { ssr: false });
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import type { Locale } from "@/domain/schemas";
 import { ui } from "@/content/ui";
 import { Brand } from "./brand";
@@ -87,7 +87,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           >
             {other.toUpperCase()}
           </Link>
-          <button className="button small" onClick={() => setSearch(true)} aria-haspopup="dialog">{locale === "ru" ? "Поиск" : "Search"}</button>
+          <button className="button small header-search" onClick={() => setSearch(true)} aria-haspopup="dialog"><Search size={16} aria-hidden="true"/>{locale === "ru" ? "Поиск" : "Search"}</button>
           <ThemeToggle locale={locale} />
           <button
             type="button"

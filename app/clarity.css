@@ -11,64 +11,6 @@
   --muted: var(--text-secondary);
 }
 
-.site-shell .marketing-hero {
-  background:
-    radial-gradient(ellipse at 82% 34%, color-mix(in srgb, var(--accent-primary) 7%, transparent), transparent 30rem),
-    var(--canvas);
-}
-
-.site-shell .marketing-hero::before {
-  width: 34rem;
-  height: 34rem;
-  top: 10%;
-  right: -14rem;
-  filter: blur(24px);
-  opacity: .36;
-  animation-duration: 24s;
-}
-
-.site-shell .marketing-hero::after { content: none; }
-.site-shell .hero-title-accent {
-  color: var(--accent-primary);
-  background: none;
-  -webkit-text-fill-color: currentColor;
-}
-[data-theme="dark"] .site-shell .hero-title-accent { color: #82d7ca; }
-
-.site-shell .marketing-hero h1 {
-  max-width: 13ch;
-  font-size: clamp(3.25rem, 6.2vw, 6rem);
-  line-height: 1.015;
-  letter-spacing: -.067em;
-  font-weight: 740;
-}
-
-.site-shell .hero-kicker {
-  background: var(--surface-solid);
-  box-shadow: 0 1px 2px rgba(18, 38, 39, .035);
-}
-
-.site-shell .marketing-hero .button.primary {
-  background: var(--accent-primary);
-  box-shadow: 0 5px 14px color-mix(in srgb, var(--accent-primary) 18%, transparent);
-}
-
-.site-shell .marketing-hero .button.primary:hover {
-  background: color-mix(in srgb, var(--accent-primary) 88%, black);
-  box-shadow: 0 8px 19px color-mix(in srgb, var(--accent-primary) 22%, transparent);
-}
-
-[data-theme="dark"] .site-shell .marketing-hero .button.primary {
-  color: #f5fffc;
-  background: #087a70;
-  border-color: #075f57;
-}
-
-[data-theme="dark"] .site-shell .marketing-hero .button.primary:hover {
-  background: #076a62;
-  box-shadow: 0 8px 19px rgba(8, 122, 112, .3);
-}
-
 .site-shell .marketing-section { padding-block: clamp(4.2rem, 6vw, 6rem); }
 .site-shell .privacy-section { padding-block: clamp(4.5rem, 6vw, 6rem); }
 .site-shell .approach-section { padding-block: clamp(4rem, 5.5vw, 5.5rem); }
@@ -230,25 +172,12 @@
 .record-editor .form-grid > details.wide[open] > summary { margin-bottom: .8rem; }
 .record-editor .form-grid > details.wide > .form-grid { padding-inline: .2rem; }
 
-/* Keep the first useful action in view on the most common laptop viewport. */
+/* Compact laptops: the hero still fits above the fold without shrinking the type below comfort. */
 @media (min-width: 901px) and (max-height: 820px) {
-  .site-shell .marketing-hero {
-    min-height: auto;
-    padding-top: clamp(1.5rem, 4vh, 2.5rem);
-    padding-bottom: 4rem;
-    grid-template-columns: minmax(0, .98fr) minmax(0, 1.02fr);
-    gap: clamp(1.5rem, 3vw, 2.8rem);
-  }
-
-  .site-shell .marketing-hero h1 {
-    max-width: 14ch;
-    font-size: clamp(3.35rem, 5.35vw, 4.55rem);
-    line-height: 1;
-  }
-
-  .site-shell .hero-kicker { margin-bottom: .9rem; }
-  .site-shell .marketing-hero .lead { margin-top: 1rem; font-size: 1rem; line-height: 1.55; }
-  .site-shell .hero-actions { margin-top: 1.05rem; }
+  .site-shell .marketing-hero { gap: clamp(1.4rem, 2.6vw, 2.4rem); }
+  .site-shell .hero-kicker { margin-bottom: .8rem; }
+  .site-shell .marketing-hero .lead { margin-top: .9rem; }
+  .site-shell .hero-actions { margin-top: 1.1rem; }
   .site-shell .hero-value-list { margin-top: .9rem; }
 }
 
@@ -265,7 +194,7 @@
 .dialog .button.primary:hover { transform: translateY(-1px); }
 
 @media (max-width: 700px) {
-  .site-shell .marketing-hero h1 { font-size: clamp(3rem, 12.4vw, 5rem); }
+  .site-shell .marketing-hero h1 { font-size: clamp(2.35rem, 10.2vw, 3.5rem); }
   .site-shell .marketing-section { padding-block: 3.5rem; }
   .site-shell .privacy-section { padding-block: 3.6rem; }
   .site-shell .approach-section { padding-block: 3.4rem; }
