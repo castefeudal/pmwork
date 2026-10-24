@@ -144,3 +144,8 @@
 }
 
 }
+
+@layer polish {
+  .first-run-controls { min-width:0; margin:0; padding:0; border:0; }
+  .first-run-checking { margin:.85rem 0 0; color:var(--text-secondary); font-size:.875rem; line-height:1.5; }
+}

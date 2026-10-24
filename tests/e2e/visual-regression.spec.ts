@@ -26,7 +26,7 @@ for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])tes
     await expect(page).toHaveScreenshot(`${name}-${locale}-${theme}.png`,{animations:'disabled',maxDiffPixelRatio:0.005});
   };
   await page.goto(route(`/${locale}/`));await expect(page.locator('main')).toBeVisible();await capture('landing');
-  await page.goto(route(`/${locale}/workspace/`));await expect(page.locator('.first-run-gate')).toBeVisible();await capture('onboarding');
+  await page.goto(route(`/${locale}/workspace/`));await expect(page.getByRole('button',{name:new RegExp(locale==='ru'?'Посмотреть готовый пример':'Explore a completed example')})).toBeEnabled();await capture('onboarding');
   await page.evaluate(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),demoWorkspace(locale));
   for(const [name,query] of [
     ['today','view=overview'],['work','view=work'],['board','view=work&layout=board'],
