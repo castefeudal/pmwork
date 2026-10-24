@@ -178,18 +178,24 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
           const context = readWorkspaceUrl(window.location.search, value);
           setProjectId(context.project); setView(context.view);
           setEditor(readWorkspaceRecord(window.location.search, value, context.project));
-        } else if(initialIntent&&!intentConsumed.current) {
-          intentConsumed.current=true;
-    const {role,priority,kind,file}=initialIntent;
-    if(kind==="restore") {
-      if(file)void importWorkspace(file).then(candidate=>setPendingRecovery({kind:"import",candidate,replacing:false})).catch(()=>setToast(ru?"Файл не прошёл проверку":"File did not pass validation"));
-    } else {
-    setWorkspace({...(kind==="demo"?demoWorkspace(locale):emptyWorkspace(locale)),managementRole:role});
-    if(kind==="demo") {
-      setProjectId("atlas");setView(priority==="learn"?"guide":priority==="deadline"?"planning":priority==="organize"?"work":"overview");setFirstRun(false);
-    } else if(role==="operations"||role==="program") {setFirstRun(false);setView(role);}
-    else setDialog("project");
-    }
+        } else if (initialIntent && !intentConsumed.current) {
+          intentConsumed.current = true;
+          const { role, priority, kind, file } = initialIntent;
+          if (kind === "restore") {
+            if (file) void importWorkspace(file)
+              .then(candidate => setPendingRecovery({ kind: "import", candidate, replacing: false }))
+              .catch(() => setToast(ru ? "Файл не прошёл проверку" : "File did not pass validation"));
+          } else {
+            setWorkspace({ ...(kind === "demo" ? demoWorkspace(locale) : emptyWorkspace(locale)), managementRole: role });
+            if (kind === "demo") {
+              setProjectId("atlas");
+              setView(priority === "learn" ? "guide" : priority === "deadline" ? "planning" : priority === "organize" ? "work" : "overview");
+              setFirstRun(false);
+            } else if (role === "operations" || role === "program") {
+              setFirstRun(false);
+              setView(role);
+            } else setDialog("project");
+          }
         }
         setReady(true);
         listSnapshots().then(setSnapshots).catch(() => undefined);
