@@ -204,7 +204,7 @@ td, th { font-variant-numeric: tabular-nums; }
 .priority-focus.severity-high::before { background: var(--semantic-warning); }
 /* Scope is a choice, not an action: one segmented control instead of two buttons. */
 .scope-switch { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--border-default); border-radius: var(--radius-control); background: var(--surface-2); }
-.scope-switch .button { min-height: 36px; border: 0; background: transparent; box-shadow: none; color: var(--text-secondary); }
+.scope-switch .button { min-height: 44px; border: 0; background: transparent; box-shadow: none; color: var(--text-secondary); }
 .scope-switch .button:hover { background: color-mix(in srgb, var(--surface-0) 60%, transparent); color: var(--text-primary); }
 .scope-switch .button[aria-pressed="true"] { background: var(--surface-0); box-shadow: var(--shadow-hairline); color: var(--text-primary); font-weight: 650; }
 .priority-focus h3 { font-size: clamp(1.35rem, 2.2vw, 1.8rem); letter-spacing: -.035em; }
