@@ -1,0 +1,45 @@
+# Management OS evidence ledger — 2026-10-25
+
+This ledger tracks the master directive without equating implementation with measured quality. Baseline: `a354e7f` (PR #35). Recovery work continues PR #36; its existing timeline, shell and landing changes are retained.
+
+## Reproducible evaluation
+
+Use the same fictional workspace, task brief, device, language, theme, browser version and assistance rules before and after. Record the tested commit, raw observations, calculation, artifact path, evaluator and limitations for every result. Automated test pass rates are not design or usability scores.
+
+| Category | Weight | Measurement and raw evidence required | Current score |
+| --- | ---: | --- | --- |
+| Design | 15% | At least 3 independent reviewers; anchored 0–4 ratings for hierarchy, typography, consistency, information density and state clarity; publish each rating and screenshot pair. Score = mean / 4 × 100. | Not measured |
+| UX | 15% | Practicing managers execute the identical tasks in USABILITY_PROTOCOL.md; retain unassisted successes, duration, errors and help. Score = unassisted successes / attempts × 100; report timing/error distributions separately. | Not measured |
+| Functionality | 20% | Freeze required scenario inventory before testing; each scenario has an executable test or witnessed task, expected outcome and persistence/recovery assertion. Score = passed required scenarios / required scenarios × 100. | Not measured on final commit |
+| Responsiveness | 10% | Frozen route/state matrix × 10 directive widths × RU/EN × themes; record overflow, reachable controls and readable dates. Score = passing cells / all cells × 100. | Not measured on final commit |
+| Performance | 10% | Retain Lighthouse JSON, browser lab samples, bundle budgets and hardware/throttling configuration. Use median Lighthouse Performance across the frozen sample; any failed bundle/LCP/CLS budget blocks acceptance independently. Field INP remains unknown without field data. | Not measured on final commit |
+| Accessibility | 10% | Frozen WCAG 2.2 AA applicable-criterion inventory; automated axe plus keyboard, screen reader, contrast, text scaling and zoom evidence. Score = demonstrated passing applicable criteria / applicable criteria × 100; untested criteria are unproven. | Manual evidence pending |
+| Reliability/security | 10% | Frozen backup/migration/recovery/offline/fault scenarios; passing fraction × 100. Audit high/critical findings and data loss block acceptance regardless of score. | Not measured on final commit |
+| Uniqueness | 5% | At least 3 independent reviewers, identical competitor briefs; anchored 0–4 ratings for explainable signals, connected contexts, local autonomy and decision-to-action continuity. Score = mean / 4 × 100. | Not measured |
+| Engineering | 5% | Frozen required lint/type/content/parity/export/browser/security/CSS/budget checks. Passing fraction × 100; every required check must pass independently. | Not measured on final commit |
+
+Weighted score = Σ(category score × weight) / 100. Do not calculate a total with missing categories, substitute zero for unknown, or redistribute missing weights. Acceptance requires every category ≥90 and the weighted score ≥90, plus every blocking gate. Independent automated agents are not substitutes for practicing-manager sessions or independent human design reviewers.
+
+## Recovery and planning changes
+
+- Security: Next.js 16.4.3, Zod 4.6.7, Vitest 5.0.3, aligned eslint-config-next 16.4.3; lockfile updated. Initial install audit: 0 vulnerabilities. Clean-install/final-commit results must be recorded separately.
+- Timeline: bounded calendar tick generation for long plans; Monday-first UTC weeks and leap days; exact dated row labels; milestone baseline/forecast/actual source dates included in the chart range and mobile agenda. Missing actual dates remain unknown.
+- Short plans use a fourteen-day minimum horizon and automatically choose a readable axis resolution. No work or milestone dates are changed.
+- Chart region supports keyboard focus/scrolling; mobile expansion exposes its state. Milestone symbols have text labels and source edit actions.
+- CSS cascade ratchet is required by `verify`; Firefox, WebKit and mobile WebKit smoke now run for both root and GitHub-base exports. Existing security, visual and bundle gates remain enforced.
+
+## Comparison references
+
+Reviewed official documentation on 2026-10-25; these are interaction references, not hands-on comparative usability evidence:
+
+- [Linear timeline](https://linear.app/docs/timeline): scale selection and meaningful milestone/dependency properties.
+- [Notion database views](https://www.notion.com/help/views-filters-and-sorts): views reference the same underlying records.
+- [Asana timeline](https://help.asana.com/s/article/plan-and-execute-projects-with-timeline): dates and dependencies are planning inputs.
+- [Monday baseline](https://support.monday.com/hc/en-us/articles/360020978159-The-Gantt-Baseline): distinguish original schedule from later progression.
+- [ClickUp timeline](https://help.clickup.com/hc/en-us/articles/6310399909143-Create-and-share-a-Timeline-view): explicit zoom and navigation controls.
+- [Bloomberg Launchpad](https://www.bloomberg.com/professional/insights/technology/bloomberg-terminal-essentials-ib-worksheets-launchpad/): configurable monitoring workspace.
+- [Airtable timeline](https://support.airtable.com/articles/1069623552-timeline-view-overview): calendar precision, scale and explicit date-field semantics.
+
+## Outstanding acceptance evidence
+
+Do not call the complete directive finished from this increment. Manager sessions, independent design/uniqueness reviews, manual assistive-technology/physical-device checks, complete before/after matrix and field INP have not been supplied. No 90/100 claim is made. Final CI, visual review, laboratory results and live release identity are recorded after execution, not inferred from this document.

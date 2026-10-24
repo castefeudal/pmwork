@@ -10,7 +10,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 24
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
@@ -38,11 +38,9 @@ jobs:
             playwright-report
           retention-days: 7
           if-no-files-found: warn
-      - name: Install Firefox and WebKit for root smoke matrix
-        if: matrix.base == 'root'
+      - name: Install Firefox and WebKit
         run: npx playwright install --with-deps firefox webkit
       - name: Cross-browser smoke
-        if: matrix.base == 'root'
         run: npm run test:cross-browser
       - run: npm run performance:check
       - run: npm run evidence:release
