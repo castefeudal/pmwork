@@ -10,13 +10,13 @@ from fontTools.pens.recordingPen import DecomposingRecordingPen
 ROOT = Path(__file__).resolve().parent.parent
 URL = 'https://raw.githubusercontent.com/google/fonts/8f9a401dbb3793e0d1264b15d96aa253f05280f5/ofl/manrope/Manrope%5Bwght%5D.ttf'
 SOURCE_SHA = 'd0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40'
-EXPECTED_SHA = 'c6a22272d207c90622e593d2a8db7a8fecf0621015ab92b62d6dae261b1afddd'
+EXPECTED_SHA = '9e51db39d3159004dc9438d2916918240fe93f3907e89f3ee73eb92d96688161'
 source = urlopen(URL, timeout=30).read()
 assert sha256(source).hexdigest() == SOURCE_SHA, 'Upstream byte mismatch'
 old = [TTFont(ROOT / f'node_modules/@fontsource-variable/manrope/files/manrope-{script}-wght-normal.woff2') for script in ['latin', 'cyrillic']]
 assert all(font['name'].getDebugName(5) == 'Version 4.504' for font in old), 'Review changed reference version'
 unicodes = set().union(*(set(font.getBestCmap()) for font in old))
-font = TTFont(BytesIO(source))
+font = TTFont(BytesIO(source), recalcTimestamp=False)
 options = subset.Options()
 options.flavor = 'woff2'
 options.layout_features = ['*']
