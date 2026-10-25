@@ -1,4 +1,5 @@
-import { createReadStream } from "node:fs";
+import { createReadStream, readFileSync } from "node:fs";
+import { createSecureServer } from "node:http2";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
@@ -23,7 +24,7 @@ const contentTypes = {
   ".woff2": "font/woff2",
 };
 
-createServer(async (request, response) => {
+const handler = async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
     let pathname = decodeURIComponent(url.pathname);
@@ -65,6 +66,14 @@ createServer(async (request, response) => {
     response.writeHead(400, { "content-type": "text/plain; charset=utf-8" });
     response.end("Bad request");
   }
-}).listen(Number(process.env.PORT ?? 3000), "127.0.0.1", () => {
+};
+const server = process.env.PMWORK_HTTP2 === "1"
+  ? createSecureServer({
+    key: readFileSync(process.env.PMWORK_TLS_KEY),
+    cert: readFileSync(process.env.PMWORK_TLS_CERT),
+    allowHTTP1: true,
+  }, handler)
+  : createServer(handler);
+server.listen(Number(process.env.PORT ?? 3000), "127.0.0.1", () => {
   if (compress) console.log("PMWORK_EXPORT_READY");
 });
