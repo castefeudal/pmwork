@@ -107,3 +107,9 @@ Secondary labels and saved status receive explicit contrast fixes. Two outdated 
 The locale-switch browser scenario now waits for autosave and repeats its data assertion after reload, preventing an early passing check before a delayed rewrite. Component keyboard checks explicitly settle the deferred module before asserting the palette, without changing timeouts or browser performance budgets.
 
 Geometry, accessibility navigation and pixel captures explicitly wait for the selected section loading status to disappear. A visible retained shell alone no longer counts as evidence that deferred section content has rendered. This strengthens the measurement boundary without increasing thresholds or timeouts.
+
+### Client-navigation persistence
+
+A component reproduction failed before the repair: explicitly choosing a workspace and unmounting before the 350 ms debounce left the storage key empty. The latest ready, non-recovery, explicitly selected state is now flushed on React unmount as well as the existing pagehide/visibility paths. The storage writer creates its local mirror synchronously before attempting IndexedDB. Untouched first entry and recovery examples remain excluded. Regression checks cover the positive exit path and preservation of unreadable original storage on recovery exit.
+
+Successful pixel-contract checks also retain their actual screenshots in browser QA artifacts. This makes the final source/merge-SHA images reviewable without overwriting the accepted references or relying on an older candidate capture.

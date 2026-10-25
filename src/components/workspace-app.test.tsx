@@ -9,6 +9,27 @@ const openDemo=async()=>fireEvent.click(await screen.findByRole("button",{name:/
 const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы рабочего пространства|Workspace sections/});
 
 describe("workspace interactions", () => {
+  it("does not flush a recovery example over unreadable saved data on unmount", async () => {
+    const damaged="{unreadable-workspace";
+    localStorage.setItem("pmwork:workspace:v3",damaged);
+    const {unmount}=render(<WorkspaceApp locale="en" />);
+    const warning=await screen.findByRole("alert");
+    expect(within(warning).getByText("Autosave paused")).toBeTruthy();
+    unmount();
+    expect(localStorage.getItem("pmwork:workspace:v3")).toBe(damaged);
+  });
+
+  it("persists an explicitly chosen workspace when unmounted before autosave", async () => {
+    const {unmount}=render(<WorkspaceApp locale="en" />);
+    await openDemo();
+    await screen.findByRole("heading",{name:"MARKOVMADE Digital Product Launch",level:1});
+    expect(localStorage.getItem("pmwork:workspace:v3")).toBeNull();
+    unmount();
+    await waitFor(()=>expect(localStorage.getItem("pmwork:workspace:v3")).not.toBeNull());
+    const stored=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);
+    expect((stored.workspace??stored).projects[0].name).toBe("MARKOVMADE Digital Product Launch");
+  });
+
   it("keeps saved record text unchanged when opening another UI locale", async () => {
     const original=demoWorkspace("en");
     localStorage.setItem("pmwork:workspace:v3",JSON.stringify(original));

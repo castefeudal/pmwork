@@ -9,7 +9,7 @@ test.skip(process.platform!=='linux','Pixel baselines use the Linux CI rendering
 // A service worker can serve CSS without page.route seeing it on later navigations.
 // Offline/cache behavior is covered by the functional suite, not pixel fixtures.
 test.use({serviceWorkers:'block'});
-for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])test(`visual contract ${locale} ${theme}`,async({page})=>{
+for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])test(`visual contract ${locale} ${theme}`,async({page},info)=>{
   test.setTimeout(180000);
   // Production deliberately permits a permanent fallback on slow font loads.
   // Pixel references compare the loaded bundled faces, not optional-font timing.
@@ -25,6 +25,7 @@ for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])tes
     if(await page.locator(".workspace-shell").count())await waitForWorkspaceSection(page);
     await page.evaluate(()=>document.fonts.ready);
     await expect(page).toHaveScreenshot(`${name}-${locale}-${theme}.png`,{animations:'disabled',maxDiffPixelRatio:0.005});
+    await page.screenshot({path:info.outputPath(`${name}-${locale}-${theme}-${info.project.name}.png`),animations:'disabled'});
   };
   await page.goto(route(`/${locale}/`));await expect(page.locator('main')).toBeVisible();await capture('landing');
   await page.goto(route(`/${locale}/workspace/`));await expect(page.getByRole('button',{name:new RegExp(locale==='ru'?'Посмотреть готовый пример':'Explore a completed example')})).toBeEnabled();await capture('onboarding');

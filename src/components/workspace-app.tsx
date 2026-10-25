@@ -167,6 +167,15 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
     [pendingRecovery,setPendingRecovery]=useState<PendingRecovery|null>(null),
     fileRef = useRef<HTMLInputElement>(null);
   const intentConsumed=useRef(false);
+  const exitSnapshot=useRef<Workspace|null>(null);
+  useEffect(()=>{
+    exitSnapshot.current=ready&&!recovery&&!firstRun?workspace:null;
+  },[workspace,ready,recovery,firstRun]);
+  useEffect(()=>()=>{
+    const snapshot=exitSnapshot.current;
+    if(snapshot)void saveWorkspace(snapshot).catch(()=>undefined);
+  },[]);
+
 
   useEffect(() => {
     loadWorkspace()
