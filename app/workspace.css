@@ -489,3 +489,26 @@ td, th { font-variant-numeric: tabular-nums; }
     transition: border-color var(--motion-normal) var(--motion-ease), background-color var(--motion-normal) var(--motion-ease);
   }
 }
+
+/* Keep the compact tablet rail on its own grid track. The base visual layer
+   gives the sidebar an explicit width, so the responsive grid alone cannot
+   prevent it from covering the workspace content. */
+@media (min-width: 721px) and (max-width: 980px) {
+  .workspace-shell {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+  .workspace-shell > .sidebar {
+    width: 78px;
+    min-width: 78px;
+    padding: .75rem .45rem;
+  }
+  .workspace-shell > .sidebar > .sidebar-toggle,
+  .workspace-shell .nav-group > small {
+    display: none;
+  }
+  .workspace-shell .side-nav button,
+  .workspace-shell .side-foot .button {
+    justify-content: center;
+    padding-inline: 0;
+  }
+}
