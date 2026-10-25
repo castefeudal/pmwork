@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { demoWorkspace } from "../../src/data/demo";
-import { route } from "./support";
+import { route, waitForWorkspaceSection } from "./support";
 
 const allWidths = [320, 360, 390, 768, 1024, 1366, 1440, 1920];
 const representativeWidths = [320, 768, 1366, 1920];
@@ -75,6 +75,7 @@ test("workspace surfaces reflow across the supported viewport matrix", async ({ 
         await page.goto(route(`/${locale}/workspace/?project=atlas&${query}`));
         await expect(page.locator(".workspace-shell")).toBeVisible();
         await expect(page.locator(".workspace-top small.muted")).toContainText(locale === "ru" ? /локально/i : /local/i);
+        await waitForWorkspaceSection(page);
 
         const report = await page.evaluate(() => {
           const viewport = document.documentElement.clientWidth;

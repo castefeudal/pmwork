@@ -105,3 +105,5 @@ Loading another UI locale no longer rewrites stored demo record text. Fresh exam
 Secondary labels and saved status receive explicit contrast fixes. Two outdated tests now check the localized local-save status and the two local Manrope subsets instead of the removed Inter family; checks are retained rather than skipped. Axe, pixel thresholds and all CI gates are unchanged.
 
 The locale-switch browser scenario now waits for autosave and repeats its data assertion after reload, preventing an early passing check before a delayed rewrite. Component keyboard checks explicitly settle the deferred module before asserting the palette, without changing timeouts or browser performance budgets.
+
+Geometry, accessibility navigation and pixel captures explicitly wait for the selected section loading status to disappear. A visible retained shell alone no longer counts as evidence that deferred section content has rendered. This strengthens the measurement boundary without increasing thresholds or timeouts.

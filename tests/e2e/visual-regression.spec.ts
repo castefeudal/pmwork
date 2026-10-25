@@ -1,7 +1,7 @@
 import { test,expect } from '@playwright/test';
 import { demoWorkspace } from '../../src/data/demo';
 import { programSchema, operationSchema } from '../../src/domain/management-entities';
-import { route } from './support';
+import { route, waitForWorkspaceSection } from './support';
 
 // CI baselines are generated and reviewed on Linux with the pinned Playwright browser.
 // Local Windows runs keep functional coverage; pixel comparison uses the CI platform.
@@ -22,6 +22,7 @@ for(const locale of ['ru','en'] as const)for(const theme of ['light','dark'])tes
   await page.emulateMedia({reducedMotion:'reduce',colorScheme:theme as 'light'|'dark'});
   await page.addInitScript(({theme})=>localStorage.setItem('pmwork-theme',theme),{theme});
   const capture=async(name:string)=>{
+    if(await page.locator(".workspace-shell").count())await waitForWorkspaceSection(page);
     await page.evaluate(()=>document.fonts.ready);
     await expect(page).toHaveScreenshot(`${name}-${locale}-${theme}.png`,{animations:'disabled',maxDiffPixelRatio:0.005});
   };
