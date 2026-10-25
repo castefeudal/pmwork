@@ -20,20 +20,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 // Import order from app/layout.tsx. Cascade order matters: later wins.
 const FILES = [
-  "app/fonts.css",
-  "app/tokens.css",
-  "app/globals.css",
-  "app/premium.css",
-  "app/editorial.css",
-  "app/ux-transformation.css",
-  "app/workspace.css",
-  "app/excellence.css",
-  "app/excellence-entry.css",
-  "app/excellence-public.css",
-  "app/excellence-workspace.css",
-  "app/management.css",
-  "app/refinement.css",
-  "app/clarity.css",
+  "app/fonts.css", "app/tokens.css", "app/globals.css", "app/premium.css",
+  "app/editorial.css", "app/ux-transformation.css", "app/excellence.css",
+  "app/refinement.css", "app/clarity.css", "app/excellence-entry.css",
+  "app/excellence-public.css", "app/deferred-operational.css", "app/workspace.css",
+  "app/management.css", "app/excellence-workspace.css",
 ];
 
 // Budget for shadowed declarations, ratcheted down as the layers are consolidated.

@@ -73,3 +73,7 @@ Cold Lighthouse traces on 2b36c7a showed automatic route prefetch loading the ot
 ### Single-family resource discovery
 
 The earlier four-file Inter/Manrope preload experiment was rejected. After consolidating to Manrope, a separate three-sample local diagnostic preloaded only the required two RU subsets: LCP 2747, 2265 and 2264 ms, CLS 0. The exported HTML now hints one EN or two RU font files at the start of the head, with the correct deployment base. This optimization is included before PWA hashing; the strict CI budgets still determine acceptance.
+
+### Operational cascade loading
+
+The single-family font hints alone did not meet the CI landing LCP budget (about 2.5–2.7 s); this is not accepted performance evidence. A source/import and exported-markup inventory identified 444 rules with no consumers in public pages or onboarding. Their 44 KB of CSS now loads with the operational runtime. Existing cascade layers, declarations and relative order are retained; shared/mixed selectors remain global. Public navigation, search, dialogs and onboarding consumers are included in the inventory. The CSS audit includes the deferred file; visual and browser gates must validate the changed loading boundary without replacing reference images.

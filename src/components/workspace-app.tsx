@@ -1,4 +1,5 @@
 "use client";
+import "../../app/deferred-operational.css";
 import "../../app/workspace.css";
 import "../../app/management.css";
 import "../../app/excellence-workspace.css";
