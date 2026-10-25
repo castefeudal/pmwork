@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { readWorkspaceUrl, workspaceUrl, readWorkspaceRecord, workspaceRecordUrl } from "@/domain/workspace-url";
 import { WorkspaceMore } from "./workspace-more";
 import { RecoveryConfirmDialog } from "./recovery-confirm-dialog";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   BriefcaseBusiness,
@@ -31,7 +31,7 @@ import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
 import { roleMobileViews, roleQuestions, type ManagementRole } from "@/domain/management-role";
 import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
-import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
+import { demoWorkspace, emptyWorkspace } from "@/data/demo";
 import { displayLabel } from "@/content/workspace-i18n";
 import {
   exportWorkspace,
@@ -172,7 +172,7 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
     loadWorkspace()
       .then((value) => {
         if (value) {
-          const normalized = localizeBundledDemo(value, locale);
+          const normalized = value;
           setWorkspace(normalized);
           setFirstRun(false);
           setView("overview");
@@ -380,12 +380,12 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
           {recovery&&<section className="recovery-banner" role="alert"><strong>{ru?"Автосохранение приостановлено":"Autosave paused"}</strong><p>{ru?"Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках.":"Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Settings."}</p><button className="button" onClick={()=>fileRef.current?.click()}>{ru?"Импортировать копию":"Import backup"}</button><button className="button" onClick={()=>setView("setup")}>{ru?"Снимки данных":"Recovery snapshots"}</button></section>}
           {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{!managementRecord&&project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{managementRecord?navLabels[locale][view]:`${displayLabel(locale,"approach",project.approach)} · ${displayLabel(locale,"governance",project.governance)}`}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2>{view==="overview"&&<p>{roleQuestions[locale][workspace.managementRole]}</p>}{view==="overview"&&<p className="muted">{managementRecord?("outcome" in managementRecord?managementRecord.outcome:managementRecord.purpose):project.objective}</p>}</div></div>}
           {workspace.experience==="foundation"&&(()=>{const domain=({program:"Program basics",operations:"Metrics",delivery:"Flow",overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];const help=knowledgeGuides[domain]??knowledgeGuides.Fundamentals;return <details className="panel foundation-help"><summary>{ru?"Что сделать сейчас":"What to do now"}</summary><h3>{ru?"Зачем это нужно":"Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru?"Действие":"Action"}</h3><p>{help.steps[locale]}</p><h3>{ru?"Что получится":"Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru?"Типичная ошибка":"Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru?"Объяснения терминов":"Term explanations"}</Link></details>})()}
-          {render()}
+          <Suspense fallback={<p role="status">{ru?"Открываем раздел…":"Opening section…"}</p>}>{render()}</Suspense>
         </div>
       </main>
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
-      {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
-      {palette&&<CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={navigateView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/>} 
+      {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>}
+      {palette&&<Suspense fallback={<div className="toast" role="status">{ru?"Открываем поиск…":"Opening search…"}</div>}><CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={navigateView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/></Suspense>}
       {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}
     </div>

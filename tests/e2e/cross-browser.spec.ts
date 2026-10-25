@@ -44,5 +44,10 @@ test("locale switch keeps the workspace usable", async ({ page }) => {
   await page.getByRole("button", { name: "RU" }).click();
   await expect(page).toHaveURL(/\/ru\/workspace\//);
   await expect(page.locator(".workspace-shell")).toBeVisible();
+  await expect(page.locator(".workspace-top small.muted")).toHaveText("Сохранено локально");
+  await expect.poll(() => storedDemoName(page)).toBe("MARKOVMADE Digital Product Launch");
+  await page.reload();
+  await expect(page.locator(".workspace-shell")).toBeVisible();
+  await expect(page.locator(".workspace-top small.muted")).toHaveText("Сохранено локально");
   await expect.poll(() => storedDemoName(page)).toBe("MARKOVMADE Digital Product Launch");
 });

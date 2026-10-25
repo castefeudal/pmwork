@@ -109,6 +109,8 @@
 /* Shell chrome: one-line status strip, a scrollable nav middle, a pinned sidebar foot. */
 .workspace-top h1 { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .workspace-top .desktop-only.muted {
+  color: var(--text-secondary);
+  opacity: 1;
   flex: 0 0 auto;
   font-size: 0.875rem;
   line-height: 1.3;

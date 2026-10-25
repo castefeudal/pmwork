@@ -86,10 +86,22 @@ The post-split raw traces expose a remaining late high-priority request: the sha
 
 The language chooser now enters within 240 ms without a whole-screen fade or delayed 760 ms entrances. Decorative entry/privacy orbit, floating-device and closing-glow loops are static; meaningful control/panel feedback stays short. The functional indeterminate loading progress remains animated and reduced-motion rules remain active. Pixel references are not changed for this motion-only adjustment.
 
-### Combined RU font subset
+### Combined RU font subset experiment — rejected
 
-Repeated CI still failed mobile LCP, so none of the earlier preload/image hypotheses is presented as a resolved budget. RU now uses a single 32,308-byte Latin+Cyrillic WOFF2 instead of two files totalling 39,336 bytes; EN retains the existing 24,836-byte Latin file. The source is pinned Google Fonts Manrope 4.504 (the same version as Fontsource), not the newer 4.505. A reproducible subset script and OFL license are included. 2,261 glyph/weight comparisons across 200, 400, 500, 600, 700, 760 and 800 found zero outline/advance-width differences from the existing files. CSS family aliases select the same design by document locale; real-font assertions remain required. No reference images are updated.
+A pinned Manrope 4.504 Latin+Cyrillic subset reduced two requests to one. Although 2,261 outline/advance comparisons and vertical metrics matched, full browser images exposed changed text shaping across subset boundaries. Contour equality does not prove identical shaping. The combined asset and builder were removed; the accepted separate Latin/Cyrillic Manrope faces are retained. HTTP/2 transport measurements do not depend on keeping this experiment.
 
 ### Production transport fidelity
 
 On 2026-10-25 an authenticated TLS connection to castefeudal.github.io negotiated ALPN `h2` and returned the public release successfully. The earlier lab server/reports used HTTP/1.1. A same-export HTTP/2 diagnostic negotiated `h2` and exposed the impact of transport scheduling; it is not accepted quality evidence. The Lighthouse fixture now serves the exact export via HTTPS HTTP/2 + gzip, and each raw report must confirm `h2`. An ephemeral OpenSSL localhost certificate lives outside repository/artifacts and is removed; certificate bypass applies only to that generated lab endpoint. Functional browser tests retain their HTTP/1.1 server. Default Lighthouse simulated profiles, three samples, medians and all limits remain unchanged. Historical HTTP/1.1 and later HTTP/2 results must not be presented as an apples-to-apples code-performance comparison. Release acceptance still requires the full final-commit matrix.
+
+### Full-browser regression repairs
+
+The complete matrix exposed a late desktop grid overriding an earlier mixed-selector mobile rule. Shared and operational selector branches are now split with the CSS selector-list parser, preserving each operational rule order instead of keeping mixed responsive rules in the early file. The original pixel references remain unchanged.
+
+Lazy sections and command search now have local Suspense boundaries so opening a deferred view does not replace the entire workspace with first-entry UI or preserve a closing palette search by suspending its parent update. Reopening the palette must show a cleared query and recent navigation.
+
+Loading another UI locale no longer rewrites stored demo record text. Fresh examples are still created in the selected locale; saved project/work arrays retain their original values. A component regression checks both rendered title and persisted data after autosave.
+
+Secondary labels and saved status receive explicit contrast fixes. Two outdated tests now check the localized local-save status and the two local Manrope subsets instead of the removed Inter family; checks are retained rather than skipped. Axe, pixel thresholds and all CI gates are unchanged.
+
+The locale-switch browser scenario now waits for autosave and repeats its data assertion after reload, preventing an early passing check before a delayed rewrite. Component keyboard checks explicitly settle the deferred module before asserting the palette, without changing timeouts or browser performance budgets.

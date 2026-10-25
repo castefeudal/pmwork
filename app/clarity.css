@@ -1,7 +1,7 @@
 /* A quieter product surface: consistent hierarchy, clear controls, restrained motion. */
 .site-shell {
   --text-secondary: #405456;
-  --text-tertiary: #647574;
+  --text-tertiary: #546866;
   --muted: var(--text-secondary);
 }
 
@@ -62,10 +62,7 @@
 .role-showcase-panel dt { margin-bottom: .35rem; color: var(--text-tertiary); font-size: 0.875rem; font-weight: 720; letter-spacing: .055em; text-transform: uppercase; }
 .role-showcase-panel dd { margin: 0; color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; }
 
-.site-shell .capability-card,
-.site-shell .library-card,
-.site-shell .approach-item,
-.site-shell .flow-proof {
+.site-shell .capability-card, .site-shell .library-card, .site-shell .approach-item {
   box-shadow: 0 1px 3px rgba(17, 45, 46, .035);
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -125,11 +122,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-shell .marketing-hero::before,
-  .site-shell .capability-card,
-  .site-shell .library-card,
-  .site-shell .approach-item,
-  .form-optional > .form-grid { animation: none !important; }
+  .site-shell .marketing-hero::before, .site-shell .capability-card, .site-shell .library-card, .site-shell .approach-item { animation: none !important; }
   .site-shell .capability-card,
   .site-shell .library-card,
   .site-shell .approach-item,

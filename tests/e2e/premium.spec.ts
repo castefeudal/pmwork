@@ -142,10 +142,10 @@ for(const locale of ["ru","en"] as const){
     expect(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))).toEqual([]);
   });
 }
-test("Pages navigation keeps prefix and both fonts actually load",async({page})=>{
+test("Pages navigation keeps prefix and both local Manrope subsets load",async({page})=>{
   await page.goto(route("/ru/"));await page.evaluate(()=>document.fonts.ready);
   const fonts=await page.evaluate(()=>Array.from(document.fonts).filter(f=>f.status==="loaded").map(f=>f.family));
-  expect(fonts.some(f=>/inter/i.test(f))).toBe(true);expect(fonts.some(f=>/manrope/i.test(f))).toBe(true);
+  expect(fonts.filter(f=>/manrope/i.test(f))).toHaveLength(2);expect(fonts.some(f=>/inter/i.test(f))).toBe(false);
   await page.locator(".marketing-hero").getByRole("link",{name:"Открыть рабочее пространство",exact:true}).click();
   const home=page.getByRole("link",{name:"PMWORK — главная",exact:true});await expect(home).toBeVisible();await expect(home).toHaveAttribute("href",route("/ru/"));
   await home.click();await expect(page).toHaveURL(new RegExp(`${route("/ru/")}$`));

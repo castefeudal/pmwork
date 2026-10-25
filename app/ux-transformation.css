@@ -18,7 +18,7 @@
 .catalog-card{display:flex;flex-direction:column;min-width:0}
 .catalog-card .muted.compact{overflow-wrap:anywhere}
 @media(max-width:800px){
- .priority-focus-grid,.article-layout,.global-add-grid{grid-template-columns:1fr}
+ .article-layout{grid-template-columns:1fr}
  .article-aside{position:static}
  .catalog-hero{padding-bottom:2rem}
 }

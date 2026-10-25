@@ -47,8 +47,6 @@
     .workspace-content summary, .site-shell a.button, .site-shell button.button) {
     min-height: var(--control-height);
   }
-  .workspace-content.density-compact :where(.panel, .metric-card) { line-height: 1.45; }
-  .workspace-content.density-compact :where(.muted, small, .eyebrow) { font-size: .875rem; }
 
   .site-shell :where(.hero-kicker, .hero-value-list, .marketing-hero .hero-author,
     .capability-card p, .flow-step p, .privacy-lead, .privacy-copy ul,
