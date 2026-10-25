@@ -81,3 +81,7 @@ The single-family font hints alone did not meet the CI landing LCP budget (about
 ### Above-fold brand discovery
 
 The post-split raw traces expose a remaining late high-priority request: the shared 44 px brand image was lazily discovered after layout (about 96–113 ms observed), while fonts and CSS began around 16–26 ms. It is visible in the initial header/onboarding. Brand now explicitly uses eager/high-priority loading so the parser can request the existing image with other initial resources. Asset pixels, dimensions, copy and the Lighthouse model/budgets are unchanged.
+
+### Motion bounds
+
+The language chooser now enters within 240 ms without a whole-screen fade or delayed 760 ms entrances. Decorative entry/privacy orbit, floating-device and closing-glow loops are static; meaningful control/panel feedback stays short. The functional indeterminate loading progress remains animated and reduced-motion rules remain active. Pixel references are not changed for this motion-only adjustment.

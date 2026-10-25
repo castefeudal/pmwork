@@ -886,7 +886,7 @@
     #0b1219;
   box-shadow: var(--shadow-lg);
   transform: none;
-  animation: cockpit-enter 700ms cubic-bezier(.2,.8,.2,1) both;
+  animation: cockpit-enter 240ms cubic-bezier(.2,.8,.2,1) both;
 }
 
 .cockpit-preview::after {
