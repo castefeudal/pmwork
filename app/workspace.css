@@ -512,3 +512,14 @@ td, th { font-variant-numeric: tabular-nums; }
     padding-inline: 0;
   }
 }
+
+@media (min-width: 901px) {
+  .workspace-shell.sidebar-collapsed {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+  .workspace-shell.sidebar-collapsed > .sidebar {
+    width: 76px;
+    min-width: 76px;
+    padding-inline: .5rem;
+  }
+}
