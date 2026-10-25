@@ -16,7 +16,7 @@ const exportPath = file => path.relative("out", file).split(path.sep).join("/");
 
 const basePath = process.env.PMWORK_BASE_PATH === "github" ? "/pmwork" : "";
 const fontPaths = files.filter(file => file.endsWith(".woff2")).map(exportPath);
-const fontPreloads = locale => (locale === "ru" ? ["latin", "cyrillic"] : ["latin"]).map(script => {
+const fontPreloads = locale => (locale === "ru" ? ["latin-cyrillic"] : ["latin"]).map(script => {
   const stem = `manrope-${script}-wght-normal.`;
   const file = fontPaths.find(file => path.posix.basename(file).startsWith(stem));
   if (!file) throw Error(`Missing bundled font: ${stem}`);

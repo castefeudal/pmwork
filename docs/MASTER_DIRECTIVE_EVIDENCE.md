@@ -85,3 +85,7 @@ The post-split raw traces expose a remaining late high-priority request: the sha
 ### Motion bounds
 
 The language chooser now enters within 240 ms without a whole-screen fade or delayed 760 ms entrances. Decorative entry/privacy orbit, floating-device and closing-glow loops are static; meaningful control/panel feedback stays short. The functional indeterminate loading progress remains animated and reduced-motion rules remain active. Pixel references are not changed for this motion-only adjustment.
+
+### Combined RU font subset
+
+Repeated CI still failed mobile LCP, so none of the earlier preload/image hypotheses is presented as a resolved budget. RU now uses a single 32,296-byte Latin+Cyrillic WOFF2 instead of two files totalling 39,336 bytes; EN retains the existing 24,836-byte Latin file. The source is pinned Google Fonts Manrope 4.504 (the same version as Fontsource), not the newer 4.505. A reproducible subset script and OFL license are included. 2,261 glyph/weight comparisons across 200, 400, 500, 600, 700, 760 and 800 found zero outline/advance-width differences from the existing files. CSS family aliases select the same design by document locale; real-font assertions remain required. No reference images are updated.

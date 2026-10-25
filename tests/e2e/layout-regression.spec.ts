@@ -46,7 +46,7 @@ test("localized static documents declare language before hydration", async ({ re
     await page.evaluate(async () => { await document.fonts.ready; });
     const typography = await page.locator("body").evaluate((body) => ({
       family: getComputedStyle(body).fontFamily,
-      localManropeLoaded: document.fonts.check('16px "Manrope Variable"'),
+      localManropeLoaded: document.fonts.check(`16px ${getComputedStyle(document.body).fontFamily.split(",")[0]}`),
     }));
     expect(typography.family).toContain("Manrope Variable");
     expect(typography.localManropeLoaded).toBeTruthy();
