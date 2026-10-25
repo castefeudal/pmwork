@@ -90,6 +90,9 @@
 .first-run-privacy { display:flex;align-items:center;gap:.5rem;margin:1.05rem 0 0;color:var(--text-tertiary);font-size:0.875rem }
 .first-run-privacy-icon { flex:0 0 auto;color:var(--accent-primary); }
 
+/* Keep the privacy mark visible in onboarding when theme layers are composed. */
+.first-run-privacy .first-run-privacy-icon { display:block;width:16px;height:16px;flex:0 0 16px; }
+
 [data-theme="dark"] .first-run-assurance small { color:var(--text-tertiary) }
 
 @media (max-width: 700px) {
