@@ -1,6 +1,6 @@
 "use client";
 import {useRef,type ReactNode} from "react";
-import {Database} from "lucide-react";
+import {Database,LockKeyhole} from "lucide-react";
 import type {Locale} from "@/domain/schemas";
 import {managementRoles,roleLabels,type ManagementRole} from "@/domain/management-role";
 import {Brand} from "./brand";
@@ -45,7 +45,7 @@ export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,prio
         <button className="button ghost first-run-restore" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить из резервной копии" : "Restore from a backup"}</button>
       </div>
       </fieldset>
-      <p className="first-run-privacy"><span aria-hidden="true">⌑</span>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
+      <p className="first-run-privacy"><LockKeyhole className="first-run-privacy-icon" size={16} strokeWidth={1.8} aria-hidden="true"/>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>{const file=e.target.files?.[0];if(file)onImport(file);e.currentTarget.value="";}}/>
       {notice&&<p role="alert">{notice}</p>}
       {children}
