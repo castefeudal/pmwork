@@ -3,13 +3,7 @@ import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
 import { assertNoUnknownBackupFields } from "@/domain/backup-compatibility";
 import { repairLegacyReferences } from "@/domain/legacy-integrity";
 
-const DB = "pmwork-local",
-  STORE = "workspace",
-  KEY = "primary",
-  SNAPSHOT_INDEX = "snapshot:index",
-  LOCAL_KEY = "pmwork:workspace:v3",
-  LEGACY_LOCAL_KEYS = ["pmwork:workspace:v2"],
-  LOCAL_SNAPSHOTS = "pmwork:snapshots:v3";
+import {DB,STORE,KEY,SNAPSHOT_INDEX,LOCAL_KEY,LEGACY_LOCAL_KEYS,LOCAL_SNAPSHOTS} from "./storage-keys";
 
 const emptyV3 = {
   objectives: [],

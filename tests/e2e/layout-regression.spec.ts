@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { demoWorkspace } from "../../src/data/demo";
-import { route } from "./support";
+import { route, waitForWorkspaceSection } from "./support";
 
 const allWidths = [320, 360, 390, 768, 1024, 1366, 1440, 1920];
 const representativeWidths = [320, 768, 1366, 1920];
@@ -46,10 +46,10 @@ test("localized static documents declare language before hydration", async ({ re
     await page.evaluate(async () => { await document.fonts.ready; });
     const typography = await page.locator("body").evaluate((body) => ({
       family: getComputedStyle(body).fontFamily,
-      localInterLoaded: document.fonts.check('16px "Inter Variable"'),
+      localManropeLoaded: document.fonts.check('16px "Manrope Variable"'),
     }));
-    expect(typography.family).toContain("Inter Variable");
-    expect(typography.localInterLoaded).toBeTruthy();
+    expect(typography.family).toContain("Manrope Variable");
+    expect(typography.localManropeLoaded).toBeTruthy();
   }
 });
 
@@ -74,7 +74,8 @@ test("workspace surfaces reflow across the supported viewport matrix", async ({ 
         await page.setViewportSize({ width, height: width < 600 ? 844 : 900 });
         await page.goto(route(`/${locale}/workspace/?project=atlas&${query}`));
         await expect(page.locator(".workspace-shell")).toBeVisible();
-        await expect(page.locator(".workspace-top")).toContainText(locale === "ru" ? "Локально" : "Local");
+        await expect(page.locator(".workspace-top small.muted")).toContainText(locale === "ru" ? /локально/i : /local/i);
+        await waitForWorkspaceSection(page);
 
         const report = await page.evaluate(() => {
           const viewport = document.documentElement.clientWidth;
@@ -161,6 +162,7 @@ for (const locale of ["ru", "en"] as const) {
     await expect(palette).toHaveCount(0);
 
     await page.keyboard.press("Control+k");
+    await expect(search).toHaveValue("");
     await expect(palette.locator(".command-group-label").first()).toHaveText(locale === "ru" ? "Недавние" : "Recent");
     await expect(palette.getByRole("option", { name: new RegExp(locale === "ru" ? "Документы" : "Documents") }).first()).toBeVisible();
   });

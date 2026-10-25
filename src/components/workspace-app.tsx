@@ -1,18 +1,19 @@
 "use client";
+import "../../app/deferred-operational.css";
+import "../../app/workspace.css";
+import "../../app/management.css";
+import "../../app/excellence-workspace.css";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { TodayView } from "./today-view";
 import { readWorkspaceUrl, workspaceUrl, readWorkspaceRecord, workspaceRecordUrl } from "@/domain/workspace-url";
 import { WorkspaceMore } from "./workspace-more";
-import { WorkspaceSettingsView } from "./workspace-settings-view";
 import { RecoveryConfirmDialog } from "./recovery-confirm-dialog";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   BriefcaseBusiness,
   CalendarDays,
   ClipboardCheck,
-  Database,
   Download,
   FileText,
   Home,
@@ -28,9 +29,9 @@ import {
 } from "lucide-react";
 import type { Locale, Workspace } from "@/domain/schemas";
 import { workspaceSchema } from "@/domain/schemas";
-import { managementRoles, roleMobileViews, roleLabels, roleQuestions, type ManagementRole } from "@/domain/management-role";
+import { roleMobileViews, roleQuestions, type ManagementRole } from "@/domain/management-role";
 import { assertWorkspaceGraph } from "@/domain/workspace-integrity";
-import { demoWorkspace, emptyWorkspace, localizeBundledDemo } from "@/data/demo";
+import { demoWorkspace, emptyWorkspace } from "@/data/demo";
 import { displayLabel } from "@/content/workspace-i18n";
 import {
   exportWorkspace,
@@ -42,25 +43,28 @@ import {
 } from "@/data/storage";
 import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
+import { WorkspaceBoot } from "./workspace-boot";
+import { WorkspaceWelcome, type WorkspaceIntent } from "./workspace-welcome";
 import { ThemeToggle } from "./theme-toggle";
-import { DocumentCenter } from "./document-center";
 import type { EditableKind } from "./record-editor";
 import {useUrlValue} from "./use-url-state";
 import {registerForCreate} from "./workspace-types";
 import {contextProject} from "@/domain/work-scope";
 import type { CreateType, WorkspaceView } from "./workspace-types";
-import {
-  CommandPalette,
-  ControlView,
-  FinanceView,
-  GuideView,
-  PeopleView,
-  PlanningView,
-  PortfolioView,
-  RaidView,
-  WorkView,
-  type ViewProps,
-} from "./workspace-views";
+import type { ViewProps } from "./workspace-views";
+const TodayView = dynamic(()=>import("./today-view").then(module=>module.TodayView));
+const WorkspaceSettingsView = dynamic(()=>import("./workspace-settings-view").then(module=>module.WorkspaceSettingsView));
+const DocumentCenter = dynamic(()=>import("./document-center").then(module=>module.DocumentCenter));
+const CommandPalette = dynamic(()=>import("./command-menu").then(module=>module.CommandMenu));
+const ControlView = dynamic(()=>import("./workspace-views").then(module=>module.ControlView));
+const FinanceView = dynamic(()=>import("./workspace-views").then(module=>module.FinanceView));
+const GuideView = dynamic(()=>import("./workspace-views").then(module=>module.GuideView));
+const PeopleView = dynamic(()=>import("./workspace-views").then(module=>module.PeopleView));
+const PlanningView = dynamic(()=>import("./workspace-views").then(module=>module.PlanningView));
+const PortfolioView = dynamic(()=>import("./workspace-views").then(module=>module.PortfolioView));
+const RaidView = dynamic(()=>import("./workspace-views").then(module=>module.RaidView));
+const WorkView = dynamic(()=>import("./workspace-views").then(module=>module.WorkView));
+
 
 const navIcons = {
   program: BriefcaseBusiness,
@@ -139,7 +143,7 @@ const DeliveryCenter = dynamic(()=>import("./delivery-center").then(module=>modu
 const WorkspaceDialog = dynamic(()=>import("./workspace-dialog").then(module=>module.WorkspaceDialog),{loading:()=> <p role="status">…</p>});
 const RecordEditor = dynamic(()=>import("./record-editor").then(module=>module.RecordEditor),{loading:()=> <p role="status">…</p>});
 
-export function WorkspaceApp({ locale }: { locale: Locale }) {
+export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initialIntent?:WorkspaceIntent }) {
   const [contextId]=useUrlValue("context");
   const [contextRegister]=useUrlValue("register");
   const ru = locale === "ru",
@@ -149,8 +153,8 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [ready, setReady] = useState(false),
     [recovery, setRecovery] = useState(false),
     [firstRun, setFirstRun] = useState(true),
-    [firstRole, setFirstRole] = useState<ManagementRole>("project"),
-    [firstPriority, setFirstPriority] = useState("attention"),
+    [firstRole, setFirstRole] = useState<ManagementRole>(initialIntent?.role??"project"),
+    [firstPriority, setFirstPriority] = useState(initialIntent?.priority??"attention"),
     [dialog, setDialog] = useState<CreateType | null>(null),
     [editor, setEditor] = useState<{ kind: EditableKind; id: string } | null>(null),
     [palette, setPalette] = useState(false),
@@ -162,24 +166,22 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
     [snapshots, setSnapshots] = useState<{key:string;at:string}[]>([]),
     [pendingRecovery,setPendingRecovery]=useState<PendingRecovery|null>(null),
     fileRef = useRef<HTMLInputElement>(null);
-  const firstRunStartLabel = ({
-    project: ru ? "Создать пустой проект" : "Create an empty project",
-    program: ru ? "Открыть программы" : "Open programs",
-    delivery: ru ? "Создать проект поставки" : "Create a delivery project",
-    operations: ru ? "Открыть операционную работу" : "Open operations",
-  } as const)[firstRole];
-  const firstRunStartHint = firstRole === "project" || firstRole === "delivery"
-    ? (ru ? "Задачи и сроки можно добавить позже." : "Add work items and dates when you are ready.")
-    : (ru ? "Раздел откроется без демо-записей." : "The section opens without sample records.");
-  const firstRunPreferencesHint = firstRole === "program" || firstRole === "operations"
-    ? (ru ? "Откроется соответствующий рабочий раздел." : "The matching work area opens by default.")
-    : (ru ? "По умолчанию откроется обзор проекта." : "The project overview opens by default.");
+  const intentConsumed=useRef(false);
+  const exitSnapshot=useRef<Workspace|null>(null);
+  useEffect(()=>{
+    exitSnapshot.current=ready&&!recovery&&!firstRun?workspace:null;
+  },[workspace,ready,recovery,firstRun]);
+  useEffect(()=>()=>{
+    const snapshot=exitSnapshot.current;
+    if(snapshot)void saveWorkspace(snapshot).catch(()=>undefined);
+  },[]);
+
 
   useEffect(() => {
     loadWorkspace()
       .then((value) => {
         if (value) {
-          const normalized = localizeBundledDemo(value, locale);
+          const normalized = value;
           setWorkspace(normalized);
           setFirstRun(false);
           setView("overview");
@@ -189,6 +191,24 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           const context = readWorkspaceUrl(window.location.search, value);
           setProjectId(context.project); setView(context.view);
           setEditor(readWorkspaceRecord(window.location.search, value, context.project));
+        } else if (initialIntent && !intentConsumed.current) {
+          intentConsumed.current = true;
+          const { role, priority, kind, file } = initialIntent;
+          if (kind === "restore") {
+            if (file) void importWorkspace(file)
+              .then(candidate => setPendingRecovery({ kind: "import", candidate, replacing: false }))
+              .catch(() => setToast(ru ? "Файл не прошёл проверку" : "File did not pass validation"));
+          } else {
+            setWorkspace({ ...(kind === "demo" ? demoWorkspace(locale) : emptyWorkspace(locale)), managementRole: role });
+            if (kind === "demo") {
+              setProjectId("atlas");
+              setView(priority === "learn" ? "guide" : priority === "deadline" ? "planning" : priority === "organize" ? "work" : "overview");
+              setFirstRun(false);
+            } else if (role === "operations" || role === "program") {
+              setFirstRun(false);
+              setView(role);
+            } else setDialog("project");
+          }
         }
         setReady(true);
         listSnapshots().then(setSnapshots).catch(() => undefined);
@@ -198,7 +218,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
         listSnapshots().then(setSnapshots).catch(() => undefined);
         setToast(ru ? "Локальные данные повреждены — открыт безопасный пример" : "Local data was invalid — safe demo opened");
       });
-  }, [locale, ru]);
+  }, [locale, ru, initialIntent]);
   useEffect(() => {
     if (!ready || recovery || firstRun) return;
     const id = setTimeout(() => saveWorkspace(workspace).then(() => setLastSaved(new Date().toLocaleTimeString(locale))).catch(() => setToast(ru ? "Не удалось сохранить" : "Could not save")),350);
@@ -250,51 +270,15 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
   };
   const recoveryDialog=pendingRecovery&&<RecoveryConfirmDialog locale={locale} candidate={pendingRecovery.kind==="import"?pendingRecovery.candidate:undefined} snapshotLabel={pendingRecovery.kind==="snapshot"?pendingRecovery.label:undefined} replacing={pendingRecovery.kind==="snapshot"||pendingRecovery.replacing} canExportCurrent={(pendingRecovery.kind==="snapshot"||pendingRecovery.replacing)&&!recovery&&!firstRun} onExportCurrent={()=>exportWorkspace(workspace)} onCancel={()=>setPendingRecovery(null)} onConfirm={()=>void confirmRecovery()}/>;
 
-  if (!ready) return (
-    <main className="language-gate first-run-gate workspace-boot" aria-busy="true" aria-label={ru ? "Загрузка PMWORK" : "Loading PMWORK"}>
-      <div className="boot-glow" aria-hidden="true" />
-      <header className="boot-header"><Brand/><span><i />{ru ? "РАБОТАЕТ НА ЭТОМ УСТРОЙСТВЕ" : "RUNNING ON THIS DEVICE"}</span></header>
-      <section className="boot-center" aria-live="polite">
-        <div className="boot-orbit" aria-hidden="true"><span/><span/><span/><div><Brand/></div></div>
-        <p className="eyebrow">{ru ? "ПОДГОТАВЛИВАЕМ ВАШЕ ПРОСТРАНСТВО" : "PREPARING YOUR WORKSPACE"}</p>
-        <h1>{ru ? "Собираем всё в одну ясную картину." : "Bringing your work into focus."}</h1>
-        <p className="boot-status" role="status">{ru ? "Аккуратно проверяем локальные данные и контекст проекта" : "Checking your local data and project context"}</p>
-        <div className="boot-progress" aria-hidden="true"><span /></div>
-        <span className="boot-privacy">{ru ? "Ваши данные не покидают это устройство" : "Your data stays on this device"}</span>
-      </section>
-      <footer className="boot-footer"><span>PMWORK <i>·</i> PROJECT OPERATING SPACE</span><span>{ru ? "Приватно по умолчанию" : "Private by default"}</span></footer>
-    </main>
-  );
+  if (!ready) return <WorkspaceBoot locale={locale}/>;
 
-  if (firstRun) return (
-    <main className="language-gate first-run-gate">
-      <Brand />
-      <div className="first-run-hero">
-        <p className="eyebrow">{ru ? "НАЧАЛО РАБОТЫ" : "GET STARTED"}</p>
-        <h1>{ru ? "Создайте проект или откройте пример" : "Create a project or open the example"}</h1>
-        <p className="lead">{ru ? "Новый проект будет пустым. В демонстрационном уже есть задачи, сроки, риски и решения — на нём можно посмотреть, как устроен PMWORK." : "A new project starts empty. The sample includes work items, dates, risks, and decisions so you can see how PMWORK works."}</p>
-      </div>
-      <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">i</span><span><strong>{ru ? "Выберите, с чего начать" : "Choose how to start"}</strong><small>{ru ? "Создайте свой проект или откройте пример с готовыми записями." : "Create your own project or open the sample with example records."}</small></span></div>
-      <div className="first-run-actions">
-        <button className="button primary first-run-option" onClick={() => { setWorkspace({...emptyWorkspace(locale),managementRole:firstRole}); if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project"); }}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{firstRunStartLabel}</strong><small>{firstRunStartHint}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <button className="button first-run-option" onClick={() => { setWorkspace({...demoWorkspace(locale),managementRole:firstRole}); setProjectId("atlas"); setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview"); setFirstRun(false); }}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true"><Database size={17}/></span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <details className="first-run-preferences">
-          <summary>{ru ? "Дополнительно: выбрать рабочий раздел" : "Optional: choose a starting section"}</summary>
-          <p>{ru ? `Эта настройка не обязательна. ${firstRunPreferencesHint}` : `These settings are optional. ${firstRunPreferencesHint}`}</p>
-          <div className="first-run-preference-fields">
-            <label className="field"><span>{ru ? "Тип работы" : "Type of work"}</span><select value={firstRole} onChange={e=>setFirstRole(e.target.value as ManagementRole)}>{managementRoles.map(role=><option key={role} value={role}>{roleLabels[locale][role]}</option>)}</select></label>
-            {firstRole !== "program" && firstRole !== "operations" && <label className="field"><span>{ru ? "Какой раздел открыть первым?" : "Which section should open first?"}</span><select value={firstPriority} onChange={e=>setFirstPriority(e.target.value)}><option value="attention">{ru ? "Обзор проекта" : "Project overview"}</option><option value="organize">{ru ? "Список задач" : "Work items"}</option><option value="deadline">{ru ? "Сроки и план" : "Schedule and plan"}</option><option value="learn">{ru ? "Обучающий обзор" : "Guided tour"}</option></select></label>}
-          </div>
-        </details>
-        <button className="button ghost first-run-restore" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить из резервной копии" : "Restore from a backup"}</button>
-      </div>
-      <p className="first-run-privacy"><span aria-hidden="true">⌑</span>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
-      <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>void stageImport(e.target.files?.[0],false)}/>
-      {toast&&<p role="alert">{toast}</p>}
+  if (firstRun) return <WorkspaceWelcome locale={locale} role={firstRole} onRole={setFirstRole} priority={firstPriority} onPriority={setFirstPriority} notice={toast}
+    onCreate={()=>{setWorkspace({...emptyWorkspace(locale),managementRole:firstRole});if(firstRole==="operations"||firstRole==="program"){setFirstRun(false);setView(firstRole);}else setDialog("project");}}
+    onDemo={()=>{setWorkspace({...demoWorkspace(locale),managementRole:firstRole});setProjectId("atlas");setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview");setFirstRun(false);}}
+    onImport={file=>void stageImport(file,false)}>
       {dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));setProjectId(id??"");setView(firstPriority==="learn"?"guide":firstPriority==="deadline"?"planning":firstPriority==="organize"?"work":"overview");setFirstRun(false);}}/>}
-      {recoveryDialog}
-    </main>
-  );
+    {recoveryDialog}
+  </WorkspaceWelcome>;
 
   const project = workspace.projects.find((p) => p.id === projectId) ?? workspace.projects[0];
   if (!project) return <ContextWorkspaceShell workspace={workspace} locale={locale} onChange={next=>setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)))} onExport={()=>exportWorkspace(workspace)} onRestore={()=>fileRef.current?.click()} onCreateProject={()=>setDialog("project")} palette={palette} onClosePalette={()=>setPalette(false)}><input hidden ref={fileRef} type="file" accept="application/json" onChange={event=>void stageImport(event.target.files?.[0],true)}/>{dialog&&<WorkspaceDialog type="project" locale={locale} workspace={workspace} projectId="" onClose={()=>setDialog(null)} onCommit={(next,id)=>{setWorkspace(assertWorkspaceGraph(workspaceSchema.parse(next)));if(id)setProjectId(id);}}/>}{recoveryDialog}</ContextWorkspaceShell>;
@@ -372,7 +356,7 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
       <aside className="sidebar">
         <button className="button small sidebar-toggle" aria-label={ru?"Свернуть / развернуть меню":"Collapse / expand sidebar"} aria-expanded={!sidebarCollapsed} onClick={()=>setSidebarCollapsed(!sidebarCollapsed)}>{sidebarCollapsed?"→":"←"}</button>
         <Link href={`/${locale}`} aria-label={ru ? "PMWORK — главная" : "PMWORK home"}><Brand/></Link>
-        <select className="project-switch" value={project.id} onChange={(e)=>selectProject(e.target.value)} aria-label={ru?"Выбрать проект":"Select project"}>{workspace.projects.map(p=><option value={p.id} key={p.id}>{p.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{p.name}</option>)}</select>
+        <select className="project-switch" value={project.id} onChange={(e)=>selectProject(e.target.value)} aria-label={ru?"Выбрать проект":"Select project"} title={project.demo?(ru?`Пример: ${project.name}`:`Demo: ${project.name}`):project.name}>{workspace.projects.map(p=><option value={p.id} key={p.id}>{p.name}</option>)}</select>
         <nav className="side-nav" aria-label={ru?"Разделы рабочего пространства":"Workspace sections"}>{navGroups.map(([label,ids])=><div className="nav-group" key={label}><small>{label}</small>{ids.map(id=>{const Icon=navIcons[id];return <button key={id} aria-label={navLabels[locale][id]} className={activeNavigation===id||(id==="work"&&activeNavigation==="board")?"active":""} onClick={()=>navigateView(id)} aria-current={activeNavigation===id||(id==="work"&&activeNavigation==="board")?"page":undefined}><Icon size={19}/><span>{navLabels[locale][id]}</span></button>})}</div>)}</nav>
         <div className="side-foot"><Link className="button small" href={`/${locale}/knowledge`}><BookOpen size={16}/><span>{ru?"База знаний":"Knowledge"}</span></Link><button className="button small" onClick={()=>setDialog("project")}><Plus size={16}/><span>{ru?"Проект":"Project"}</span></button></div>
       </aside>
@@ -405,12 +389,12 @@ export function WorkspaceApp({ locale }: { locale: Locale }) {
           {recovery&&<section className="recovery-banner" role="alert"><strong>{ru?"Автосохранение приостановлено":"Autosave paused"}</strong><p>{ru?"Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках.":"Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Settings."}</p><button className="button" onClick={()=>fileRef.current?.click()}>{ru?"Импортировать копию":"Import backup"}</button><button className="button" onClick={()=>setView("setup")}>{ru?"Снимки данных":"Recovery snapshots"}</button></section>}
           {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{!managementRecord&&project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{managementRecord?navLabels[locale][view]:`${displayLabel(locale,"approach",project.approach)} · ${displayLabel(locale,"governance",project.governance)}`}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2>{view==="overview"&&<p>{roleQuestions[locale][workspace.managementRole]}</p>}{view==="overview"&&<p className="muted">{managementRecord?("outcome" in managementRecord?managementRecord.outcome:managementRecord.purpose):project.objective}</p>}</div></div>}
           {workspace.experience==="foundation"&&(()=>{const domain=({program:"Program basics",operations:"Metrics",delivery:"Flow",overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];const help=knowledgeGuides[domain]??knowledgeGuides.Fundamentals;return <details className="panel foundation-help"><summary>{ru?"Что сделать сейчас":"What to do now"}</summary><h3>{ru?"Зачем это нужно":"Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru?"Действие":"Action"}</h3><p>{help.steps[locale]}</p><h3>{ru?"Что получится":"Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru?"Типичная ошибка":"Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru?"Объяснения терминов":"Term explanations"}</Link></details>})()}
-          {render()}
+          <Suspense fallback={<p role="status">{ru?"Открываем раздел…":"Opening section…"}</p>}>{render()}</Suspense>
         </div>
       </main>
       {dialog&&<WorkspaceDialog type={dialog} locale={locale} workspace={workspace} projectId={project.id} onClose={()=>setDialog(null)} onCommit={(next,id)=>{commit(next);if(id)selectProject(id)}}/>}
-      {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>} 
-      {palette&&<CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={navigateView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/>} 
+      {editor&&<RecordEditor key={`${editor.kind}:${editor.id}`} kind={editor.kind} id={editor.id} locale={locale} workspace={workspace} projectId={project.id} onClose={closeRecord} onChange={commit}/>}
+      {palette&&<Suspense fallback={<div className="toast" role="status">{ru?"Открываем поиск…":"Opening search…"}</div>}><CommandPalette workspace={workspace} project={managementRecord?contextProject(workspace,{kind:view==="program"?"program":"operation",id:managementRecord.id}):project} locale={locale} onClose={()=>setPalette(false)} onView={navigateView} onCreate={createRecord} onProject={selectProject} onEdit={openRecord}/></Suspense>}
       {recoveryDialog}
       {toast&&<div className="toast" role="status">{toast}</div>}
     </div>

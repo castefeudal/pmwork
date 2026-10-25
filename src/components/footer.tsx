@@ -13,15 +13,15 @@ export function Footer({ locale }: { locale: Locale }) {
           : "Independent resource; not affiliated with PMI, PeopleCert, or framework owners."}
       </span>
       <span>
-        <Link href={`/${locale}/sources`}>
+        <Link prefetch={false} href={`/${locale}/sources`}>
           {locale === "ru" ? "Источники" : "Sources"}
         </Link>{" "}
         ·{" "}
-        <Link href={`/${locale}/privacy`}>
+        <Link prefetch={false} href={`/${locale}/privacy`}>
           {locale === "ru" ? "Конфиденциальность" : "Privacy"}
         </Link>{" "}
         ·{" "}
-        <Link href={`/${locale}/about`}>
+        <Link prefetch={false} href={`/${locale}/about`}>
           {locale === "ru" ? "О проекте" : "About"}
         </Link>
       </span>

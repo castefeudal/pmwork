@@ -7,6 +7,8 @@ const base=process.env.PMWORK_BASE_PATH??'root';
 const unit=read('quality-evidence/unit.json');
 const e2e=read('quality-evidence/e2e.json');
 const performance=read('test-results/performance-bundles.json');
+const lighthouse=read('quality-evidence/lighthouse/summary.json');
+if(lighthouse.failures.length)throw Error('Lighthouse budgets did not pass');
 const cross=fs.existsSync('quality-evidence/cross-browser.json')?read('quality-evidence/cross-browser.json'):null;
 if(!unit.success||unit.numFailedTests||e2e.stats.unexpected||e2e.stats.flaky||e2e.stats.skipped||(cross&&(cross.stats.unexpected||cross.stats.flaky||cross.stats.skipped)))throw Error('Failed, flaky or skipped tests cannot produce release evidence');
 const release=read('out/release.json');
@@ -27,6 +29,7 @@ function collect(suites) {
 collect(e2e.suites);
 const evidence={
   commit:sha,base,generatedAt:new Date().toISOString(),run:process.env.GITHUB_RUN_ID??null,
+  lighthouse,
   unit:{total:unit.numTotalTests,passed:unit.numPassedTests,failed:unit.numFailedTests,pending:unit.numPendingTests},
   browser:e2e.stats,crossBrowser:cross?.stats??null,performance,lab,
   export:release,

@@ -101,10 +101,46 @@
   max-width: 1640px;
   padding: clamp(20px, 3.2vw, 44px) clamp(18px, 3vw, 42px) 56px;
 }
-.page-context { align-items: center; margin-bottom: 24px; }
-.page-context .eyebrow { margin-bottom: 7px; }
+.page-context { align-items: center; margin-bottom: 20px; }
+.page-context .eyebrow { margin-bottom: 6px; }
 .page-title h2 { letter-spacing: -.045em; }
 .page-title .muted { max-width: 68ch; }
+
+/* Shell chrome: one-line status strip, a scrollable nav middle, a pinned sidebar foot. */
+.workspace-top h1 { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workspace-top .desktop-only.muted {
+  color: var(--text-secondary);
+  opacity: 1;
+  flex: 0 0 auto;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.workspace-top .command-trigger kbd { white-space: nowrap; }
+.sidebar { overflow: hidden; }
+.sidebar .side-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-right: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.sidebar .side-foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(230, 244, 247, .07);
+}
+.project-switch { text-overflow: ellipsis; }
+
+/* Comparison tables: keep 44px controls, remove the padding that inflates every row. */
+.work-table td { padding: .3rem .6rem; }
+.work-table th { padding: .55rem .6rem; }
+.work-table select { min-width: 9rem; max-width: 11.5rem; }
+.work-table .cell-input { min-width: 7rem; }
+.work-table .work-title-button { line-height: 1.35; }
+.work-table th:last-child, .work-table td:last-child { width: 4.5rem; min-width: 4.5rem; white-space: nowrap; }
+.work-table .status { padding-block: .1rem; }
 
 /* Shared operational surfaces */
 .panel, .metric-card, .project-card {
@@ -160,7 +196,18 @@ td, th { font-variant-numeric: tabular-nums; }
   background: var(--accent-primary);
 }
 .priority-focus > .eyebrow { margin-top: 0; }
-.priority-focus-grid { gap: 28px; }
+.priority-focus-grid { gap: 28px; align-items: end; }
+.priority-focus-action { align-self: end; }
+/* A critical blocker should not look like a calm, on-track card. */
+.priority-focus.severity-critical { border-color: color-mix(in srgb, var(--semantic-danger) 38%, var(--border-default)); background: linear-gradient(112deg, color-mix(in srgb, var(--semantic-danger) 7%, var(--surface-0)), var(--surface-0) 58%); }
+.priority-focus.severity-critical::before { background: var(--semantic-danger); }
+.priority-focus.severity-high { border-color: color-mix(in srgb, var(--semantic-warning) 40%, var(--border-default)); background: linear-gradient(112deg, color-mix(in srgb, var(--semantic-warning) 8%, var(--surface-0)), var(--surface-0) 58%); }
+.priority-focus.severity-high::before { background: var(--semantic-warning); }
+/* Scope is a choice, not an action: one segmented control instead of two buttons. */
+.scope-switch { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--border-default); border-radius: var(--radius-control); background: var(--surface-2); }
+.scope-switch .button { min-height: 44px; border: 0; background: transparent; box-shadow: none; color: var(--text-secondary); }
+.scope-switch .button:hover { background: color-mix(in srgb, var(--surface-0) 60%, transparent); color: var(--text-primary); }
+.scope-switch .button[aria-pressed="true"] { background: var(--surface-0); box-shadow: var(--shadow-hairline); color: var(--text-primary); font-weight: 650; }
 .priority-focus h3 { font-size: clamp(1.35rem, 2.2vw, 1.8rem); letter-spacing: -.035em; }
 .priority-focus .signal-evidence { max-width: 760px; }
 .coverage-strip {

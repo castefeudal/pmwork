@@ -10,7 +10,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 24
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -26,8 +26,22 @@ jobs:
       - run: npm ci
       - run: npm audit --audit-level=high
       - run: npm run verify
+        id: source
       - run: npx playwright install --with-deps chromium
+      - run: npm run lighthouse:check
+        id: lighthouse
+      - name: Preserve Lighthouse diagnostics
+        if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-${{ matrix.base }}-${{ github.sha }}
+          path: quality-evidence/lighthouse
+          retention-days: 30
+          if-no-files-found: warn
+      # Independent browser checks still collect evidence after a Lighthouse failure.
+      # The failed Lighthouse step continues to fail this required job; release is blocked.
       - run: npm run test:e2e
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
       - name: Preserve Chromium browser evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -38,13 +52,14 @@ jobs:
             playwright-report
           retention-days: 7
           if-no-files-found: warn
-      - name: Install Firefox and WebKit for root smoke matrix
-        if: matrix.base == 'root'
+      - name: Install Firefox and WebKit
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
         run: npx playwright install --with-deps firefox webkit
       - name: Cross-browser smoke
-        if: matrix.base == 'root'
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
         run: npm run test:cross-browser
       - run: npm run performance:check
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
       - run: npm run evidence:release
       - name: Preserve exact-commit evidence
         if: always()

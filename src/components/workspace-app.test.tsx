@@ -1,13 +1,48 @@
 // @vitest-environment jsdom
 import {cleanup,fireEvent,render,screen,waitFor,within} from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceApp } from "./workspace-app";
+import { demoWorkspace } from "@/data/demo";
 afterEach(() => { cleanup(); localStorage.clear(); sessionStorage.clear(); });
 
 const openDemo=async()=>fireEvent.click(await screen.findByRole("button",{name:/Explore a completed example/i}));
 const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы рабочего пространства|Workspace sections/});
 
 describe("workspace interactions", () => {
+  it("does not flush a recovery example over unreadable saved data on unmount", async () => {
+    const damaged="{unreadable-workspace";
+    localStorage.setItem("pmwork:workspace:v3",damaged);
+    const {unmount}=render(<WorkspaceApp locale="en" />);
+    const warning=await screen.findByRole("alert");
+    expect(within(warning).getByText("Autosave paused")).toBeTruthy();
+    unmount();
+    expect(localStorage.getItem("pmwork:workspace:v3")).toBe(damaged);
+  });
+
+  it("persists an explicitly chosen workspace when unmounted before autosave", async () => {
+    const {unmount}=render(<WorkspaceApp locale="en" />);
+    await openDemo();
+    await screen.findByRole("heading",{name:"MARKOVMADE Digital Product Launch",level:1});
+    expect(localStorage.getItem("pmwork:workspace:v3")).toBeNull();
+    unmount();
+    await waitFor(()=>expect(localStorage.getItem("pmwork:workspace:v3")).not.toBeNull());
+    const stored=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);
+    expect((stored.workspace??stored).projects[0].name).toBe("MARKOVMADE Digital Product Launch");
+  });
+
+  it("keeps saved record text unchanged when opening another UI locale", async () => {
+    const original=demoWorkspace("en");
+    localStorage.setItem("pmwork:workspace:v3",JSON.stringify(original));
+    render(<WorkspaceApp locale="ru" />);
+    await screen.findByRole("heading",{name:original.projects[0].name,level:1});
+    await screen.findByText("Сохранено локально");
+    const stored=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);
+    const persisted=stored.workspace??stored;
+    expect(persisted.projects).toEqual(original.projects);
+    expect(persisted.workItems).toEqual(original.workItems);
+    expect(persisted.locale).toBe(original.locale);
+  });
+
   it("shows the accessible branded local-data loader while opening the workspace", () => {
     render(<WorkspaceApp locale="en" />);
     const main = screen.getByRole("main");
@@ -69,6 +104,7 @@ describe("workspace interactions", () => {
     await openDemo();
     await screen.findAllByRole("button", { name: "Work" });
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
+    await vi.dynamicImportSettled();
     expect(await screen.findByRole("dialog", { name: "Command palette" })).toBeTruthy();
   });
 
@@ -76,7 +112,7 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
     fireEvent.click(within(desktopNav()).getByRole("button",{name:"Настройки"}));
-    expect(screen.getByRole("heading",{name:"Уровень подсказок"})).toBeTruthy();
+    expect(await screen.findByRole("heading",{name:"Уровень подсказок"})).toBeTruthy();
     expect(screen.queryByText("Создать связанную сущность")).toBeNull();
   });
 
@@ -84,7 +120,7 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="en" />);
     await openDemo();
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Plan" }));
-    fireEvent.click(screen.getByRole("button", { name: "Dependencies" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Dependencies" }));
     fireEvent.click(screen.getByRole("button", { name: "Add dependency" }));
     const successor = screen.getByLabelText("Successor") as HTMLSelectElement;
     expect(successor.options.length).toBeGreaterThan(1);
@@ -104,13 +140,13 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="ru" />);
     fireEvent.click(await screen.findByRole("button", { name: /Посмотреть готовый пример/i }));
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Контроль" }));
-    fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Закрытие" }));
     const acceptance = screen.getByLabelText("Финальная приёмка подтверждена") as HTMLInputElement;
     fireEvent.click(acceptance);
     expect(acceptance.checked).toBe(true);
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Сейчас" }));
     fireEvent.click(within(desktopNav()).getByRole("button", { name: "Контроль" }));
-    fireEvent.click(screen.getByRole("button", { name: "Закрытие" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Закрытие" }));
     expect((screen.getByLabelText("Финальная приёмка подтверждена") as HTMLInputElement).checked).toBe(true);
   });
 });
