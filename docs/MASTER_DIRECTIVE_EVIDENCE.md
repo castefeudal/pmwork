@@ -77,3 +77,7 @@ The earlier four-file Inter/Manrope preload experiment was rejected. After conso
 ### Operational cascade loading
 
 The single-family font hints alone did not meet the CI landing LCP budget (about 2.5–2.7 s); this is not accepted performance evidence. A source/import and exported-markup inventory identified 444 rules with no consumers in public pages or onboarding. Their 44 KB of CSS now loads with the operational runtime. Existing cascade layers, declarations and relative order are retained; shared/mixed selectors remain global. Public navigation, search, dialogs and onboarding consumers are included in the inventory. The CSS audit includes the deferred file; visual and browser gates must validate the changed loading boundary without replacing reference images.
+
+### Above-fold brand discovery
+
+The post-split raw traces expose a remaining late high-priority request: the shared 44 px brand image was lazily discovered after layout (about 96–113 ms observed), while fonts and CSS began around 16–26 ms. It is visible in the initial header/onboarding. Brand now explicitly uses eager/high-priority loading so the parser can request the existing image with other initial resources. Asset pixels, dimensions, copy and the Lighthouse model/budgets are unchanged.
