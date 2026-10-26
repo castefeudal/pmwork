@@ -4,7 +4,7 @@ import type { EditableKind } from '@/components/record-editor';
 const recordCollections = {
  project:'projects',objective:'objectives',work:'workItems',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
  risk:'risks',issue:'issues',assumption:'assumptions',decision:'decisions',stakeholder:'stakeholders',team:'teamMembers',
- communication:'communications',vendor:'vendors',budget:'budgets',change:'changes',quality:'qualityGates',document:'documents',
+ communication:'communications',meeting:'meetings',vendor:'vendors',budget:'budgets',change:'changes',quality:'qualityGates',document:'documents',
 } as const satisfies Record<EditableKind,keyof Workspace>;
 export function readWorkspaceRecord(search: string, workspace: Workspace, projectId: string): {kind:EditableKind;id:string}|null {
  const params=new URLSearchParams(search),id=params.get('item'),kind=params.get('kind');

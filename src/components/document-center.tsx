@@ -22,7 +22,7 @@ function linkedRecord(workspace: Workspace, id: string): { kind: EditableKind; t
     ["work", workspace.workItems], ["risk", workspace.risks], ["issue", workspace.issues],
     ["decision", workspace.decisions], ["milestone", workspace.milestones], ["assumption", workspace.assumptions],
     ["dependency", workspace.dependencies], ["team", workspace.teamMembers], ["stakeholder", workspace.stakeholders],
-    ["vendor", workspace.vendors], ["communication", workspace.communications],
+    ["vendor", workspace.vendors], ["communication", workspace.communications], ["meeting", workspace.meetings],
     ["document", workspace.documents], ["budget", workspace.budgets], ["change", workspace.changes], ["quality", workspace.qualityGates],
   ];
   for (const [kind, rows] of collections) {

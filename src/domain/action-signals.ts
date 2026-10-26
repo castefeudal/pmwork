@@ -96,6 +96,16 @@ export function projectActions(workspace: Workspace, projectId: string, locale: 
     action: t('Проверить связанную работу и прогноз, сохранив базовый план.', 'Review linked work and the forecast while preserving the baseline.'),
     consequence: t('Связанные обязательства могут потребовать пересмотра; влияние нужно проверить.', 'Related commitments may need review; the impact needs to be checked.'), view: 'planning',
   }, t('Точка не завершена и не отменена; прогнозная дата прошла или указан статус «под риском».', 'Milestone is neither done nor cancelled; forecast date has passed or status is at risk.'), [...ownerGap(x.owner), ...(x.confidence === undefined ? [t('Уверенность не оценена', 'Confidence is not recorded')] : [])]);
+  const upcomingLimit = new Date(Date.parse(asOf) + 7 * 86400000).toISOString().slice(0, 10);
+  for (const x of workspace.milestones.filter(x => x.projectId === projectId && x.status !== 'done' && x.status !== 'cancelled' && x.status !== 'at-risk' && !!x.forecastDate && x.forecastDate >= asOf && x.forecastDate <= upcomingLimit)) add({
+    id: `milestone-${x.id}`, severity: 'medium', category: 'due', source: { kind: 'milestone', id: x.id, owner: x.owner },
+    affectedIds: [x.id, ...(milestoneWork.get(x.id) ?? [])],
+    title: `${t('Приближается контрольная точка', 'Upcoming milestone')}: ${x.title}`,
+    why: `${t('Прогноз', 'Forecast')}: ${x.forecastDate}`,
+    action: t('Проверить связанную работу, зависимости и прогноз.', 'Review linked work, dependencies and the forecast.'),
+    consequence: t('Готовность точки требует проверки по связанным записям.', 'Readiness needs to be checked against linked records.'),
+    view: 'planning', dueDate: x.forecastDate,
+  }, t('Открытая контрольная точка с прогнозом в ближайшие семь календарных дней.', 'Open milestone with a forecast within the next seven calendar days.'), ownerGap(x.owner));
   for (const x of workspace.assumptions.filter(x => x.projectId === projectId && (x.status === 'untested' || x.status === 'validating') && x.validationDate && x.validationDate <= asOf)) add({
     id: `assumption-${x.id}`, severity: 'medium', category: 'review', source: { kind: 'assumption', id: x.id, owner: x.owner },
     title: `${t('Непроверенное допущение', 'Untested assumption')}: ${x.text}`, why: `${t('Дата проверки', 'Validation date')}: ${x.validationDate}`, dueDate: x.validationDate,

@@ -452,7 +452,7 @@ export const workspaceSchema = z.object({
   roleLenses: z.array(managementRoleSchema).default([]),
   programs: z.array(programSchema).default([]),
   operations: z.array(operationSchema).default([]),
-  density: z.enum(["comfortable", "compact"]).default("comfortable"),
+  density: z.enum(["comfortable", "standard", "compact"]).default("comfortable"),
   savedWorkViews: z.array(savedWorkViewSchema).default([]),
   workViewPreferences: z.array(z.object({ ...scopedFields, config: workViewConfigSchema })).default([]),
   id: z.string(),

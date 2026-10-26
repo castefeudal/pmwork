@@ -107,6 +107,19 @@ for (const locale of ["ru","en"] as const) {
     await page.evaluate(()=>document.documentElement.style.fontSize="200%");
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(321);
   });
+  test(`standard density persists independently of text size (${locale})`,async({page})=>{
+    await page.addInitScript(w=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));},demoWorkspace(locale));
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
+    const density=page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true});
+    const textSize=page.getByRole("combobox",{name:locale==="ru"?"Размер текста":"Text size",exact:true});
+    await textSize.selectOption("large");
+    await density.selectOption("standard");
+    await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")??"{}");return raw.workspace?.density??raw.density;})).toBe("standard");
+    await page.reload();
+    await expect(density).toHaveValue("standard");
+    await expect(textSize).toHaveValue("large");
+    await expect(page.locator(".workspace-shell")).toHaveClass(/density-standard/);
+  });
   test(`compact density reduces workspace spacing without clipping (${locale})`,async({page},testInfo)=>{
     test.setTimeout(90000);
     await page.addInitScript(w=>localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w)),demoWorkspace(locale));

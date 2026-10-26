@@ -526,6 +526,14 @@ td, th { font-variant-numeric: tabular-nums; }
 
 /* Density is stored on the shell, so scope compact spacing there. These rules
    sit after the layered visual system to keep the preference observable. */
+.workspace-shell.density-standard .workspace-content :is(.panel, .metric-card, .project-card),
+.context-workspace.density-standard :is(.panel, .metric-card, .project-card) {
+  padding: 18px;
+}
+.workspace-shell.density-standard .workspace-content :is(td, th),
+.context-workspace.density-standard :is(td, th) {
+  padding-block: 10px;
+}
 .workspace-shell.density-compact .workspace-content {
   padding: 16px 18px 40px;
 }

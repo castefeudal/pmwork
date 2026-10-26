@@ -1,9 +1,9 @@
 import type {Scope,Workspace} from "./schemas";
-const collections={project:"projects",work:"workItems",risk:"risks",issue:"issues",decision:"decisions",assumption:"assumptions",stakeholder:"stakeholders",team:"teamMembers",milestone:"milestones",iteration:"iterations",dependency:"dependencies",document:"documents",budget:"budgets",vendor:"vendors",communication:"communications",change:"changes",quality:"qualityGates",objective:"objectives"} as const;
+const collections={project:"projects",work:"workItems",risk:"risks",issue:"issues",decision:"decisions",assumption:"assumptions",stakeholder:"stakeholders",team:"teamMembers",milestone:"milestones",iteration:"iterations",dependency:"dependencies",document:"documents",budget:"budgets",vendor:"vendors",communication:"communications",meeting:"meetings",change:"changes",quality:"qualityGates",objective:"objectives"} as const;
 export type RecordRelation={id:string;kind:string;title:string;scope:Scope;view:string;direction:"incoming"|"outgoing"};
 type Indexed=Omit<RecordRelation,"direction">&{refs:string[]};
 const referenceFields=["dependencies","riskIds","objectiveIds","relatedIds","relatedWorkIds","deliverableIds","workItemIds","milestones","dependencyIds","evidenceIds","affectedIds","projectIds","parentId","recurrenceOf","milestoneId","iterationId","ownerId","relatedRiskId","predecessorId","successorId","workItemId","decisionId"];
-const viewFor=(kind:string)=>kind==="work"||kind==="objective"?"work":kind==="milestone"||kind==="iteration"?"planning":kind==="document"?"documents":kind==="budget"?"finance":["team","stakeholder","vendor","communication"].includes(kind)?"people":["quality","change"].includes(kind)?"control":"raid";
+const viewFor=(kind:string)=>kind==="work"||kind==="objective"?"work":kind==="milestone"||kind==="iteration"?"planning":kind==="document"?"documents":kind==="budget"?"finance":["team","stakeholder","vendor","communication","meeting"].includes(kind)?"people":["quality","change"].includes(kind)?"control":"raid";
 export function recordRelations(workspace:Workspace,kind:string,id:string):RecordRelation[] {
   const rows:Indexed[]=[];
   const add=(kind:string,row:Record<string,unknown>,scope:Scope,view=viewFor(kind))=>{
