@@ -523,3 +523,28 @@ td, th { font-variant-numeric: tabular-nums; }
     padding-inline: .5rem;
   }
 }
+
+/* Density is stored on the shell, so scope compact spacing there. These rules
+   sit after the layered visual system to keep the preference observable. */
+.workspace-shell.density-compact .workspace-content {
+  padding: 16px 18px 40px;
+}
+.workspace-shell.density-compact .workspace-content :is(.panel, .metric-card, .project-card) {
+  padding: 12px;
+}
+.workspace-shell.density-compact .workspace-content :is(td, th) {
+  padding-block: 7px;
+}
+.workspace-shell.density-compact .workspace-content .priority-focus-grid {
+  gap: 18px;
+}
+@media (max-width: 980px) {
+  .workspace-shell.density-compact .workspace-content {
+    padding: 16px;
+  }
+}
+@media (max-width: 767px) {
+  .workspace-shell.density-compact .workspace-content {
+    padding: 16px 12px calc(96px + env(safe-area-inset-bottom));
+  }
+}
