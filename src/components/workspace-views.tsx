@@ -1044,7 +1044,10 @@ export function PeopleView({
     ),
     team = workspace.teamMembers.filter((x) => x.projectId === project.id),
     comms = workspace.communications.filter((x) => x.projectId === project.id),
-    vendors = workspace.vendors.filter((x) => x.projectId === project.id);
+    vendors = workspace.vendors.filter((x) => x.projectId === project.id),
+    meetings = workspace.meetings.filter((x) => x.projectId === project.id);
+  const [meetingPosition, setMeetingPosition] = useState({project: project.id, page: 0});
+  const meetingPage = Math.min(meetingPosition.project === project.id ? meetingPosition.page : 0, Math.max(0, Math.ceil(meetings.length / 20) - 1));
   return (
     <>
       <div className="tabs">
@@ -1052,6 +1055,7 @@ export function PeopleView({
           ["stakeholders", ru ? "Заинтересованные стороны" : "Stakeholders"],
           ["team", ru ? "Команда" : "Team"],
           ["communications", ru ? "Коммуникации" : "Communications"],
+          ["meetings", ru ? "Встречи" : "Meetings"],
           ["vendors", ru ? "Поставщики" : "Vendors"],
         ].map(([id, label]) => (
           <button
@@ -1212,6 +1216,17 @@ export function PeopleView({
           />
         </>
       )}{" "}
+      {tab === "meetings" && (
+        <>
+          <button className="button primary section-action" onClick={() => onCreate("meeting")}>
+            <Plus size={17} />{ru ? "Добавить встречу" : "Add meeting"}
+          </button>
+          {meetings.length ? <div className="table-wrap"><table>
+            <thead><tr><th>{ru ? "Встреча" : "Meeting"}</th><th>{ru ? "Дата" : "Date"}</th><th>{ru ? "Участники" : "Attendees"}</th><th>{ru ? "Итоги и следующие действия" : "Outcomes and next actions"}</th><th>{ru ? "Действия" : "Actions"}</th></tr></thead>
+            <tbody>{meetings.slice(meetingPage * 20, meetingPage * 20 + 20).map(x => <tr key={x.id}><td><strong>{x.title}</strong></td><td>{x.date || "—"}</td><td>{x.attendees.join(", ") || "—"}</td><td>{x.outputs.join("; ") || "—"}</td><td><button className="button small" onClick={() => onEdit("meeting", x.id)} aria-label={`${ru ? "Изменить встречу" : "Edit meeting"}: ${x.title}`}>{ru ? "Изменить" : "Edit"}</button></td></tr>)}</tbody>
+          </table><CollectionPager page={meetingPage} size={20} total={meetings.length} locale={locale} label={ru ? "Страницы встреч" : "Meeting pages"} onPage={page => setMeetingPosition({project: project.id, page})}/></div> : <p className="muted">{ru ? "Встреч пока нет. Добавьте встречу, чтобы записать повестку и итоги." : "No meetings yet. Add one to record its agenda and outcomes."}</p>}
+        </>
+      )}
       {tab === "vendors" && (
         <>
           <button

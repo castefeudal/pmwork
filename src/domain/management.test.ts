@@ -27,6 +27,16 @@ describe("management operating contexts",()=>{
     const w=demoWorkspace("en");w.managementRole="operations";w.roleLenses=["delivery"];w.experience="advanced";w.density="comfortable";
     expect(migrateWorkspace(JSON.parse(JSON.stringify(w)))).toEqual(w);
   });
+  it("preserves each density through migration and backup without changing records",()=>{
+    const original=demoWorkspace("ru");
+    for(const density of ["comfortable","standard","compact"] as const){
+      const saved={...original,density};
+      const restored=migrateWorkspace(JSON.parse(JSON.stringify(saved)));
+      expect(restored).toEqual(saved);
+      expect(restored.workItems).toEqual(original.workItems);
+      expect(restored.experience).toBe(original.experience);
+    }
+  });
   it("supports ongoing operations with no project or final date",()=>{
     const w=emptyWorkspace("en");w.operations=[operationSchema.parse({id:"service",name:"Customer support",purpose:"Restore service",metrics:[{id:"sla",name:"Resolution",unit:"hours",target:4,direction:"at-most"}]})];
     expect(()=>assertWorkspaceGraph(w)).not.toThrow();

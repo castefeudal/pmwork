@@ -50,4 +50,13 @@ describe('explainable project priorities', () => {
     w.milestones=[{...seed,forecastDate:'',date:'',status:'planned'}];
     expect(projectActions(w,seed.projectId,'en',day).filter(x=>x.source?.kind==='milestone')).toEqual([]);
   });
+  it('surfaces upcoming milestones once, with recorded forecast and linked work', () => {
+    const w=demoWorkspace('en'), seed=w.milestones[0]!, work=w.workItems[0]!;
+    w.milestones=[{...seed,id:'soon',status:'on-track',forecastDate:'2026-10-02'}, {...seed,id:'later',status:'on-track',forecastDate:'2026-10-03'}, {...seed,id:'risk',status:'at-risk',forecastDate:'2026-09-26'}, {...seed,id:'done',status:'done',forecastDate:'2026-09-26'}];
+    w.workItems=[{...work,milestoneId:'soon'}];
+    const signals=projectActions(w,seed.projectId,'en',day).filter(x=>x.source?.kind==='milestone');
+    expect(signals.map(x=>x.id).sort()).toEqual(['milestone-risk','milestone-soon']);
+    expect(signals.find(x=>x.id==='milestone-soon')).toMatchObject({severity:'medium',dueDate:'2026-10-02',affectedIds:['soon',work.id],evidence:{basis:'recorded',asOf:day}});
+    expect(projectActions(w,seed.projectId,'ru',day).find(x=>x.id==='milestone-soon')?.title).toContain('Приближается');
+  });
 });

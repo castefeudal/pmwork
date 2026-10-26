@@ -26,6 +26,7 @@ export type EditableKind =
   | "stakeholder"
   | "team"
   | "communication"
+  | "meeting"
   | "vendor"
   | "budget"
   | "change"
@@ -55,6 +56,7 @@ const collectionByKind: Record<EditableKind, keyof Workspace> = {
   stakeholder: "stakeholders",
   team: "teamMembers",
   communication: "communications",
+  meeting: "meetings",
   vendor: "vendors",
   budget: "budgets",
   change: "changes",
@@ -77,6 +79,7 @@ const titleByKind = {
     stakeholder: "заинтересованную сторону",
     team: "участника команды",
     communication: "план коммуникации",
+    meeting: "встречу",
     vendor: "поставщика",
     budget: "статью бюджета",
     change: "запрос на изменение",
@@ -97,6 +100,7 @@ const titleByKind = {
     stakeholder: "stakeholder",
     team: "team member",
     communication: "communication plan",
+    meeting: "meeting",
     vendor: "vendor",
     budget: "budget line",
     change: "change request",
@@ -512,6 +516,15 @@ function fieldsFor(
         text("cadence", "Периодичность", "Cadence"),
         text("owner", "Владелец", "Owner"),
         text("successSignal", "Признак успеха", "Success signal", "textarea"),
+      ];
+    case "meeting":
+      return [
+        text("title", "Название", "Title"),
+        text("date", "Дата", "Date", "date"),
+        text("attendees", "Участники", "Attendees", "list"),
+        text("agenda", "Повестка", "Agenda", "list"),
+        text("notes", "Заметки", "Notes", "textarea"),
+        text("outputs", "Итоги и следующие действия", "Outcomes and next actions", "list"),
       ];
     case "vendor":
       return [

@@ -103,13 +103,13 @@ export function approveChange(w:Workspace,id:string,approver:string,decision:str
 
 export type RemovableRecordKind =
  | 'work' | 'objective' | 'dependency' | 'milestone' | 'iteration' | 'risk' | 'issue'
- | 'assumption' | 'decision' | 'stakeholder' | 'team' | 'communication'
+ | 'assumption' | 'decision' | 'stakeholder' | 'team' | 'communication' | 'meeting'
  | 'vendor' | 'budget' | 'change' | 'quality' | 'document';
 
 const removableCollectionByKind = {
  work:'workItems',objective:'objectives',dependency:'dependencies',milestone:'milestones',iteration:'iterations',
  risk:'risks',issue:'issues',assumption:'assumptions',decision:'decisions',
- stakeholder:'stakeholders',team:'teamMembers',communication:'communications',
+ stakeholder:'stakeholders',team:'teamMembers',communication:'communications',meeting:'meetings',
  vendor:'vendors',budget:'budgets',change:'changes',quality:'qualityGates',document:'documents',
 } as const satisfies Record<RemovableRecordKind,keyof Workspace>;
 

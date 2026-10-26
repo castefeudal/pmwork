@@ -44,7 +44,7 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
     const add = (kind:EditableKind,id:string,label:string,pid:string) => {
       const context=workspace.programs.find(row=>pid===`@program/${row.id}`)??workspace.operations.find(row=>pid===`@operation/${row.id}`);
       rows.push({id:`${kind}-${id}`,label,meta:`${id} · ${context?.name??workspace.projects.find(p=>p.id===pid)?.name??""}`,run:()=>{
-        if(context){const url=new URL(window.location.href);url.searchParams.set("context",context.id);url.searchParams.set("item",id);url.searchParams.set("kind",kind);url.searchParams.set("register",kind==="work"?"work":kind==="document"?"documents":kind==="milestone"?"planning":"raid");history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));onView(pid.startsWith("@program/")?"program":"operations");}
+        if(context){const url=new URL(window.location.href);url.searchParams.set("context",context.id);url.searchParams.set("item",id);url.searchParams.set("kind",kind);url.searchParams.set("register",kind==="work"?"work":kind==="document"?"documents":kind==="milestone"?"planning":kind==="meeting"?"people":"raid");history.pushState(null,"",url);dispatchEvent(new Event("pmwork-url"));onView(pid.startsWith("@program/")?"program":"operations");}
         else {onProject(pid);onEdit(kind,id);}
       }});
     };
@@ -53,6 +53,7 @@ export function CommandMenu({workspace, project, locale, onClose, onView, onCrea
     workspace.issues.forEach(x=>add("issue",x.id,x.title,x.projectId));
     workspace.decisions.forEach(x=>add("decision",x.id,x.question,x.projectId));
     workspace.milestones.forEach(x=>add("milestone",x.id,x.title,x.projectId));
+    workspace.meetings.forEach(x=>add("meeting",x.id,x.title,x.projectId));
     workspace.documents.forEach(x=>add("document",x.id,x.title,x.projectId));
     workspace.objectives.forEach(x=>add("objective",x.id,x.description,x.projectId));
     const tools=[

@@ -9,6 +9,26 @@ const openDemo=async()=>fireEvent.click(await screen.findByRole("button",{name:/
 const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы рабочего пространства|Workspace sections/});
 
 describe("workspace interactions", () => {
+  it("opens the meetings tab and saves meeting outcomes without changing other records", async () => {
+    const original=demoWorkspace("en");
+    original.meetings=[{id:"meeting-test",projectId:original.projects[0].id,title:"Planning review",date:"2026-11-02",attendees:["Alex"],agenda:["Agree scope"],notes:"",outputs:[]}];
+    localStorage.setItem("pmwork:workspace:v3",JSON.stringify(original));
+    history.replaceState(null,"","/en/workspace/");
+    render(<WorkspaceApp locale="en"/>);
+    await screen.findByRole("heading",{name:original.projects[0].name,level:1});
+    fireEvent.click(within(desktopNav()).getByRole("button",{name:"People"}));
+    fireEvent.click(await screen.findByRole("button",{name:"Meetings"}));
+    fireEvent.click(await screen.findByRole("button",{name:"Edit meeting: Planning review"}));
+    const dialog=await screen.findByRole("dialog",{name:"Edit meeting"});
+    fireEvent.click(within(dialog).getByText("More details"));
+    fireEvent.change(within(dialog).getByLabelText("Outcomes and next actions"),{target:{value:"Alex: share the plan"}});
+    fireEvent.click(within(dialog).getByRole("button",{name:"Save"}));
+    await screen.findByText("Alex: share the plan");
+    await waitFor(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);expect((raw.workspace??raw).meetings[0].outputs).toEqual(["Alex: share the plan"])});
+    const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);
+    expect((raw.workspace??raw).workItems).toEqual(original.workItems);
+    history.replaceState(null,"","/");
+  });
   it("does not flush a recovery example over unreadable saved data on unmount", async () => {
     const damaged="{unreadable-workspace";
     localStorage.setItem("pmwork:workspace:v3",damaged);
