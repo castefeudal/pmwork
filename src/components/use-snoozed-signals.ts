@@ -21,9 +21,11 @@ function parse(raw:string):Snooze[] {
 }
 export function useSnoozedSignals(projectId:string,signals:ActionSignal[]) {
   const raw=useSyncExternalStore(subscribe,snapshot,()=>"[]"),saved=parse(raw),day=localDay();
-  const hidden=signals.filter(signal=>saved.some(x=>x.projectId===projectId && x.id===signal.id && x.day===day && x.fingerprint===signalFingerprint(signal)));
+  const hiddenKeys=new Set(saved.filter(x=>x.projectId===projectId && x.day===day).map(x=>JSON.stringify([x.id,x.fingerprint])));
+  const hidden=signals.filter(signal=>hiddenKeys.has(JSON.stringify([signal.id,signalFingerprint(signal)])));
+  const hiddenIds=new Set(hidden.map(signal=>signal.id));
   const save=(next:Snooze[])=>{sessionValue=JSON.stringify(next);try{localStorage.setItem(key,sessionValue);storageUnavailable=false;}catch{storageUnavailable=true;}window.dispatchEvent(new Event(key));};
-  return {visible:signals.filter(signal=>!hidden.includes(signal)),hiddenCount:hidden.length,
+  return {visible:signals.filter(signal=>!hiddenIds.has(signal.id)),hiddenCount:hidden.length,
     snooze:(signal:ActionSignal)=>save([...saved.filter(x=>x.day===day && !(x.projectId===projectId && x.id===signal.id)),{projectId,id:signal.id,fingerprint:signalFingerprint(signal),day}].slice(-500)),
     restore:()=>save(saved.filter(x=>x.projectId!==projectId))};
 }
