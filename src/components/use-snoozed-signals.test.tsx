@@ -25,3 +25,8 @@ it("keeps a snooze across interface languages and ignores an expired day",()=>{
   const {result}=renderHook(()=>useSnoozedSignals("atlas",en));
   expect(result.current.hiddenCount).toBe(0);
 });
+it("changes the fingerprint when the underlying record changes",()=>{
+  const workspace=demoWorkspace("en"),signal=projectActions(workspace,"atlas","en").find(row=>row.source?.kind==="risk")!;
+  const updated={...workspace,risks:workspace.risks.map(row=>row.id===signal.source?.id?{...row,description:row.description+" updated"}:row)};
+  expect(signalFingerprint(signal,workspace)).not.toBe(signalFingerprint(signal,updated));
+});

@@ -62,10 +62,11 @@ export function updateWorkOwner(w:Workspace,id:string,ownerId:string|undefined,o
  if(ownerId&&!member)throw Error('Owner does not belong to project');
  return updateWork(w,id,{ownerId,ownerLabel:member?.name??ownerLabel,owner:member?.name??ownerLabel});
 }
-export function convertRiskToIssue(w:Workspace,id:string):Workspace {
+export function convertRiskToIssue(w:Workspace,id:string,urgency:number):Workspace {
  const risk=w.risks.find(r=>r.id===id);if(!risk)throw Error('Risk not found');
  if(w.issues.some(i=>i.relatedRiskId===id))return w;
- return finish({...w,risks:w.risks.map(r=>r.id===id?{...r,status:'closed'}:r),issues:[...w.issues,{id:`ISS-${crypto.randomUUID()}`,projectId:risk.projectId,title:risk.title,description:risk.description,impact:risk.impact,urgency:risk.impact,owner:risk.owner,plan:risk.actions,dueDate:risk.reviewDate,escalation:'',relatedRiskId:id,relatedWorkIds:[],status:'open'}]},risk.projectId,'risk-realized',risk.title);
+ if(!Number.isInteger(urgency)||urgency<1||urgency>5)throw Error('Issue urgency must be explicitly selected');
+ return finish({...w,risks:w.risks.map(r=>r.id===id?{...r,status:'closed'}:r),issues:[...w.issues,{id:`ISS-${crypto.randomUUID()}`,projectId:risk.projectId,title:risk.title,description:risk.description,impact:risk.impact,urgency,owner:risk.owner,plan:risk.actions,dueDate:'',escalation:'',relatedRiskId:id,relatedWorkIds:[],status:'open'}]},risk.projectId,'risk-realized',risk.title);
 }
 export function generateStatusDraft(w:Workspace,projectId:string,locale:'ru'|'en'):Workspace {
  const p=w.projects.find(p=>p.id===projectId);if(!p)throw Error('Project not found');

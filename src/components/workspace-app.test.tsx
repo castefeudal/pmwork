@@ -9,6 +9,38 @@ const openDemo=async()=>fireEvent.click(await screen.findByRole("button",{name:/
 const desktopNav=()=>screen.getByRole("navigation",{name:/Разделы рабочего пространства|Workspace sections/});
 
 describe("workspace interactions", () => {
+  it("filters open risks by matrix cell and restores the full register",async()=>{
+    const w=demoWorkspace("en"),seed=w.risks[0];
+    w.risks.push({...seed,id:"risk-a",projectId:"atlas",title:"Risk alpha",status:"open",probability:2,impact:3},{...seed,id:"risk-b",projectId:"atlas",title:"Risk beta",status:"open",probability:4,impact:5});
+    localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));history.replaceState(null,"","/en/workspace/");
+    render(<WorkspaceApp locale="en"/>);await screen.findByRole("heading",{name:w.projects[0].name,level:1});
+    fireEvent.click(within(desktopNav()).getByRole("button",{name:"Risks & decisions"}));
+    const cell=await screen.findByRole("button",{name:/^Probability 2, impact 3: /});
+    fireEvent.click(cell);expect(cell.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByText("Risk alpha")).toBeTruthy();expect(screen.queryByText("Risk beta")).toBeNull();
+    fireEvent.click(screen.getByRole("button",{name:"Show all risks"}));expect(screen.getByText("Risk beta")).toBeTruthy();
+    history.replaceState(null,"","/");
+  });
+  it("confirms risk conversion before recording an issue", async () => {
+    const original=demoWorkspace("en"),risk=original.risks.find(row=>row.projectId==="atlas"&&row.status!=="closed")!;
+    original.issues=original.issues.filter(row=>row.relatedRiskId!==risk.id);
+    localStorage.setItem("pmwork:workspace:v3",JSON.stringify(original));
+    history.replaceState(null,"","/en/workspace/");
+    render(<WorkspaceApp locale="en"/>);
+    await screen.findByRole("heading",{name:original.projects[0].name,level:1});
+    fireEvent.click(within(desktopNav()).getByRole("button",{name:"Risks & decisions"}));
+    fireEvent.click(await screen.findByText("Convert risk to issue"));
+    fireEvent.click(screen.getByRole("button",{name:`${risk.title} → Issue`}));
+    const confirmation=screen.getByRole("dialog",{name:"Record a realized risk?"});
+    expect(within(confirmation).getByText(/marked closed/)).toBeTruthy();
+    fireEvent.click(within(confirmation).getByRole("button",{name:"Cancel"}));
+    expect(screen.queryByRole("dialog",{name:"Record a realized risk?"})).toBeNull();
+    fireEvent.click(screen.getByRole("button",{name:`${risk.title} → Issue`}));
+    fireEvent.change(within(screen.getByRole("dialog",{name:"Record a realized risk?"})).getByLabelText("Issue urgency"),{target:{value:"2"}});
+    fireEvent.click(within(screen.getByRole("dialog",{name:"Record a realized risk?"})).getByRole("button",{name:"Create issue"}));
+    await waitFor(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")!);expect((raw.workspace??raw).issues.some((issue:{relatedRiskId?:string})=>issue.relatedRiskId===risk.id)).toBe(true)});
+    history.replaceState(null,"","/");
+  });
   it("opens the meetings tab and saves meeting outcomes without changing other records", async () => {
     const original=demoWorkspace("en");
     original.meetings=[{id:"meeting-test",projectId:original.projects[0].id,title:"Planning review",date:"2026-11-02",attendees:["Alex"],agenda:["Agree scope"],notes:"",outputs:[]}];

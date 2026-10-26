@@ -555,4 +555,10 @@ td, th { font-variant-numeric: tabular-nums; }
   .workspace-shell.density-compact .workspace-content {
     padding: 16px 12px calc(96px + env(safe-area-inset-bottom));
   }
+  .meeting-table table, .meeting-table tbody, .meeting-table tr, .meeting-table td { display: block; width: 100%; }
+  .meeting-table table { min-width: 0; }
+  .meeting-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .meeting-table tr { padding: 12px; border-bottom: 1px solid var(--line); }
+  .meeting-table td { border: 0; padding: 4px 0; overflow-wrap: anywhere; }
+  .meeting-table td[data-label]::before { content: attr(data-label) ": "; font-weight: 600; }
 }
