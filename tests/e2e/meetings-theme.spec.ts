@@ -13,13 +13,18 @@ for(const locale of ["en","ru"] as const){
     const row=page.locator(".work-table tbody tr").filter({has:page.getByRole("button",{name:"Work 0",exact:true})});
     const comfortable=await row.evaluate(el=>el.getBoundingClientRect().height);
     await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
+    await page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true}).selectOption("standard");
+    await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")??"{}");return (raw.workspace??raw).density;})).toBe("standard");
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=work`));await page.evaluate(()=>document.fonts.ready);
+    const standard=await row.evaluate(el=>el.getBoundingClientRect().height);
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
     await page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true}).selectOption("compact");
     await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")??"{}");return (raw.workspace??raw).density;})).toBe("compact");
     await page.goto(route(`/${locale}/workspace/?project=atlas&view=work`));
     await page.evaluate(()=>document.fonts.ready);
     const compact=await row.evaluate(el=>({height:el.getBoundingClientRect().height,font:parseFloat(getComputedStyle(el.querySelector(".work-title-button")!).fontSize)}));
-    expect(compact.height).toBeLessThanOrEqual(comfortable / 1.2);expect(compact.font).toBeGreaterThanOrEqual(14);
-    test.info().annotations.push({type:"density-row-height",description:`comfortable ${comfortable}px; compact ${compact.height}px`});
+    expect(standard).toBeLessThanOrEqual(comfortable);expect(compact.height).toBeLessThanOrEqual(comfortable / 1.2);expect(compact.height).toBeLessThan(standard);expect(compact.font).toBeGreaterThanOrEqual(14);
+    test.info().annotations.push({type:"density-row-height",description:`comfortable ${comfortable}px; standard ${standard}px; compact ${compact.height}px`});
   });
   test(`realized risk requires confirmation and retains source (${locale})`,async({page})=>{
     const workspace=demoWorkspace(locale),risk=workspace.risks.find(row=>row.projectId==="atlas"&&row.status!=="closed")!;

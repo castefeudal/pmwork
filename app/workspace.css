@@ -534,6 +534,7 @@ td, th { font-variant-numeric: tabular-nums; }
 .context-workspace.density-standard :is(td, th) {
   padding-block: 10px;
 }
+.workspace-shell.density-standard .workspace-content .work-table td { padding-block: 4px; }
 .workspace-shell.density-compact .workspace-content {
   padding: 16px 18px 40px;
 }

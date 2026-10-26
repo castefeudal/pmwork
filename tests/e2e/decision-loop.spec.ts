@@ -11,7 +11,7 @@ for(const locale of ['ru','en'] as const) test(`signal evidence and contextual r
   const top=page.locator('.priority-focus');
   await top.getByText(locale==='ru'?'Основание и качество данных':'Evidence and data quality',{exact:true}).click();
   await expect(top.locator('.signal-evidence')).toContainText('2026-09-25');
-  await top.getByRole('button').click();
+  await top.locator('.priority-focus-action').locator('button.primary').click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page).toHaveURL(/item=.+&kind=/);
   const url=page.url();

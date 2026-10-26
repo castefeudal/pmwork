@@ -8,7 +8,7 @@ test('guided project context persists and Today opens its exact record',async({p
  await page.reload();await expect(page.getByRole('heading',{name:'Today',exact:true}).first()).toBeVisible();
  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('pmwork:workspace:v3')!));expect((stored.workspace??stored).projectSettings[0].context.volatility).toBe(5);
 });
-test('Today top priority opens the referenced risk with a typed action',async({page})=>{const w=demoWorkspace('en');await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),w);await page.goto(route('/en/workspace/?view=overview'));const top=page.locator('.priority-focus');await expect(top).toContainText('Top priority now');await top.getByRole('button').click();await expect(page.getByRole('dialog')).toBeVisible();await expect(page.getByRole('dialog').getByLabel('Title',{exact:true})).not.toHaveValue('');});
+test('Today top priority opens the referenced risk with a typed action',async({page})=>{const w=demoWorkspace('en');await page.addInitScript(w=>localStorage.setItem('pmwork:workspace:v3',JSON.stringify(w)),w);await page.goto(route('/en/workspace/?view=overview'));const top=page.locator('.priority-focus');await expect(top).toContainText('Top priority now');await top.locator('.priority-focus-action button.primary').click();await expect(page.getByRole('dialog')).toBeVisible();await expect(page.getByRole('dialog').getByLabel('Title',{exact:true})).not.toHaveValue('');});
 test('Today exposes evidence gaps and portfolio filters use recorded project data',async({page})=>{
  const w=demoWorkspace('en');
  const atlas=w.projects.find(project=>project.id==='atlas')!;atlas.owner='';
