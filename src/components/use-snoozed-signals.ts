@@ -26,8 +26,8 @@ function parse(raw:string):Snooze[] {
 }
 export function useSnoozedSignals(projectId:string,signals:ActionSignal[],workspace?:Workspace) {
   const raw=useSyncExternalStore(subscribe,snapshot,()=>"[]"),saved=parse(raw),day=localDay();
-  const hiddenKeys=new Set(saved.filter(x=>x.projectId===projectId && x.day===day).map(x=>JSON.stringify([x.id,x.fingerprint])));
-  const hidden=signals.filter(signal=>hiddenKeys.has(JSON.stringify([signal.id,signalFingerprint(signal,workspace)])));
+  const hiddenKeys=new Map(saved.filter(x=>x.projectId===projectId && x.day===day).map(x=>[x.id,x.fingerprint]));
+  const hidden=signals.filter(signal=>hiddenKeys.has(signal.id) && hiddenKeys.get(signal.id)===signalFingerprint(signal,workspace));
   const hiddenIds=new Set(hidden.map(signal=>signal.id));
   const save=(next:Snooze[])=>{sessionValue=JSON.stringify(next);try{localStorage.setItem(key,sessionValue);storageUnavailable=false;}catch{storageUnavailable=true;}window.dispatchEvent(new Event(key));};
   return {visible:signals.filter(signal=>!hiddenIds.has(signal.id)),hiddenCount:hidden.length,

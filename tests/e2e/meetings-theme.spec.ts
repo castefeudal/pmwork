@@ -3,6 +3,24 @@ import {demoWorkspace} from "../../src/data/demo";
 import {route} from "./support";
 
 for(const locale of ["en","ru"] as const){
+  test(`compact work rows remain readable and fit more records (${locale})`,async({page})=>{
+    await page.setViewportSize({width:1440,height:900});
+    const workspace=demoWorkspace(locale),seed=workspace.workItems.find(row=>row.projectId==="atlas")!;
+    workspace.workItems.push(...Array.from({length:30},(_,index)=>({...seed,id:`density-${index}`,title:`Work ${index}`,blocked:false,done:false,status:"ready" as const,archived:false})));
+    await page.addInitScript(value=>{if(!localStorage.getItem("pmwork:workspace:v3"))localStorage.setItem("pmwork:workspace:v3",JSON.stringify(value));},workspace);
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=work`));
+    await page.evaluate(()=>document.fonts.ready);
+    const row=page.locator(".work-table tbody tr").filter({has:page.getByRole("button",{name:"Work 0",exact:true})});
+    const comfortable=await row.evaluate(el=>el.getBoundingClientRect().height);
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
+    await page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true}).selectOption("compact");
+    await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")??"{}");return (raw.workspace??raw).density;})).toBe("compact");
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=work`));
+    await page.evaluate(()=>document.fonts.ready);
+    const compact=await row.evaluate(el=>({height:el.getBoundingClientRect().height,font:parseFloat(getComputedStyle(el.querySelector(".work-title-button")!).fontSize)}));
+    expect(compact.height).toBeLessThanOrEqual(comfortable / 1.2);expect(compact.font).toBeGreaterThanOrEqual(14);
+    test.info().annotations.push({type:"density-row-height",description:`comfortable ${comfortable}px; compact ${compact.height}px`});
+  });
   test(`realized risk requires confirmation and retains source (${locale})`,async({page})=>{
     const workspace=demoWorkspace(locale),risk=workspace.risks.find(row=>row.projectId==="atlas"&&row.status!=="closed")!;
     workspace.issues=workspace.issues.filter(row=>row.relatedRiskId!==risk.id);

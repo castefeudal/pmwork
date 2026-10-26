@@ -543,6 +543,8 @@ td, th { font-variant-numeric: tabular-nums; }
 .workspace-shell.density-compact .workspace-content :is(td, th) {
   padding-block: 7px;
 }
+.workspace-shell.density-compact .workspace-content .work-table td { padding-block: 3px; }
+.workspace-shell.density-compact .workspace-content .work-title-cell .work-title-button { display: inline-block; margin-inline: .4rem; }
 .workspace-shell.density-compact .workspace-content .priority-focus-grid {
   gap: 18px;
 }
