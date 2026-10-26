@@ -35,9 +35,12 @@ jobs:
         run: node -e "const r=require('./out/release.json');const e=require('./out/quality-evidence.json');if(r.commit!==process.env.GITHUB_SHA||e.commit!==r.commit)throw Error('Artifact commit mismatch')"
       - uses: actions/upload-pages-artifact@v5
         with:
+          name: github-pages-${{ github.run_attempt }}
           path: ./out
       - id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
       - name: Verify live release and assets
         run: node scripts/live-check.mjs
         env:
