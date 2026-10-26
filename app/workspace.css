@@ -489,3 +489,62 @@ td, th { font-variant-numeric: tabular-nums; }
     transition: border-color var(--motion-normal) var(--motion-ease), background-color var(--motion-normal) var(--motion-ease);
   }
 }
+
+/* Keep the compact tablet rail on its own grid track. The base visual layer
+   gives the sidebar an explicit width, so the responsive grid alone cannot
+   prevent it from covering the workspace content. */
+@media (min-width: 721px) and (max-width: 980px) {
+  .workspace-shell {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+  .workspace-shell > .sidebar {
+    width: 78px;
+    min-width: 78px;
+    padding: .75rem .45rem;
+  }
+  .workspace-shell > .sidebar > .sidebar-toggle,
+  .workspace-shell .nav-group > small {
+    display: none;
+  }
+  .workspace-shell .side-nav button,
+  .workspace-shell .side-foot .button {
+    justify-content: center;
+    padding-inline: 0;
+  }
+}
+
+@media (min-width: 901px) {
+  .workspace-shell.sidebar-collapsed {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+  .workspace-shell.sidebar-collapsed > .sidebar {
+    width: 76px;
+    min-width: 76px;
+    padding-inline: .5rem;
+  }
+}
+
+/* Density is stored on the shell, so scope compact spacing there. These rules
+   sit after the layered visual system to keep the preference observable. */
+.workspace-shell.density-compact .workspace-content {
+  padding: 16px 18px 40px;
+}
+.workspace-shell.density-compact .workspace-content :is(.panel, .metric-card, .project-card) {
+  padding: 12px;
+}
+.workspace-shell.density-compact .workspace-content :is(td, th) {
+  padding-block: 7px;
+}
+.workspace-shell.density-compact .workspace-content .priority-focus-grid {
+  gap: 18px;
+}
+@media (max-width: 980px) {
+  .workspace-shell.density-compact .workspace-content {
+    padding: 16px;
+  }
+}
+@media (max-width: 767px) {
+  .workspace-shell.density-compact .workspace-content {
+    padding: 16px 12px calc(96px + env(safe-area-inset-bottom));
+  }
+}

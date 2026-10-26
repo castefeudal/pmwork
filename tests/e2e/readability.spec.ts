@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { demoWorkspace } from "../../src/data/demo";
-import { route } from "./support";
+import { route,waitForWorkspaceSection } from "./support";
 
 for (const locale of ["ru","en"] as const) {
   test(`readable interactive preview at all supported widths (${locale})`, async ({page}, info) => {
@@ -106,5 +106,38 @@ for (const locale of ["ru","en"] as const) {
     await page.setViewportSize({width:320,height:900});
     await page.evaluate(()=>document.documentElement.style.fontSize="200%");
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(321);
+  });
+  test(`compact density reduces workspace spacing without clipping (${locale})`,async({page},testInfo)=>{
+    test.setTimeout(90000);
+    await page.addInitScript(w=>localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w)),demoWorkspace(locale));
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
+    await expect(page.locator(".workspace-shell")).toHaveClass(/density-comfortable/);
+    await page.goto(route(`/${locale}/workspace/?project=atlas&view=overview`));
+    await waitForWorkspaceSection(page);
+    await page.setViewportSize({width:1280,height:900});
+    const wideComfortablePadding=await page.locator(".workspace-content").evaluate(el=>parseFloat(getComputedStyle(el).padding));
+    const wideComfortablePanelPadding=await page.locator(".priority-focus").evaluate(el=>parseFloat(getComputedStyle(el).padding));
+    let wideCompactPadding=0;
+    let wideCompactPanelPadding=0;
+    for(const width of [390,768,1280]) {
+      await page.setViewportSize({width,height:900});
+      await page.goto(route(`/${locale}/workspace/?project=atlas&view=setup`));
+      await page.getByRole("combobox",{name:locale==="ru"?"Плотность интерфейса":"Interface density",exact:true}).selectOption("compact");
+      await expect(page.locator(".workspace-shell")).toHaveClass(/density-compact/);
+      await expect.poll(()=>page.evaluate(()=>{const raw=JSON.parse(localStorage.getItem("pmwork:workspace:v3")??"{}");return raw.workspace?.density??raw.density;})).toBe("compact");
+      await page.goto(route(`/${locale}/workspace/?project=atlas&view=overview`));
+      await page.setViewportSize({width,height:900});
+      await expect(page.locator(".workspace-shell")).toHaveClass(/density-compact/);
+      await waitForWorkspaceSection(page);
+      const compact=await page.locator(".workspace-content").evaluate(el=>({padding:getComputedStyle(el).padding,scrollWidth:document.documentElement.scrollWidth}));
+      if(width===1280) {
+        wideCompactPadding=parseFloat(compact.padding);
+        wideCompactPanelPadding=await page.locator(".priority-focus").evaluate(el=>parseFloat(getComputedStyle(el).padding));
+      }
+      if(width===390||width===1280)await page.screenshot({path:testInfo.outputPath(`compact-${locale}-${width}.png`),fullPage:true});
+      expect(compact.scrollWidth,`${locale} compact layout at ${width}px`).toBeLessThanOrEqual(width+1);
+    }
+    expect(wideCompactPadding).toBeLessThan(wideComfortablePadding);
+    expect(wideCompactPanelPadding).toBeLessThan(wideComfortablePanelPadding);
   });
 }

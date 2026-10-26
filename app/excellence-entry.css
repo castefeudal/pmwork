@@ -88,7 +88,10 @@
 .first-run-preference-fields { display:grid;grid-template-columns:1fr 1fr;gap:.75rem }
 .first-run-preference-fields .field { margin:0 }
 .first-run-privacy { display:flex;align-items:center;gap:.5rem;margin:1.05rem 0 0;color:var(--text-tertiary);font-size:0.875rem }
-.first-run-privacy>span { color:var(--accent-primary);font-size:1rem }
+.first-run-privacy-icon { flex:0 0 auto;color:var(--accent-primary); }
+
+/* Keep the privacy mark visible in onboarding when theme layers are composed. */
+.first-run-privacy .first-run-privacy-icon { display:block;width:16px;height:16px;flex:0 0 16px; }
 
 [data-theme="dark"] .first-run-assurance small { color:var(--text-tertiary) }
 

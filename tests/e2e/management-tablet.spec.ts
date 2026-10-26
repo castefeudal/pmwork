@@ -15,6 +15,31 @@ for(const locale of ["ru","en"] as const)for(const theme of ["light","dark"] as 
   await expect(page.locator(".management-center")).toBeVisible();
   await expect(page.locator(".workspace-top")).toContainText(locale==="ru"?"Сохранено локально":"Saved locally");
   if(view!=="delivery")await expect(page.getByRole("heading",{name:view==="program"?w.programs[0].name:w.operations[0].name,exact:true})).toBeVisible();
+  const shell=await page.evaluate(()=>{
+   const box=(selector:string)=>document.querySelector(selector)!.getBoundingClientRect();
+   const track=parseFloat(getComputedStyle(document.querySelector(".workspace-shell")!).gridTemplateColumns);
+   const sidebar=box(".sidebar"),main=box(".workspace-main");
+   return{track,sidebarWidth:sidebar.width,sidebarRight:sidebar.right,mainLeft:main.left};
+  });
+  if(width<=980){expect(shell.track).toBeCloseTo(78,0);expect(shell.sidebarWidth).toBeCloseTo(78,0);}
+  expect(shell.mainLeft).toBeGreaterThanOrEqual(shell.sidebarRight-1);
+  if(width<=980){
+   await expect(page.locator(".sidebar-toggle")).toBeHidden();
+   await expect(page.locator(".nav-group > small").first()).toBeHidden();
+   await expect(page.locator(".side-nav button").first()).toHaveAttribute("title",locale==="ru"?"Сейчас":"Today");
+  }else{
+   const toggle=page.getByRole("button",{name:locale==="ru"?"Свернуть / развернуть меню":"Collapse / expand sidebar"});
+   await toggle.click();
+   const collapsed=await page.evaluate(()=>{
+    const box=(selector:string)=>document.querySelector(selector)!.getBoundingClientRect();
+    const track=parseFloat(getComputedStyle(document.querySelector(".workspace-shell")!).gridTemplateColumns);
+    const sidebar=box(".sidebar"),main=box(".workspace-main");
+    return{track,sidebarWidth:sidebar.width,sidebarRight:sidebar.right,mainLeft:main.left};
+   });
+   expect(collapsed.track).toBeCloseTo(76,0);expect(collapsed.sidebarWidth).toBeCloseTo(76,0);
+   expect(collapsed.mainLeft).toBeGreaterThanOrEqual(collapsed.sidebarRight-1);
+   await toggle.click();
+  }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:testInfo.outputPath(`${view}-${locale}-${theme}-${width}.png`),animations:"disabled"});
  }
