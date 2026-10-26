@@ -28,7 +28,7 @@ const actionLabel=(ru:boolean,id:string,hasRef:boolean)=>{
 export function TodayView(props:ViewProps){
  const {workspace,project,locale,onView,onEdit,onCreate}=props;
  const ru=locale==='ru',allSignals=projectActions(workspace,project.id,locale),foundation=workspace.experience==='foundation';
- const {visible:signals,hiddenCount,snooze,restore}=useSnoozedSignals(project.id,allSignals);
+ const {visible:signals,hiddenCount,snooze,restore}=useSnoozedSignals(project.id,allSignals,workspace);
  const context=workspace.projectSettings.find(s=>s.projectId===project.id)?.context;
  const [pages, setPages] = useState<Record<string,number>>({});
  const [scope,setScope]=useUrlChoice('todayScope',['project','all'] as const,workspace.managementRole==='program'||workspace.managementRole==='operations'?'all':'project');

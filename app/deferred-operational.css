@@ -350,10 +350,13 @@
   aspect-ratio: 1;
   display: grid;
   place-items: center;
+  cursor: pointer;
+  border: 1px solid transparent;
   font-weight: 800;
   border-radius: 4px;
   color: #152026;
 }
+.risk-cell[aria-pressed="true"] { outline: 3px solid var(--border-focus); outline-offset: -3px; font-weight: 700; }
 .risk-low {
   background: #82d6ad;
 }

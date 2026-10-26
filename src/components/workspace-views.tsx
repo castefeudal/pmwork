@@ -7,7 +7,7 @@ import { CollectionPager } from "./collection-pager";
 import { DecisionCenter } from "./decision-center";
 import { formatDate } from "@/domain/format-date";
 import { ProjectHealth } from "./project-health";
-import { convertRiskToIssue, generateStatusDraft, updateWork } from "@/domain/workspace-commands";
+import { convertRiskToIssue, generateStatusDraft, removeWorkspaceRecord, updateWork } from "@/domain/workspace-commands";
 import { useUrlChoice } from "./use-url-state";
 import { PlanningTimeline } from "./planning-timeline";
 import { localDay } from "@/domain/work-views";
@@ -34,6 +34,7 @@ import type { EditableKind } from "./record-editor";
 import { displayLabel } from "@/content/workspace-i18n";
 import { useState } from "react";
 import { ConfirmationDialog } from "./confirmation-dialog";
+import { WorkspaceMore } from "./workspace-more";
 const columns = ["backlog", "ready", "in-progress", "review", "done"] as const;
 const statusLabel = {
   ru: {
@@ -879,27 +880,14 @@ export function RaidView({
       ),
       decision: workspace.decisions.filter((x) => x.projectId === project.id),
     };
+  const [riskToConvert, setRiskToConvert] = useState<string | null>(null);
+  const [issueUrgency, setIssueUrgency] = useState("");
+  const [selection, setRiskCell] = useState<{projectId:string; probability:number; impact:number} | null>(null);
+  const riskCell=selection?.projectId===project.id?selection:null;
+  const conversionRisk = map.risk.find(risk => risk.id === riskToConvert);
   const archive = (kind: CreateType, id: string) => {
-    if (kind === "risk")
-      onChange({
-        ...workspace,
-        risks: workspace.risks.filter((x) => x.id !== id),
-      });
-    if (kind === "issue")
-      onChange({
-        ...workspace,
-        issues: workspace.issues.filter((x) => x.id !== id),
-      });
-    if (kind === "assumption")
-      onChange({
-        ...workspace,
-        assumptions: workspace.assumptions.filter((x) => x.id !== id),
-      });
-    if (kind === "decision")
-      onChange({
-        ...workspace,
-        decisions: workspace.decisions.filter((x) => x.id !== id),
-      });
+    if (kind === "risk" || kind === "issue" || kind === "assumption" || kind === "decision")
+      onChange(removeWorkspaceRecord(workspace,kind,id));
   };
   return (
     <>
@@ -945,9 +933,9 @@ export function RaidView({
       {tab === "risk" && (
         <div className="dashboard-grid">
           <div className="panel span-8">
-            <details><summary>{ru ? "Риск наступил" : "Convert risk to issue"}</summary>{map.risk.filter(r=>r.status!=="closed").map(r=><button className="button small" key={r.id} onClick={()=>onChange(convertRiskToIssue(workspace,r.id))}>{r.title} → Issue</button>)}</details>
-            <EntityTable
-              rows={map.risk.map((r) => {
+            <details><summary>{ru ? "Риск наступил" : "Convert risk to issue"}</summary>{map.risk.filter(r=>r.status!=="closed"&&!map.issue.some(issue=>issue.relatedRiskId===r.id)).map(r=><button className="button small" key={r.id} onClick={()=>{setIssueUrgency("");setRiskToConvert(r.id);}}>{r.title} → {ru ? "Проблема" : "Issue"}</button>)}</details>
+            {riskCell && !map.risk.some(r=>r.status!=="closed"&&r.probability===riskCell.probability&&r.impact===riskCell.impact) ? <p className="muted" role="status">{ru ? "В этой ячейке нет открытых рисков." : "No open risks in this cell."}</p> : <EntityTable
+              rows={map.risk.filter(r=>!riskCell||(r.status!=="closed"&&r.probability===riskCell.probability&&r.impact===riskCell.impact)).map((r) => {
                 const gross=r.probabilityPct!==undefined&&r.impactAmount!==undefined?r.probabilityPct/100*r.impactAmount:null;
                 const residual=r.residualProbabilityPct!==undefined&&r.residualImpactAmount!==undefined?r.residualProbabilityPct/100*r.residualImpactAmount:null;
                 return {
@@ -961,10 +949,12 @@ export function RaidView({
               locale={locale}
               onEdit={(id) => onEdit("risk", id)}
               onDelete={(id) => archive(tab, id)}
-            />
+              deleteHint={ru ? "Связи с этой записью будут удалены; связанные рабочие записи сохранятся." : "References to this record will be removed; related work records will be retained."}
+            />}
           </div>
           <div className="panel span-4">
             <h3>{ru ? "Матрица риска" : "Risk matrix"}</h3>
+            {riskCell && <button className="button small" onClick={()=>setRiskCell(null)}>{ru ? "Показать все риски" : "Show all risks"}</button>}
             <p className="muted compact">{ru ? "Вероятность: 5 сверху → 1 снизу. Влияние: 1 слева → 5 справа. Число — открытые риски." : "Probability: 5 at top → 1 at bottom. Impact: 1 left → 5 right. Count: open risks."}</p>
             <div className="risk-matrix">
               {Array.from({ length: 25 }, (_, i) => {
@@ -972,17 +962,18 @@ export function RaidView({
                   impact = (i % 5) + 1,
                   score = p * impact;
                 return (
-                  <div
-                    role="img"
+                  <button type="button"
                     className={`risk-cell ${score >= 15 ? "risk-high" : score >= 8 ? "risk-mid" : "risk-low"}`}
                     key={i}
+                    aria-pressed={riskCell?.probability===p&&riskCell.impact===impact}
                     aria-label={`${ru ? "Вероятность" : "Probability"} ${p}, ${ru ? "влияние" : "impact"} ${impact}: ${map.risk.filter(r => r.status !== "closed" && r.probability === p && r.impact === impact).length}`}
                     title={`P${p} × I${impact}`}
+                    onClick={()=>setRiskCell(current=>current?.projectId===project.id&&current.probability===p&&current.impact===impact?null:{projectId:project.id,probability:p,impact})}
                   >
                     {map.risk.filter(
                       (r) => r.status !== "closed" && r.probability === p && r.impact === impact,
                     ).length || ""}
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -1007,6 +998,7 @@ export function RaidView({
           locale={locale}
           onEdit={(id) => onEdit("issue", id)}
           onDelete={(id) => archive(tab, id)}
+          deleteHint={ru ? "Связи с этой записью будут удалены; связанные рабочие записи сохранятся." : "References to this record will be removed; related work records will be retained."}
         />
       )}{" "}
       {tab === "assumption" && (
@@ -1022,8 +1014,10 @@ export function RaidView({
           locale={locale}
           onEdit={(id) => onEdit("assumption", id)}
           onDelete={(id) => archive(tab, id)}
+          deleteHint={ru ? "Связи с этой записью будут удалены; связанные рабочие записи сохранятся." : "References to this record will be removed; related work records will be retained."}
         />
       )}{" "}
+      {conversionRisk && <WorkspaceMore title={ru ? "Зафиксировать наступивший риск?" : "Record a realized risk?"} onClose={()=>setRiskToConvert(null)}><form className="stack" onSubmit={event=>{event.preventDefault();if(!issueUrgency)return;onChange(convertRiskToIssue(workspace,conversionRisk.id,Number(issueUrgency)));setRiskToConvert(null);setTab("issue");}}><p>{ru ? `Будет создана проблема «${conversionRisk.title}» со ссылкой на риск. Риск получит статус «закрыт»; его запись сохранится. Дата пересмотра риска не станет сроком решения проблемы.` : `An issue “${conversionRisk.title}” will be created with a link to the risk. The risk will be marked closed and its record retained. The risk review date will not become the issue deadline.`}</p><label className="field"><span>{ru ? "Срочность проблемы" : "Issue urgency"}</span><select required value={issueUrgency} onChange={event=>setIssueUrgency(event.target.value)}><option value="">{ru ? "Выберите срочность" : "Select urgency"}</option>{[1,2,3,4,5].map(value=><option key={value} value={value}>{value}</option>)}</select></label><div className="dialog-actions"><button className="button" type="button" onClick={()=>setRiskToConvert(null)}>{ru ? "Отмена" : "Cancel"}</button><button className="button primary" type="submit" disabled={!issueUrgency}>{ru ? "Создать проблему" : "Create issue"}</button></div></form></WorkspaceMore>}
       {tab === "decision" && (
         <DecisionCenter decisions={map.decision} locale={locale} onEdit={id=>onEdit("decision",id)}/>
       )}
@@ -1221,9 +1215,9 @@ export function PeopleView({
           <button className="button primary section-action" onClick={() => onCreate("meeting")}>
             <Plus size={17} />{ru ? "Добавить встречу" : "Add meeting"}
           </button>
-          {meetings.length ? <div className="table-wrap"><table>
+          {meetings.length ? <div className="table-wrap meeting-table"><table>
             <thead><tr><th>{ru ? "Встреча" : "Meeting"}</th><th>{ru ? "Дата" : "Date"}</th><th>{ru ? "Участники" : "Attendees"}</th><th>{ru ? "Итоги и следующие действия" : "Outcomes and next actions"}</th><th>{ru ? "Действия" : "Actions"}</th></tr></thead>
-            <tbody>{meetings.slice(meetingPage * 20, meetingPage * 20 + 20).map(x => <tr key={x.id}><td><strong>{x.title}</strong></td><td>{x.date || "—"}</td><td>{x.attendees.join(", ") || "—"}</td><td>{x.outputs.join("; ") || "—"}</td><td><button className="button small" onClick={() => onEdit("meeting", x.id)} aria-label={`${ru ? "Изменить встречу" : "Edit meeting"}: ${x.title}`}>{ru ? "Изменить" : "Edit"}</button></td></tr>)}</tbody>
+            <tbody>{meetings.slice(meetingPage * 20, meetingPage * 20 + 20).map(x => <tr key={x.id}><td data-label={ru ? "Встреча" : "Meeting"}><strong>{x.title}</strong></td><td data-label={ru ? "Дата" : "Date"}>{x.date || "—"}</td><td data-label={ru ? "Участники" : "Attendees"}>{x.attendees.join(", ") || "—"}</td><td data-label={ru ? "Итоги и следующие действия" : "Outcomes and next actions"}>{x.outputs.join("; ") || "—"}</td><td><button className="button small" onClick={() => onEdit("meeting", x.id)} aria-label={`${ru ? "Изменить встречу" : "Edit meeting"}: ${x.title}`}>{ru ? "Изменить" : "Edit"}</button></td></tr>)}</tbody>
           </table><CollectionPager page={meetingPage} size={20} total={meetings.length} locale={locale} label={ru ? "Страницы встреч" : "Meeting pages"} onPage={page => setMeetingPosition({project: project.id, page})}/></div> : <p className="muted">{ru ? "Встреч пока нет. Добавьте встречу, чтобы записать повестку и итоги." : "No meetings yet. Add one to record its agenda and outcomes."}</p>}
         </>
       )}
@@ -1725,6 +1719,7 @@ export function EntityTable({
   locale,
   onEdit,
   onDelete,
+  deleteHint,
 }: {
   rows: {
     id: string;
@@ -1737,6 +1732,7 @@ export function EntityTable({
   locale: Locale;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  deleteHint?: string;
 }) {
   const ru = locale === "ru";
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
@@ -1810,7 +1806,7 @@ export function EntityTable({
         </tbody>
       </table>
     </div>
-    {pendingDelete && (() => { const row = rows.find(item => item.id === pendingDelete); return row ? <ConfirmationDialog locale={locale} title={ru ? "Подтвердите удаление" : "Confirm deletion"} message={ru ? `Удалить «${row.title}»? Это действие нельзя отменить.` : `Delete “${row.title}”? This cannot be undone.`} confirmLabel={ru ? "Удалить" : "Delete"} onCancel={() => setPendingDelete(null)} onConfirm={() => {onDelete?.(pendingDelete);setPendingDelete(null);}}/> : null; })()}
+    {pendingDelete && (() => { const row = rows.find(item => item.id === pendingDelete); return row ? <ConfirmationDialog locale={locale} title={ru ? "Подтвердите удаление" : "Confirm deletion"} message={`${ru ? `Удалить «${row.title}»? Это действие нельзя отменить.` : `Delete “${row.title}”? This cannot be undone.`}${deleteHint ? ` ${deleteHint}` : ""}`} confirmLabel={ru ? "Удалить" : "Delete"} onCancel={() => setPendingDelete(null)} onConfirm={() => {onDelete?.(pendingDelete);setPendingDelete(null);}}/> : null; })()}
     </>
   );
 }
