@@ -10,7 +10,10 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # The two-base release matrix installs Chromium, Lighthouse, full E2E, then
+    # Firefox/WebKit system dependencies and smoke. Fresh-runner apt installs
+    # can exceed 20 minutes; keep enough room for all required release evidence.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
