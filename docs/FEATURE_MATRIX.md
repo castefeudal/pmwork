@@ -5,6 +5,10 @@ Status meanings: **implemented** changes persisted state or completes a determin
 | Capability | Status | Automated evidence | RU/EN |
 | --- | --- | --- | :---: |
 | Today evidence coverage linked to source modules | Implemented | domain evidence + Chromium mobile/desktop browser | ✓ |
+| Today: upcoming milestones and per-project snooze until the next local day | Implemented | deterministic signal and snooze tests; Chromium desktop/mobile | ✓ |
+| People: meeting records, editing, links, search and responsive list | Implemented | component and Chromium desktop/mobile workflows | ✓ |
+| Display: comfortable, standard and compact density; system, light and dark theme; display reset | Implemented | backup round trip, theme tests and Chromium density measurement | ✓ |
+| RAID: interactive risk matrix and confirmed risk-to-issue conversion | Implemented | command/component and Chromium desktop/mobile tests | ✓ |
 | Portfolio attention, critical, upcoming, overdue, stale, owner and forecast filters | Implemented | data-derived filter E2E | ✓ |
 | Semantic light/dark workspace design tokens and five-destination mobile navigation | Implemented | responsive visual and accessibility regression | ✓ |
 | Public landing daily-loop story, local-first trust points, and visible author credit | Implemented | static export, axe, responsive navigation | ✓ |
