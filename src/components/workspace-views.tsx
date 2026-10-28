@@ -10,14 +10,13 @@ import { ProjectHealth } from "./project-health";
 import { convertRiskToIssue, generateStatusDraft, removeWorkspaceRecord, updateWork } from "@/domain/workspace-commands";
 import { useUrlChoice } from "./use-url-state";
 import { PlanningTimeline } from "./planning-timeline";
+import { EmptyStateGraphic } from "./atlas-empty";
 import { localDay } from "@/domain/work-views";
 import { formatMilestoneVariance } from "@/domain/milestones";
 import {
   AlertTriangle,
   ArrowRight,
   CalendarDays,
-  CheckCircle2,
-  FileText,
   Plus,
   ShieldAlert,
   Trash2,
@@ -358,14 +357,16 @@ export function OverviewView({
               ))}
             </ol>
           ) : (
-            <div className="empty-state">
-              <CheckCircle2 />
-              <h3>{ru ? "Критичных сигналов нет" : "No critical signals"}</h3>
-              <p>
-                {ru
-                  ? "Проверьте актуальность данных на следующем обзоре."
-                  : "Review data freshness at the next review."}
-              </p>
+            <div className="empty-state atlas-empty-state">
+              <EmptyStateGraphic kind="no-risks" locale={locale} />
+              <div className="atlas-empty-copy">
+                <h3>{ru ? "Критичных сигналов нет" : "No critical signals"}</h3>
+                <p>
+                  {ru
+                    ? "Проверьте актуальность данных на следующем обзоре."
+                    : "Review data freshness at the next review."}
+                </p>
+              </div>
             </div>
           )}
         </section>
@@ -1738,14 +1739,16 @@ export function EntityTable({
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   if (!rows.length)
     return (
-      <div className="empty-state panel">
-        <FileText />
-        <h3>{ru ? "Записей пока нет" : "No records yet"}</h3>
-        <p>
-          {ru
-            ? "Добавьте только то, что меняет решение, снижает риск или подтверждает результат."
-            : "Add only what changes a decision, reduces risk, or verifies an outcome."}
-        </p>
+      <div className="empty-state panel atlas-empty-state">
+        <EmptyStateGraphic kind="no-records" locale={locale} />
+        <div className="atlas-empty-copy">
+          <h3>{ru ? "Записей пока нет" : "No records yet"}</h3>
+          <p>
+            {ru
+              ? "Добавьте только то, что меняет решение, снижает риск или подтверждает результат."
+              : "Add only what changes a decision, reduces risk, or verifies an outcome."}
+          </p>
+        </div>
       </div>
     );
   return (
