@@ -119,7 +119,7 @@ for (const [width, height] of SIZES) {
       for (const view of VIEWS) {
         if (view.name === "portfolio" && mobile) continue;
         const sideNav = page.locator(".side-nav button", { hasText: labels[view.labelKey] }).first();
-        if (await sideNav.count()) {
+        if (await sideNav.isVisible()) {
           await sideNav.click();
         } else {
           const mobileNav = page.locator(".mobile-workspace-nav button", { hasText: labels[view.labelKey] }).first();
