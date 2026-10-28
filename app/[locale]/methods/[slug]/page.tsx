@@ -2,18 +2,29 @@ import {ContentBasis} from "@/components/content-basis";
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import {methods,sources} from '@/content/catalog';
+import {MethodDiagram,methodDiagramCaption,type MethodKind} from '@/components/atlas-graphics';
 import {PublicHeader} from '@/components/public-header';
 import {Footer} from '@/components/footer';
 import type {Locale} from '@/domain/schemas';
+
+/** Only methods whose mechanics this sheet draws correctly. */
+const methodDiagrams: Record<string, MethodKind> = {
+  predictive: "evm",
+  scrum: "scrum",
+  kanban: "kanban",
+  cpm: "cpm",
+};
 
 export function generateStaticParams(){return ['ru','en'].flatMap(locale=>methods.map(m=>({locale,slug:m.slug})))}
 
 export default async function Page({params}:{params:Promise<{locale:string;slug:string}>}){
  const {locale,slug}=await params;if(locale!=='ru'&&locale!=='en')notFound();
  const m=methods.find(x=>x.slug===slug);if(!m)notFound();const l=locale as Locale,ru=l==='ru',tool=m.slug==='markovmade'?'markovmade':'fit';
+ const diagram=methodDiagrams[m.slug];
  return <div className="catalog-layout"><PublicHeader locale={l}/><main id="main">
   <header className="catalog-hero"><p className="eyebrow">PMWORK · {ru?'метод':'method'}</p><h1>{m.title[l]}</h1><p className="lead">{m.summary[l]}</p><div className="button-row"><Link className="button primary" href={`/${l}/tools/?tool=${tool}`}>{m.slug==='markovmade'?(ru?'Рассчитать приоритет':'Score an intervention'):(ru?'Проверить совместимость с проектом':'Check project fit')}</Link><Link className="button" href={`/${l}/methods/`}>{ru?'Все методы':'All methods'}</Link></div></header>
   <div className="public-container article-layout"><article className="article-body">
+   {diagram&&<section className="method-diagram"><h2>{ru?'Механика':'How it works'}</h2><figure className="atlas-plate method-diagram-plate"><MethodDiagram kind={diagram} locale={l}/><figcaption>{methodDiagramCaption(diagram,l)}</figcaption></figure><p className="muted compact">{ru?'Схема показывает рабочий механизм подхода, а не рекомендацию применять его в этом проекте.':'The sheet shows the mechanism of the approach, not a recommendation to use it on your project.'}</p></section>}
    <section><h2>{ru?'Что решает':'What it solves'}</h2><p>{m.flow[l]}</p></section>
    <section><h2>{ru?'Подходит, если':'Good fit when'}</h2><p>{m.bestFit[l]}</p></section>
    <section><h2>{ru?'Не подходит / ограничения':'Poor fit / limitations'}</h2><p>{m.poorFit[l]}</p><p>{m.limitations[l]}</p></section>
