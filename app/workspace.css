@@ -381,7 +381,7 @@ td, th { font-variant-numeric: tabular-nums; }
   .workspace-top h1 { display: none; }
   .workspace-top .mobile-project-switch { min-height: 40px; flex: 1 1 110px; width: auto; max-width: 200px; }
   .workspace-top .button { min-height: 40px; padding: 7px 9px; }
-  .workspace-content { padding: 20px 14px calc(92px + env(safe-area-inset-bottom)); }
+  .workspace-content { padding: 20px 14px var(--mobile-work-nav-clearance); }
   .page-context { align-items: flex-start; gap: 12px; }
   .page-context h2 { font-size: 1.7rem; }
   .mobile-workspace-nav {
@@ -556,7 +556,7 @@ td, th { font-variant-numeric: tabular-nums; }
 }
 @media (max-width: 767px) {
   .workspace-shell.density-compact .workspace-content {
-    padding: 16px 12px calc(96px + env(safe-area-inset-bottom));
+    padding: 16px 12px var(--mobile-work-nav-clearance);
   }
   .meeting-table table, .meeting-table tbody, .meeting-table tr, .meeting-table td { display: block; width: 100%; }
   .meeting-table table { min-width: 0; }
