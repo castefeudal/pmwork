@@ -2,6 +2,13 @@
 
 This guide describes the shared visual and interaction foundations for the public site and project workspace. The implementation lives in `app/tokens.css`, `app/fonts.css`, the layered feature stylesheets, and the final responsive/accessibility layer in `app/refinement.css`.
 
+The graphic language that ties surfaces together — the Operational Atlas — is
+specified in [VISUAL_DIRECTION.md](VISUAL_DIRECTION.md); the shipped imagery and
+the SVG components that draw it are listed in
+[VISUAL_ASSET_INVENTORY.md](VISUAL_ASSET_INVENTORY.md). Atlas colours come from
+the `--atlas-*` tokens in `app/visuals.css`, which respond to theme and high
+contrast. Never hard-code an atlas stroke or fill.
+
 ## Typography
 
 - **Manrope Variable** is the shared interface, reading and display face. Use `var(--font-sans)` for body, controls and tables, and `var(--font-display)` for headings; both resolve to the same local family. Hierarchy comes from size, weight, measure and spacing.
@@ -46,6 +53,22 @@ The planning timeline uses one scale model: `--timeline-label` (default 220px) s
 `app/tokens.css` declares the cascade order: `reset, tokens, base, components, editorial, marketing, workspace, polish, utilities`. Later layers may only override earlier ones for a documented reason. The landing hero is defined once, in `app/excellence-public.css`; corrective layers must not restate its colours, type scale or background. Run `npm run css:audit` before adding a rule to a later layer: it reports declarations that a later identical selector already shadows, duplicate selector blocks, and raw hex values that should be semantic tokens.
 
 
+
+## Atlas graphics and the bundle boundary
+
+The drawings are components, not fetched files. `src/components/atlas-marks.tsx` holds the shared
+vocabulary — rail, node, control point, arrow, corner registration marks, `atlasAsset` — and the
+larger sheets live in `atlas-empty`, `atlas-graphics` and `atlas-editorial`. Stroke and fill come
+only from the `--atlas-*` tokens in `app/visuals.css`, so a sheet follows theme, high contrast and
+text size without a second rule and without an HTTP request.
+
+A client island ships every module it imports inside its own route bundle, so the module split is a
+budget decision, not a stylistic one: interactive workspace surfaces import `atlas-marks` plus
+`atlas-empty`, the tools lab adds `atlas-graphics`, and landing plates stay in `atlas-editorial`
+behind a server component. Where one surface has several states — the four role sheets — every state
+is prerendered and the `[hidden]` pair of the inactive role leaves the grid, so the copy travels as
+HTML and only the tab handler as JavaScript. Before importing a drawing into a workspace component,
+run `npm run performance:check`: the recorded `/en/` gate is the arbiter, not an estimate.
 
 ## Change process
 

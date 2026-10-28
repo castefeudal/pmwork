@@ -3,14 +3,9 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  BookOpen,
-  ChartNoAxesCombined,
   Check,
-  Compass,
-  LayoutDashboard,
   LockKeyhole,
   ShieldCheck,
-  Workflow,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -20,6 +15,9 @@ import { demoWorkspace } from "@/data/demo";
 import { PublicHeader } from "@/components/public-header";
 import { RoleShowcase } from "@/components/role-showcase";
 import { ProductShowcase } from "@/components/product-showcase";
+import { AtlasBand } from "@/components/atlas-band";
+import { FeatureGraphic, LibraryMotif, type FeatureKind, type LibraryKind } from "@/components/atlas-editorial";
+import { PlateMarks } from "@/components/atlas-marks";
 import { Footer } from "@/components/footer";
 
 export function generateStaticParams() {
@@ -52,12 +50,19 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description,
       url: `https://castefeudal.github.io/pmwork/${locale}/`,
       type: "website",
+      locale: ru ? "ru_RU" : "en_US",
       images: [{
-        url: "https://castefeudal.github.io/pmwork/og-image.png",
+        url: `https://castefeudal.github.io/pmwork/visuals/social/og-image-${locale}.png`,
         width: 1200,
         height: 630,
         alt: ru ? "PMWORK — практическая система управления проектами" : "PMWORK — practical project management system",
       }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`https://castefeudal.github.io/pmwork/visuals/social/og-image-${locale}.png`],
     },
   };
 }
@@ -78,12 +83,12 @@ const copy = {
     capabilityTitle: "Что можно делать в PMWORK",
     capabilityLead: "Создавайте задачи, следите за сроками, связывайте риски и решения. В сводке видны блокеры и ближайшие контрольные точки.",
     features: [
-      { icon: LayoutDashboard, label: "Сводка", title: "Найдите блокеры и ближайшие сроки", body: "Смотрите задачи, контрольные точки и причины задержек. Сигналы ведут к исходным записям.", href: "/workspace/", link: "Открыть пример" },
-      { icon: Workflow, label: "Работа", title: "Ведите задачи списком, на доске или в календаре", body: "Это одни и те же записи: смените вид, чтобы спланировать неделю или разобрать очередь.", href: "/workspace/", link: "Посмотреть задачи" },
-      { icon: ShieldCheck, label: "Риски и решения", title: "Назначайте владельцев и фиксируйте договорённости", body: "Укажите, что может случиться, по какому признаку действовать и какое решение принято.", href: "/workspace/", link: "Посмотреть управление" },
-      { icon: ChartNoAxesCombined, label: "Расчёты", title: "Проверяйте сроки и оценки", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo. Расчёты показывают исходные данные и допущения.", href: "/tools/", link: "Открыть инструменты" },
-      { icon: Compass, label: "Методы", title: "Выбирайте способ работы по условиям проекта", body: "Сравните подходы по стабильности требований, срокам, зависимостям и частоте обратной связи.", href: "/methods/", link: "Сравнить методы" },
-      { icon: BookOpen, label: "Шаблоны и инструкции", title: "Начните с готовой структуры", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} практических сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
+      { graphic: "attention" as FeatureKind, label: "Сводка", title: "Найдите блокеры и ближайшие сроки", body: "Смотрите задачи, контрольные точки и причины задержек. Сигналы ведут к исходным записям.", href: "/workspace/", link: "Открыть пример" },
+      { graphic: "board" as FeatureKind, label: "Работа", title: "Ведите задачи списком, на доске или в календаре", body: "Это одни и те же записи: смените вид, чтобы спланировать неделю или разобрать очередь.", href: "/workspace/", link: "Посмотреть задачи" },
+      { graphic: "risk" as FeatureKind, label: "Риски и решения", title: "Назначайте владельцев и фиксируйте договорённости", body: "Укажите, что может случиться, по какому признаку действовать и какое решение принято.", href: "/workspace/", link: "Посмотреть управление" },
+      { graphic: "model" as FeatureKind, label: "Расчёты", title: "Проверяйте сроки и оценки", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo. Расчёты показывают исходные данные и допущения.", href: "/tools/", link: "Открыть инструменты" },
+      { graphic: "method" as FeatureKind, label: "Методы", title: "Выбирайте способ работы по условиям проекта", body: "Сравните подходы по стабильности требований, срокам, зависимостям и частоте обратной связи.", href: "/methods/", link: "Сравнить методы" },
+      { graphic: "library" as FeatureKind, label: "Шаблоны и инструкции", title: "Начните с готовой структуры", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} практических сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
     ],
     privacyEyebrow: "ХРАНЕНИЕ ДАННЫХ",
     privacyTitle: "Проект хранится в этом браузере",
@@ -96,10 +101,10 @@ const copy = {
     librarySectionTitle: "Материалы для повседневной работы",
     libraryLead: "Откройте нужный раздел, чтобы сравнить методы, взять шаблон или найти определение.",
     library: [
-      ["Методы", `${contentCounts.methods}`, "Выбрать, сравнить и адаптировать", "/methods/"],
-      ["Шаблоны", `${contentCounts.templates}`, "Начать с хорошей структуры", "/templates/"],
-      ["Практические сценарии", `${contentCounts.playbooks}`, "Разобрать реальную ситуацию", "/playbooks/"],
-      ["Глоссарий", `${contentCounts.glossary}`, "Говорить с командой точнее", "/glossary/"],
+      ["Методы", `${contentCounts.methods}`, "Выбрать, сравнить и адаптировать", "/methods/", "method"],
+      ["Шаблоны", `${contentCounts.templates}`, "Начать с хорошей структуры", "/templates/", "template"],
+      ["Практические сценарии", `${contentCounts.playbooks}`, "Разобрать реальную ситуацию", "/playbooks/", "scenario"],
+      ["Глоссарий", `${contentCounts.glossary}`, "Говорить с командой точнее", "/glossary/", "term"],
     ],
     approachEyebrow: "ВЫБОР МЕТОДА",
     approachTitle: "Выбирайте метод по условиям проекта",
@@ -128,12 +133,12 @@ const copy = {
     capabilityTitle: "What you can do in PMWORK",
     capabilityLead: "Create work items, track dates, and link risks to decisions. The overview shows blockers and upcoming milestones.",
     features: [
-      { icon: LayoutDashboard, label: "Overview", title: "Find blockers and upcoming dates", body: "See work items, milestones, and reasons for delays. Signals link to their source records.", href: "/workspace/", link: "Open the example" },
-      { icon: Workflow, label: "Work", title: "Use a list, board, or calendar", body: "Each view shows the same work items. Switch views to plan a week or review the queue.", href: "/workspace/", link: "View work items" },
-      { icon: ShieldCheck, label: "Risks and decisions", title: "Assign owners and record decisions", body: "Note what could happen, what would trigger action, and which decision was made.", href: "/workspace/", link: "View risk management" },
-      { icon: ChartNoAxesCombined, label: "Calculations", title: "Check schedules and estimates", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo show their inputs and assumptions.", href: "/tools/", link: "Open the tools" },
-      { icon: Compass, label: "Methods", title: "Choose an approach for your constraints", body: "Compare methods by requirements stability, deadlines, dependencies, and feedback cadence.", href: "/methods/", link: "Compare methods" },
-      { icon: BookOpen, label: "Templates and guides", title: "Start with a working structure", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} practical guides, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
+      { graphic: "attention" as FeatureKind, label: "Overview", title: "Find blockers and upcoming dates", body: "See work items, milestones, and reasons for delays. Signals link to their source records.", href: "/workspace/", link: "Open the example" },
+      { graphic: "board" as FeatureKind, label: "Work", title: "Use a list, board, or calendar", body: "Each view shows the same work items. Switch views to plan a week or review the queue.", href: "/workspace/", link: "View work items" },
+      { graphic: "risk" as FeatureKind, label: "Risks and decisions", title: "Assign owners and record decisions", body: "Note what could happen, what would trigger action, and which decision was made.", href: "/workspace/", link: "View risk management" },
+      { graphic: "model" as FeatureKind, label: "Calculations", title: "Check schedules and estimates", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo show their inputs and assumptions.", href: "/tools/", link: "Open the tools" },
+      { graphic: "method" as FeatureKind, label: "Methods", title: "Choose an approach for your constraints", body: "Compare methods by requirements stability, deadlines, dependencies, and feedback cadence.", href: "/methods/", link: "Compare methods" },
+      { graphic: "library" as FeatureKind, label: "Templates and guides", title: "Start with a working structure", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} practical guides, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
     ],
     privacyEyebrow: "DATA STORAGE",
     privacyTitle: "Your project stays in this browser",
@@ -146,10 +151,10 @@ const copy = {
     librarySectionTitle: "Material for everyday project work",
     libraryLead: "Open a section to compare methods, use a template, work through a scenario, or look up a term.",
     library: [
-      ["Methods", `${contentCounts.methods}`, "Choose, compare, and tailor", "/methods/"],
-      ["Templates", `${contentCounts.templates}`, "Start with a strong structure", "/templates/"],
-      ["Playbooks", `${contentCounts.playbooks}`, "Work through a real situation", "/playbooks/"],
-      ["Glossary", `${contentCounts.glossary}`, "Give the team a shared language", "/glossary/"],
+      ["Methods", `${contentCounts.methods}`, "Choose, compare, and tailor", "/methods/", "method"],
+      ["Templates", `${contentCounts.templates}`, "Start with a strong structure", "/templates/", "template"],
+      ["Playbooks", `${contentCounts.playbooks}`, "Work through a real situation", "/playbooks/", "scenario"],
+      ["Glossary", `${contentCounts.glossary}`, "Give the team a shared language", "/glossary/", "term"],
     ],
     approachEyebrow: "CHOOSING A METHOD",
     approachTitle: "Choose a method for the project conditions",
@@ -201,25 +206,33 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </ul>
             <p className="hero-author">{t.created} · <Link prefetch={false} href={`/${locale}/about/`}>{ru ? "О продукте" : "About"}</Link></p>
           </div>
-          <ProductShowcase locale={locale} preview={preview} />
+          <div className="hero-plate">
+            <PlateMarks />
+            <ProductShowcase locale={locale} preview={preview} />
+          </div>
           <a className="hero-scroll-cue" href="#capabilities"><span>{t.scroll}</span><ArrowDown size={14} aria-hidden="true" /></a>
         </section>
 
         <RoleShowcase locale={locale}/>
+        <AtlasBand locale={locale} />
         <section className="section marketing-section" id="capabilities">
           <div className="marketing-section-head">
             <div><p className="eyebrow">{t.libraryLabel}</p><h2>{t.capabilityTitle}</h2></div>
             <p>{t.capabilityLead}</p>
           </div>
           <div className="capability-grid">
-            {featureLinks.map((feature, i) => {
-              const Icon = feature.icon;
-              return <Link prefetch={false} className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
-                <div className="capability-topline"><span className="capability-icon"><Icon size={19} strokeWidth={1.8} aria-hidden="true" /></span><span className="capability-number">0{i + 1}</span></div>
-                <span className="capability-label">{feature.label}</span><h3>{feature.title}</h3><p>{feature.body}</p>
-                <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
-              </Link>;
-            })}
+            {featureLinks.map((feature, i) => (
+              <Link prefetch={false} className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
+                <div className="capability-visual"><FeatureGraphic kind={feature.graphic} locale={locale} /></div>
+                <div className="capability-text">
+                  <span className="capability-label">{feature.label}</span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.body}</p>
+                  <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
+                </div>
+                <span className="capability-number">0{i + 1}</span>
+              </Link>
+            ))}
           </div>
         </section>
 
@@ -234,7 +247,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         <section className="section library-section">
           <div className="marketing-section-head"><div><p className="eyebrow">{t.libraryEyebrow}</p><h2>{t.librarySectionTitle}</h2></div><p>{t.libraryLead}</p></div>
-          <div className="library-grid">{t.library.map(([name, amount, description, href], i) => <Link prefetch={false} className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span><span className="library-index">0{i + 1}</span></Link>)}</div>
+          <div className="library-grid">{t.library.map(([name, amount, description, href, motif], i) => <Link prefetch={false} className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><LibraryMotif kind={motif as LibraryKind} locale={locale} /><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span><span className="library-index">0{i + 1}</span></Link>)}</div>
         </section>
 
         <section className="section approach-section">
