@@ -58,8 +58,14 @@
 
 .first-run-gate { position:relative;isolation:isolate;overflow:hidden;width:min(100%,920px);max-width:none;min-height:100svh;align-content:center;justify-items:stretch;gap:0;padding:clamp(1.3rem,5vw,3.7rem) clamp(1rem,5vw,3.2rem);background:radial-gradient(ellipse at 80% 24%,color-mix(in srgb,var(--accent-primary) 10%,transparent),transparent 26rem),var(--canvas) }
 .first-run-gate>.brand { margin-bottom:clamp(2.2rem,6vh,4.5rem) }
-.first-run-hero { max-width:680px;animation:quiet-arrive 240ms cubic-bezier(.18,.76,.25,1) both }
-.first-run-hero>.eyebrow { margin:0 0 .85rem;font-size:0.875rem;letter-spacing:.14em }
+.first-run-hero { display:grid;grid-template-columns:minmax(0,1fr) minmax(268px,36%);align-items:center;gap:clamp(1.1rem,3.2vw,2.2rem);max-width:none;animation:quiet-arrive 240ms cubic-bezier(.18,.76,.25,1) both }
+.first-run-copy { min-width:0 }
+.first-run-copy>.eyebrow { margin:0 0 .85rem;font-size:0.875rem;letter-spacing:.14em }
+.first-run-plate { align-self:center;background:#0b1117;border-color:rgba(222,237,242,.14);box-shadow:var(--shadow-medium) }
+/* In dark mode the canvas is the same navy the plate is drawn on, so the edge
+   and a hairline ring carry the separation rather than the fill. */
+[data-theme="dark"] .first-run-plate { border-color:rgba(222,237,242,.26);box-shadow:var(--shadow-medium),0 0 0 1px rgba(222,237,242,.07) }
+.first-run-plate>img { display:block;width:100%;height:auto }
 .first-run-hero h1 { max-width:18ch;font-size:clamp(2.75rem,6.2vw,5rem);line-height:1.02;letter-spacing:-.065em;text-wrap:balance }
 .first-run-hero .lead { max-width:55ch;margin:.9rem 0 0;color:var(--text-secondary);font-size:clamp(0.95rem,1.4vw,1.1rem);line-height:1.7 }
 .first-run-assurance { display:flex;align-items:center;gap:.75rem;margin-top:1.65rem;padding:.85rem 1rem;border:1px solid color-mix(in srgb,var(--accent-primary) 18%,var(--border-default));border-radius:13px;background:color-mix(in srgb,var(--accent-primary) 5%,var(--surface-0));animation:quiet-arrive 180ms both }
@@ -94,6 +100,12 @@
 .first-run-privacy .first-run-privacy-icon { display:block;width:16px;height:16px;flex:0 0 16px; }
 
 [data-theme="dark"] .first-run-assurance small { color:var(--text-tertiary) }
+
+@media (max-width: 860px) {
+  .first-run-hero { grid-template-columns:minmax(0,1fr) }
+  .first-run-plate { aspect-ratio:21/9 }
+  .first-run-plate>img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45% }
+}
 
 @media (max-width: 700px) {
   .entry-gate { min-height:100svh;grid-template-rows:auto auto auto auto;align-content:start;padding:1.15rem 1rem 1rem }

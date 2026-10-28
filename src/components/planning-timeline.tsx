@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { dependencyConflicts } from "@/domain/planning";
 import { localDay } from "@/domain/work-views";
 import { timelineTicks } from "@/domain/timeline-scale";
+import { EmptyStateGraphic } from "./atlas-empty";
 import type { ViewProps } from "./workspace-views";
 
 const DAY_MS = 86400000;
@@ -66,7 +67,7 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
         })}
         {milestones.map(m=><div className="date-timeline-row" key={m.id}><button className="work-title-button" onClick={()=>onEdit("milestone",m.id)}>{m.title}<span className="timeline-date-label">{milestoneSummary(m)} · {m.progress}%</span></button><div className="date-track">{milestoneDates(m).filter(d=>d.date&&Number.isFinite(Date.parse(d.date))).map(d=><button key={d.kind} className={`milestone-marker milestone-${d.kind}`} style={{left:`${position(d.date!)}%`}} aria-label={`${m.title} · ${d.label}: ${formatDate(d.date,locale)}`} title={`${m.title} · ${d.label}: ${formatDate(d.date,locale)}`} onClick={()=>onEdit("milestone",m.id)}>{d.symbol}</button>)}</div></div>)}
       </div>
-    </div></div>:<div className="empty-state"><h3>{ru?"Нет запланированных задач и вех":"No scheduled work or milestones"}</h3><p>{ru?"Добавьте сроки задач или контрольные точки, чтобы увидеть график.":"Add work dates or milestones to see the schedule."}</p><button className="button" onClick={()=>onCreate("work")}>{ru?"Добавить работу":"Add work"}</button></div>}
+    </div></div>:<div className="empty-state atlas-empty-state"><EmptyStateGraphic kind="no-work" locale={locale}/><div className="atlas-empty-copy"><h3>{ru?"Нет запланированных задач и вех":"No scheduled work or milestones"}</h3><p>{ru?"Добавьте сроки задач или контрольные точки, чтобы увидеть график.":"Add work dates or milestones to see the schedule."}</p><button className="button" onClick={()=>onCreate("work")}>{ru?"Добавить работу":"Add work"}</button></div></div>}
     <p className="muted compact">{ru?"Календарные дни. Связь FS допускает начало в день окончания предшественника; лаг добавляет дни. Линия «сегодня» отмечена на шкале. Работа без дат: ":"Calendar days. FS permits a same-day finish/start; lag adds days. The today line is marked on the scale. Unscheduled work: "}{items.length-scheduled.length}.</p>
   </section>;
 }

@@ -1,8 +1,10 @@
 "use client";
 import {useRef,type ReactNode} from "react";
+import Image from "next/image";
 import {Database,LockKeyhole} from "lucide-react";
 import type {Locale} from "@/domain/schemas";
 import {managementRoles,roleLabels,type ManagementRole} from "@/domain/management-role";
+import {PlateMarks,atlasAsset} from "./atlas-marks";
 import {Brand} from "./brand";
 export type WorkspaceIntent = {kind:"project"|"demo"|"restore";role:ManagementRole;priority:string;file?:File};
 export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,priority:firstPriority,onPriority:setFirstPriority,onCreate,onDemo,onImport,notice,children,busy=false}:{locale:Locale;role:ManagementRole;onRole:(role:ManagementRole)=>void;priority:string;onPriority:(priority:string)=>void;onCreate:()=>void;onDemo:()=>void;onImport:(file:File)=>void;notice?:string;children?:ReactNode;busy?:boolean}) {
@@ -24,9 +26,15 @@ export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,prio
     <main className="language-gate first-run-gate" aria-busy={busy}>
       <Brand />
       <div className="first-run-hero">
-        <p className="eyebrow">{ru ? "НАЧАЛО РАБОТЫ" : "GET STARTED"}</p>
-        <h1>{ru ? "Создайте проект или откройте пример" : "Create a project or open the example"}</h1>
-        <p className="lead">{ru ? "Новый проект будет пустым. В демонстрационном уже есть задачи, сроки, риски и решения — на нём можно посмотреть, как устроен PMWORK." : "A new project starts empty. The sample includes work items, dates, risks, and decisions so you can see how PMWORK works."}</p>
+        <div className="first-run-copy">
+          <p className="eyebrow">{ru ? "НАЧАЛО РАБОТЫ" : "GET STARTED"}</p>
+          <h1>{ru ? "Создайте проект или откройте пример" : "Create a project or open the example"}</h1>
+          <p className="lead">{ru ? "Новый проект будет пустым. В демонстрационном уже есть задачи, сроки, риски и решения — на нём можно посмотреть, как устроен PMWORK." : "A new project starts empty. The sample includes work items, dates, risks, and decisions so you can see how PMWORK works."}</p>
+        </div>
+        <figure className="atlas-plate first-run-plate">
+          <PlateMarks />
+          <Image className="first-run-plate-image" src={atlasAsset("onboarding/atlas-plates-dark.webp")} alt={ru ? "Карта рабочих пластин: обзор, сроки, риски и решения нанесены на один лист." : "An atlas sheet: overview, schedule, risks and decisions plotted on one plate."} width={1100} height={880} sizes="(max-width: 860px) 100vw, 300px" priority />
+        </figure>
       </div>
       <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">i</span><span><strong>{ru ? "Выберите, с чего начать" : "Choose how to start"}</strong><small>{ru ? "Создайте свой проект или откройте пример с готовыми записями." : "Create your own project or open the sample with example records."}</small></span></div>
       {busy&&<p role="status" className="first-run-checking">{ru?"Проверяем локальные данные. Сохранённое пространство откроется автоматически.":"Checking local data. Your saved workspace will open automatically."}</p>}
