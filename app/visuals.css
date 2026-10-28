@@ -1,0 +1,111 @@
+/* Shared primitives for the Operational Atlas graphic language.
+   Route-specific layout rules stay in the layer that owns that route. */
+@layer tokens {
+  :root {
+    --atlas-hair: rgba(18, 38, 48, .3);
+    --atlas-faint: rgba(18, 38, 48, .14);
+    --atlas-strong: #14232c;
+    --atlas-route: var(--accent-primary);
+    --atlas-point: var(--accent-copper);
+    --atlas-field: var(--surface-0);
+  }
+  [data-theme="dark"] {
+    --atlas-hair: rgba(222, 237, 242, .32);
+    --atlas-faint: rgba(222, 237, 242, .15);
+    --atlas-strong: #dfeaed;
+    --atlas-field: var(--surface-1);
+  }
+  html[data-contrast="more"] {
+    --atlas-hair: #34505c;
+    --atlas-faint: #5c7480;
+    --atlas-strong: #091c25;
+  }
+  html[data-theme="dark"][data-contrast="more"] {
+    --atlas-hair: #bdd9e8;
+    --atlas-faint: #8babbc;
+    --atlas-strong: #ffffff;
+  }
+}
+
+@layer components {
+  .atlas-graphic { display: block; width: 100%; height: auto; overflow: visible; }
+  .atlas-graphic text { font-family: var(--font-sans); }
+  .atlas-graphic [stroke] { vector-effect: non-scaling-stroke; }
+
+  /* A drawn plate: hairline frame, copper registration corners, own surface. */
+  .atlas-plate {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin: 0;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-card);
+    background: var(--atlas-field);
+  }
+  .atlas-plate-marks {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .atlas-mark { position: absolute; width: 20px; height: 20px; opacity: .8; }
+  .atlas-mark-tl { top: 7px; left: 7px; }
+  .atlas-mark-tr { top: 7px; right: 7px; }
+  .atlas-mark-br { bottom: 7px; right: 7px; }
+  .atlas-mark-bl { bottom: 7px; left: 7px; }
+
+  /* Library sigil: sits at the card foot, clear of the corner action. */
+  .atlas-motif { width: 132px; max-width: calc(100% - 42px); height: auto; margin-block: auto 0; opacity: .92; }
+
+  /* Empty states keep the graphic beside the copy, never above it. The width
+     and min-width are restated because .atlas-graphic's width:100% would
+     otherwise set the flex item's automatic minimum size. */
+  .atlas-empty {
+    flex: 0 0 clamp(96px, 20%, 148px);
+    width: clamp(96px, 20%, 148px);
+    min-width: 0;
+    align-self: center;
+    opacity: .95;
+  }
+  .empty-state.atlas-empty-state {
+    display: flex;
+    align-items: center;
+    place-content: normal;
+    justify-items: normal;
+    gap: clamp(.85rem, 2.4vw, 1.5rem);
+    text-align: start;
+  }
+  .atlas-empty-copy {
+    display: grid;
+    justify-items: start;
+    gap: .1rem;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .atlas-empty-copy h3 { margin: 0 0 .18rem; }
+  .atlas-empty-copy p { margin: 0 0 .7rem; }
+  .atlas-empty-copy .button { margin-top: .35rem; }
+
+  /* Method mechanics sheet: the frame hugs the drawing, so a wide article column
+     never leaves a mostly empty plate. The sheet stays centred and the caption
+     states what it depicts. */
+  .method-diagram-plate { padding: clamp(.9rem, 2.6vw, 1.6rem); background: var(--surface-0); max-width: 720px; margin-inline: auto; }
+  [data-theme="dark"] .method-diagram-plate { background: var(--surface-1); }
+  .method-diagram-plate .atlas-graphic { max-width: 620px; margin-inline: auto; }
+  .tool-diagram-plate { padding: clamp(.8rem, 2.2vw, 1.35rem); margin-block: 1.1rem; background: var(--surface-0); max-width: 620px; margin-inline: auto; }
+  [data-theme="dark"] .tool-diagram-plate { background: var(--surface-1); }
+  .tool-diagram-plate .atlas-graphic { max-width: 520px; margin-inline: auto; }
+  .method-diagram-plate figcaption,
+  .tool-diagram-plate figcaption {
+    max-width: 52ch;
+    margin: .55rem auto 0;
+    color: var(--text-secondary);
+    font-size: .82rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .atlas-graphic, .atlas-plate { transition: none !important; }
+  }
+}
