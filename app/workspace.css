@@ -212,7 +212,7 @@ td, th { font-variant-numeric: tabular-nums; }
 .priority-focus .signal-evidence { max-width: 760px; }
 .coverage-strip {
   display: grid;
-  grid-template-columns: minmax(190px, 1.15fr) repeat(4, minmax(120px, 1fr));
+  grid-template-columns: minmax(190px, 1.15fr) repeat(auto-fit, minmax(120px, 1fr));
   gap: 0;
   margin: 14px 0 22px;
   overflow: hidden;
@@ -241,7 +241,7 @@ td, th { font-variant-numeric: tabular-nums; }
 .coverage-item strong { color: var(--semantic-warning); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
 .coverage-item span { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.35; }
 .coverage-item .coverage-link { color: var(--accent-primary); font-weight: 650; margin-top: 3px; }
-.coverage-complete { align-self: center; color: var(--text-secondary); font-size: 0.875rem; }
+.coverage-complete { grid-column: 2 / -1; align-self: center; color: var(--text-secondary); font-size: 0.875rem; }
 .today-layout { gap: 14px; }
 .today-layout > div > .panel { margin-bottom: 12px; }
 .today-layout aside > .panel { position: sticky; top: 78px; }
