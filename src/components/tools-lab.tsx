@@ -7,6 +7,7 @@ const ProjectDataSource=dynamic(()=>import("./project-data-source").then(m=>m.Pr
 const ProjectTools=dynamic(()=>import("./project-tools").then(m=>m.ProjectTools));
 const MarkovmadeTool=dynamic(()=>import("./markovmade-tool").then(m=>m.MarkovmadeTool));
 import { useUrlChoice } from "./use-url-state";
+import { MethodDiagram, methodDiagramCaption, type MethodKind } from "./atlas-graphics";
 import { useId, useMemo, useState } from "react";
 import { displayLabel } from "@/content/workspace-i18n";
 import type { Locale, WorkItem } from "@/domain/schemas";
@@ -33,6 +34,16 @@ type Tool =
   | "forecast"
   | "priority"
   | "flow" | "deadline" | "emv" | "capacity" | "matrix" | "ownership" | "change" | "calibration" | "markovmade";
+
+/** Only tools whose underlying mechanism the atlas sheet draws correctly. */
+const toolDiagrams: Partial<Record<Tool, MethodKind>> = {
+  cpm: "cpm",
+  pert: "pert",
+  evm: "evm",
+  emv: "risk",
+  priority: "priority",
+  flow: "kanban",
+};
 const contextLabels: Record<keyof Context, { ru: string; en: string }> = {
   uncertainty: { ru: "Неопределённость", en: "Uncertainty" },
   volatility: { ru: "Изменчивость требований", en: "Requirements volatility" },
@@ -92,6 +103,12 @@ export function ToolsLab({ locale }: { locale: Locale }) {
         </div>
       </header>
       <section className="section" style={{ paddingTop: "1rem" }}>
+        {toolDiagrams[tool] && (
+          <figure className="atlas-plate tool-diagram-plate">
+            <MethodDiagram kind={toolDiagrams[tool]!} locale={locale} />
+            <figcaption>{methodDiagramCaption(toolDiagrams[tool]!, locale)}</figcaption>
+          </figure>
+        )}
         {tool === "fit" && <Fit locale={locale} />}{" "}
         {tool === "composer" && <Composer locale={locale} />}{" "}
         {tool === "cpm" && <CPM locale={locale} />}{" "}
