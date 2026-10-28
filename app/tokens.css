@@ -78,6 +78,11 @@
   --sidebar: 248px;
   --sidebar-compact: 224px;
   --topbar-height: 62px;
+  /* Fixed mobile destination bar: 1px border, 5px top padding, a 52px button
+     and 8px bottom padding. The workspace reserves this height so its last
+     control can never sit under the bar. */
+  --mobile-work-nav-height: 66px;
+  --mobile-work-nav-clearance: calc(var(--mobile-work-nav-height) + 2rem + env(safe-area-inset-bottom));
   --content: 1320px;
   --marketing-content: 1440px;
   --article-content: 74ch;
