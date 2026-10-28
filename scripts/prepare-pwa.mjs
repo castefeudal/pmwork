@@ -2,12 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 
+// A social preview is fetched by link unfurlers, never by the app, so the
+// offline shell does not carry the weight of two 1200×630 crawlers' images.
+const neverPrecached = /^(?:404(?:\/|\.)|_not-found\/|visuals\/social\/)/;
 const files=[];
 function walk(dir) {
   for (const entry of fs.readdirSync(dir,{withFileTypes:true})) {
     const file=path.join(dir,entry.name),relative=path.relative('out',file).split(path.sep).join('/');
     if(entry.isDirectory())walk(file);
-    else if(/\.(html|js|css|woff2|png|webp|svg|webmanifest|txt|xml)$/.test(file)&&relative!=='sw.js'&&!/^(?:404(?:\/|\.)|_not-found\/)/.test(relative))files.push(file);
+    else if(/\.(html|js|css|woff2|png|webp|svg|webmanifest|txt|xml)$/.test(file)&&relative!=='sw.js'&&!neverPrecached.test(relative))files.push(file);
   }
 }
 walk("out");
