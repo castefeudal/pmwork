@@ -55,6 +55,9 @@
 .role-showcase-heading .button[aria-pressed="true"] { color: var(--text-on-accent); border-color: var(--accent-primary); background: var(--accent-primary); }
 
 .role-showcase-panel { padding: clamp(1.15rem, 2.5vw, 1.8rem); }
+/* Every role sheet is prerendered so the copy never travels as JavaScript;
+   the two hidden elements of the inactive role leave the grid entirely. */
+.role-showcase-panel [hidden] { display: none; }
 .role-showcase-panel > .eyebrow { margin: 0 0 .55rem; color: var(--accent-primary); }
 .role-showcase-panel > h3 { margin: 0; font-size: clamp(1.12rem, 2vw, 1.45rem); line-height: 1.35; letter-spacing: -.025em; }
 .role-showcase-panel dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1.1rem 0 0; }
@@ -75,7 +78,6 @@
 }
 
 .site-shell .capability-card::after { display: none; }
-.site-shell .capability-icon { box-shadow: none; }
 
 /* Forms read as a short first step, with deeper planning available on demand. */
 
