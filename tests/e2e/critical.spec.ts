@@ -7,11 +7,16 @@ test.beforeEach(async ({page}) => {
  await page.addInitScript(workspace => { if(!localStorage.getItem("pmwork:workspace:v3")) localStorage.setItem("pmwork:workspace:v3",JSON.stringify(workspace)); },demoWorkspace("en"));
 });
 for (const locale of ["ru", "en"] as const) {
-  test(`${locale} critical workspace journey`, async ({ page }) => {
+  test(`${locale} critical workspace journey`, async ({ page }, testInfo) => {
     await page.goto(route(`/${locale}/workspace/`));
     await expect(page.getByRole("heading", {name: locale === "ru" ? "Приоритеты проекта" : "Project priorities", exact: true})).toBeVisible();
     await navigateWorkspace(page,locale === "ru" ? "Работа" : "Work");
-    await page.locator('.workspace-top button[aria-haspopup="dialog"]').click();
+    if(testInfo.project.name.includes("mobile")){
+      await page.getByRole("button",{name:locale==="ru"?"Ещё":"More"}).click();
+      await page.getByRole("dialog").getByRole("button",{name:locale==="ru"?"Создать запись":"Create any record"}).click();
+    } else {
+      await page.locator('.workspace-top .global-add-trigger[aria-haspopup="dialog"]').click();
+    }
     const add=page.getByRole('dialog',{name:locale==='ru'?'Добавить':'Add'});
     await add.getByRole('button',{name:locale==='ru'?'Работа':'Work item',exact:true}).click();
     const editor=page.getByRole("dialog");

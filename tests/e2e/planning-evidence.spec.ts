@@ -31,6 +31,7 @@ for (const locale of ["ru", "en"] as const) test(`milestone-only planning preser
   await expect(panel.getByRole("button", { name: ru ? "Скрыть timeline" : "Hide timeline" })).toHaveAttribute("aria-expanded", "true");
   await expect(chart).toBeVisible();
   await expect(chart.locator(".timeline-axis-caption")).toContainText("2025");
+  await panel.locator(".timeline-options > summary").click();
   for (const scale of ["project", "week", "day"]) {
     await panel.getByRole("combobox", {name:ru?"Масштаб":"Scale"}).selectOption(scale);
     expect(await chart.locator(".timeline-tick").count()).toBeLessThanOrEqual(200);

@@ -31,10 +31,6 @@ export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,prio
           <h1>{ru ? "Создайте проект или откройте пример" : "Create a project or open the example"}</h1>
           <p className="lead">{ru ? "Новый проект будет пустым. В демонстрационном уже есть задачи, сроки, риски и решения — на нём можно посмотреть, как устроен PMWORK." : "A new project starts empty. The sample includes work items, dates, risks, and decisions so you can see how PMWORK works."}</p>
         </div>
-        <figure className="atlas-plate first-run-plate">
-          <PlateMarks />
-          <Image className="first-run-plate-image" src={atlasAsset("onboarding/atlas-plates-dark.webp")} alt={ru ? "Карта рабочих пластин: обзор, сроки, риски и решения нанесены на один лист." : "An atlas sheet: overview, schedule, risks and decisions plotted on one plate."} width={1100} height={880} sizes="(max-width: 860px) 100vw, 300px" priority />
-        </figure>
       </div>
       <div className="first-run-assurance"><span className="first-run-assurance-mark" aria-hidden="true">i</span><span><strong>{ru ? "Выберите, с чего начать" : "Choose how to start"}</strong><small>{ru ? "Создайте свой проект или откройте пример с готовыми записями." : "Create your own project or open the sample with example records."}</small></span></div>
       {busy&&<p role="status" className="first-run-checking">{ru?"Проверяем локальные данные. Сохранённое пространство откроется автоматически.":"Checking local data. Your saved workspace will open automatically."}</p>}
@@ -53,6 +49,10 @@ export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,prio
         <button className="button ghost first-run-restore" onClick={() => fileRef.current?.click()}>{ru ? "Восстановить из резервной копии" : "Restore from a backup"}</button>
       </div>
       </fieldset>
+      <figure className="atlas-plate first-run-plate">
+        <PlateMarks />
+        <Image className="first-run-plate-image" src={atlasAsset("onboarding/atlas-plates-dark.webp")} alt={ru ? "Карта рабочих пластин: обзор, сроки, риски и решения нанесены на один лист." : "An atlas sheet: overview, schedule, risks and decisions plotted on one plate."} width={1100} height={880} sizes="(max-width: 860px) 100vw, 300px" priority />
+      </figure>
       <p className="first-run-privacy"><LockKeyhole className="first-run-privacy-icon" size={16} strokeWidth={1.8} aria-hidden="true"/>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>{const file=e.target.files?.[0];if(file)onImport(file);e.currentTarget.value="";}}/>
       {notice&&<p role="alert">{notice}</p>}

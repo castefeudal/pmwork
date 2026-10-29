@@ -22,6 +22,7 @@
  .article-aside{position:static}
  .catalog-hero{padding-bottom:2rem}
 }
+
 @media(max-width:560px){
  .first-run-actions{grid-template-columns:1fr}
  .first-run-actions .button.ghost{grid-column:auto}
@@ -32,4 +33,80 @@
 }
 /* Disclosure keeps the action prominent while making each rule inspectable. */
 
+}
+
+/* Compact mobile workspace controls and readable RAID cards. */
+.workspace-shell,.workspace-main,.workspace-content,.workspace-content>* { min-width:0; }
+.workspace-shell { overflow-x:clip; }
+.view-presets,.tabs { max-width:100%; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:thin; }
+.view-presets button,.tabs button { flex:0 0 auto; white-space:nowrap; }
+.raid-records { min-width:0; overflow:visible; }
+.raid-records table,.raid-records tbody { display:grid; width:100%; min-width:0; gap:.6rem; }
+.raid-records thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+.raid-records tr { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.35rem .75rem; width:100%; min-width:0; padding:.85rem; border:1px solid var(--border-default); border-radius:var(--radius-card); background:var(--surface-0); box-shadow:var(--shadow-hairline); }
+.raid-records td { display:block; min-width:0; padding:0; border:0; overflow-wrap:anywhere; }
+.raid-records td:first-child { color:var(--text-secondary); font-size:.78rem; }
+.raid-records td:nth-child(2),.raid-records td:last-child { grid-column:1/-1; }
+.raid-records td:nth-child(2) strong { display:inline-block; margin-bottom:.2rem; }
+.raid-records td:nth-child(3),.raid-records td:nth-child(4) { color:var(--text-secondary); font-size:.875rem; }
+.timeline-options { flex:1 1 12rem; min-width:0; }
+.timeline-options>summary,.documents-filter-disclosure>summary { min-height:40px; display:flex; align-items:center; width:fit-content; max-width:100%; padding:.45rem .7rem; border:1px solid var(--border-default); border-radius:var(--radius-control); color:var(--text-primary); background:var(--surface-1); cursor:pointer; list-style:none; }
+.timeline-options>summary::-webkit-details-marker,.documents-filter-disclosure>summary::-webkit-details-marker { display:none; }
+.timeline-options-content { display:grid; grid-template-columns:minmax(10rem, max-content) minmax(0,1fr); gap:.75rem 1rem; align-items:start; margin-top:.6rem; padding:.85rem; border:1px solid var(--border-default); border-radius:var(--radius-card); background:var(--surface-0); }
+.timeline-options-content .timeline-legend { align-self:center; }
+.timeline-options-content>p { grid-column:1/-1; margin:0; }
+.documents-toolbar { grid-template-columns:minmax(0,1fr) auto auto; align-items:center; }
+.documents-toolbar .search-input { grid-column:1; }
+.documents-toolbar .button.primary { white-space:nowrap; }
+.documents-filter-disclosure { position:relative; }
+.documents-filter-panel { display:grid; gap:.75rem; margin-top:.5rem; padding:.8rem; border:1px solid var(--border-default); border-radius:var(--radius-card); background:var(--surface-0); }
+.documents-filter-panel .documents-categories { margin:0; padding:0; border:0; }
+.documents-count { margin:.35rem 0 .8rem; font-size:.875rem; }
+.global-add-trigger { flex:0 0 auto; }
+.mobile-global-create { display:none; }
+.first-run-gate { display:grid; grid-template-columns:minmax(0,1fr) minmax(250px,36%); grid-template-areas:"brand plate" "copy plate" "assurance plate" "busy plate" "controls plate" "privacy plate"; align-items:center; align-content:center; column-gap:clamp(1rem,3vw,2.2rem); row-gap:.6rem; }
+.first-run-gate>.brand { grid-area:brand; margin-bottom:.4rem; }
+.first-run-hero { grid-area:copy; display:block; }
+.first-run-assurance { grid-area:assurance; margin-top:.5rem; }
+.first-run-checking { grid-area:busy; }
+.first-run-controls { grid-area:controls; min-width:0; }
+.first-run-plate { grid-area:plate; }
+.first-run-privacy { grid-area:privacy; margin-top:.35rem; }
+@media(max-width:767px) {
+  .workspace-top .global-add-trigger { display:none; }
+  .mobile-global-create { display:flex; width:100%; justify-content:center; }
+  .first-run-gate { grid-template-columns:minmax(0,1fr); grid-template-areas:"brand" "copy" "assurance" "busy" "controls" "plate" "privacy"; align-content:start; gap:.65rem; }
+  .first-run-gate>.brand { margin-bottom:.1rem; }
+  .first-run-hero { display:block; }
+  .first-run-plate { width:100%; margin:.25rem 0 0; }
+  .first-run-gate .first-run-actions { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.55rem; }
+  .first-run-gate .first-run-option { min-height:88px; grid-template-columns:28px minmax(0,1fr) 14px; gap:.45rem; padding:.65rem; }
+  .first-run-gate .first-run-option small { font-size:.75rem; line-height:1.35; }
+  .first-run-gate .first-run-restore { grid-column:1/-1; }
+  .documents-heading { display:none; }
+  .documents-toolbar { grid-template-columns:minmax(0,1fr) auto; gap:.5rem; margin:.35rem 0 .5rem; }
+  .documents-toolbar .search-input { grid-column:1/-1; width:100%; }
+  .documents-toolbar .documents-filter-disclosure { grid-column:1; grid-row:2; }
+  .documents-toolbar>.button.primary { grid-column:2; grid-row:2; min-height:42px; padding:.5rem .7rem; }
+  .documents-filter-panel { position:absolute; z-index:5; inset-inline-start:0; width:min(90vw,24rem); max-height:65vh; overflow:auto; box-shadow:var(--shadow-medium); }
+  .documents-filter-panel .documents-categories { display:flex; flex-wrap:wrap; }
+  .documents-categories>span { margin-left:0; }
+  .timeline-toolbar { align-items:center; }
+  .timeline-options-content { grid-template-columns:minmax(0,1fr); }
+  .timeline-options-content>p { grid-column:1; }
+  .timeline-toolbar>.button { min-height:42px; }
+  .work-toolbar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.5rem; }
+  .work-toolbar .search-input { grid-column:1/-1; grid-row:1; width:100%; }
+  .work-toolbar .work-view-toggle { grid-column:1; grid-row:2; min-width:0; max-width:100%; flex-wrap:nowrap; overflow-x:auto; }
+  .work-toolbar .work-view-toggle .button { flex:0 0 auto; }
+  .work-toolbar>.button.primary { grid-column:2; grid-row:2; width:auto; min-height:42px; padding:.5rem .7rem; }
+  .work-create-label { display:none; }
+  .view-options-row { gap:.35rem; }
+  .work-filter-disclosure[open],.view-display[open] { flex-basis:100%; width:100%; }
+}
+@media(max-width:430px) {
+  .workspace-content { padding-inline:12px; }
+  .first-run-gate>.brand { margin-bottom:.15rem; }
+  .first-run-gate .first-run-hero h1 { font-size:clamp(2.3rem,10vw,3.4rem); }
+  .first-run-gate .first-run-assurance { padding:.65rem; }
 }

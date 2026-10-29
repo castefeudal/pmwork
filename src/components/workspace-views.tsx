@@ -701,6 +701,7 @@ export function PlanningView(props: ViewProps) {
           <button
             key={id}
             className={tab === id ? "active" : ""}
+            aria-pressed={tab === id}
             onClick={() => setTab(id)}
           >
             {label}
@@ -755,42 +756,18 @@ export function PlanningView(props: ViewProps) {
             <Plus size={17} />
             {ru ? "Добавить итерацию" : "Add iteration"}
           </button>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>{ru ? "Итерация" : "Iteration"}</th>
-                  <th>{ru ? "Цель" : "Goal"}</th>
-                  <th>{ru ? "Период" : "Period"}</th>
-                  <th>{ru ? "Доступная мощность" : "Capacity"}</th>
-                  <th>{ru ? "Статус" : "Status"}</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {iterations.map((x) => (
-                  <tr key={x.id}>
-                    <td>
-                      <strong>{x.title}</strong>
-                    </td>
-                    <td>{x.goal}</td>
-                    <td>
-                      {formatDate(x.startDate,locale)} → {formatDate(x.endDate,locale)}
-                    </td>
-                    <td>{x.capacity}</td>
-                    <td>{displayLabel(locale, "iterationStatus", x.status)}</td>
-                    <td>
-                      <button
-                        className="button small"
-                        onClick={() => onEdit("iteration", x.id)}
-                      >
-                        {ru ? "Изменить" : "Edit"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="catalog-grid inline-grid planning-iteration-grid">
+            {iterations.map((x) => (
+              <article className="catalog-card planning-iteration-card" key={x.id}>
+                <p className="eyebrow">{ru ? "Итерация" : "Iteration"}</p>
+                <h3>{x.title}</h3>
+                <p>{x.goal}</p>
+                <p><span className="muted">{ru ? "Период" : "Period"}</span> · {formatDate(x.startDate,locale)} → {formatDate(x.endDate,locale)}</p>
+                <p><span className="muted">{ru ? "Доступная мощность" : "Capacity"}</span> · {x.capacity}</p>
+                <p><span className="muted">{ru ? "Статус" : "Status"}</span> · {displayLabel(locale, "iterationStatus", x.status)}</p>
+                <button className="button small" onClick={() => onEdit("iteration", x.id)}>{ru ? "Изменить" : "Edit"}</button>
+              </article>
+            ))}
           </div>
         </>
       )}
@@ -816,46 +793,7 @@ export function PlanningView(props: ViewProps) {
             <Plus size={17} />
             {ru ? "Добавить зависимость" : "Add dependency"}
           </button>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>{ru ? "Предшественник" : "Predecessor"}</th>
-                  <th>{ru ? "Последователь" : "Successor"}</th>
-                  <th>{ru ? "Тип" : "Type"}</th>
-                  <th>{ru ? "Владелец" : "Owner"}</th>
-                  <th>{ru ? "Статус" : "Status"}</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {deps.map((d) => (
-                  <tr key={d.id}>
-                    <td>{d.id}</td>
-                    <td>{d.predecessorId}</td>
-                    <td>{d.successorId}</td>
-                    <td>
-                      {d.type}
-                      {d.lag ? ` +${d.lag}` : ""}
-                    </td>
-                    <td>{d.owner || "—"}</td>
-                    <td>
-                      {displayLabel(locale, "dependencyStatus", d.status)}
-                    </td>
-                    <td>
-                      <button
-                        className="button small"
-                        onClick={() => onEdit("dependency", d.id)}
-                      >
-                        {ru ? "Изменить" : "Edit"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <EntityTable rows={deps.map(d=>({id:d.id,title:`${d.predecessorId} → ${d.successorId}`,meta:`${d.type}${d.lag?` · ${ru?"Лаг":"Lag"} +${d.lag}`:""}`,owner:d.owner,status:displayLabel(locale,"dependencyStatus",d.status)}))} locale={locale} className="raid-records" onEdit={id=>onEdit("dependency",id)} />
         </>
       )}
     </>
@@ -898,6 +836,7 @@ export function RaidView({
             <button
               key={k}
               className={tab === k ? "active" : ""}
+              aria-pressed={tab === k}
               onClick={() => setTab(k)}
             >
               {
@@ -930,7 +869,7 @@ export function RaidView({
         <Plus size={17} />
         {ru ? ({dependency:"Добавить зависимость",risk:"Добавить риск",issue:"Добавить проблему",assumption:"Добавить допущение",decision:"Добавить решение"})[tab] : `Add ${tab}`}
       </button>
-      {tab === "dependency" && <EntityTable rows={map.dependency.map(d => ({id:d.id,title:`${d.predecessorId} → ${d.successorId}`,meta:`${d.type} · ${d.lag} ${ru ? "дн. лага" : "lag days"} · ${d.dueDate || "—"}`,owner:d.owner,status:displayLabel(locale,"dependencyStatus",d.status)}))} locale={locale} onEdit={id => onEdit("dependency",id)} />}
+      {tab === "dependency" && <EntityTable rows={map.dependency.map(d => ({id:d.id,title:`${d.predecessorId} → ${d.successorId}`,meta:`${d.type} · ${d.lag} ${ru ? "дн. лага" : "lag days"} · ${d.dueDate || "—"}`,owner:d.owner,status:displayLabel(locale,"dependencyStatus",d.status)}))} locale={locale} className="raid-records" onEdit={id => onEdit("dependency",id)} />}
       {tab === "risk" && (
         <div className="dashboard-grid">
           <div className="panel span-8">
@@ -948,6 +887,7 @@ export function RaidView({
                 };
               })}
               locale={locale}
+              className="raid-records"
               onEdit={(id) => onEdit("risk", id)}
               onDelete={(id) => archive(tab, id)}
               deleteHint={ru ? "Связи с этой записью будут удалены; связанные рабочие записи сохранятся." : "References to this record will be removed; related work records will be retained."}
@@ -956,7 +896,7 @@ export function RaidView({
           <div className="panel span-4">
             <h3>{ru ? "Матрица риска" : "Risk matrix"}</h3>
             {riskCell && <button className="button small" onClick={()=>setRiskCell(null)}>{ru ? "Показать все риски" : "Show all risks"}</button>}
-            <p className="muted compact">{ru ? "Вероятность: 5 сверху → 1 снизу. Влияние: 1 слева → 5 справа. Число — открытые риски." : "Probability: 5 at top → 1 at bottom. Impact: 1 left → 5 right. Count: open risks."}</p>
+            <details className="risk-matrix-legend"><summary>{ru?"Легенда матрицы":"Matrix legend"}</summary><p className="muted compact">{ru ? "Вероятность: 5 сверху → 1 снизу. Влияние: 1 слева → 5 справа. Число — открытые риски." : "Probability: 5 at top → 1 at bottom. Impact: 1 left → 5 right. Count: open risks."}</p><p className="muted">{ru ? "Экспозиция риска помогает расставить приоритеты, но не делает исходные оценки точными." : "Exposure orders attention but cannot create input precision."}</p></details>
             <div className="risk-matrix">
               {Array.from({ length: 25 }, (_, i) => {
                 const p = 5 - Math.floor(i / 5),
@@ -978,11 +918,6 @@ export function RaidView({
                 );
               })}
             </div>
-            <p className="muted">
-              {ru
-                ? "Экспозиция риска помогает расставить приоритеты, но не делает исходные оценки точными."
-                : "Exposure orders attention but cannot create input precision."}
-            </p>
           </div>
         </div>
       )}
@@ -997,6 +932,7 @@ export function RaidView({
             detail: x.plan,
           }))}
           locale={locale}
+          className="raid-records"
           onEdit={(id) => onEdit("issue", id)}
           onDelete={(id) => archive(tab, id)}
           deleteHint={ru ? "Связи с этой записью будут удалены; связанные рабочие записи сохранятся." : "References to this record will be removed; related work records will be retained."}
@@ -1013,6 +949,7 @@ export function RaidView({
             detail: x.effectIfFalse,
           }))}
           locale={locale}
+          className="raid-records"
           onEdit={(id) => onEdit("assumption", id)}
           onDelete={(id) => archive(tab, id)}
           deleteHint={ru ? "Связи с этой записью будут удалены; связанные рабочие записи сохранятся." : "References to this record will be removed; related work records will be retained."}
@@ -1718,6 +1655,7 @@ export function ControlView({
 export function EntityTable({
   rows,
   locale,
+  className,
   onEdit,
   onDelete,
   deleteHint,
@@ -1731,6 +1669,7 @@ export function EntityTable({
     detail?: string;
   }[];
   locale: Locale;
+  className?: string;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   deleteHint?: string;
@@ -1753,7 +1692,7 @@ export function EntityTable({
     );
   return (
     <>
-    <div className="table-wrap">
+    <div className={`table-wrap entity-table ${className ?? ""}`}>
       <table>
         <thead>
           <tr>
