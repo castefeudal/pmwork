@@ -105,11 +105,13 @@ Rebuilt as a drawn composition, one per locale
 landing band states, and one factual line about local storage — no metrics, no
 mock UI. `docs/BRAND.md` previously recorded that the old preview was preserved
 because nobody had asked for a new one; the fake numbers made it a liability, so
-it was replaced and the note updated.
+it was replaced and the note updated. They are also the only shipped raster left
+out of the service-worker precache: a link unfurler requests them, the product
+never does, so 515 kB of crawler artwork has no place in the offline shell.
 
 ## Verification discipline
 
-A plate is only finished when it has been looked at. Seven defects in this pass
+A plate is only finished when it has been looked at. Eight defects in this pass
 were invisible in source and obvious in a screenshot, and each was fixed at its
 cause rather than papered over with a later rule:
 
