@@ -74,6 +74,8 @@
 .first-run-plate { grid-area:plate; }
 .first-run-privacy { grid-area:privacy; margin-top:.35rem; }
 @media(max-width:767px) {
+  .workspace-content > .tabs:not(.workspace-tabs-compact) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); min-width:0; max-width:100%; overflow:visible; }
+  .workspace-content > .tabs:not(.workspace-tabs-compact) > button { min-width:0; white-space:normal; overflow-wrap:anywhere; }
   .workspace-content > .workspace-tabs-compact { display:flex; flex-wrap:nowrap; gap:.35rem; max-width:100%; overflow-x:auto; }
   .workspace-content > .workspace-tabs-compact > button { flex:0 0 auto; min-width:0; white-space:nowrap; }
   .workspace-top .global-add-trigger { display:none; }
