@@ -38,8 +38,8 @@
 /* Compact mobile workspace controls and readable RAID cards. */
 .workspace-shell,.workspace-main,.workspace-content,.workspace-content>* { min-width:0; }
 .workspace-shell { overflow-x:clip; }
-.view-presets,.tabs { max-width:100%; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:thin; }
-.view-presets button,.tabs button { flex:0 0 auto; white-space:nowrap; }
+.view-presets,.workspace-tabs-compact { max-width:100%; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:thin; }
+.view-presets button,.workspace-tabs-compact button { flex:0 0 auto; white-space:nowrap; }
 .tab-label-compact { display:none; }
 .raid-records { min-width:0; overflow:visible; }
 .raid-records table,.raid-records tbody { display:grid; width:100%; min-width:0; gap:.6rem; }
@@ -74,8 +74,8 @@
 .first-run-plate { grid-area:plate; }
 .first-run-privacy { grid-area:privacy; margin-top:.35rem; }
 @media(max-width:767px) {
-  .workspace-content > .tabs { display:flex; flex-wrap:nowrap; gap:.35rem; max-width:100%; overflow-x:auto; }
-  .workspace-content > .tabs > button { flex:0 0 auto; min-width:0; white-space:nowrap; }
+  .workspace-content > .workspace-tabs-compact { display:flex; flex-wrap:nowrap; gap:.35rem; max-width:100%; overflow-x:auto; }
+  .workspace-content > .workspace-tabs-compact > button { flex:0 0 auto; min-width:0; white-space:nowrap; }
   .workspace-top .global-add-trigger { display:none; }
   .mobile-global-create { display:flex; width:100%; justify-content:center; }
   .first-run-gate { grid-template-columns:minmax(0,1fr); grid-template-areas:"brand" "copy" "assurance" "busy" "controls" "plate" "privacy"; align-content:start; gap:.65rem; }
@@ -109,10 +109,10 @@
 }
 @media(max-width:430px) {
   .workspace-content { padding-inline:12px; }
-  .workspace-content > .tabs { gap:.12rem; }
-  .workspace-content > .tabs > button { padding:.4rem .25rem; font-size:.8rem; }
-  .workspace-content > .tabs .tab-label-full { display:none; }
-  .workspace-content > .tabs .tab-label-compact { display:inline; }
+  .workspace-content > .workspace-tabs-compact { gap:.12rem; }
+  .workspace-content > .workspace-tabs-compact > button { padding:.4rem .25rem; font-size:.8rem; }
+  .workspace-content > .workspace-tabs-compact .tab-label-full { display:none; }
+  .workspace-content > .workspace-tabs-compact .tab-label-compact { display:inline; }
   .first-run-gate>.brand { margin-bottom:.15rem; }
   .first-run-gate .first-run-hero h1 { font-size:clamp(2.3rem,10vw,3.4rem); }
   .first-run-gate .first-run-assurance { padding:.65rem; }

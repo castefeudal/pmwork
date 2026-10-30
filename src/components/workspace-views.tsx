@@ -696,7 +696,7 @@ export function PlanningView(props: ViewProps) {
   ];
   return (
     <>
-      <div className="tabs">
+      <div className="tabs workspace-tabs-compact">
         {tabs.map(({ id, label, compact }) => (
           <button
             key={id}
@@ -832,7 +832,7 @@ export function RaidView({
   };
   return (
     <>
-      <div className="tabs">
+      <div className="tabs workspace-tabs-compact">
         {(["risk", "assumption", "issue", "dependency", "decision"] as CreateType[]).map(
           (k) => {
             const label = (ru
