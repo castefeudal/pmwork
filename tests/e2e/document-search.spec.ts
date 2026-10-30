@@ -28,7 +28,7 @@ for (const locale of ["ru", "en"] as const) {
     const category = page.getByRole("button", { name: locale === "ru" ? "Заметки и прочее" : "Notes & other", exact: true });
     await expect(category).toBeVisible();
     await category.click();
-    await expect(category).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator('.documents-categories button[aria-pressed="true"]')).toHaveCount(1);
     await expect(page.locator(".documents-filter-disclosure")).not.toHaveAttribute("open", "");
     const createdTitle = `UX document ${locale}`;
     await search.fill(createdTitle);

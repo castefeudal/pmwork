@@ -688,23 +688,25 @@ export function PlanningView(props: ViewProps) {
     deps = workspace.dependencies.filter((x) => x.projectId === project.id);
 
   const tabs = [
-    ["timeline", ru ? "План-график" : "Timeline"],
-    ["milestones", ru ? "Контрольные точки" : "Milestones"],
-    ["iterations", ru ? "Итерации" : "Iterations"],
-    ["dependencies", ru ? "Зависимости" : "Dependencies"],
-    ["scenarios", ru ? "Сценарии" : "Scenarios"],
+    { id: "timeline", label: ru ? "План-график" : "Timeline", compact: ru ? "График" : "Timeline" },
+    { id: "milestones", label: ru ? "Контрольные точки" : "Milestones", compact: ru ? "Точки" : "Points" },
+    { id: "iterations", label: ru ? "Итерации" : "Iterations", compact: ru ? "Итер." : "Cycles" },
+    { id: "dependencies", label: ru ? "Зависимости" : "Dependencies", compact: ru ? "Связи" : "Links" },
+    { id: "scenarios", label: ru ? "Сценарии" : "Scenarios", compact: ru ? "Сценарии" : "Scenarios" },
   ];
   return (
     <>
       <div className="tabs">
-        {tabs.map(([id, label]) => (
+        {tabs.map(({ id, label, compact }) => (
           <button
             key={id}
             className={tab === id ? "active" : ""}
+            aria-label={label}
             aria-pressed={tab === id}
             onClick={() => setTab(id)}
           >
-            {label}
+            <span className="tab-label-full">{label}</span>
+            <span className="tab-label-compact" aria-hidden="true">{compact}</span>
           </button>
         ))}
       </div>
@@ -832,33 +834,28 @@ export function RaidView({
     <>
       <div className="tabs">
         {(["risk", "assumption", "issue", "dependency", "decision"] as CreateType[]).map(
-          (k) => (
+          (k) => {
+            const label = (ru
+              ? { dependency: "Зависимости", risk: "Риски", issue: "Проблемы", assumption: "Допущения", decision: "Решения" }
+              : { dependency: "Dependencies", risk: "Risks", issue: "Issues", assumption: "Assumptions", decision: "Decisions" })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"];
+            const compact = (ru
+              ? { dependency: "Связи", risk: "Риски", issue: "Пробл.", assumption: "Допущ.", decision: "Реш." }
+              : { dependency: "Links", risk: "Risks", issue: "Issues", assumption: "Assum.", decision: "Decisions" })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"];
+            const count = map[k as keyof typeof map]?.length ?? 0;
+            const accessibleLabel = `${label} · ${count}`;
+            return (
             <button
               key={k}
               className={tab === k ? "active" : ""}
+              aria-label={accessibleLabel}
               aria-pressed={tab === k}
               onClick={() => setTab(k)}
             >
-              {
-                (ru
-                  ? {
-                      dependency: "Зависимости",
-                      risk: "Риски",
-                      issue: "Проблемы",
-                      assumption: "Допущения",
-                      decision: "Решения",
-                    }
-                  : {
-                      dependency: "Dependencies",
-                      risk: "Risks",
-                      issue: "Issues",
-                      assumption: "Assumptions",
-                      decision: "Decisions",
-                    })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"]
-              }{" "}
-              · {map[k as keyof typeof map]?.length ?? 0}
+              <span className="tab-label-full">{accessibleLabel}</span>
+              <span className="tab-label-compact" aria-hidden="true">{compact} · {count}</span>
             </button>
-          ),
+            );
+          },
         )}
       </div>
       <button

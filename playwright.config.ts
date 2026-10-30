@@ -18,7 +18,8 @@ export default defineConfig({
     timeout: 120000,
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
+    { name: "chromium", testIgnore: "tests/e2e/ux-viewport-matrix.spec.ts", use: { ...devices["Desktop Chrome"] } },
+    { name: "mobile-chromium", testIgnore: "tests/e2e/ux-viewport-matrix.spec.ts", use: { ...devices["Pixel 7"] } },
+    { name: "ux-matrix", testMatch: "tests/e2e/ux-viewport-matrix.spec.ts", use: { ...devices["Desktop Chrome"] } },
   ],
 });
