@@ -688,11 +688,11 @@ export function PlanningView(props: ViewProps) {
     deps = workspace.dependencies.filter((x) => x.projectId === project.id);
 
   const tabs = [
-    { id: "timeline", label: ru ? "План-график" : "Timeline", compact: ru ? "График" : "Timeline" },
+    { id: "timeline", label: ru ? "План-график" : "Timeline", compact: ru ? "План" : "Plan" },
     { id: "milestones", label: ru ? "Контрольные точки" : "Milestones", compact: ru ? "Точки" : "Points" },
     { id: "iterations", label: ru ? "Итерации" : "Iterations", compact: ru ? "Итер." : "Cycles" },
     { id: "dependencies", label: ru ? "Зависимости" : "Dependencies", compact: ru ? "Связи" : "Links" },
-    { id: "scenarios", label: ru ? "Сценарии" : "Scenarios", compact: ru ? "Сценарии" : "Scenarios" },
+    { id: "scenarios", label: ru ? "Сценарии" : "Scenarios", compact: ru ? "Сцен." : "Scen." },
   ];
   return (
     <>
@@ -840,7 +840,7 @@ export function RaidView({
               : { dependency: "Dependencies", risk: "Risks", issue: "Issues", assumption: "Assumptions", decision: "Decisions" })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"];
             const compact = (ru
               ? { dependency: "Связи", risk: "Риски", issue: "Пробл.", assumption: "Допущ.", decision: "Реш." }
-              : { dependency: "Links", risk: "Risks", issue: "Issues", assumption: "Assum.", decision: "Decisions" })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"];
+              : { dependency: "Links", risk: "Risks", issue: "Issues", assumption: "Assum.", decision: "Dec." })[k as "risk" | "issue" | "assumption" | "decision" | "dependency"];
             const count = map[k as keyof typeof map]?.length ?? 0;
             const accessibleLabel = `${label} · ${count}`;
             return (

@@ -4,14 +4,19 @@ import { demoWorkspace } from "../../src/data/demo";
 import { route } from "./support";
 
 test("planning and RAID tabs fit on a narrow phone without clipped labels", async ({ page }) => {
-  const locale = "en";
-  await page.addInitScript(value => localStorage.setItem("pmwork:workspace:v3", JSON.stringify(value)), demoWorkspace(locale));
-  await page.setViewportSize({ width: 390, height: 844 });
-  for (const view of ["planning", "raid"]) {
-    await page.goto(route(`/${locale}/workspace/?project=atlas&view=${view}`));
-    const tabs = page.locator(".workspace-content > .tabs");
-    await expect(tabs).toBeVisible();
-    expect(await tabs.evaluate(element => element.scrollWidth)).toBeLessThanOrEqual(await tabs.evaluate(element => element.clientWidth) + 1);
+  test.setTimeout(240000);
+  for (const locale of ["ru", "en"] as const) {
+    await page.addInitScript(value => localStorage.setItem("pmwork:workspace:v3", JSON.stringify(value)), demoWorkspace(locale));
+    for (const width of [360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const view of ["planning", "raid"]) {
+        await page.goto(route(`/${locale}/workspace/?project=atlas&view=${view}`));
+        const tabs = page.locator(".workspace-content > .tabs");
+        await expect(tabs).toBeVisible({ timeout: 15000 });
+        expect(await tabs.evaluate(element => element.scrollWidth)).toBeLessThanOrEqual(await tabs.evaluate(element => element.clientWidth) + 1);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+      }
+    }
   }
 });
 

@@ -109,7 +109,8 @@
 }
 @media(max-width:430px) {
   .workspace-content { padding-inline:12px; }
-  .workspace-content > .tabs > button { padding:.4rem .45rem; font-size:.83rem; }
+  .workspace-content > .tabs { gap:.12rem; }
+  .workspace-content > .tabs > button { padding:.4rem .25rem; font-size:.8rem; }
   .workspace-content > .tabs .tab-label-full { display:none; }
   .workspace-content > .tabs .tab-label-compact { display:inline; }
   .first-run-gate>.brand { margin-bottom:.15rem; }
