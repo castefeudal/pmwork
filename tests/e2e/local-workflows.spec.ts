@@ -27,10 +27,13 @@ test("document library supports search, pinning, editing and Markdown download",
   await page.screenshot({ path: testInfo.outputPath("document-center.png"), fullPage: true });
   const card = page.getByRole("article").filter({ hasText: "Project Charter" });
   await expect(card).toBeVisible();
+  await page.locator(".documents-filter-disclosure > summary").click();
   await page.getByRole("button", { name: "Plan & control", exact: true }).click();
   await expect(card).toBeVisible();
+  await page.locator(".documents-filter-disclosure > summary").click();
   await page.getByRole("button", { name: "Status", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("No matching documents");
+  await expect(page.locator(".portfolio-empty")).toContainText("No matching documents");
+  await page.locator(".documents-filter-disclosure > summary").click();
   await page.getByRole("button", { name: "All", exact: true }).click();
   await expect(card).toBeVisible();
   await card.getByRole("button", { name: "Pin Project Charter" }).click();
@@ -41,7 +44,7 @@ test("document library supports search, pinning, editing and Markdown download",
   await page.getByRole("textbox", { name: "Search documents" }).fill("self-service portal");
   await expect(card).toBeVisible();
   await page.getByRole("textbox", { name: "Search documents" }).fill("no matching item");
-  await expect(page.getByRole("status")).toContainText("No matching documents");
+  await expect(page.locator(".portfolio-empty")).toContainText("No matching documents");
 });
 
 test("status report creates an editable source-linked local document", async ({ page }) => {

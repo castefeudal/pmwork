@@ -43,6 +43,7 @@ export function DocumentCenter({ workspace, project, locale, onCreate, onEdit, o
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category>("all");
   const [sort, setSort] = useState<"recent" | "title">("recent");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const rows = useMemo(() => workspace.documents.filter(document => {
     if (document.projectId !== project.id) return false;
     if (category !== "all" && categoryOf(document.type) !== category) return false;
@@ -61,16 +62,18 @@ export function DocumentCenter({ workspace, project, locale, onCreate, onEdit, o
   return <>
     <div className="documents-heading">
       <div><p className="eyebrow">{ru ? "БИБЛИОТЕКА ПРОЕКТА · ЛОКАЛЬНО" : "LOCAL PROJECT LIBRARY"}</p><p className="muted">{ru ? "Находите рабочие документы и переходите к связанным записям." : "Find project documents and open the records they reference."}</p></div>
-      <button className="button primary" onClick={() => onCreate("document")}><Plus size={17}/>{ru ? "Создать документ" : "Create document"}</button>
     </div>
     <div className="documents-toolbar">
       <label className="search-input"><Search size={17}/><span className="sr-only">{ru ? "Поиск документов" : "Search documents"}</span><input className="input" value={query} onChange={event => setQuery(event.target.value)} placeholder={ru ? "Название, текст, тип или ID связи…" : "Title, text, type, or linked ID…"}/></label>
-      <label className="view-control">{ru ? "Сортировка" : "Sort"}<select className="input" value={sort} onChange={event => setSort(event.target.value as typeof sort)}><option value="recent">{ru ? "Сначала недавние" : "Recently updated"}</option><option value="title">{ru ? "По названию" : "Title"}</option></select></label>
+      <details className="documents-filter-disclosure" open={filtersOpen} onToggle={event => setFiltersOpen(event.currentTarget.open)}><summary>{ru ? "Фильтры" : "Filters"}</summary><div className="documents-filter-panel">
+        <label className="view-control">{ru ? "Сортировка" : "Sort"}<select className="input" value={sort} onChange={event => setSort(event.target.value as typeof sort)}><option value="recent">{ru ? "Сначала недавние" : "Recently updated"}</option><option value="title">{ru ? "По названию" : "Title"}</option></select></label>
+        <div className="documents-categories" role="group" aria-label={ru ? "Категории документов" : "Document categories"}>
+          {categories.map(([id, label]) => <button className={category === id ? "active" : ""} aria-pressed={category === id} key={id} onClick={() => { setFiltersOpen(false); setCategory(id); }}>{label}</button>)}
+        </div>
+      </div></details>
+      <button className="button primary" onClick={() => onCreate("document")}><Plus size={17}/>{ru ? "Создать документ" : "Create document"}</button>
     </div>
-    <nav className="documents-categories" aria-label={ru ? "Категории документов" : "Document categories"}>
-      {categories.map(([id, label]) => <button className={category === id ? "active" : ""} aria-pressed={category === id} key={id} onClick={() => setCategory(id)}>{label}</button>)}
-      <span className="muted">{rows.length} / {workspace.documents.filter(item => item.projectId === project.id).length}</span>
-    </nav>
+    <p className="documents-count muted" role="status">{ru ? `Показано ${rows.length} из ${workspace.documents.filter(item => item.projectId === project.id).length}` : `Showing ${rows.length} of ${workspace.documents.filter(item => item.projectId === project.id).length}`}</p>
     {rows.length ? <div className="catalog-grid inline-grid document-grid">
       {rows.map(document => {
         const linked = document.relatedIds.map(id => ({ id, record: linkedRecord(workspace, id) })).filter((x): x is { id: string; record: NonNullable<ReturnType<typeof linkedRecord>> } => Boolean(x.record));

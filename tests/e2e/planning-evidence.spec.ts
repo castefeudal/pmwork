@@ -3,6 +3,23 @@ import { expect, test } from "@playwright/test";
 import { demoWorkspace } from "../../src/data/demo";
 import { route } from "./support";
 
+test("planning and RAID tabs fit on a narrow phone without clipped labels", async ({ page }) => {
+  test.setTimeout(240000);
+  for (const locale of ["ru", "en"] as const) {
+    await page.addInitScript(value => localStorage.setItem("pmwork:workspace:v3", JSON.stringify(value)), demoWorkspace(locale));
+    for (const width of [360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const view of ["planning", "raid"]) {
+        await page.goto(route(`/${locale}/workspace/?project=atlas&view=${view}`));
+        const tabs = page.locator(".workspace-content > .tabs");
+        await expect(tabs).toBeVisible({ timeout: 15000 });
+        expect(await tabs.evaluate(element => element.scrollWidth)).toBeLessThanOrEqual(await tabs.evaluate(element => element.clientWidth) + 1);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+      }
+    }
+  }
+});
+
 for (const locale of ["ru", "en"] as const) test(`milestone-only planning preserves dated evidence (${locale})`, async ({ page }, info) => {
   test.setTimeout(120000);
   const ru = locale === "ru";
@@ -31,6 +48,7 @@ for (const locale of ["ru", "en"] as const) test(`milestone-only planning preser
   await expect(panel.getByRole("button", { name: ru ? "Скрыть timeline" : "Hide timeline" })).toHaveAttribute("aria-expanded", "true");
   await expect(chart).toBeVisible();
   await expect(chart.locator(".timeline-axis-caption")).toContainText("2025");
+  await panel.locator(".timeline-options > summary").click();
   for (const scale of ["project", "week", "day"]) {
     await panel.getByRole("combobox", {name:ru?"Масштаб":"Scale"}).selectOption(scale);
     expect(await chart.locator(".timeline-tick").count()).toBeLessThanOrEqual(200);

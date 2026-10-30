@@ -36,7 +36,8 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
   const milestoneSummary=(m:typeof milestones[number])=>milestoneDates(m).map(d=>`${d.label}: ${formatDate(d.date,locale)}`).join(" · ");
   const barLabel=(id:string,blocked:boolean,barWidth:number)=>barWidth<9?null:(blocked?(ru?"Блокер":"Blocked"):id);
   return <section className="panel planning-panel">
-    <div className="section-line">
+    <div className="section-line timeline-toolbar">
+      <details className="timeline-options"><summary>{ru?"Масштаб и обозначения":"Scale and legend"}</summary><div className="timeline-options-content">
       <label className="view-control">{ru?"Масштаб":"Scale"}<select className="input" value={zoom} onChange={e=>setZoom(e.target.value)}><option value="project">{ru?"Весь проект":"Project"}</option><option value="week">{ru?"Недели":"Weeks"}</option><option value="day">{ru?"Дни":"Days"}</option></select></label>
       <ul className="timeline-legend" aria-label={ru?"Обозначения шкалы":"Timeline legend"}>
         <li><span className="legend-swatch legend-work" aria-hidden="true"/>{ru?"Работа":"Work"}</li>
@@ -46,7 +47,9 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
         <li><span aria-hidden="true">●</span>{ru?"Факт":"Actual"}</li>
         {todayVisible&&<li><span className="legend-swatch legend-today" aria-hidden="true"/>{ru?"Сегодня":"Today"}</li>}
       </ul>
-      <button className="button" onClick={()=>onCreate("milestone")}>{ru?"Добавить контрольную точку":"Add milestone"}</button>
+      <p className="muted compact">{ru?`Календарные дни. Связь FS допускает начало в день окончания предшественника; лаг добавляет дни. Линия «сегодня» отмечена на шкале. Работа без дат: ${items.length-scheduled.length}.`:`Calendar days. FS permits a same-day finish/start; lag adds days. The today line is marked on the scale. Unscheduled work: ${items.length-scheduled.length}.`}</p>
+      </div></details>
+      <button className="button primary" onClick={()=>onCreate("milestone")}>{ru?"Добавить контрольную точку":"Add milestone"}</button>
     </div>
     {conflicts.length>0&&<div className="notice" role="status"><strong>{ru?"Конфликты зависимостей":"Dependency conflicts"} · {conflicts.length}</strong>{conflicts.map(c=><p key={c.id}><button className="work-title-button" onClick={()=>onEdit("dependency",c.id)}>{c.from} → {c.to} · {c.type}: {c.missing?(ru?"связанная работа недоступна":"linked work unavailable"):`${c.days} ${ru?"дн. нарушения связи":"days of timing conflict"}`}</button></p>)}</div>}
     <div className="mobile-planning-agenda"><h3>{ru ? "Ближайшая работа и контрольные точки" : "Upcoming work and milestones"}</h3>{[...scheduled.map(x=>({id:x.id,title:x.title,date:x.dueDate||x.startDate!,kind:"work" as const})),...milestones.map(x=>({id:x.id,title:x.title,date:x.date,kind:"milestone" as const}))].sort((a,b)=>a.date.localeCompare(b.date)).map(x=><button className="mobile-work-card" key={x.id} onClick={()=>onEdit(x.kind,x.id)}><small>{formatDate(x.date,locale)}</small><strong>{x.title}</strong>{x.kind==="milestone"&&<span>{milestoneSummary(milestones.find(m=>m.id===x.id)!)}</span>}</button>)}<button className="button" aria-expanded={full} aria-controls={timelineId} onClick={()=>setFull(!full)}>{full?(ru?"Скрыть timeline":"Hide timeline"):(ru?"Открыть полный timeline":"Open full timeline")}</button></div>
@@ -68,6 +71,5 @@ export function PlanningTimeline({workspace,project,locale,onEdit,onCreate}: Pic
         {milestones.map(m=><div className="date-timeline-row" key={m.id}><button className="work-title-button" onClick={()=>onEdit("milestone",m.id)}>{m.title}<span className="timeline-date-label">{milestoneSummary(m)} · {m.progress}%</span></button><div className="date-track">{milestoneDates(m).filter(d=>d.date&&Number.isFinite(Date.parse(d.date))).map(d=><button key={d.kind} className={`milestone-marker milestone-${d.kind}`} style={{left:`${position(d.date!)}%`}} aria-label={`${m.title} · ${d.label}: ${formatDate(d.date,locale)}`} title={`${m.title} · ${d.label}: ${formatDate(d.date,locale)}`} onClick={()=>onEdit("milestone",m.id)}>{d.symbol}</button>)}</div></div>)}
       </div>
     </div></div>:<div className="empty-state atlas-empty-state"><EmptyStateGraphic kind="no-work" locale={locale}/><div className="atlas-empty-copy"><h3>{ru?"Нет запланированных задач и вех":"No scheduled work or milestones"}</h3><p>{ru?"Добавьте сроки задач или контрольные точки, чтобы увидеть график.":"Add work dates or milestones to see the schedule."}</p><button className="button" onClick={()=>onCreate("work")}>{ru?"Добавить работу":"Add work"}</button></div></div>}
-    <p className="muted compact">{ru?"Календарные дни. Связь FS допускает начало в день окончания предшественника; лаг добавляет дни. Линия «сегодня» отмечена на шкале. Работа без дат: ":"Calendar days. FS permits a same-day finish/start; lag adds days. The today line is marked on the scale. Unscheduled work: "}{items.length-scheduled.length}.</p>
   </section>;
 }
