@@ -4,7 +4,7 @@ Scope: root language selector only. Original PMWORK mark, theme persistence, loc
 
 ## Design
 
-An editorial Operational Atlas cover: oversized PMWORK typography, a copper punctuation mark, a teal signal–decision–action route, precision hairlines, and equally weighted language entrances. The SVG is decorative and excluded from the accessibility tree. The creator signature sits alongside a direct Telegram contact link with a visible handle. No new runtime dependencies, remote fonts, image requests, or JavaScript animation logic.
+An editorial Operational Atlas cover: restrained PMWORK typography, a copper punctuation mark, a teal signal–decision–action route, precision hairlines, and equally weighted language entrances. The SVG is decorative and excluded from the accessibility tree. The creator signature sits alongside a direct Telegram contact link with a visible handle. No new runtime dependencies, remote fonts, image requests, or JavaScript animation logic.
 
 `app/entry-portal.css` owns the new surface. Obsolete entry rules were removed from `excellence-entry.css` and `refinement.css`. A source comparison verified that onboarding/workspace declarations in the former are unchanged, including reduced-motion behavior.
 
@@ -23,3 +23,9 @@ An editorial Operational Atlas cover: oversized PMWORK typography, a copper punc
 ## Limits
 
 Browser automation uses installed browser engines and mobile emulation, not physical devices. No manual screen-reader session, installed Telegram app handoff, field Core Web Vitals, or full-app exhaustive E2E certification is claimed. The existing transfer-budget script checks internal routes, not root performance; the root adds only inline SVG and scoped CSS. GitHub deployment status is separate from local verification.
+
+## Compact composition refinement
+
+The entry now uses a centered, bounded editorial frame instead of filling the monitor width. The hero no longer expands to consume free vertical space. The display title is capped at 100px, with a smaller supporting headline and a 300px atlas; language rows and footer spacing are tighter. Mobile copy uses the full reading measure, the atlas becomes a small title-side motif, and the redundant creator tagline is removed. The matte canvas matches the surrounding page, avoiding visible frame edges on wide displays and extra compositing layers.
+
+Regression checks enforce visible desktop side margins, a restrained title-to-viewport ratio, a compact header-to-footer span, and complete footer visibility at 390×844. Existing language routing, original logo, theme preferences, contact destination, and 44px minimum targets remain intact.
