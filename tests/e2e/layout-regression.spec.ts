@@ -16,8 +16,8 @@ const surfaces = [
 
 test("language entry explains PMWORK and opens the selected interface", async ({ page }) => {
   await page.goto(route("/"));
-  await expect(page.getByRole("heading", { name: "Tasks, deadlines and decisions in one place." })).toBeVisible();
-  await expect(page.getByText("No account · Works offline")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PMWORK." })).toBeVisible();
+  await expect(page.getByText("Local first. Yours.")).toBeVisible();
   await page.getByRole("link", { name: /Русский/ }).click();
   await expect(page).toHaveURL(/\/ru\/?$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "ru");

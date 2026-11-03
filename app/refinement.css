@@ -66,14 +66,6 @@
     }
   }
 
-  @media (max-width: 380px) {
-    .entry-header { align-items: flex-start; gap: .75rem; }
-    .entry-local { max-width: 44%; white-space: normal; line-height: 1.4; }
-    .entry-choice { padding-inline: 1rem; }
-    .entry-language { min-width: 0; }
-    .entry-language small { white-space: normal; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       scroll-behavior: auto !important;
