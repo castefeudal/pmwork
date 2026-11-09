@@ -1,0 +1,180 @@
+/* Ambient visual layer: generated aurora fields, film grain, scroll reveals
+   and micro-interactions for the public surfaces. Imported last so it sits
+   above the other polish layers without overriding their cascade order. */
+@layer polish {
+
+/* --- hero aurora field -------------------------------------------------- */
+.marketing-hero .hero-aurora {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to left, #000 32%, rgba(0, 0, 0, .74) 56%, transparent 92%);
+  -webkit-mask-image: linear-gradient(to left, #000 32%, rgba(0, 0, 0, .74) 56%, transparent 92%);
+}
+/* fade the field into the canvas so the next section starts clean */
+.marketing-hero .hero-aurora::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 36%;
+  background: linear-gradient(to bottom, transparent, var(--canvas));
+}
+.hero-aurora-img { opacity: .9; }
+.hero-aurora-dark { display: none; }
+[data-theme="dark"] .hero-aurora-light { display: none; }
+[data-theme="dark"] .hero-aurora-dark { display: block; opacity: .8; }
+
+/* --- closing emerald field ---------------------------------------------- */
+.closing-section .closing-field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  object-fit: cover;
+  opacity: .52;
+  mask-image: linear-gradient(to bottom, #000 44%, rgba(0, 0, 0, .55) 72%, transparent 99%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 44%, rgba(0, 0, 0, .55) 72%, transparent 99%);
+}
+
+/* --- slow ambient drift (skipped for reduced motion) --------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-aurora-img { animation: aurora-drift 54s var(--motion-ease) infinite alternate; }
+  .closing-field { animation: field-drift 68s var(--motion-ease) infinite alternate; }
+  .role-showcase-image { animation: ken-burns 32s var(--motion-ease) infinite alternate; }
+  .hero-kicker-dot::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-primary);
+    opacity: 0;
+    animation: kicker-ping 3s var(--motion-ease) infinite;
+  }
+}
+@keyframes aurora-drift {
+  from { transform: scale(1.03) translate3d(0, 0, 0); }
+  to { transform: scale(1.1) translate3d(-1.6%, 1.2%, 0); }
+}
+@keyframes field-drift {
+  from { transform: scale(1.05) translate3d(0, 1%, 0); }
+  to { transform: scale(1.13) translate3d(1.4%, -1.6%, 0); }
+}
+@keyframes ken-burns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.08) translate3d(1%, -1%, 0); }
+}
+@keyframes kicker-ping {
+  0% { transform: scale(.55); opacity: .75; }
+  70%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* --- film grain over the marketing surface ------------------------------- */
+.marketing-home::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: .03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+[data-theme="dark"] .marketing-home::after { opacity: .05; }
+
+/* --- gradient ink on the hero accent line -------------------------------- */
+.marketing-hero .hero-title-accent {
+  background: linear-gradient(118deg, var(--accent-primary) 0%, color-mix(in srgb, var(--accent-primary) 45%, var(--accent-secondary)) 52%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+[data-theme="dark"] .marketing-hero .hero-title-accent {
+  background: linear-gradient(118deg, #8ee0d2 0%, #7bd3dd 52%, #6fc9e0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+html[data-contrast="more"] .marketing-hero .hero-title-accent {
+  background: none;
+  color: var(--accent-primary);
+  -webkit-text-fill-color: currentColor;
+}
+
+/* --- light sweep on the primary calls to action -------------------------- */
+.marketing-hero .button.primary,
+.closing-section .button.primary { position: relative; overflow: hidden; }
+.marketing-hero .button.primary::after,
+.closing-section .button.primary::after {
+  content: "";
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: -45%;
+  width: 38%;
+  transform: skewX(-18deg);
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .34), transparent);
+  transition: left .65s var(--motion-ease);
+  pointer-events: none;
+}
+.marketing-hero .button.primary:hover::after,
+.marketing-hero .button.primary:focus-visible::after,
+.closing-section .button.primary:hover::after,
+.closing-section .button.primary:focus-visible::after { left: 128%; }
+
+/* --- scroll reveals -------------------------------------------------------
+   The client component adds .reveal-ready to <html> before paint and .is-in
+   when a target enters the viewport. Without JS nothing is hidden. */
+html.reveal-ready :is(.hero-plate, .role-showcase, .atlas-band, .marketing-section, .privacy-section, .library-section, .approach-section, .closing-section, .privacy-visual):not(.is-in) {
+  opacity: 0;
+  transform: translateY(26px);
+}
+html.reveal-ready :is(.capability-card, .library-card):not(.is-in) {
+  opacity: 0;
+  transform: translateY(20px);
+}
+html.reveal-ready :is(.hero-plate, .role-showcase, .atlas-band, .marketing-section, .privacy-section, .library-section, .approach-section, .closing-section, .privacy-visual).is-in {
+  animation: reveal-rise .78s var(--motion-ease) backwards;
+}
+html.reveal-ready :is(.capability-card, .library-card).is-in {
+  animation: reveal-rise .62s var(--motion-ease) backwards;
+}
+html.reveal-ready .capability-grid .capability-card:nth-child(2).is-in { animation-delay: 70ms; }
+html.reveal-ready .capability-grid .capability-card:nth-child(3).is-in { animation-delay: 140ms; }
+html.reveal-ready .capability-grid .capability-card:nth-child(4).is-in { animation-delay: 90ms; }
+html.reveal-ready .capability-grid .capability-card:nth-child(5).is-in { animation-delay: 160ms; }
+html.reveal-ready .capability-grid .capability-card:nth-child(6).is-in { animation-delay: 120ms; }
+html.reveal-ready .library-grid .library-card:nth-child(2).is-in { animation-delay: 70ms; }
+html.reveal-ready .library-grid .library-card:nth-child(3).is-in { animation-delay: 140ms; }
+html.reveal-ready .library-grid .library-card:nth-child(4).is-in { animation-delay: 210ms; }
+@keyframes reveal-rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready :is(.hero-plate, .role-showcase, .atlas-band, .marketing-section, .privacy-section, .library-section, .approach-section, .closing-section, .privacy-visual, .capability-card, .library-card):not(.is-in) {
+    opacity: 1;
+    transform: none;
+  }
+  html.reveal-ready :is(.hero-plate, .role-showcase, .atlas-band, .marketing-section, .privacy-section, .library-section, .approach-section, .closing-section, .privacy-visual, .capability-card, .library-card).is-in {
+    animation: none;
+  }
+}
+/* printed pages must never hide content that was below the fold */
+@media print {
+  html.reveal-ready :is(.hero-plate, .role-showcase, .atlas-band, .marketing-section, .privacy-section, .library-section, .approach-section, .closing-section, .privacy-visual, .capability-card, .library-card):not(.is-in) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- deeper hover presence for the catalogue cards ----------------------- */
+.capability-card:hover,
+.library-card:hover {
+  box-shadow: 0 22px 46px rgba(17, 45, 46, .1), 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+[data-theme="dark"] .capability-card:hover,
+[data-theme="dark"] .library-card:hover {
+  box-shadow: 0 24px 52px rgba(0, 0, 0, .42), 0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+}

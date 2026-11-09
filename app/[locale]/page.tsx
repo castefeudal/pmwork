@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowDown,
   ArrowRight,
@@ -17,7 +18,7 @@ import { RoleShowcase } from "@/components/role-showcase";
 import { ProductShowcase } from "@/components/product-showcase";
 import { AtlasBand } from "@/components/atlas-band";
 import { FeatureGraphic, LibraryMotif, type FeatureKind, type LibraryKind } from "@/components/atlas-editorial";
-import { PlateMarks } from "@/components/atlas-marks";
+import { PlateMarks, atlasAsset } from "@/components/atlas-marks";
 import { Footer } from "@/components/footer";
 
 export function generateStaticParams() {
@@ -193,6 +194,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <PublicHeader locale={locale} />
       <main id="main" className="marketing-home">
         <section className="hero marketing-hero">
+          <div className="hero-aurora" aria-hidden="true">
+            <Image className="hero-aurora-img hero-aurora-light" src={atlasAsset("hero/aurora-light.webp")} alt="" fill sizes="100vw" />
+            <Image className="hero-aurora-img hero-aurora-dark" src={atlasAsset("hero/aurora-dark.webp")} alt="" fill sizes="100vw" />
+          </div>
           <div className="hero-copy">
             <p className="hero-kicker"><span className="hero-kicker-dot" />{t.kicker}</p>
             <h1><span>{t.titleTop}</span><span className="hero-title-accent">{t.titleBottom}</span></h1>
@@ -256,6 +261,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </section>
 
         <section className="closing-section">
+          <Image className="closing-field" src={atlasAsset("sections/emerald-field.webp")} alt="" fill sizes="100vw" />
           <div className="closing-glow" aria-hidden="true" />
           <p className="eyebrow">{t.finalEyebrow}</p><h2>{t.finalTitle}</h2><p>{t.finalLead}</p>
           <div className="button-row"><Link prefetch={false} className="button primary" href={`/${locale}/workspace/`}>{t.finalStart}<ArrowRight size={17} aria-hidden="true" /></Link><a className="button closing-secondary" href="#product-preview">{t.finalDemo}<ArrowUpRight size={16} aria-hidden="true" /></a></div>
