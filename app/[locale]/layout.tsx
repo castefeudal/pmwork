@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/domain/schemas";
 import { LocaleLang } from "@/components/locale-lang";
+import { ScrollReveal } from "@/components/scroll-reveal";
 export function generateStaticParams() {
   return [{ locale: "ru" }, { locale: "en" }];
 }
@@ -28,7 +29,7 @@ export async function generateMetadata({
         { url: `${publicBase}/icon.svg`, type: "image/svg+xml" },
         {
           url: `${publicBase}/brand/favicon.png`,
-          sizes: "32x32",
+          sizes: "48x48",
           type: "image/png",
         },
       ],
@@ -50,6 +51,7 @@ export default async function LocaleLayout({
   return (
     <div lang={locale as Locale}>
       <LocaleLang locale={locale as Locale} />
+      <ScrollReveal />
       {children}
     </div>
   );

@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — a premium visual finish for the public surfaces
+
+- Replace the brand mark with a generated glass-plate emblem (ascending route, teal-to-copper nodes) and derive every icon size from it: favicon, apple touch, PWA tiles, maskable tile, header mark and the social preview plates.
+- Add generated aurora fields to the landing: a topographic light/dark hero backdrop that drifts slowly behind the product plate, and an emerald night field under the closing call to action.
+- Layer a faint film grain over the marketing surface and give the hero accent line a metallic teal-to-copper ink gradient (plain accent colour in high-contrast mode).
+- Introduce scroll reveals for the marketing sections and catalogue cards: targets stay fully visible without JavaScript, in print and under reduced motion.
+- Add micro-interactions: a light sweep across the primary calls to action, a ping on the hero kicker dot, a slow Ken Burns breath on the role plates and a deeper hover shadow on catalogue cards.
+- Align the PWA manifest theme colour with the dark shell in all three manifests.
+
 ## 2.10.0 — a readable schedule and a quieter shell
 
 - Give the planning timeline a labelled time axis: month, week or day ticks that match the selected scale, a caption with the full visible range, and a sticky axis while the schedule scrolls.
