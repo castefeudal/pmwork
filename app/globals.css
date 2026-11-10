@@ -908,6 +908,9 @@ blockquote {
 }
 .pwa-notice { position: fixed; bottom: 80px; right: 16px; max-width: min(440px,calc(100vw - 32px)); padding: 12px 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; z-index: var(--z-toast); display: flex; gap: 12px; align-items: center; pointer-events: none; }
 .pwa-notice button { pointer-events: auto; }
+.pwa-notice--update { border-color: var(--accent-primary); box-shadow: 0 10px 34px color-mix(in srgb, var(--accent-primary) 30%, transparent); animation: pwa-notice-rise .5s var(--motion-ease) backwards; }
+@keyframes pwa-notice-rise { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) { .pwa-notice--update { animation: none; } }
 
 .local-fonts { font-synthesis: none; }
 
