@@ -4,7 +4,9 @@ const CORE = ["./", "./ru/", "./en/", "./ru/workspace/", "./en/workspace/", "./m
 const scope = new URL(self.registration.scope);
 self.addEventListener("install", event => event.waitUntil((async () => {
   const cache = await caches.open(CACHE), urls = PRECACHE.length ? PRECACHE : CORE;
-  for (let i = 0; i < urls.length; i += 8) await cache.addAll(urls.slice(i, i + 8));
+  // allSettled keeps a single transient failure (e.g. a 404 mid-deploy) from
+  // aborting the whole install and discarding the new release.
+  for (let i = 0; i < urls.length; i += 8) await Promise.allSettled(urls.slice(i, i + 8).map(url => cache.add(url)));
 })()));
 // A new release activates after old tabs close, preventing mixed-version chunks.
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("pmwork-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
