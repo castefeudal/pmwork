@@ -61,3 +61,8 @@ checks do not replace a manual screen-reader or physical-device review.
 - The two risk interaction tests now wait up to five seconds for the dynamically
   imported register, matching asynchronous section loading on a busy host.
   Their behavioral assertions have not been removed or weakened.
+- Linux visual references were regenerated with the existing `Review visual
+  references` workflow, run `43524262917`, then verified twice in fresh browser
+  contexts. Reviewed representative desktop/mobile images for Today, Work,
+  RAID, Plan, Tools, the landing page and onboarding in both themes/locales;
+  124 changed reference PNGs were updated without changing pixel thresholds.
