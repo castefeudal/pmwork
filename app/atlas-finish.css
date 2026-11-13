@@ -1,0 +1,35 @@
+/* Operational Atlas — common art direction. Vector artwork inherits semantic
+   inks so light, dark and enhanced contrast use the same drawing vocabulary. */
+@layer utilities {
+  :root { --atlas-paper:color-mix(in srgb,var(--accent-copper) 4%,var(--canvas)); --atlas-grid:color-mix(in srgb,var(--accent-primary) 7%,transparent); --surface-technical:#102b2c; --technical-route:#79d8c0; --technical-copper:#e0ac80; --technical-text:#c5d9d5; --technical-hair:rgba(197,217,213,.32); --technical-faint:rgba(197,217,213,.14); }
+  .entry-portal { background:var(--atlas-paper); }
+  .entry-portal::before { content:""; position:absolute; z-index:-1; inset:0; pointer-events:none; background-image:linear-gradient(var(--atlas-grid) 1px,transparent 1px),linear-gradient(90deg,var(--atlas-grid) 1px,transparent 1px); background-size:64px 64px; mask-image:linear-gradient(115deg,transparent 25%,#000); }
+  .portal-heading h1 { text-wrap:nowrap; }
+  .portal-map { --atlas-faint:var(--technical-faint); --atlas-hair:var(--technical-hair); --atlas-route:var(--technical-route); --atlas-point:var(--technical-copper); --atlas-field:var(--surface-technical); --text-secondary:var(--technical-text); --accent-copper:var(--technical-copper); border:1px solid var(--border-strong); background:var(--surface-technical); border-radius:2px 2px 22px 2px; padding:.5rem; box-shadow:var(--shadow-low); }
+  .portal-map::before,.portal-map::after { content:""; position:absolute; width:14px; height:14px; border-color:var(--accent-copper); border-style:solid; pointer-events:none; }
+  .portal-map::before { top:7px; left:7px; border-width:1px 0 0 1px; }
+  .portal-map::after { bottom:7px; right:7px; border-width:0 1px 1px 0; }
+  .portal-map { overflow:hidden; }
+  .portal-atlas { transform:scale(1.2); }
+  .portal-map-caption { padding:0 .5rem .5rem; }
+  .portal-atlas-topography { stroke:var(--accent-copper); stroke-width:.8; opacity:.28; }
+  .portal-atlas-route { stroke-dasharray:900; animation:atlas-trace 1500ms ease-out both; }
+  .portal-atlas-center { transform-origin:320px 260px; animation:atlas-register 900ms ease-out both; }
+  .portal-languages { gap:12px; border:0; }
+  .portal-language { background:var(--surface-0); border:1px solid var(--border-strong); border-radius:3px 3px 16px 3px; min-height:96px; box-shadow:var(--shadow-low); }
+  .portal-language:first-child { border-right:1px solid var(--border-strong); }
+  .portal-language:hover { border-color:var(--accent-primary); background:var(--surface-selected); }
+  .portal-language-code { border-bottom:2px solid var(--accent-copper); padding-bottom:.5rem; }
+  .catalog-layout .catalog-hero { position:relative; isolation:isolate; border-bottom:1px solid var(--border-strong); background:linear-gradient(110deg,var(--atlas-paper),var(--surface-0)); }
+  .catalog-layout .catalog-hero::after { content:""; position:absolute; z-index:-1; pointer-events:none; right:3%; top:12%; width:180px; aspect-ratio:1; border:1px solid var(--atlas-faint); border-radius:50%; background:repeating-linear-gradient(0deg,transparent 0 23px,var(--atlas-grid) 23px 24px); opacity:.6; mask-image:linear-gradient(90deg,transparent,#000); }
+  .catalog-layout .catalog-hero h1 { letter-spacing:-.055em; font-weight:650; }
+  .catalog-layout :is(.catalog-card,.method-card,.template-card) { border-color:var(--border-strong); box-shadow:var(--shadow-hairline); transition:transform 180ms,border-color 180ms,box-shadow 180ms; }
+  .catalog-layout :is(.catalog-card,.method-card,.template-card):hover { transform:translateY(-3px); border-color:var(--accent-primary); box-shadow:var(--shadow-low); }
+  .button.primary { box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text-on-accent) 20%,transparent),0 3px 8px color-mix(in srgb,var(--accent-primary) 12%,transparent); }
+  @keyframes atlas-trace { from { stroke-dashoffset:900; } to { stroke-dashoffset:0; } }
+  @keyframes atlas-register { from { transform:scale(.5); opacity:0; } to { transform:scale(1); opacity:1; } }
+  @media(max-width:767px) { .portal-language { min-height:80px; } .portal-language:first-child { border-bottom:1px solid var(--border-strong); } .portal-map { padding:0; } .portal-atlas { transform:scale(1.65); } }
+  @media(max-width:767px) and (min-height:740px) { .portal-hero { padding-block:1rem; } .portal-map { height:100px; margin-top:.5rem; } .portal-atlas { height:100px; } }
+  @media(prefers-reduced-motion:reduce) { .portal-atlas-route,.portal-atlas-center { animation:none; } .catalog-layout :is(.catalog-card,.method-card,.template-card) { transition:none; } }
+  @media(forced-colors:active) { .portal-map,.portal-language { border:1px solid CanvasText; } .portal-atlas-route { stroke:LinkText; } .portal-atlas-grid,.portal-atlas-secondary { stroke:CanvasText; } }
+}

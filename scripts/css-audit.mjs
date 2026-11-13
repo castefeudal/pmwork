@@ -25,6 +25,7 @@ const FILES = [
   "app/refinement.css", "app/clarity.css", "app/excellence-entry.css",
   "app/excellence-public.css", "app/deferred-operational.css", "app/workspace.css",
   "app/management.css", "app/excellence-workspace.css",
+  "app/visuals.css", "app/entry-portal.css", "app/atlas-finish.css", "app/atlas-workspace.css",
 ];
 
 // Budget for shadowed declarations, ratcheted down as the layers are consolidated.
@@ -84,7 +85,7 @@ function parse(css) {
       const inner = parse(nested);
       for (const decl of inner) {
         const outer = context();
-        out.push({ ...decl, layer: outer.layer, media: outer.media });
+        out.push({ ...decl, layer: decl.layer === "(unlayered)" ? outer.layer : decl.layer, media: [outer.media, decl.media].filter(Boolean).join("|") });
       }
       stack.pop();
       i = end;
