@@ -43,6 +43,9 @@ import {
 } from "@/data/storage";
 import { knowledgeGuides } from "@/content/knowledge";
 import { Brand } from "./brand";
+import { ProjectAtlas } from "./project-atlas";
+import { AtlasSectionMark } from "./atlas-section-mark";
+import "../../app/atlas-workspace.css";
 import { WorkspaceBoot } from "./workspace-boot";
 import { WorkspaceWelcome, type WorkspaceIntent } from "./workspace-welcome";
 import { ThemeToggle } from "./theme-toggle";
@@ -385,9 +388,10 @@ export function WorkspaceApp({ locale, initialIntent }: { locale: Locale; initia
           <button className="button small desktop-only" onClick={()=>fileRef.current?.click()}><Upload size={17}/>{ru?"Импорт":"Import"}</button>
           <input hidden ref={fileRef} type="file" accept="application/json" onChange={(e)=>void stageImport(e.target.files?.[0],true)}/>
         </header>
-        <div className="workspace-content">
+        <div className="workspace-content" data-atlas-view={view}>
           {recovery&&<section className="recovery-banner" role="alert"><strong>{ru?"Автосохранение приостановлено":"Autosave paused"}</strong><p>{ru?"Исходные данные сохранены без изменений. Сейчас открыт пример. Импортируйте проверенную копию или восстановите снимок в настройках.":"Original data is untouched. A demo is open. Import a valid backup or restore a snapshot in Settings."}</p><button className="button" onClick={()=>fileRef.current?.click()}>{ru?"Импортировать копию":"Import backup"}</button><button className="button" onClick={()=>setView("setup")}>{ru?"Снимки данных":"Recovery snapshots"}</button></section>}
-          {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{!managementRecord&&project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{managementRecord?navLabels[locale][view]:`${displayLabel(locale,"approach",project.approach)} · ${displayLabel(locale,"governance",project.governance)}`}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2>{view==="overview"&&<p>{roleQuestions[locale][workspace.managementRole]}</p>}{view==="overview"&&<p className="muted">{managementRecord?("outcome" in managementRecord?managementRecord.outcome:managementRecord.purpose):project.objective}</p>}</div></div>}
+          {view!=="portfolio"&&<div className="page-title page-context"><div><p className="eyebrow">{!managementRecord&&project.demo?(ru?"ПРИМЕР · ":"DEMO · "):""}{managementRecord?navLabels[locale][view]:`${displayLabel(locale,"approach",project.approach)} · ${displayLabel(locale,"governance",project.governance)}`}</p><h2>{view==="board"?navLabels[locale].work:navLabels[locale][view]}</h2>{view==="overview"&&<p>{roleQuestions[locale][workspace.managementRole]}</p>}{view==="overview"&&<p className="muted">{managementRecord?("outcome" in managementRecord?managementRecord.outcome:managementRecord.purpose):project.objective}</p>}</div><AtlasSectionMark view={view}/></div>}
+          {view==="overview"&&!managementRecord&&<ProjectAtlas workspace={workspace} projectId={project.id} locale={locale} onView={navigateView}/>}
           {workspace.experience==="foundation"&&(()=>{const domain=({program:"Program basics",operations:"Metrics",delivery:"Flow",overview:"Value",guide:"Fundamentals",work:"Requirements",board:"Flow",planning:"Schedule",raid:"Risk",people:"Stakeholders",finance:"Cost",control:"Governance",documents:"Communication",portfolio:"Portfolio basics",setup:"Fundamentals"} as Record<string,string>)[view];const help=knowledgeGuides[domain]??knowledgeGuides.Fundamentals;return <details className="panel foundation-help"><summary>{ru?"Что сделать сейчас":"What to do now"}</summary><h3>{ru?"Зачем это нужно":"Why this matters"}</h3><p>{help.summary[locale]}</p><h3>{ru?"Действие":"Action"}</h3><p>{help.steps[locale]}</p><h3>{ru?"Что получится":"Expected output"}</h3><p>{help.output[locale]}</p><h3>{ru?"Типичная ошибка":"Common mistake"}</h3><p>{help.mistake[locale]}</p><Link className="button small" href={`/${locale}/glossary/`}>{ru?"Объяснения терминов":"Term explanations"}</Link></details>})()}
           <Suspense fallback={<p role="status">{ru?"Открываем раздел…":"Opening section…"}</p>}>{render()}</Suspense>
         </div>

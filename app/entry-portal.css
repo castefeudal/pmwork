@@ -1,25 +1,25 @@
 @layer polish {
-.entry-portal { --portal-line:var(--border-default); position:relative; isolation:isolate; display:flex; flex-direction:column; justify-content:center; min-height:100svh; width:min(100%,1120px); margin-inline:auto; padding:clamp(1.25rem,3vw,2.5rem) clamp(1.25rem,3vw,2.5rem); background:var(--canvas); color:var(--text-primary); }
+.entry-portal { --portal-line:var(--border-default); position:relative; isolation:isolate; display:flex; flex-direction:column; justify-content:center; min-height:100svh; width:min(100%,1200px); margin-inline:auto; padding:clamp(1.25rem,3vw,2.5rem) clamp(1.25rem,3vw,2.5rem); background:var(--canvas); color:var(--text-primary); }
 .entry-portal * { box-sizing:border-box; }
 .portal-header { display:flex; align-items:center; gap:1.5rem; padding-bottom:1.25rem; border-bottom:1px solid var(--portal-line); }
 .portal-descriptor,.portal-local { color:var(--text-secondary); font-size:.875rem; line-height:1.5; }
 .portal-descriptor { border-left:1px solid var(--portal-line); padding-left:1.5rem; }
 .portal-local { display:flex; align-items:center; gap:.6rem; margin-left:auto; }
 .portal-local i { width:6px; height:6px; background:var(--accent-primary); border-radius:50%; }
-.portal-hero { position:relative; display:grid; grid-template-columns:1fr 1fr; align-items:center; flex:0 0 auto; padding:1.75rem 0 1.5rem; }
+.portal-hero { position:relative; display:grid; grid-template-columns:1fr 1fr; align-items:center; flex:0 0 auto; padding:1rem 0 .875rem; min-height:340px; }
 .portal-heading { grid-column:1/-1; position:relative; z-index:1; }
 .portal-eyebrow { display:flex; align-items:center; justify-content:space-between; margin:0 0 .875rem; color:var(--text-secondary); font-size:.75rem; font-weight:650; letter-spacing:.14em; }
-.portal-heading h1 { margin:0; font-family:var(--font-display); font-size:clamp(3.5rem,7vw,6.25rem); font-weight:750; letter-spacing:-.075em; line-height:1; }
+.portal-heading h1 { margin:0; font-family:var(--font-display); font-size:clamp(3.5rem,7.6vw,6.75rem); font-weight:750; letter-spacing:-.075em; line-height:1; }
 .portal-period { color:var(--accent-copper); }
-.portal-narrative { position:relative; z-index:1; padding-top:1rem; }
+.portal-narrative { position:relative; z-index:1; padding-top:1.5rem; max-width:100%; }
 .portal-statement { margin:0; font-size:clamp(1.5rem,2.5vw,2rem); line-height:1.2; letter-spacing:-.045em; font-weight:650; }
 .portal-statement>span { color:var(--accent-primary); }
 .portal-translation { margin:.625rem 0 1rem; color:var(--text-secondary); font-size:.875rem; }
 .portal-summary { color:var(--text-secondary); font-size:.875rem; line-height:1.65; margin:0; }
-.portal-map { position:absolute; right:0; bottom:1.5rem; width:32%; max-width:300px; }
-.portal-atlas { display:block; width:100%; height:auto; }
+.portal-map { position:relative; grid-column:2; grid-row:2; justify-self:end; width:100%; max-width:430px; }
+.portal-atlas { display:block; width:100%; height:220px; }
 .portal-atlas-grid { stroke:var(--atlas-faint); stroke-width:1; }
-.portal-atlas-route { stroke:var(--atlas-route); stroke-width:2; }
+.portal-atlas-route { stroke:var(--atlas-route); stroke-width:3; }
 .portal-atlas-secondary { stroke:var(--atlas-hair); stroke-width:1; }
 .portal-atlas-nodes { fill:var(--atlas-field); stroke:var(--atlas-route); stroke-width:2; }
 .portal-atlas-center { stroke:var(--atlas-point); stroke-width:1; }
@@ -58,12 +58,13 @@
  .portal-header { gap:1rem; padding-bottom:1rem; }
  .portal-descriptor { display:none; }
  .portal-local { font-size:.75rem; }
- .portal-hero { padding:1.5rem 0 1.25rem; grid-template-columns:1fr; }
+ .portal-hero { padding:1.5rem 0 1.25rem; grid-template-columns:1fr; min-height:0; }
  .portal-heading h1 { font-size:clamp(2.75rem,10.5vw,3.25rem); }
  .portal-eyebrow { font-size:.625rem; letter-spacing:.08em; }
- .portal-narrative { padding-top:1.25rem; }
+ .portal-narrative { padding-top:1.25rem; max-width:100%; }
  .portal-statement { font-size:clamp(1.5rem,6vw,1.75rem); }
- .portal-map { position:absolute; right:0; top:2rem; bottom:auto; width:28%; margin:0; opacity:.8; pointer-events:none; }
+ .portal-map { grid-column:1; grid-row:auto; position:relative; right:auto; top:auto; bottom:auto; width:100%; max-width:280px; height:125px; margin:1rem auto 0; opacity:1; pointer-events:none; overflow:hidden; }
+ .portal-atlas { height:125px; }
  .portal-map-caption,.portal-atlas-labels { display:none; }
  .portal-summary { max-width:100%; font-size:.875rem; }
  .portal-translation { max-width:100%; margin-bottom:.875rem; }

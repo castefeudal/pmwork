@@ -9,6 +9,7 @@ import "./excellence.css";
 import "./refinement.css";
 import "./clarity.css";
 import "./visuals.css";
+import "./atlas-finish.css";
 import "./aurora.css";
 import { PwaRegister } from "@/components/pwa-register";
 

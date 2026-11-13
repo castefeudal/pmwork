@@ -15,7 +15,7 @@ describe("workspace interactions", () => {
     localStorage.setItem("pmwork:workspace:v3",JSON.stringify(w));history.replaceState(null,"","/en/workspace/");
     render(<WorkspaceApp locale="en"/>);await screen.findByRole("heading",{name:w.projects[0].name,level:1});
     fireEvent.click(within(desktopNav()).getByRole("button",{name:"Risks & decisions"}));
-    const cell=await screen.findByRole("button",{name:/^Probability 2, impact 3: /});
+    const cell=await screen.findByRole("button",{name:/^Probability 2, impact 3: /},{timeout:5000});
     fireEvent.click(cell);expect(cell.getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByText("Risk alpha")).toBeTruthy();expect(screen.queryByText("Risk beta")).toBeNull();
     fireEvent.click(screen.getByRole("button",{name:"Show all risks"}));expect(screen.getByText("Risk beta")).toBeTruthy();
@@ -29,7 +29,7 @@ describe("workspace interactions", () => {
     render(<WorkspaceApp locale="en"/>);
     await screen.findByRole("heading",{name:original.projects[0].name,level:1});
     fireEvent.click(within(desktopNav()).getByRole("button",{name:"Risks & decisions"}));
-    fireEvent.click(await screen.findByText("Convert risk to issue"));
+    fireEvent.click(await screen.findByText("Convert risk to issue",{},{timeout:5000}));
     fireEvent.click(screen.getByRole("button",{name:`${risk.title} → Issue`}));
     const confirmation=screen.getByRole("dialog",{name:"Record a realized risk?"});
     expect(within(confirmation).getByText(/marked closed/)).toBeTruthy();

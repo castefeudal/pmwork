@@ -5,6 +5,7 @@ import { Brand } from "@/components/brand";
 
 function EntryAtlas() {
   return <svg className="portal-atlas" viewBox="0 0 640 520" fill="none" aria-hidden="true">
+    <g className="portal-atlas-topography">{[0,1,2,3,4,5].map(i=><path key={i} d={`M${60+i*14} ${342+i*13}C${95+i*16} ${184-i*12} ${222-i*7} ${126+i*10} ${302+i*9} ${158+i*12}S${450+i*8} ${350-i*10} ${570-i*7} ${190+i*25}`} />)}</g>
     <g className="portal-atlas-grid">
       <path d="M40 100H600M40 260H600M40 420H600M160 40V480M320 40V480M480 40V480" />
       <circle cx="320" cy="260" r="190" /><circle cx="320" cy="260" r="130" />
