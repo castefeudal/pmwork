@@ -11,7 +11,7 @@ for (const theme of ['light','dark'] as const) {
   await page.goto(route('/'));
   await page.evaluate(()=>document.fonts.ready);
   await expect(page.getByRole('heading',{name:'PMWORK.'})).toBeVisible();
-  const illustration=page.getByRole('img',{name:/Проджект-менеджер ведёт планирование/});
+  const illustration=page.getByRole('img',{name:/Знак PMWORK: мозг/});
   await expect(illustration).toBeVisible();
   await expect.poll(()=>illustration.evaluate(image=>(image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   for(const [width,height] of [[320,568],[375,667],[390,844],[768,1024],[1024,768],[1440,900],[1920,1080],[1024,600],[568,320]]) {
