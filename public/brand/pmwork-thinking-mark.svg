@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">PMWORK — thinking into action</title>
+  <desc id="desc">A restrained brain emblem with the ascending project route from the PMWORK identity.</desc>
+  <rect width="640" height="400" fill="#102b2c"/>
+  <defs>
+    <path id="hemisphere" d="M312 101C300 77 269 73 248 91C235 101 231 113 231 124C204 117 179 138 181 166C155 179 155 215 178 230C168 258 188 286 214 288C221 316 254 331 278 318C298 324 315 307 315 286V119C315 112 315 106 312 101Z"/>
+    <g id="folds">
+      <path d="M231 124C229 143 239 155 257 155C274 155 285 168 280 184"/>
+      <path d="M181 166C206 161 220 180 211 199C202 220 220 237 239 232"/>
+      <path d="M214 288C209 265 226 248 247 252C267 256 277 242 273 225"/>
+    </g>
+  </defs>
+  <g fill="none" stroke="#c5ded8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#hemisphere"/>
+    <use href="#hemisphere" transform="translate(640 0) scale(-1 1)"/>
+  </g>
+  <g fill="none" stroke="#6da394" stroke-width="3.5" stroke-linecap="round">
+    <use href="#folds"/>
+    <use href="#folds" transform="translate(640 0) scale(-1 1)"/>
+  </g>
+  <path d="M231 257L280 210L320 238L370 165H411" fill="none" stroke="#e0ac80" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#102b2c" stroke="#e0ac80" stroke-width="3">
+    <circle cx="231" cy="257" r="5"/>
+    <circle cx="280" cy="210" r="5"/>
+    <circle cx="370" cy="165" r="6"/>
+  </g>
+</svg>
