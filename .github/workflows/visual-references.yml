@@ -1,12 +1,16 @@
 name: Review visual references
 on:
-  push:
-    branches: ["qa/visual-references"]
   workflow_dispatch:
 jobs:
-  references:
+  artwork:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        base: [root, github]
+    env:
+      PMWORK_BASE_PATH: ${{ matrix.base }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -14,17 +18,32 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test visual-regression.spec.ts --update-snapshots
-      - name: Verify references in fresh browser contexts
-        run: npx playwright test visual-regression.spec.ts --repeat-each=2
+      - run: npm run verify
+      - run: npm run performance:check
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - name: Review landscape and portrait artwork
+        run: |
+          mkdir -p test-results
+          PORT=4182 node scripts/serve-export.mjs &
+          server=$!
+          trap 'kill "$server"' EXIT
+          for i in {1..20}; do curl -sf http://127.0.0.1:4182/ > /dev/null && break; sleep 1; done
+          node scripts/atlas-art-ci.mjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: visual-reference-review
+          name: pmwork-atlas-art-${{ matrix.base }}
           path: |
-            tests/e2e/visual-regression.spec.ts-snapshots
             test-results
-            quality-evidence
+            out
           retention-days: 7
+      - run: npm run lighthouse:check
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: pmwork-atlas-lighthouse-${{ matrix.base }}
+          path: quality-evidence/lighthouse/samples.json
+      - run: npm run test:e2e -- --grep-invert 'visual contract'
+        if: ${{ !cancelled() }}
+      - run: npm run test:cross-browser
+        if: ${{ !cancelled() }}
