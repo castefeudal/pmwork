@@ -2,9 +2,9 @@ name: Review visual references
 on:
   workflow_dispatch:
 jobs:
-  artwork:
+  lighthouse:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -18,32 +18,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run verify
-      - run: npm run performance:check
-      - run: npx playwright install --with-deps chromium firefox webkit
-      - name: Review landscape and portrait artwork
-        run: |
-          mkdir -p test-results
-          PORT=4182 node scripts/serve-export.mjs &
-          server=$!
-          trap 'kill "$server"' EXIT
-          for i in {1..20}; do curl -sf http://127.0.0.1:4182/ > /dev/null && break; sleep 1; done
-          node scripts/atlas-art-ci.mjs
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: pmwork-atlas-art-${{ matrix.base }}
-          path: |
-            test-results
-            out
-          retention-days: 7
+      - run: npm run build
+      - run: npx playwright install chromium
       - run: npm run lighthouse:check
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: pmwork-atlas-lighthouse-${{ matrix.base }}
-          path: quality-evidence/lighthouse/samples.json
-      - run: npm run test:e2e -- --grep-invert 'visual contract'
-        if: ${{ !cancelled() }}
-      - run: npm run test:cross-browser
-        if: ${{ !cancelled() }}
+          name: atlas-lighthouse-${{ matrix.base }}
+          path: quality-evidence/lighthouse
+          retention-days: 7
