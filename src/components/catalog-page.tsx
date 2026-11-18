@@ -1,4 +1,7 @@
 "use client";
+
+import Image from "next/image";
+import { atlasAsset } from "./atlas-marks";
 import {templatePractice} from "@/content/template-practice";
 import {PlaybookAction} from "./playbook-action";
 import { templateExamples } from "@/content/template-examples";
@@ -122,7 +125,8 @@ export function CatalogPage({ kind, locale, records }: { kind: Kind; locale: Loc
   }[kind];
   return (
     <>
-      <header className="catalog-hero">
+      <header className={`catalog-hero${kind === "knowledge" ? " catalog-hero-atlas" : ""}`}>
+        {kind === "knowledge" && <Image className="catalog-atlas-image" src={atlasAsset("sections/knowledge.webp")} alt="" width={475} height={263} />}
         <p className="eyebrow">PMWORK · {kindLabel}</p>
         <h1>{meta[0]}</h1>
         <p className="lead">{meta[1]}</p>

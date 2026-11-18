@@ -67,6 +67,8 @@
     align-self: center;
     opacity: .95;
   }
+  .atlas-empty-photo { height:auto; border-radius:var(--radius-sm); }
+
   .empty-state.atlas-empty-state {
     display: flex;
     align-items: center;
