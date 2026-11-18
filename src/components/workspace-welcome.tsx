@@ -51,7 +51,7 @@ export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,prio
       </fieldset>
       <figure className="atlas-plate first-run-plate">
         <PlateMarks />
-        <Image className="first-run-plate-image" src={atlasAsset("onboarding/atlas-plates-dark.webp")} alt={ru ? "Карта рабочих пластин: обзор, сроки, риски и решения нанесены на один лист." : "An atlas sheet: overview, schedule, risks and decisions plotted on one plate."} width={1100} height={880} sizes="(max-width: 860px) 100vw, 300px" priority />
+        <Image className="first-run-plate-image" src={atlasAsset("onboarding/arrival.webp")} alt="" width={475} height={263} loading="eager" fetchPriority="high" />
       </figure>
       <p className="first-run-privacy"><LockKeyhole className="first-run-privacy-icon" size={16} strokeWidth={1.8} aria-hidden="true"/>{ru ? "Данные хранятся в браузере. Резервную копию можно скачать в настройках." : "Data is stored in this browser. Download a backup from Settings."}</p>
       <input hidden ref={fileRef} type="file" accept="application/json" onChange={e=>{const file=e.target.files?.[0];if(file)onImport(file);e.currentTarget.value="";}}/>

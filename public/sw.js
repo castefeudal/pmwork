@@ -19,7 +19,7 @@ self.addEventListener("fetch", event => {
       ? new URL(`${url.pathname}/${url.search}`, url.origin)
       : null;
     const hit = await cache.match(event.request, {ignoreSearch:true}) || (normalizedNavigation ? await cache.match(normalizedNavigation, {ignoreSearch:true}) : undefined);
-    if(hit && /\.(woff2|png|svg|css|js)$/.test(url.pathname)) return hit;
+    if(hit && /\.(woff2|png|webp|svg|css|js)$/.test(url.pathname)) return hit;
     try {
       const response = await fetch(event.request);
       if(response.ok) event.waitUntil(cache.put(event.request,response.clone()));

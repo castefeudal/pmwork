@@ -1,3 +1,4 @@
+import { AtlasPicture } from "@/components/atlas-picture";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -17,7 +18,7 @@ import { PublicHeader } from "@/components/public-header";
 import { RoleShowcase } from "@/components/role-showcase";
 import { ProductShowcase } from "@/components/product-showcase";
 import { AtlasBand } from "@/components/atlas-band";
-import { FeatureGraphic, LibraryMotif, type FeatureKind, type LibraryKind } from "@/components/atlas-editorial";
+import { LibraryMotif, type LibraryKind } from "@/components/atlas-editorial";
 import { PlateMarks, atlasAsset } from "@/components/atlas-marks";
 import { Footer } from "@/components/footer";
 
@@ -84,12 +85,12 @@ const copy = {
     capabilityTitle: "Что можно делать в PMWORK",
     capabilityLead: "Создавайте задачи, следите за сроками, связывайте риски и решения. В сводке видны блокеры и ближайшие контрольные точки.",
     features: [
-      { graphic: "attention" as FeatureKind, label: "Сводка", title: "Найдите блокеры и ближайшие сроки", body: "Смотрите задачи, контрольные точки и причины задержек. Сигналы ведут к исходным записям.", href: "/workspace/", link: "Открыть пример" },
-      { graphic: "board" as FeatureKind, label: "Работа", title: "Ведите задачи списком, на доске или в календаре", body: "Это одни и те же записи: смените вид, чтобы спланировать неделю или разобрать очередь.", href: "/workspace/", link: "Посмотреть задачи" },
-      { graphic: "risk" as FeatureKind, label: "Риски и решения", title: "Назначайте владельцев и фиксируйте договорённости", body: "Укажите, что может случиться, по какому признаку действовать и какое решение принято.", href: "/workspace/", link: "Посмотреть управление" },
-      { graphic: "model" as FeatureKind, label: "Расчёты", title: "Проверяйте сроки и оценки", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo. Расчёты показывают исходные данные и допущения.", href: "/tools/", link: "Открыть инструменты" },
-      { graphic: "method" as FeatureKind, label: "Методы", title: "Выбирайте способ работы по условиям проекта", body: "Сравните подходы по стабильности требований, срокам, зависимостям и частоте обратной связи.", href: "/methods/", link: "Сравнить методы" },
-      { graphic: "library" as FeatureKind, label: "Шаблоны и инструкции", title: "Начните с готовой структуры", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} практических сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
+      { graphic: "control", label: "Сводка", title: "Найдите блокеры и ближайшие сроки", body: "Смотрите задачи, контрольные точки и причины задержек. Сигналы ведут к исходным записям.", href: "/workspace/", link: "Открыть пример" },
+      { graphic: "planning", label: "Работа", title: "Ведите задачи списком, на доске или в календаре", body: "Это одни и те же записи: смените вид, чтобы спланировать неделю или разобрать очередь.", href: "/workspace/", link: "Посмотреть задачи" },
+      { graphic: "risk", label: "Риски и решения", title: "Назначайте владельцев и фиксируйте договорённости", body: "Укажите, что может случиться, по какому признаку действовать и какое решение принято.", href: "/workspace/", link: "Посмотреть управление" },
+      { graphic: "analytics", label: "Расчёты", title: "Проверяйте сроки и оценки", body: "CPM, PERT, EVM, RICE, WSJF и Monte Carlo. Расчёты показывают исходные данные и допущения.", href: "/tools/", link: "Открыть инструменты" },
+      { graphic: "dependencies", label: "Методы", title: "Выбирайте способ работы по условиям проекта", body: "Сравните подходы по стабильности требований, срокам, зависимостям и частоте обратной связи.", href: "/methods/", link: "Сравнить методы" },
+      { graphic: "knowledge", label: "Шаблоны и инструкции", title: "Начните с готовой структуры", body: `${contentCounts.methods} методов, ${contentCounts.templates} шаблонов, ${contentCounts.playbooks} практических сценариев и ${contentCounts.glossary} терминов.`, href: "/knowledge/", link: "Открыть библиотеку" },
     ],
     privacyEyebrow: "ХРАНЕНИЕ ДАННЫХ",
     privacyTitle: "Проект хранится в этом браузере",
@@ -134,12 +135,12 @@ const copy = {
     capabilityTitle: "What you can do in PMWORK",
     capabilityLead: "Create work items, track dates, and link risks to decisions. The overview shows blockers and upcoming milestones.",
     features: [
-      { graphic: "attention" as FeatureKind, label: "Overview", title: "Find blockers and upcoming dates", body: "See work items, milestones, and reasons for delays. Signals link to their source records.", href: "/workspace/", link: "Open the example" },
-      { graphic: "board" as FeatureKind, label: "Work", title: "Use a list, board, or calendar", body: "Each view shows the same work items. Switch views to plan a week or review the queue.", href: "/workspace/", link: "View work items" },
-      { graphic: "risk" as FeatureKind, label: "Risks and decisions", title: "Assign owners and record decisions", body: "Note what could happen, what would trigger action, and which decision was made.", href: "/workspace/", link: "View risk management" },
-      { graphic: "model" as FeatureKind, label: "Calculations", title: "Check schedules and estimates", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo show their inputs and assumptions.", href: "/tools/", link: "Open the tools" },
-      { graphic: "method" as FeatureKind, label: "Methods", title: "Choose an approach for your constraints", body: "Compare methods by requirements stability, deadlines, dependencies, and feedback cadence.", href: "/methods/", link: "Compare methods" },
-      { graphic: "library" as FeatureKind, label: "Templates and guides", title: "Start with a working structure", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} practical guides, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
+      { graphic: "control", label: "Overview", title: "Find blockers and upcoming dates", body: "See work items, milestones, and reasons for delays. Signals link to their source records.", href: "/workspace/", link: "Open the example" },
+      { graphic: "planning", label: "Work", title: "Use a list, board, or calendar", body: "Each view shows the same work items. Switch views to plan a week or review the queue.", href: "/workspace/", link: "View work items" },
+      { graphic: "risk", label: "Risks and decisions", title: "Assign owners and record decisions", body: "Note what could happen, what would trigger action, and which decision was made.", href: "/workspace/", link: "View risk management" },
+      { graphic: "analytics", label: "Calculations", title: "Check schedules and estimates", body: "CPM, PERT, EVM, RICE, WSJF, and Monte Carlo show their inputs and assumptions.", href: "/tools/", link: "Open the tools" },
+      { graphic: "dependencies", label: "Methods", title: "Choose an approach for your constraints", body: "Compare methods by requirements stability, deadlines, dependencies, and feedback cadence.", href: "/methods/", link: "Compare methods" },
+      { graphic: "knowledge", label: "Templates and guides", title: "Start with a working structure", body: `${contentCounts.methods} methods, ${contentCounts.templates} templates, ${contentCounts.playbooks} practical guides, and ${contentCounts.glossary} terms.`, href: "/knowledge/", link: "Open the library" },
     ],
     privacyEyebrow: "DATA STORAGE",
     privacyTitle: "Your project stays in this browser",
@@ -187,17 +188,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     decisions: demo.decisions.filter((item) => item.projectId === project.id).map(({ id, question, context, status }) => ({ id, question, context, status })),
     milestones: demo.milestones.filter((item) => item.projectId === project.id).map(({ title, forecastDate, status, progress, confidence }) => ({ title, forecastDate, status, progress, confidence })),
   };
-  const featureLinks = t.features;
 
   return (
     <div className="shell site-shell">
       <PublicHeader locale={locale} />
       <main id="main" className="marketing-home">
         <section className="hero marketing-hero">
-          <div className="hero-aurora" aria-hidden="true">
-            <Image className="hero-aurora-img hero-aurora-light" src={atlasAsset("hero/aurora-light.webp")} alt="" fill sizes="100vw" />
-            <Image className="hero-aurora-img hero-aurora-dark" src={atlasAsset("hero/aurora-dark.webp")} alt="" fill sizes="100vw" />
-          </div>
+          <AtlasPicture scene="hero" className="hero-aurora" />
           <div className="hero-copy">
             <p className="hero-kicker"><span className="hero-kicker-dot" />{t.kicker}</p>
             <h1><span>{t.titleTop}</span><span className="hero-title-accent">{t.titleBottom}</span></h1>
@@ -226,16 +223,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <p>{t.capabilityLead}</p>
           </div>
           <div className="capability-grid">
-            {featureLinks.map((feature, i) => (
+            {t.features.map((feature, i) => (
               <Link prefetch={false} className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
-                <div className="capability-visual"><FeatureGraphic kind={feature.graphic} locale={locale} /></div>
+                <div className="capability-visual">
+                  <Image className="capability-atlas-image" src={atlasAsset(`sections/${feature.graphic}.webp`)} alt="" width={475} height={263} />
+                </div>
                 <div className="capability-text">
                   <span className="capability-label">{feature.label}</span>
                   <h3>{feature.title}</h3>
                   <p>{feature.body}</p>
                   <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
                 </div>
-                <span className="capability-number">0{i + 1}</span>
               </Link>
             ))}
           </div>
@@ -261,7 +259,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </section>
 
         <section className="closing-section">
-          <Image className="closing-field" src={atlasAsset("sections/emerald-field.webp")} alt="" fill sizes="100vw" />
+          <Image className="closing-field" src={atlasAsset("sections/convergence.webp")} alt="" fill sizes="100vw" />
           <div className="closing-glow" aria-hidden="true" />
           <p className="eyebrow">{t.finalEyebrow}</p><h2>{t.finalTitle}</h2><p>{t.finalLead}</p>
           <div className="button-row"><Link prefetch={false} className="button primary" href={`/${locale}/workspace/`}>{t.finalStart}<ArrowRight size={17} aria-hidden="true" /></Link><a className="button closing-secondary" href="#product-preview">{t.finalDemo}<ArrowUpRight size={16} aria-hidden="true" /></a></div>

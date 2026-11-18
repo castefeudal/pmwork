@@ -1,31 +1,23 @@
+import Image from "next/image";
 import type { Locale } from "@/domain/schemas";
-import { ControlPoint, Defs, Rail, hair, point, route, strong, success } from "./atlas-marks";
+import { atlasAsset, ControlPoint, Defs, hair, point, route, strong, success } from "./atlas-marks";
 
 export type EmptyKind = "no-work" | "no-risks" | "no-filter" | "no-records";
 
-const emptyTitles: Record<EmptyKind, { ru: string; en: string }> = {
-  "no-work": { ru: "Пустой участок карты: одна нанесённая точка отсчёта и начало маршрута", en: "An unmapped area: one plotted origin and the start of a route" },
+const emptyTitles: Record<Exclude<EmptyKind, "no-work">, { ru: string; en: string }> = {
   "no-risks": { ru: "Свободное поле наблюдений: рамка обследования без отмеченных отклонений", en: "An open survey field: a review frame with no recorded deviations" },
   "no-filter": { ru: "Маршрут не найден: пунктирный поиск по пустой сетке", en: "No route found: a dashed search across an empty grid" },
   "no-records": { ru: "Чистый лист реестра с нанесённой сеткой и разметкой полей", en: "A blank register sheet with a plotted grid and field marks" },
 };
 
 export function EmptyStateGraphic({ kind, locale }: { kind: EmptyKind; locale: Locale }) {
+  if (kind === "no-work") {
+    return <Image className="atlas-empty atlas-empty-photo" src={atlasAsset("empty/work.webp")} width={200} height={112} alt="" />;
+  }
   const label = emptyTitles[kind][locale === "ru" ? "ru" : "en"];
   return (
     <svg className="atlas-graphic atlas-empty" viewBox="0 0 200 120" role="img" aria-label={label} focusable="false">
       <Defs />
-      {kind === "no-work" && (
-        <g>
-          <rect x={14} y={12} width={172} height={96} rx={9} fill="none" stroke={hair} strokeDasharray="4 5" />
-          <Rail x={26} y1={24} y2={96} ticks={5} />
-          <line x1={40} y1={96} x2={176} y2={96} stroke={hair} />
-          <ControlPoint cx={54} cy={80} tone={point} size={13} />
-          <path d="M54 80 C78 74 92 60 112 48" fill="none" stroke={route} strokeWidth="1.8" strokeLinecap="round" markerEnd="url(#atlas-head)" />
-          <line x1={128} y1={40} x2={164} y2={40} stroke={hair} strokeDasharray="3 4" />
-          <line x1={140} y1={54} x2={168} y2={54} stroke={hair} strokeDasharray="3 4" strokeOpacity=".7" />
-        </g>
-      )}
       {kind === "no-risks" && (
         <g>
           <rect x={44} y={16} width={112} height={88} rx={8} fill="none" stroke={hair} />

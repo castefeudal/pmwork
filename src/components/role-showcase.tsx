@@ -10,20 +10,18 @@ const examples = {
   en: { project: ["Milestone forecast is later than baseline", "Agree schedule recovery with the owner", "Update the plan and assign a next step"], program: ["A handoff between two projects is blocked", "Set the shared resource priority", "Agree how components will support the shared goal"], delivery: ["A delivery commitment is blocked", "Resolve the blocker and review the forecast", "Update the commitment using observed data"], operations: ["A process metric exceeds its operating limit", "Assign a corrective action", "Review the deviation at the next check"] },
 };
 
-/* Each role is drawn as its own chart so the four read apart before any text is
-   read: one spine, one converging web, one obstructed flow, one cyclic band. */
-const plates = {
+const captions = {
   ru: {
-    project: { caption: "Один маршрут с контрольными точками", alt: "Карта одного маршрута с четырьмя контрольными точками и базовой шкалой сроков" },
-    program: { caption: "Три маршрута сходятся в общий результат", alt: "Карта трёх сходящихся маршрутов с общим узлом и связанными ресурсами" },
-    delivery: { caption: "Поток, блокер и обходной путь к границе поставки", alt: "Карта трёх параллельных полос потока с отмеченным блокером и обходом к границе поставки" },
-    operations: { caption: "Цикл контроля и выход метрики за границу", alt: "Карта концентрических циклов с полосами допуска и одним отклонением выше границы" },
+    project: "Маршрут проекта с контрольными точками",
+    program: "Пересечения между маршрутами программы",
+    delivery: "Непрерывный поток поставки",
+    operations: "Сетка наблюдений за процессом",
   },
   en: {
-    project: { caption: "One route with its milestones", alt: "Chart of a single route with four milestone points and a date baseline" },
-    program: { caption: "Three routes converge on one outcome", alt: "Chart of three converging routes with a shared hub and linked resources" },
-    delivery: { caption: "Flow, a blocker, and a bypass to the delivery line", alt: "Chart of three parallel flow lanes with a marked blocker and a bypass to the delivery boundary" },
-    operations: { caption: "Control cycles and one metric outside its band", alt: "Chart of concentric control cycles with tolerance bands and one excursion above the limit" },
+    project: "Project route with milestones",
+    program: "Intersections between program tracks",
+    delivery: "Continuous delivery flow",
+    operations: "Process monitoring grid",
   },
 };
 
@@ -47,8 +45,8 @@ export function RoleShowcase({ locale }: { locale: Locale }) {
           <Fragment key={role}>
             <figure className="atlas-plate role-showcase-plate" data-role-view={role} hidden={index === 0 ? undefined : true}>
               <PlateMarks />
-              <Image className="role-showcase-image" src={atlasAsset(`roles/${role}-dark.webp`)} alt={plates[locale][role].alt} width={960} height={720} sizes="(max-width: 900px) 100vw, 460px" />
-              <figcaption>{plates[locale][role].caption}</figcaption>
+              <Image className="role-showcase-image" src={atlasAsset(`roles/${role}.webp`)} alt="" width={475} height={263} />
+              <figcaption>{captions[locale][role]}</figcaption>
             </figure>
             <div className="role-showcase-body" data-role-view={role} hidden={index === 0 ? undefined : true}>
               <p className="eyebrow">{ru ? "Возможный сценарий" : "Example scenario"}</p>
