@@ -27,7 +27,7 @@ and role illustrations load lazily. All WebP plates are included in the offline 
 | `sections/dependencies.webp` | 475×263 | 39.0 | Method comparison |
 | `sections/knowledge.webp` | 475×263 | 39.3 | Library feature and knowledge catalog |
 | `onboarding/arrival.webp` | 475×263 | 44.2 | Workspace first run |
-| `empty/work.webp` | 200×112 | 0.8 | Empty work list |
+| `empty/work.webp` | 200×112 | 2.3 | Empty work list |
 | `sections/convergence.webp` | 1280×620 | 16.0 | Closing section and social artwork |
 
 ## Vector graphics — `src/components/atlas-*.tsx`

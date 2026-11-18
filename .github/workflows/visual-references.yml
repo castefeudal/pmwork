@@ -2,9 +2,9 @@ name: Review visual references
 on:
   workflow_dispatch:
 jobs:
-  lighthouse:
+  dependencies:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -18,12 +18,6 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - run: npx playwright install chromium
-      - run: npm run lighthouse:check
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: atlas-lighthouse-${{ matrix.base }}
-          path: quality-evidence/lighthouse
-          retention-days: 7
+      - run: npm audit --omit=dev --audit-level=moderate
+      - run: npm run verify
+      - run: npm run performance:check
