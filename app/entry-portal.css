@@ -4,7 +4,7 @@
 .entry-portal {
   --portal-line:var(--border-default);
   position:relative; display:flex; flex-direction:column;
-  justify-content:center; min-height:100svh; width:min(100%,1240px);
+  justify-content:center; min-height:100svh; width:min(100%,1200px);
   margin-inline:auto; padding:clamp(20px,3vw,40px);
   color:var(--text-primary);
 }
