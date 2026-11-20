@@ -205,21 +205,21 @@ a {
   display: grid;
 }
 .mobile-nav a {
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr) 16px;
+  align-items:center;
+  gap:.8rem;
   min-width:0;
-  max-width:100%;
+  min-height:52px;
   overflow-wrap:anywhere;
-  min-height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.7rem 0.8rem;
-  border-bottom: 1px solid var(--line);
-  font-weight: 750;
+  padding:.7rem .8rem;
+  border-bottom:1px solid var(--line);
+  font-weight:700;
 }
-.mobile-nav a:hover {
-  color: var(--accent);
-  background: var(--surface-2);
+.mobile-nav a>svg { color:var(--accent-primary); }
+.mobile-nav a:hover,.mobile-nav a[aria-current="page"] {
+  color:var(--accent-primary);
+  background:var(--surface-selected);
 }
 .hero {
   max-width: var(--content);

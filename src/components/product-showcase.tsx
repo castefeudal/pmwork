@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, CircleAlert, Database, FileText, LayoutDashboard, ListChecks } from "lucide-react";
+import { Check, CircleAlert, Compass, Database, FileText, LayoutDashboard, ListChecks } from "lucide-react";
 import type { Decision, Locale, Risk, WorkItem, Workspace } from "@/domain/schemas";
 import { formatDate } from "@/domain/format-date";
 import { displayLabel } from "@/content/workspace-i18n";
@@ -70,13 +70,13 @@ export function ProductShowcase({ locale, preview }: { locale: Locale; preview: 
 
   return (
     <section className="product-showcase" id="product-preview" aria-label={locale === "ru" ? "Интерактивный демо-проект PMWORK" : "Interactive PMWORK demo project"}>
-      <header className="showcase-projectline"><span className="showcase-mini-label">{t.sample}</span><h2>{project.name}</h2><p>{project.objective}</p></header>
+      <header className="showcase-projectline"><span className="showcase-mini-label"><Compass size={16} strokeWidth={1.7} aria-hidden="true" />{t.sample}</span><h2>{project.name}</h2><p>{project.objective}</p></header>
       <div className="showcase-tabs" role="group" aria-label={locale === "ru" ? "Раздел демо-проекта" : "Demo project view"}>
         {options.map(({id,label,icon:Icon})=><button key={id} type="button" aria-pressed={view===id} onClick={()=>setView(id)}><Icon size={18} aria-hidden="true"/>{label}</button>)}
       </div>
       <div className="showcase-panel" key={view} aria-live="polite">
         {view==="overview"&&<>
-          <div className="showcase-metrics">{[{label:t.openWork,value:work.filter(item=>!item.done).length},{label:t.blockers,value:work.filter(item=>item.blocked).length},{label:t.decisions,value:pendingDecisions.length}].map(item=><article key={item.label}><strong>{item.value}</strong><span>{item.label}</span></article>)}</div>
+          <div className="showcase-metrics">{[{label:t.openWork,icon:ListChecks,tone:"route",value:work.filter(item=>!item.done).length},{label:t.blockers,icon:CircleAlert,tone:"warning",value:work.filter(item=>item.blocked).length},{label:t.decisions,icon:FileText,tone:"copper",value:pendingDecisions.length}].map(({label,icon:Icon,tone,value}) => <article key={label} data-tone={tone}><div><strong>{value}</strong><Icon size={17} strokeWidth={1.65} aria-hidden="true" /></div><span>{label}</span></article>)}</div>
           {blocker&&<article className="showcase-signal"><CircleAlert size={22} aria-hidden="true"/><div><span className="showcase-mini-label">{t.signal} · {displayLabel(locale,"priority",blocker.priority)}</span><h3>{blocker.title}</h3><p>{blocker.blockerReason}</p><p className="showcase-meta">{t.owner}: {blocker.owner||t.noOwner} · {formatDate(blocker.dueDate,locale)}</p></div></article>}
           <article className="showcase-card" data-status={upcoming?.status}><span className="showcase-mini-label">{t.milestone}</span><h3>{upcoming?.title??t.noMilestone}</h3>{upcoming&&<><p>{t.forecast}: {formatDate(upcoming.forecastDate,locale)}</p><progress max="100" value={upcoming.progress} aria-label={t.progress}/><p className="showcase-meta">{displayLabel(locale,"milestoneStatus",upcoming.status)} · {t.progress}: {upcoming.progress}% · {t.confidence}: {upcoming.confidence??"—"}%</p></>}</article>
         </>}

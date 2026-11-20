@@ -5,11 +5,20 @@ import dynamic from "next/dynamic";
 const PublicSearch = dynamic(() => import("./public-search"), { ssr: false });
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Menu, Search, X } from "lucide-react";
+import { ArrowRight, BookOpen, Calculator, Compass, FileStack, GitBranch, Layers, Library, Menu, Search, Waypoints, X } from "lucide-react";
 import type { Locale } from "@/domain/schemas";
 import { ui } from "@/content/ui";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
+
+const sectionIcons = {
+  methods: GitBranch,
+  templates: FileStack,
+  playbooks: Waypoints,
+  tools: Calculator,
+  knowledge: Library,
+  glossary: BookOpen,
+};
 
 export function PublicHeader({ locale }: { locale: Locale }) {
   const t = ui(locale),
@@ -59,7 +68,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
       <a className="skip-link" href="#main">
         {locale === "ru" ? "К содержанию" : "Skip to content"}
       </a>
-      <header className="topbar" ref={header}>
+      <header className="topbar public-header" ref={header}>
         <Link prefetch={false}
           href={`/${locale}`}
           aria-label={locale === "ru" ? "PMWORK — главная" : "PMWORK home"}
@@ -88,7 +97,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           >
             {other.toUpperCase()}
           </Link>
-          <button className="button small header-search" onClick={() => setSearch(true)} aria-haspopup="dialog"><Search size={16} aria-hidden="true"/>{locale === "ru" ? "Поиск" : "Search"}</button>
+          <button className="button small header-search" onClick={() => setSearch(true)} aria-haspopup="dialog" aria-label={locale === "ru" ? "Поиск" : "Search"}><Search size={17} aria-hidden="true"/><span>{locale === "ru" ? "Поиск" : "Search"}</span></button>
           <ThemeToggle locale={locale} />
           <button
             type="button"
@@ -131,22 +140,25 @@ export function PublicHeader({ locale }: { locale: Locale }) {
               href={`/${locale}/workspace`}
               aria-current={workspaceActive ? "page" : undefined}
             >
-              {t.nav.workspace}
-              <span aria-hidden="true">→</span>
+              <Layers size={19} strokeWidth={1.7} aria-hidden="true" />
+              <span>{t.nav.workspace}</span><ArrowRight size={16} aria-hidden="true" />
             </Link>
-            {links.map(([label, slug]) => (
-              <Link prefetch={false}
-                key={slug}
-                href={`/${locale}/${slug}`}
-                aria-current={isActive(slug) ? "page" : undefined}
-              >
-                {label}
-                <span aria-hidden="true">→</span>
-              </Link>
-            ))}
+            {links.map(([label, slug]) => {
+              const Icon = sectionIcons[slug];
+              return (
+                <Link prefetch={false}
+                  key={slug}
+                  href={`/${locale}/${slug}`}
+                  aria-current={isActive(slug) ? "page" : undefined}
+                >
+                  <Icon size={19} strokeWidth={1.7} aria-hidden="true" />
+                  <span>{label}</span><ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              );
+            })}
             <Link prefetch={false} href={`/${locale}/about`} aria-current={isActive("about") ? "page" : undefined}>
-              {t.nav.about}
-              <span aria-hidden="true">→</span>
+              <Compass size={19} strokeWidth={1.7} aria-hidden="true" />
+              <span>{t.nav.about}</span><ArrowRight size={16} aria-hidden="true" />
             </Link>
           </nav>
         </>

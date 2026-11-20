@@ -5,7 +5,15 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
+  BookOpen,
   Check,
+  Compass,
+  GitBranch,
+  ListChecks,
+  Play,
+  ScanLine,
+  TrendingUp,
+  TriangleAlert,
   LockKeyhole,
   ShieldCheck,
 } from "lucide-react";
@@ -21,6 +29,15 @@ import { AtlasBand } from "@/components/atlas-band";
 import { LibraryMotif, type LibraryKind } from "@/components/atlas-editorial";
 import { PlateMarks, atlasAsset } from "@/components/atlas-marks";
 import { Footer } from "@/components/footer";
+
+const capabilityIcons = {
+  control: ScanLine,
+  planning: ListChecks,
+  risk: TriangleAlert,
+  analytics: TrendingUp,
+  dependencies: GitBranch,
+  knowledge: BookOpen,
+} as const;
 
 export function generateStaticParams() {
   return [{ locale: "ru" }, { locale: "en" }];
@@ -80,7 +97,7 @@ const copy = {
     explore: "Интерактивный пример",
     value: ["Без аккаунта", "Работает офлайн", "Резервную копию можно скачать"],
     created: "Независимый продукт Павла Маркова",
-    scroll: "ИНТЕРАКТИВНЫЙ ПРИМЕР PMWORK",
+    scroll: "ВОЗМОЖНОСТИ PMWORK",
     libraryLabel: "ИНСТРУМЕНТЫ И ЗНАНИЯ",
     capabilityTitle: "Что можно делать в PMWORK",
     capabilityLead: "Создавайте задачи, следите за сроками, связывайте риски и решения. В сводке видны блокеры и ближайшие контрольные точки.",
@@ -130,7 +147,7 @@ const copy = {
     explore: "Interactive example",
     value: ["No account", "Works offline", "Download a backup"],
     created: "An independent product by Pavel Markov",
-    scroll: "INTERACTIVE PMWORK EXAMPLE",
+    scroll: "EXPLORE PMWORK",
     libraryLabel: "TOOLS AND KNOWLEDGE",
     capabilityTitle: "What you can do in PMWORK",
     capabilityLead: "Create work items, track dates, and link risks to decisions. The overview shows blockers and upcoming milestones.",
@@ -196,12 +213,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <section className="hero marketing-hero">
           <AtlasPicture scene="hero" className="hero-aurora" />
           <div className="hero-copy">
-            <p className="hero-kicker"><span className="hero-kicker-dot" />{t.kicker}</p>
+            <p className="hero-kicker"><Compass size={17} strokeWidth={1.65} aria-hidden="true" />{t.kicker}</p>
             <h1><span>{t.titleTop}</span><span className="hero-title-accent">{t.titleBottom}</span></h1>
             <p className="lead">{t.lead}</p>
             <div className="button-row hero-actions">
               <Link prefetch={false} className="button primary" aria-label={t.startAccessible} href={`/${locale}/workspace/`}>{t.start}<ArrowRight size={17} aria-hidden="true" /></Link>
-              <a className="button hero-secondary" href="#product-preview"><span className="hero-play" aria-hidden="true">▶</span>{t.explore}</a>
+              <a className="button hero-secondary" href="#product-preview"><span className="hero-play"><Play size={11} strokeWidth={2.25} aria-hidden="true" /></span>{t.explore}</a>
             </div>
             <ul className="hero-value-list">
               {t.value.map(item => <li key={item}><Check size={14} aria-hidden="true" />{item}</li>)}
@@ -223,19 +240,22 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <p>{t.capabilityLead}</p>
           </div>
           <div className="capability-grid">
-            {t.features.map((feature, i) => (
-              <Link prefetch={false} className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
-                <div className="capability-visual">
-                  <Image className="capability-atlas-image" src={atlasAsset(`sections/${feature.graphic}.webp`)} alt="" width={475} height={263} />
-                </div>
-                <div className="capability-text">
-                  <span className="capability-label">{feature.label}</span>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.body}</p>
-                  <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
-                </div>
-              </Link>
-            ))}
+            {t.features.map((feature, i) => {
+              const Icon = capabilityIcons[feature.graphic];
+              return (
+                <Link prefetch={false} className={`capability-card capability-card-${i + 1}`} href={`/${locale}${feature.href}`} key={feature.label}>
+                  <div className="capability-visual">
+                    <Image className="capability-atlas-image" src={atlasAsset(`sections/${feature.graphic}.webp`)} alt="" width={475} height={263} />
+                  </div>
+                  <div className="capability-text">
+                    <span className="capability-label"><Icon size={16} strokeWidth={1.7} aria-hidden="true" />{feature.label}</span>
+                    <h3>{feature.title}</h3>
+                    <p>{feature.body}</p>
+                    <span className="capability-link">{feature.link}<ArrowUpRight size={15} aria-hidden="true" /></span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
 
@@ -250,7 +270,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         <section className="section library-section">
           <div className="marketing-section-head"><div><p className="eyebrow">{t.libraryEyebrow}</p><h2>{t.librarySectionTitle}</h2></div><p>{t.libraryLead}</p></div>
-          <div className="library-grid">{t.library.map(([name, amount, description, href, motif], i) => <Link prefetch={false} className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><LibraryMotif kind={motif as LibraryKind} locale={locale} /><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span><span className="library-index">0{i + 1}</span></Link>)}</div>
+          <div className="library-grid">{t.library.map(([name, amount, description, href, motif]) => <Link prefetch={false} className="library-card" href={`/${locale}${href}`} key={name}><span className="library-count">{amount}<small>{ru ? " материалов" : " resources"}</small></span><span className="library-name">{name}</span><span className="library-description">{description}</span><LibraryMotif kind={motif as LibraryKind} locale={locale} /><span className="library-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span></Link>)}</div>
         </section>
 
         <section className="section approach-section">
