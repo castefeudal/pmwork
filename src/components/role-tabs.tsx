@@ -1,12 +1,16 @@
 "use client";
 import type { MouseEvent } from "react";
+import { CircleGauge, Crosshair, GitFork, Route } from "lucide-react";
+import type { ManagementRole } from "@/domain/management-role";
+
+const icons = { project: Crosshair, program: GitFork, delivery: Route, operations: CircleGauge };
 
 /**
  * The only client-side part of the role showcase: four tab buttons that reveal
  * the matching pre-rendered sheet. React holds no state because the DOM already
  * carries every sheet, so nothing but this handler is transferred as code.
  */
-export function RoleTabs({ label, roles }: { label: string; roles: { value: string; label: string }[] }) {
+export function RoleTabs({ label, roles }: { label: string; roles: { value: ManagementRole; label: string }[] }) {
   function select(event: MouseEvent<HTMLDivElement>) {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-role]");
     const value = button?.dataset.role;
@@ -21,9 +25,12 @@ export function RoleTabs({ label, roles }: { label: string; roles: { value: stri
   }
   return (
     <div className="button-row" role="group" aria-label={label} onClick={select}>
-      {roles.map((role, index) => (
-        <button className="button" type="button" key={role.value} data-role={role.value} aria-pressed={index === 0}>{role.label}</button>
-      ))}
+      {roles.map((role, index) => {
+        const Icon = icons[role.value];
+        return <button className="button" type="button" key={role.value} data-role={role.value} aria-pressed={index === 0}>
+          <Icon size={17} strokeWidth={1.65} aria-hidden="true" />{role.label}
+        </button>;
+      })}
     </div>
   );
 }

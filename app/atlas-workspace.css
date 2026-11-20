@@ -1,20 +1,21 @@
 /* The operational side of the atlas: quiet surfaces, distinct navigation,
    measured headings. Keep the data area free of decorative overlays. */
 @layer utilities {
-  .workspace-shell .sidebar { background:var(--surface-1); color:var(--text-primary); border-right:1px solid var(--border-strong); }
+  .workspace-shell .sidebar { background:linear-gradient(170deg,var(--surface-0),var(--surface-1) 38%); color:var(--text-primary); border-right:1px solid var(--border-strong); }
   .workspace-shell .sidebar .brand { color:var(--text-primary); }
   .workspace-shell .sidebar :is(.button,.project-switch) { background:var(--surface-0); color:var(--text-primary); border-color:var(--border-strong); }
   .workspace-shell .side-nav button { color:var(--text-secondary); }
   .workspace-shell .side-nav button:hover { color:var(--text-primary); background:var(--surface-interactive); }
   .workspace-shell .side-nav button.active { color:var(--accent-primary); }
-  .workspace-shell .side-nav button.active svg { color:var(--accent-primary); }
+  .workspace-shell .side-nav button svg { flex-shrink:0; stroke-width:1.65; }
+  .workspace-shell .side-nav button.active svg { color:var(--accent-primary); stroke-width:2; }
   .workspace-shell .nav-group>small { color:var(--text-secondary); background:transparent; }
-  .workspace-shell .side-nav button { border-radius:5px; border:1px solid transparent; transition:background 180ms, border-color 180ms; }
+  .workspace-shell .side-nav button { border-radius:9px; border:1px solid transparent; transition:background 180ms, border-color 180ms; }
   .workspace-shell .side-nav button.active { background:var(--surface-selected); border-color:var(--border-default); box-shadow:inset 3px 0 var(--accent-primary); }
   .workspace-shell .nav-group>small { letter-spacing:.12em; font-size:.6875rem; }
   .workspace-shell .workspace-top { background:var(--surface-0); border-bottom:1px solid var(--border-strong); }
   .workspace-content>.page-context { position:relative; padding-block:1rem 1.5rem; border-bottom:1px solid var(--border-strong); margin-bottom:1.5rem; }
-  .workspace-content>.page-context::after { content:""; position:absolute; bottom:-1px; left:0; width:64px; height:3px; background:var(--accent-primary); }
+  .workspace-content>.page-context::after { content:""; position:absolute; bottom:-1px; left:0; width:64px; height:2px; background:linear-gradient(90deg,var(--accent-primary) 68%,var(--accent-copper) 68%); }
   .workspace-content>.page-context h2 { font-size:clamp(2rem,3.2vw,3rem); line-height:1.08; letter-spacing:-.055em; font-weight:650; }
   .workspace-content>.page-context p { max-width:74ch; }
   .workspace-content>.page-context>div:first-child { flex:1; min-width:0; }
@@ -28,10 +29,10 @@
   .workspace-content .work-card { border-top:2px solid var(--border-strong); }
   .workspace-content .work-card:hover { border-top-color:var(--accent-primary); }
   .first-run-gate { background:var(--atlas-paper); }
-  .first-run-gate .first-run-option { border-radius:4px 4px 16px 4px; }
+  .first-run-gate .first-run-option { border-radius:10px 10px 20px 10px; }
   .workspace-content .panel { border-color:var(--border-default); background:var(--surface-0); box-shadow:var(--shadow-hairline); }
   .workspace-content .panel h3 { letter-spacing:-.025em; }
-  .workspace-content .priority-focus { border:1px solid var(--border-strong); border-left:4px solid var(--accent-primary); background:linear-gradient(110deg,var(--surface-0),var(--surface-1)); padding:clamp(1.1rem,2vw,1.75rem); }
+  .workspace-content .priority-focus { border:1px solid var(--border-strong); border-left:4px solid var(--accent-primary); background:linear-gradient(110deg,color-mix(in srgb,var(--accent-primary) 5%,var(--surface-0)),var(--surface-0) 68%); padding:clamp(1.1rem,2vw,1.75rem); }
   .workspace-content .priority-focus.severity-critical { border-left-color:var(--semantic-danger); }
   .workspace-content .priority-focus.severity-high { border-left-color:var(--semantic-warning); }
   .workspace-content .priority-focus h3 { font-size:clamp(1.25rem,2vw,1.8rem); line-height:1.3; max-width:45ch; margin-block:.8rem; }
@@ -48,7 +49,7 @@
   .workspace-content tbody tr:hover { background:var(--surface-interactive); }
   .workspace-content :is(input,select,textarea):focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
   .project-atlas { display:grid; grid-template-columns:1.2fr repeat(3,1fr); margin-bottom:1.5rem; border:1px solid var(--border-strong); border-radius:var(--radius-card); overflow:hidden; background:var(--surface-0); }
-  .project-atlas-intro { --accent-primary:var(--technical-route); --accent-copper:var(--technical-copper); --atlas-faint:var(--technical-faint); --muted:var(--technical-text); --surface-0:var(--surface-technical); display:flex; flex-direction:column; justify-content:space-between; padding:1.25rem; background:var(--surface-technical); }
+  .project-atlas-intro { --accent-primary:var(--technical-route); --accent-copper:var(--technical-copper); --atlas-faint:var(--technical-faint); --muted:var(--technical-text); --surface-0:var(--surface-technical); display:flex; flex-direction:column; justify-content:space-between; padding:1.25rem; background:linear-gradient(145deg,color-mix(in srgb,var(--technical-route) 10%,var(--surface-technical)),var(--surface-technical) 72%); }
   .project-atlas-intro svg { width:100%; max-width:220px; height:66px; margin-block:.5rem; }
   .project-atlas-intro .eyebrow { color:var(--technical-route); font-size:.6875rem; letter-spacing:.12em; }
   .project-atlas-intro small { font-size:.75rem; color:var(--muted); }

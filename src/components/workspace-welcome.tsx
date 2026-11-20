@@ -1,7 +1,7 @@
 "use client";
 import {useRef,type ReactNode} from "react";
 import Image from "next/image";
-import {Database,LockKeyhole} from "lucide-react";
+import {ArrowRight, Database, FolderPlus, Layers, LockKeyhole} from "lucide-react";
 import type {Locale} from "@/domain/schemas";
 import {managementRoles,roleLabels,type ManagementRole} from "@/domain/management-role";
 import {PlateMarks,atlasAsset} from "./atlas-marks";
@@ -9,6 +9,7 @@ import {Brand} from "./brand";
 export type WorkspaceIntent = {kind:"project"|"demo"|"restore";role:ManagementRole;priority:string;file?:File};
 export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,priority:firstPriority,onPriority:setFirstPriority,onCreate,onDemo,onImport,notice,children,busy=false}:{locale:Locale;role:ManagementRole;onRole:(role:ManagementRole)=>void;priority:string;onPriority:(priority:string)=>void;onCreate:()=>void;onDemo:()=>void;onImport:(file:File)=>void;notice?:string;children?:ReactNode;busy?:boolean}) {
   const ru=locale==="ru",fileRef=useRef<HTMLInputElement>(null);
+  const StartIcon = firstRole === "project" || firstRole === "delivery" ? FolderPlus : Layers;
   const firstRunStartLabel = ({
     project: ru ? "Создать пустой проект" : "Create an empty project",
     program: ru ? "Открыть программы" : "Open programs",
@@ -36,8 +37,8 @@ export function WorkspaceWelcome({locale,role:firstRole,onRole:setFirstRole,prio
       {busy&&<p role="status" className="first-run-checking">{ru?"Проверяем локальные данные. Сохранённое пространство откроется автоматически.":"Checking local data. Your saved workspace will open automatically."}</p>}
       <fieldset className="first-run-controls" disabled={busy} aria-label={ru?"Начало работы":"Getting started"}>
       <div className="first-run-actions">
-        <button className="button primary first-run-option" onClick={onCreate}><span className="first-run-option-icon" aria-hidden="true">↗</span><span><strong>{firstRunStartLabel}</strong><small>{firstRunStartHint}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
-        <button className="button first-run-option" onClick={onDemo}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true"><Database size={17}/></span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><span className="first-run-option-arrow" aria-hidden="true">→</span></button>
+        <button className="button primary first-run-option" onClick={onCreate}><span className="first-run-option-icon"><StartIcon size={19} strokeWidth={1.7} aria-hidden="true" /></span><span><strong>{firstRunStartLabel}</strong><small>{firstRunStartHint}</small></span><ArrowRight className="first-run-option-arrow" size={17} aria-hidden="true" /></button>
+        <button className="button first-run-option" onClick={onDemo}><span className="first-run-option-icon first-run-example-icon" aria-hidden="true"><Database size={17}/></span><span><strong>{ru ? "Посмотреть готовый пример" : "Explore a completed example"}</strong><small>{ru ? "Задачи, риски, решения и сроки уже заполнены." : "Work items, risks, decisions, and dates are already there."}</small></span><ArrowRight className="first-run-option-arrow" size={17} aria-hidden="true" /></button>
         <details className="first-run-preferences">
           <summary>{ru ? "Дополнительно: выбрать рабочий раздел" : "Optional: choose a starting section"}</summary>
           <p>{ru ? `Эта настройка не обязательна. ${firstRunPreferencesHint}` : `These settings are optional. ${firstRunPreferencesHint}`}</p>

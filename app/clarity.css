@@ -51,17 +51,18 @@
 }
 
 .role-showcase-heading .button-row { justify-content: flex-end; gap: .45rem; }
-.role-showcase-heading .button { min-height: 40px; padding: .55rem .8rem; box-shadow: none; font-size: 0.875rem; }
+.role-showcase-heading .button { min-height:44px; gap:.44rem; padding:.55rem .8rem; box-shadow:none; font-size:.875rem; }
+.role-showcase-heading .button svg { flex:none; }
 .role-showcase-heading .button[aria-pressed="true"] { color: var(--text-on-accent); border-color: var(--accent-primary); background: var(--accent-primary); }
 
 .role-showcase-panel { padding: clamp(1.15rem, 2.5vw, 1.8rem); }
 /* Every role sheet is prerendered so the copy never travels as JavaScript;
    the two hidden elements of the inactive role leave the grid entirely. */
 .role-showcase-panel [hidden] { display: none; }
-.role-showcase-panel > .eyebrow { margin: 0 0 .55rem; color: var(--accent-primary); }
-.role-showcase-panel > h3 { margin: 0; font-size: clamp(1.12rem, 2vw, 1.45rem); line-height: 1.35; letter-spacing: -.025em; }
+.role-showcase-body > .eyebrow { margin: 0 0 .55rem; color: var(--accent-primary); }
+.role-showcase-body > h3 { margin: 0; font-size: clamp(1.12rem, 2vw, 1.45rem); line-height: 1.35; letter-spacing: -.025em; }
 .role-showcase-panel dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1.1rem 0 0; }
-.role-showcase-panel dl > div { min-width: 0; padding: .8rem .9rem; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--surface-1); }
+.role-showcase-panel dl > div { min-width: 0; padding:.8rem .9rem; border:1px solid var(--border-subtle); border-top:2px solid var(--border-control); border-radius:10px; background:var(--surface-1); }
 .role-showcase-panel dt { margin-bottom: .35rem; color: var(--text-tertiary); font-size: 0.875rem; font-weight: 720; letter-spacing: .055em; text-transform: uppercase; }
 .role-showcase-panel dd { margin: 0; color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; }
 
