@@ -21,7 +21,7 @@
 .portal-descriptor { color:var(--text-secondary); font-size:.6875rem; font-weight:700; letter-spacing:.13em; border-left:1px solid var(--line); padding-left:24px; }
 .portal-local { display:flex; align-items:center; gap:8px; margin-left:auto; padding:5px 9px; border:1px solid var(--border-default); border-radius:var(--radius-pill); background:var(--surface-0); color:var(--text-secondary); font-size:.8125rem; white-space:nowrap; }
 .portal-local i { width:6px; height:6px; border-radius:50%; background:var(--accent-primary); }
-.portal-hero { display:grid; grid-template-columns:1.08fr 1fr; grid-template-rows:auto auto; column-gap:clamp(24px,5vw,76px); align-items:center; padding-block:clamp(24px,4vw,52px); }
+.portal-hero { display:grid; grid-template-columns:1.08fr 1fr; grid-template-rows:auto auto; column-gap:clamp(24px,5vw,76px); align-items:center; padding-block:clamp(24px,2.6vw,36px); }
 .portal-heading { grid-column:1; align-self:end; min-width:0; }
 .portal-eyebrow { display:flex; justify-content:space-between; gap:8px; margin:0 0 18px; color:var(--text-secondary); font-size:.6875rem; font-weight:700; letter-spacing:.13em; }
 .portal-heading h1 { margin:0; font-family:var(--font-display); font-size:clamp(3.25rem,7.25vw,6.7rem); font-weight:780; letter-spacing:-.087em; line-height:1; white-space:nowrap; }
