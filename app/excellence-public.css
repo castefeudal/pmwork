@@ -321,7 +321,7 @@
 }
 
 @media (max-width: 480px) {
-  .topbar.public-header { min-height:60px; padding-inline:10px; gap:4px; flex-wrap:nowrap; }
+  .topbar.public-header { min-height:60px; padding-inline:10px; gap:0 4px; flex-wrap:wrap; }
   .public-header .brand { gap:.45rem; font-size:.94rem; }
   .public-header .brand .brand-image { width:32px; height:32px; }
   .public-header .topnav { gap:0; flex-wrap:nowrap; }
@@ -355,7 +355,7 @@
   padding:1.35rem 1.5rem 1rem;
   background:linear-gradient(155deg,var(--surface-selected),transparent 70%);
 }
-.showcase-projectline .showcase-mini-label { display:inline-flex; align-items:center; gap:.5rem; font-size:.75rem; font-weight:750; letter-spacing:.07em; }
+.showcase-projectline .showcase-mini-label { display:inline-flex; align-items:center; gap:.5rem; font-size:.875rem; font-weight:750; letter-spacing:.07em; }
 .showcase-projectline .showcase-mini-label svg { flex:none; color:var(--accent-primary); }
 .product-showcase h2 { font-size:1.375rem; line-height:1.3; margin:.4rem 0; letter-spacing:-.025em; }
 .product-showcase h3 { font-size:1rem; line-height:1.45; margin:.35rem 0; }
