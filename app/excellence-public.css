@@ -320,6 +320,16 @@
   .site-shell .article-layout { padding-inline: 1.05rem; }
 }
 
+@media (max-width: 480px) {
+  .topbar.public-header { min-height:60px; padding-inline:10px; gap:4px; flex-wrap:nowrap; }
+  .public-header .brand { gap:.45rem; font-size:.94rem; }
+  .public-header .brand .brand-image { width:32px; height:32px; }
+  .public-header .topnav { gap:0; flex-wrap:nowrap; }
+  .public-header .topnav :is(.language-link,button) {
+    display:grid; place-items:center; min-height:44px; min-width:44px; padding:0;
+  }
+  .public-header .header-search span { display:none; }
+}
 @media (max-width: 390px) {
   .marketing-hero h1 { font-size: 3.15rem; }
   .hero-value-list { display: grid; grid-template-columns: 1fr 1fr; }

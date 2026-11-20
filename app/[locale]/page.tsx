@@ -9,7 +9,7 @@ import {
   Check,
   Compass,
   GitBranch,
-  ListTodo,
+  ListChecks,
   Play,
   ScanLine,
   TrendingUp,
@@ -32,7 +32,7 @@ import { Footer } from "@/components/footer";
 
 const capabilityIcons = {
   control: ScanLine,
-  planning: ListTodo,
+  planning: ListChecks,
   risk: TriangleAlert,
   analytics: TrendingUp,
   dependencies: GitBranch,

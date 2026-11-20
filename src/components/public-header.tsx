@@ -68,7 +68,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
       <a className="skip-link" href="#main">
         {locale === "ru" ? "К содержанию" : "Skip to content"}
       </a>
-      <header className="topbar" ref={header}>
+      <header className="topbar public-header" ref={header}>
         <Link prefetch={false}
           href={`/${locale}`}
           aria-label={locale === "ru" ? "PMWORK — главная" : "PMWORK home"}
@@ -97,7 +97,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           >
             {other.toUpperCase()}
           </Link>
-          <button className="button small header-search" onClick={() => setSearch(true)} aria-haspopup="dialog"><Search size={16} aria-hidden="true"/>{locale === "ru" ? "Поиск" : "Search"}</button>
+          <button className="button small header-search" onClick={() => setSearch(true)} aria-haspopup="dialog" aria-label={locale === "ru" ? "Поиск" : "Search"}><Search size={17} aria-hidden="true"/><span>{locale === "ru" ? "Поиск" : "Search"}</span></button>
           <ThemeToggle locale={locale} />
           <button
             type="button"
